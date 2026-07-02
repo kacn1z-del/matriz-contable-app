@@ -1,0 +1,61 @@
+name: EAS Build - Matriz Contable CR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Plataforma a compilar'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - android
+          - ios
+      profile:
+        description: 'Perfil de build (eas.json)'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+
+jobs:
+  build:
+    name: Build con EAS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Autenticarse en Expo
+        run: eas whoami || echo "EXPO_TOKEN no configurado o inválido. Revisa los secrets del repo."
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Instalar dependencias del proyecto
+        run: npm install
+
+      - name: Compilar (push a main → android preview automático)
+        if: github.event_name == 'push'
+        run: eas build --platform android --profile preview --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Compilar (disparo manual con plataforma/perfil elegidos)
+        if: github.event_name == 'workflow_dispatch'
+        run: eas build --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.profile }} --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
