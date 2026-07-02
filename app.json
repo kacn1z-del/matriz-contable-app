@@ -2,6 +2,7 @@
   "expo": {
     "name": "Matriz Contable CR",
     "slug": "matriz-contable-cr",
+    "owner": "keny2410s-organization",
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
@@ -38,4 +39,3 @@
     }
   }
 }
-
