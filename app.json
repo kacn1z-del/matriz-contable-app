@@ -3,25 +3,38 @@
     "name": "Matriz Contable CR",
     "slug": "matriz-contable-cr",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "backgroundColor": "#1e5208"
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2d7a0c"
     },
-    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kcn.matrizcontablecr"
+      "bundleIdentifier": "com.kcnstudio.matrizcontablecr",
+      "buildNumber": "1"
     },
     "android": {
-      "package": "com.kcn.matrizcontablecr"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2d7a0c"
+      },
+      "package": "com.kcnstudio.matrizcontablecr",
+      "versionCode": 1,
+      "permissions": []
     },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-asset"
+    ],
     "extra": {
       "eas": {
-        "projectId": "a2de97cd-ddbb-42c6-bd8a-97b0e27c7595"
+        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
       }
     }
   }
 }
-
