@@ -1,87 +1,150 @@
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { StatusBar } from 'expo-status-bar'
-import { LangProvider, useLang } from './src/context/LangContext'
-import HomeScreen from './src/screens/HomeScreen'
-import SheetEditor from './src/components/SheetEditor'
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native'
+import { useLang } from '../context/LangContext'
 
-const Stack = createNativeStackNavigator()
+const MENU_ITEMS = [
+  {
+    key: 'nueva',
+    icon: '📊',
+    titleKey: 'menu.nuevaHoja',
+    fallback: 'Nueva Hoja',
+    subtitleKey: 'menu.nuevaHojaDesc',
+    subtitleFallback: 'Crear una matriz contable en blanco',
+    route: 'Sheet',
+    params: { template: 'default' },
+  },
+  {
+    key: 'factura',
+    icon: '🧾',
+    titleKey: 'menu.factura',
+    fallback: 'Factura Electrónica 4.3',
+    subtitleKey: 'menu.facturaDesc',
+    subtitleFallback: 'Generar comprobantes electrónicos CR',
+    route: 'Factura',
+  },
+  {
+    key: 'funciones',
+    icon: 'fx',
+    titleKey: 'menu.funciones',
+    fallback: 'Biblioteca de Funciones',
+    subtitleKey: 'menu.funcionesDesc',
+    subtitleFallback: '452 funciones contables y fiscales CR',
+    route: 'Funciones',
+  },
+  {
+    key: 'sibo',
+    icon: '✦',
+    titleKey: 'menu.sibo',
+    fallback: 'Sibö Asistente IA',
+    subtitleKey: 'menu.siboDesc',
+    subtitleFallback: 'Consultas contables con inteligencia artificial',
+    route: 'Sibo',
+  },
+]
 
-// ─── Pantalla envoltorio para el editor de hojas ────────
-function SheetScreen({ navigation, route }) {
+export default function HomeScreen({ navigation }) {
   const { t } = useLang()
-  const template = route.params?.template ?? 'default'
+
+  const translate = (key, fallback) => {
+    const value = t ? t(key) : null
+    return value && value !== key ? value : fallback
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#e6f0e6' }}>
-      <View style={styles.toolbar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backBtn}>← {t('menu.inicio')}</Text>
-        </TouchableOpacity>
-        <Text style={styles.toolbarTitle}>{t('canvas.toolbar')}</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.logo}>Matriz Contable CR</Text>
+        <Text style={styles.tagline}>
+          {translate('menu.inicio', 'Inicio')}
+        </Text>
       </View>
-      <SheetEditor userId={null} sheetId={template} />
+
+      <ScrollView contentContainerStyle={styles.grid}>
+        {MENU_ITEMS.map((item) => (
+          <TouchableOpacity
+            key={item.key}
+            style={styles.card}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate(item.route, item.params)}
+          >
+            <Text style={styles.cardIcon}>{item.icon}</Text>
+            <Text style={styles.cardTitle}>
+              {translate(item.titleKey, item.fallback)}
+            </Text>
+            <Text style={styles.cardSubtitle}>
+              {translate(item.subtitleKey, item.subtitleFallback)}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </SafeAreaView>
-  )
-}
-
-// ─── Placeholder temporales (próximas fases) ────────────
-function PlaceholderScreen({ navigation, route, title }) {
-  const { t } = useLang()
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#e6f0e6', padding: 20 }}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.backBtn}>← {t('menu.inicio')}</Text>
-      </TouchableOpacity>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 40, marginBottom: 12 }}>🚧</Text>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: '#3d6020' }}>{title}</Text>
-        <Text style={{ fontSize: 13, color: '#6b8f48', marginTop: 6 }}>Próxima fase de desarrollo</Text>
-      </View>
-    </SafeAreaView>
-  )
-}
-
-function AppNavigator() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Sheet" component={SheetScreen} />
-        <Stack.Screen
-          name="Factura"
-          children={(props) => <PlaceholderScreen {...props} title="🧾 Factura Electrónica 4.3" />}
-        />
-        <Stack.Screen
-          name="Funciones"
-          children={(props) => <PlaceholderScreen {...props} title="fx Biblioteca de Funciones (452)" />}
-        />
-        <Stack.Screen
-          name="Sibo"
-          children={(props) => <PlaceholderScreen {...props} title="✦ Sibö Asistente IA" />}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
-}
-
-export default function App() {
-  return (
-    <LangProvider>
-      <StatusBar style="light" />
-      <AppNavigator />
-    </LangProvider>
   )
 }
 
 const styles = StyleSheet.create({
-  toolbar: {
-    flexDirection: 'row', alignItems: 'center', gap: 16,
-    paddingHorizontal: 16, paddingVertical: 10,
-    backgroundColor: '#fff', borderBottomWidth: 1.5, borderBottomColor: '#cce9ae',
+  container: {
+    flex: 1,
+    backgroundColor: '#e6f0e6',
   },
-  backBtn: { fontSize: 13, fontWeight: '700', color: '#2d7a0c' },
-  toolbarTitle: { fontSize: 13, fontWeight: '700', color: '#3d6020' },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 8,
+    backgroundColor: '#2d7a0c',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#245f09',
+  },
+  logo: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#ffffff',
+  },
+  tagline: {
+    fontSize: 13,
+    color: '#d8f5b0',
+    marginTop: 2,
+    marginBottom: 12,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  card: {
+    width: '48%',
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: '#cce9ae',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  cardIcon: {
+    fontSize: 28,
+    marginBottom: 8,
+  },
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#3d6020',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: 11,
+    color: '#6b8f48',
+    lineHeight: 15,
+  },
 })
