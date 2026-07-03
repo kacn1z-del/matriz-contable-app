@@ -1,2 +1,2747 @@
-
+[
+  {
+    "id": 1,
+    "nombre": "SUMA",
+    "alias": "SUM",
+    "categoria": "Matemáticas",
+    "descripcion": "Suma los valores de un rango o lista de números."
+  },
+  {
+    "id": 2,
+    "nombre": "PROMEDIO",
+    "alias": "AVERAGE",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el promedio (media aritmética) de un rango."
+  },
+  {
+    "id": 3,
+    "nombre": "MAX",
+    "alias": "MAXIMO",
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve el valor máximo de un rango."
+  },
+  {
+    "id": 4,
+    "nombre": "MIN",
+    "alias": "MINIMO",
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve el valor mínimo de un rango."
+  },
+  {
+    "id": 5,
+    "nombre": "CONTAR",
+    "alias": "COUNT",
+    "categoria": "Matemáticas",
+    "descripcion": "Cuenta las celdas con números en un rango."
+  },
+  {
+    "id": 6,
+    "nombre": "CONTARA",
+    "alias": "COUNTA",
+    "categoria": "Matemáticas",
+    "descripcion": "Cuenta las celdas no vacías en un rango."
+  },
+  {
+    "id": 7,
+    "nombre": "CONTAR.BLANCO",
+    "alias": "COUNTBLANK",
+    "categoria": "Matemáticas",
+    "descripcion": "Cuenta las celdas vacías en un rango."
+  },
+  {
+    "id": 8,
+    "nombre": "ABS",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve el valor absoluto de un número."
+  },
+  {
+    "id": 9,
+    "nombre": "ENTERO",
+    "alias": "INT",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia abajo al entero más cercano."
+  },
+  {
+    "id": 10,
+    "nombre": "TRUNCAR",
+    "alias": "TRUNC",
+    "categoria": "Matemáticas",
+    "descripcion": "Trunca un número a un número de decimales especificado."
+  },
+  {
+    "id": 11,
+    "nombre": "REDONDEAR",
+    "alias": "ROUND",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número a la cantidad de decimales indicada."
+  },
+  {
+    "id": 12,
+    "nombre": "REDONDEAR.MAS",
+    "alias": "ROUNDUP",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia arriba."
+  },
+  {
+    "id": 13,
+    "nombre": "REDONDEAR.MENOS",
+    "alias": "ROUNDDOWN",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia abajo."
+  },
+  {
+    "id": 14,
+    "nombre": "RESIDUO",
+    "alias": "MOD",
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve el residuo de una división."
+  },
+  {
+    "id": 15,
+    "nombre": "POTENCIA",
+    "alias": "POWER",
+    "categoria": "Matemáticas",
+    "descripcion": "Eleva un número a una potencia."
+  },
+  {
+    "id": 16,
+    "nombre": "RAIZ",
+    "alias": "SQRT",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula la raíz cuadrada de un número."
+  },
+  {
+    "id": 17,
+    "nombre": "LN",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el logaritmo natural de un número."
+  },
+  {
+    "id": 18,
+    "nombre": "LOG10",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el logaritmo base 10 de un número."
+  },
+  {
+    "id": 19,
+    "nombre": "LOG",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el logaritmo de un número en la base indicada."
+  },
+  {
+    "id": 20,
+    "nombre": "EXP",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula e elevado a la potencia indicada."
+  },
+  {
+    "id": 21,
+    "nombre": "PI",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve el valor de π (pi)."
+  },
+  {
+    "id": 22,
+    "nombre": "FACT",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el factorial de un número."
+  },
+  {
+    "id": 23,
+    "nombre": "SIGNO",
+    "alias": "SIGN",
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve el signo de un número (1, -1 o 0)."
+  },
+  {
+    "id": 24,
+    "nombre": "COCIENTE",
+    "alias": "QUOTIENT",
+    "categoria": "Matemáticas",
+    "descripcion": "Devuelve la parte entera de una división."
+  },
+  {
+    "id": 25,
+    "nombre": "COMBINAT",
+    "alias": "COMBIN",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el número de combinaciones de un conjunto."
+  },
+  {
+    "id": 26,
+    "nombre": "SUMAPRODUCTO",
+    "alias": "SUMPRODUCT",
+    "categoria": "Matemáticas",
+    "descripcion": "Multiplica rangos correspondientes y suma los resultados."
+  },
+  {
+    "id": 27,
+    "nombre": "SUBTOTALES",
+    "alias": "SUBTOTAL",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula subtotales usando distintas funciones agregadas."
+  },
+  {
+    "id": 28,
+    "nombre": "MULTIPLO.SUPERIOR",
+    "alias": "CEILING",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número al múltiplo superior más cercano."
+  },
+  {
+    "id": 29,
+    "nombre": "MULTIPLO.INFERIOR",
+    "alias": "FLOOR",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número al múltiplo inferior más cercano."
+  },
+  {
+    "id": 30,
+    "nombre": "REDOND.MULT",
+    "alias": "MROUND",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número al múltiplo más cercano indicado."
+  },
+  {
+    "id": 31,
+    "nombre": "M.C.D",
+    "alias": "GCD",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el máximo común divisor de varios números."
+  },
+  {
+    "id": 32,
+    "nombre": "M.C.M",
+    "alias": "LCM",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el mínimo común múltiplo de varios números."
+  },
+  {
+    "id": 33,
+    "nombre": "NUMERO.ROMANO",
+    "alias": "ROMAN",
+    "categoria": "Matemáticas",
+    "descripcion": "Convierte un número arábigo a número romano."
+  },
+  {
+    "id": 34,
+    "nombre": "ARABIGO",
+    "alias": "ARABIC",
+    "categoria": "Matemáticas",
+    "descripcion": "Convierte un número romano a número arábigo."
+  },
+  {
+    "id": 35,
+    "nombre": "SUMA.CUADRADOS",
+    "alias": "SUMSQ",
+    "categoria": "Matemáticas",
+    "descripcion": "Suma los cuadrados de los valores de un rango."
+  },
+  {
+    "id": 36,
+    "nombre": "PRODUCTO",
+    "alias": "PRODUCT",
+    "categoria": "Matemáticas",
+    "descripcion": "Multiplica todos los números de un rango."
+  },
+  {
+    "id": 37,
+    "nombre": "PERMUTACIONES",
+    "alias": "PERMUT",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el número de permutaciones posibles."
+  },
+  {
+    "id": 38,
+    "nombre": "MMULT",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Multiplica dos matrices (rangos)."
+  },
+  {
+    "id": 39,
+    "nombre": "MATRIZALEAT",
+    "alias": "RANDARRAY",
+    "categoria": "Matemáticas",
+    "descripcion": "Genera una matriz de números aleatorios."
+  },
+  {
+    "id": 40,
+    "nombre": "MDETERM",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el determinante de una matriz."
+  },
+  {
+    "id": 41,
+    "nombre": "MUNIT",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Genera una matriz identidad del tamaño indicado."
+  },
+  {
+    "id": 42,
+    "nombre": "ALEATORIO",
+    "alias": "RAND",
+    "categoria": "Matemáticas",
+    "descripcion": "Genera un número aleatorio entre 0 y 1."
+  },
+  {
+    "id": 43,
+    "nombre": "GRADOS",
+    "alias": "DEGREES",
+    "categoria": "Matemáticas",
+    "descripcion": "Convierte radianes a grados."
+  },
+  {
+    "id": 44,
+    "nombre": "RADIANES",
+    "alias": "RADIANS",
+    "categoria": "Matemáticas",
+    "descripcion": "Convierte grados a radianes."
+  },
+  {
+    "id": 45,
+    "nombre": "SENO",
+    "alias": "SIN",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el seno de un ángulo."
+  },
+  {
+    "id": 46,
+    "nombre": "COS",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el coseno de un ángulo."
+  },
+  {
+    "id": 47,
+    "nombre": "TAN",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula la tangente de un ángulo."
+  },
+  {
+    "id": 48,
+    "nombre": "ASENO",
+    "alias": "ASIN",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el arcoseno de un número."
+  },
+  {
+    "id": 49,
+    "nombre": "ACOS",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el arcocoseno de un número."
+  },
+  {
+    "id": 50,
+    "nombre": "ATAN",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el arcotangente de un número."
+  },
+  {
+    "id": 51,
+    "nombre": "ATAN2",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el arcotangente de coordenadas X e Y."
+  },
+  {
+    "id": 52,
+    "nombre": "SENH",
+    "alias": "SINH",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el seno hiperbólico de un número."
+  },
+  {
+    "id": 53,
+    "nombre": "COSH",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el coseno hiperbólico de un número."
+  },
+  {
+    "id": 54,
+    "nombre": "TANH",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula la tangente hiperbólica de un número."
+  },
+  {
+    "id": 55,
+    "nombre": "BASE",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Convierte un número a texto en la base indicada."
+  },
+  {
+    "id": 56,
+    "nombre": "TECHO",
+    "alias": "CEILING",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia arriba al múltiplo indicado."
+  },
+  {
+    "id": 57,
+    "nombre": "PISO",
+    "alias": "FLOOR",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia abajo al múltiplo indicado."
+  },
+  {
+    "id": 58,
+    "nombre": "ENTERO.SUPERIOR",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia arriba al entero más cercano."
+  },
+  {
+    "id": 59,
+    "nombre": "NUMERO.DECIMAL",
+    "alias": "DECIMAL",
+    "categoria": "Matemáticas",
+    "descripcion": "Convierte un texto en una base numérica a decimal."
+  },
+  {
+    "id": 60,
+    "nombre": "ES.MULTIPLO",
+    "alias": "ISMULTIPLE",
+    "categoria": "Matemáticas",
+    "descripcion": "Indica si un número es múltiplo de otro."
+  },
+  {
+    "id": 61,
+    "nombre": "SUMAR.DIAGONAL",
+    "alias": "TRACE",
+    "categoria": "Matemáticas",
+    "descripcion": "Suma los elementos de la diagonal de una matriz."
+  },
+  {
+    "id": 62,
+    "nombre": "NORMA.EUCLIDEA",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula la norma euclídea de un conjunto de números."
+  },
+  {
+    "id": 63,
+    "nombre": "ES.NUMERO.ENTERO",
+    "alias": "ISINT",
+    "categoria": "Matemáticas",
+    "descripcion": "Indica si un valor es un número entero."
+  },
+  {
+    "id": 64,
+    "nombre": "COCIENTE.EXACTO",
+    "alias": null,
+    "categoria": "Matemáticas",
+    "descripcion": "Divide dos números y devuelve el resultado exacto."
+  },
+  {
+    "id": 65,
+    "nombre": "MEDIA.PONDERADA",
+    "alias": "WAVERAGE",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula un promedio ponderado según pesos indicados."
+  },
+  {
+    "id": 66,
+    "nombre": "REDONDEA.PAR",
+    "alias": "EVEN",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia arriba al entero par más cercano."
+  },
+  {
+    "id": 67,
+    "nombre": "REDONDEA.IMPAR",
+    "alias": "ODD",
+    "categoria": "Matemáticas",
+    "descripcion": "Redondea un número hacia arriba al entero impar más cercano."
+  },
+  {
+    "id": 68,
+    "nombre": "SUMAR.CUADRADOS.DIFERENCIAS",
+    "alias": "SUMXMY2",
+    "categoria": "Matemáticas",
+    "descripcion": "Suma los cuadrados de las diferencias entre dos rangos."
+  },
+  {
+    "id": 69,
+    "nombre": "SUMAR.X2.MENOS.Y2",
+    "alias": "SUMX2MY2",
+    "categoria": "Matemáticas",
+    "descripcion": "Suma la diferencia de cuadrados entre dos rangos."
+  },
+  {
+    "id": 70,
+    "nombre": "SUMAR.X2.MAS.Y2",
+    "alias": "SUMX2PY2",
+    "categoria": "Matemáticas",
+    "descripcion": "Suma de cuadrados de dos rangos combinados."
+  },
+  {
+    "id": 71,
+    "nombre": "FACT.DOBLE",
+    "alias": "FACTDOUBLE",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el factorial doble de un número."
+  },
+  {
+    "id": 72,
+    "nombre": "LOG.GAMMA",
+    "alias": "GAMMALN.PRECISE",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula el logaritmo natural de la función gamma."
+  },
+  {
+    "id": 73,
+    "nombre": "SUMA.SERIES",
+    "alias": "SERIESSUM",
+    "categoria": "Matemáticas",
+    "descripcion": "Calcula la suma de una serie de potencias."
+  },
+  {
+    "id": 74,
+    "nombre": "SI",
+    "alias": "IF",
+    "categoria": "Lógicas",
+    "descripcion": "Evalúa una condición y devuelve un valor u otro."
+  },
+  {
+    "id": 75,
+    "nombre": "SI.CONJUNTO",
+    "alias": "IFS",
+    "categoria": "Lógicas",
+    "descripcion": "Evalúa varias condiciones en orden y devuelve el primer resultado verdadero."
+  },
+  {
+    "id": 76,
+    "nombre": "SI.ERROR",
+    "alias": "IFERROR",
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve un valor alternativo si la fórmula produce error."
+  },
+  {
+    "id": 77,
+    "nombre": "SI.ND",
+    "alias": "IFNA",
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve un valor alternativo si el resultado es #N/A."
+  },
+  {
+    "id": 78,
+    "nombre": "Y",
+    "alias": "AND",
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve VERDADERO si todas las condiciones se cumplen."
+  },
+  {
+    "id": 79,
+    "nombre": "O",
+    "alias": "OR",
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve VERDADERO si al menos una condición se cumple."
+  },
+  {
+    "id": 80,
+    "nombre": "NO",
+    "alias": "NOT",
+    "categoria": "Lógicas",
+    "descripcion": "Invierte el valor lógico de una condición."
+  },
+  {
+    "id": 81,
+    "nombre": "CAMBIAR",
+    "alias": "SWITCH",
+    "categoria": "Lógicas",
+    "descripcion": "Compara un valor contra una lista de casos y devuelve el resultado correspondiente."
+  },
+  {
+    "id": 82,
+    "nombre": "VERDADERO",
+    "alias": "TRUE",
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve el valor lógico VERDADERO."
+  },
+  {
+    "id": 83,
+    "nombre": "FALSO",
+    "alias": "FALSE",
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve el valor lógico FALSO."
+  },
+  {
+    "id": 84,
+    "nombre": "VERDADERO.SI",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve un valor según si una condición dada es verdadera."
+  },
+  {
+    "id": 85,
+    "nombre": "MAKEARRAY",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Genera una matriz de valores calculados según filas y columnas."
+  },
+  {
+    "id": 86,
+    "nombre": "VALOR.CAMPO",
+    "alias": "FIELDVALUE",
+    "categoria": "Lógicas",
+    "descripcion": "Obtiene el valor de un campo de datos tipados."
+  },
+  {
+    "id": 87,
+    "nombre": "ES.FORMULA.TEXTO",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Indica si una celda contiene una fórmula."
+  },
+  {
+    "id": 88,
+    "nombre": "DESREF.DINAMICO",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve el valor de una celda desplazada dinámicamente."
+  },
+  {
+    "id": 89,
+    "nombre": "CONTAR.UNICOS",
+    "alias": "COUNT.UNIQUE",
+    "categoria": "Lógicas",
+    "descripcion": "Cuenta los valores únicos en un rango."
+  },
+  {
+    "id": 90,
+    "nombre": "LET",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Asigna nombres a valores dentro de una fórmula."
+  },
+  {
+    "id": 91,
+    "nombre": "LAMBDA",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Define una función personalizada reutilizable."
+  },
+  {
+    "id": 92,
+    "nombre": "MAP",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Aplica una operación a cada elemento de un rango."
+  },
+  {
+    "id": 93,
+    "nombre": "REDUCE",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Acumula un resultado aplicando una operación sobre un rango."
+  },
+  {
+    "id": 94,
+    "nombre": "SCAN",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Devuelve resultados intermedios acumulados de un rango."
+  },
+  {
+    "id": 95,
+    "nombre": "BYROW",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Aplica una operación a cada fila de un rango."
+  },
+  {
+    "id": 96,
+    "nombre": "BYCOL",
+    "alias": null,
+    "categoria": "Lógicas",
+    "descripcion": "Aplica una operación a cada columna de un rango."
+  },
+  {
+    "id": 97,
+    "nombre": "CONCATENAR",
+    "alias": "CONCATENATE / CONCAT",
+    "categoria": "Texto",
+    "descripcion": "Une varios textos en uno solo."
+  },
+  {
+    "id": 98,
+    "nombre": "UNIRCADENAS",
+    "alias": "TEXTJOIN",
+    "categoria": "Texto",
+    "descripcion": "Une textos usando un delimitador, con opción de omitir vacíos."
+  },
+  {
+    "id": 99,
+    "nombre": "MAYUSC",
+    "alias": "UPPER",
+    "categoria": "Texto",
+    "descripcion": "Convierte un texto a mayúsculas."
+  },
+  {
+    "id": 100,
+    "nombre": "MINUSC",
+    "alias": "LOWER",
+    "categoria": "Texto",
+    "descripcion": "Convierte un texto a minúsculas."
+  },
+  {
+    "id": 101,
+    "nombre": "NOMPROPIO",
+    "alias": "PROPER",
+    "categoria": "Texto",
+    "descripcion": "Pone en mayúscula la primera letra de cada palabra."
+  },
+  {
+    "id": 102,
+    "nombre": "LARGO",
+    "alias": "LEN",
+    "categoria": "Texto",
+    "descripcion": "Devuelve la cantidad de caracteres de un texto."
+  },
+  {
+    "id": 103,
+    "nombre": "IZQUIERDA",
+    "alias": "LEFT",
+    "categoria": "Texto",
+    "descripcion": "Extrae caracteres desde el inicio de un texto."
+  },
+  {
+    "id": 104,
+    "nombre": "DERECHA",
+    "alias": "RIGHT",
+    "categoria": "Texto",
+    "descripcion": "Extrae caracteres desde el final de un texto."
+  },
+  {
+    "id": 105,
+    "nombre": "EXTRAE",
+    "alias": "MID",
+    "categoria": "Texto",
+    "descripcion": "Extrae caracteres desde una posición específica."
+  },
+  {
+    "id": 106,
+    "nombre": "ENCONTRAR",
+    "alias": "FIND",
+    "categoria": "Texto",
+    "descripcion": "Busca la posición de un texto dentro de otro (sensible a mayúsculas)."
+  },
+  {
+    "id": 107,
+    "nombre": "HALLAR",
+    "alias": "SEARCH",
+    "categoria": "Texto",
+    "descripcion": "Busca la posición de un texto dentro de otro (no sensible a mayúsculas)."
+  },
+  {
+    "id": 108,
+    "nombre": "SUSTITUIR",
+    "alias": "SUBSTITUTE",
+    "categoria": "Texto",
+    "descripcion": "Reemplaza texto específico dentro de una cadena."
+  },
+  {
+    "id": 109,
+    "nombre": "REEMPLAZAR",
+    "alias": "REPLACE",
+    "categoria": "Texto",
+    "descripcion": "Reemplaza texto en una posición y longitud determinadas."
+  },
+  {
+    "id": 110,
+    "nombre": "ESPACIOS",
+    "alias": "TRIM",
+    "categoria": "Texto",
+    "descripcion": "Elimina espacios sobrantes de un texto."
+  },
+  {
+    "id": 111,
+    "nombre": "REPETIR",
+    "alias": "REPT",
+    "categoria": "Texto",
+    "descripcion": "Repite un texto la cantidad de veces indicada."
+  },
+  {
+    "id": 112,
+    "nombre": "VALOR",
+    "alias": "VALUE",
+    "categoria": "Texto",
+    "descripcion": "Convierte un texto en un valor numérico."
+  },
+  {
+    "id": 113,
+    "nombre": "MONEDA",
+    "alias": "DOLLAR",
+    "categoria": "Texto",
+    "descripcion": "Convierte un número a texto con formato de moneda."
+  },
+  {
+    "id": 114,
+    "nombre": "TEXTO",
+    "alias": "TEXT",
+    "categoria": "Texto",
+    "descripcion": "Convierte un número a texto según un formato indicado."
+  },
+  {
+    "id": 115,
+    "nombre": "IGUAL",
+    "alias": "EXACT",
+    "categoria": "Texto",
+    "descripcion": "Compara si dos textos son exactamente iguales."
+  },
+  {
+    "id": 116,
+    "nombre": "DIVIDIRTEXTO",
+    "alias": "TEXTSPLIT",
+    "categoria": "Texto",
+    "descripcion": "Divide un texto en partes según un delimitador."
+  },
+  {
+    "id": 117,
+    "nombre": "TEXTOANTES",
+    "alias": "TEXTBEFORE",
+    "categoria": "Texto",
+    "descripcion": "Extrae el texto antes de un delimitador."
+  },
+  {
+    "id": 118,
+    "nombre": "TEXTODESPUES",
+    "alias": "TEXTAFTER",
+    "categoria": "Texto",
+    "descripcion": "Extrae el texto después de un delimitador."
+  },
+  {
+    "id": 119,
+    "nombre": "CODIGO",
+    "alias": "CODE",
+    "categoria": "Texto",
+    "descripcion": "Devuelve el código numérico del primer carácter de un texto."
+  },
+  {
+    "id": 120,
+    "nombre": "CARACTER",
+    "alias": "CHAR",
+    "categoria": "Texto",
+    "descripcion": "Devuelve el carácter correspondiente a un código numérico."
+  },
+  {
+    "id": 121,
+    "nombre": "LIMPIAR",
+    "alias": "CLEAN",
+    "categoria": "Texto",
+    "descripcion": "Elimina caracteres no imprimibles de un texto."
+  },
+  {
+    "id": 122,
+    "nombre": "UNICODE",
+    "alias": null,
+    "categoria": "Texto",
+    "descripcion": "Devuelve el punto de código Unicode del primer carácter."
+  },
+  {
+    "id": 123,
+    "nombre": "MATRIZATEXTO",
+    "alias": "ARRAYTOTEXT",
+    "categoria": "Texto",
+    "descripcion": "Convierte un rango de valores en una cadena de texto."
+  },
+  {
+    "id": 124,
+    "nombre": "REEMPLAZARB",
+    "alias": "REPLACEB",
+    "categoria": "Texto",
+    "descripcion": "Reemplaza texto según posición en bytes."
+  },
+  {
+    "id": 125,
+    "nombre": "LARGOB",
+    "alias": "LENB",
+    "categoria": "Texto",
+    "descripcion": "Devuelve la longitud de un texto en bytes."
+  },
+  {
+    "id": 126,
+    "nombre": "IZQUIERDAB",
+    "alias": "LEFTB",
+    "categoria": "Texto",
+    "descripcion": "Extrae caracteres desde el inicio, contando en bytes."
+  },
+  {
+    "id": 127,
+    "nombre": "DERECHAB",
+    "alias": "RIGHTB",
+    "categoria": "Texto",
+    "descripcion": "Extrae caracteres desde el final, contando en bytes."
+  },
+  {
+    "id": 128,
+    "nombre": "EXTRAEB",
+    "alias": "MIDB",
+    "categoria": "Texto",
+    "descripcion": "Extrae caracteres desde una posición, contando en bytes."
+  },
+  {
+    "id": 129,
+    "nombre": "ENCONTRARB",
+    "alias": "FINDB",
+    "categoria": "Texto",
+    "descripcion": "Busca la posición de un texto contando en bytes."
+  },
+  {
+    "id": 130,
+    "nombre": "HALLARB",
+    "alias": "SEARCHB",
+    "categoria": "Texto",
+    "descripcion": "Busca texto sin distinguir mayúsculas, contando en bytes."
+  },
+  {
+    "id": 131,
+    "nombre": "CAPITALIZAR",
+    "alias": null,
+    "categoria": "Texto",
+    "descripcion": "Pone en mayúscula solo la primera letra de un texto."
+  },
+  {
+    "id": 132,
+    "nombre": "NUMERO.A.TEXTO",
+    "alias": "NUMBERTEXT",
+    "categoria": "Texto",
+    "descripcion": "Convierte un número en su nombre escrito en español."
+  },
+  {
+    "id": 133,
+    "nombre": "COINCIDIR.TEXTO",
+    "alias": "TEXTMATCH",
+    "categoria": "Texto",
+    "descripcion": "Indica si un texto contiene otro texto dado."
+  },
+  {
+    "id": 134,
+    "nombre": "RELLENAR.IZQ",
+    "alias": "PADLEFT",
+    "categoria": "Texto",
+    "descripcion": "Rellena un texto por la izquierda hasta una longitud dada."
+  },
+  {
+    "id": 135,
+    "nombre": "RELLENAR.DER",
+    "alias": "PADRIGHT",
+    "categoria": "Texto",
+    "descripcion": "Rellena un texto por la derecha hasta una longitud dada."
+  },
+  {
+    "id": 136,
+    "nombre": "INVERTIR.TEXTO",
+    "alias": "REVERSETEXT",
+    "categoria": "Texto",
+    "descripcion": "Invierte el orden de los caracteres de un texto."
+  },
+  {
+    "id": 137,
+    "nombre": "CONTAR.PALABRAS",
+    "alias": "WORDCOUNT",
+    "categoria": "Texto",
+    "descripcion": "Cuenta la cantidad de palabras en un texto."
+  },
+  {
+    "id": 138,
+    "nombre": "ENMASCARAR",
+    "alias": "MASK",
+    "categoria": "Texto",
+    "descripcion": "Oculta parte de un texto (útil para cédulas, tarjetas, etc.)."
+  },
+  {
+    "id": 139,
+    "nombre": "FORMATO.NUMERO",
+    "alias": "FORMATNUMBER",
+    "categoria": "Texto",
+    "descripcion": "Formatea un número con la cantidad de decimales indicada."
+  },
+  {
+    "id": 140,
+    "nombre": "SEPARAR.TEXTO",
+    "alias": "SPLIT",
+    "categoria": "Texto",
+    "descripcion": "Separa un texto en partes según un delimitador."
+  },
+  {
+    "id": 141,
+    "nombre": "REGEXEXTRACCION",
+    "alias": "REGEXEXTRACT",
+    "categoria": "Texto",
+    "descripcion": "Extrae la primera coincidencia de una expresión regular."
+  },
+  {
+    "id": 142,
+    "nombre": "REGEXPRUEBA",
+    "alias": "REGEXTEST",
+    "categoria": "Texto",
+    "descripcion": "Indica si un texto coincide con una expresión regular."
+  },
+  {
+    "id": 143,
+    "nombre": "REGEXREEMPLAZAR",
+    "alias": "REGEXREPLACE",
+    "categoria": "Texto",
+    "descripcion": "Reemplaza texto usando una expresión regular."
+  },
+  {
+    "id": 144,
+    "nombre": "FORMULATEXTO",
+    "alias": "FORMULATEXT",
+    "categoria": "Texto",
+    "descripcion": "Muestra la fórmula contenida en una celda como texto."
+  },
+  {
+    "id": 145,
+    "nombre": "DETECTARIDIOMA",
+    "alias": "DETECTLANGUAGE",
+    "categoria": "Texto",
+    "descripcion": "Intenta detectar el idioma de un texto."
+  },
+  {
+    "id": 146,
+    "nombre": "FRACCION",
+    "alias": null,
+    "categoria": "Texto",
+    "descripcion": "Convierte un número decimal a su representación en fracción."
+  },
+  {
+    "id": 147,
+    "nombre": "MONEDA.CR",
+    "alias": null,
+    "categoria": "Texto",
+    "descripcion": "Formatea un número como colones costarricenses (₡)."
+  },
+  {
+    "id": 148,
+    "nombre": "HOY",
+    "alias": "TODAY",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve la fecha actual."
+  },
+  {
+    "id": 149,
+    "nombre": "AHORA",
+    "alias": "NOW",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve la fecha y hora actuales."
+  },
+  {
+    "id": 150,
+    "nombre": "FECHA",
+    "alias": "DATE",
+    "categoria": "Fecha y hora",
+    "descripcion": "Construye una fecha a partir de año, mes y día."
+  },
+  {
+    "id": 151,
+    "nombre": "AÑO",
+    "alias": "YEAR",
+    "categoria": "Fecha y hora",
+    "descripcion": "Extrae el año de una fecha."
+  },
+  {
+    "id": 152,
+    "nombre": "MES",
+    "alias": "MONTH",
+    "categoria": "Fecha y hora",
+    "descripcion": "Extrae el mes de una fecha."
+  },
+  {
+    "id": 153,
+    "nombre": "DIA",
+    "alias": "DAY",
+    "categoria": "Fecha y hora",
+    "descripcion": "Extrae el día de una fecha."
+  },
+  {
+    "id": 154,
+    "nombre": "DIAS",
+    "alias": "DAYS",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula la diferencia en días entre dos fechas."
+  },
+  {
+    "id": 155,
+    "nombre": "FIN.MES",
+    "alias": "EOMONTH",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el último día del mes, desplazado N meses."
+  },
+  {
+    "id": 156,
+    "nombre": "SIFECHA",
+    "alias": "DATEDIF",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula la diferencia entre dos fechas en años, meses o días."
+  },
+  {
+    "id": 157,
+    "nombre": "HORA",
+    "alias": "HOUR",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve la hora actual."
+  },
+  {
+    "id": 158,
+    "nombre": "MINUTO",
+    "alias": "MINUTE",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el minuto actual."
+  },
+  {
+    "id": 159,
+    "nombre": "SEGUNDO",
+    "alias": "SECOND",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el segundo actual."
+  },
+  {
+    "id": 160,
+    "nombre": "DIAS.LAB",
+    "alias": "NETWORKDAYS",
+    "categoria": "Fecha y hora",
+    "descripcion": "Cuenta los días laborables entre dos fechas."
+  },
+  {
+    "id": 161,
+    "nombre": "DIA.LAB",
+    "alias": "WORKDAY",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula una fecha desplazada N días laborables."
+  },
+  {
+    "id": 162,
+    "nombre": "NUM.DE.SEMANA",
+    "alias": "WEEKNUM",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el número de semana del año."
+  },
+  {
+    "id": 163,
+    "nombre": "DIASEM",
+    "alias": "WEEKDAY",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el día de la semana de una fecha."
+  },
+  {
+    "id": 164,
+    "nombre": "FRAC.AÑO",
+    "alias": "YEARFRAC",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula la fracción de año entre dos fechas."
+  },
+  {
+    "id": 165,
+    "nombre": "FECHA.MES",
+    "alias": "EDATE",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula una fecha desplazada N meses."
+  },
+  {
+    "id": 166,
+    "nombre": "ISO.NUM.DE.SEMANA",
+    "alias": "ISOWEEKNUM",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el número de semana ISO."
+  },
+  {
+    "id": 167,
+    "nombre": "NSHORA",
+    "alias": "TIME",
+    "categoria": "Fecha y hora",
+    "descripcion": "Construye una hora a partir de horas, minutos y segundos."
+  },
+  {
+    "id": 168,
+    "nombre": "HORANUMERO",
+    "alias": "TIMEVALUE",
+    "categoria": "Fecha y hora",
+    "descripcion": "Convierte texto de hora a un valor numérico."
+  },
+  {
+    "id": 169,
+    "nombre": "FECHANUMERO",
+    "alias": "DATEVALUE",
+    "categoria": "Fecha y hora",
+    "descripcion": "Convierte texto de fecha a un valor numérico serial."
+  },
+  {
+    "id": 170,
+    "nombre": "DIAS360",
+    "alias": null,
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula la diferencia entre fechas usando el año de 360 días."
+  },
+  {
+    "id": 171,
+    "nombre": "DIA.LAB.INTL",
+    "alias": "WORKDAY.INTL",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula fecha desplazada considerando fines de semana personalizados."
+  },
+  {
+    "id": 172,
+    "nombre": "DIAS.LAB.INTL",
+    "alias": "NETWORKDAYS.INTL",
+    "categoria": "Fecha y hora",
+    "descripcion": "Cuenta días laborables con fines de semana personalizados."
+  },
+  {
+    "id": 173,
+    "nombre": "DIAS.EN.MES",
+    "alias": null,
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve la cantidad de días del mes de una fecha."
+  },
+  {
+    "id": 174,
+    "nombre": "AÑO.BISIESTO",
+    "alias": null,
+    "categoria": "Fecha y hora",
+    "descripcion": "Indica si un año es bisiesto."
+  },
+  {
+    "id": 175,
+    "nombre": "TRIMESTRE",
+    "alias": "QUARTER",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el trimestre correspondiente a una fecha."
+  },
+  {
+    "id": 176,
+    "nombre": "INICIO.MES",
+    "alias": "MONTHSTART",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el primer día del mes de una fecha."
+  },
+  {
+    "id": 177,
+    "nombre": "NOMBRE.MES",
+    "alias": "MONTHNAME",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el nombre del mes de una fecha."
+  },
+  {
+    "id": 178,
+    "nombre": "NOMBRE.DIA",
+    "alias": "DAYNAME",
+    "categoria": "Fecha y hora",
+    "descripcion": "Devuelve el nombre del día de la semana."
+  },
+  {
+    "id": 179,
+    "nombre": "EDAD",
+    "alias": "AGE",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula la edad en años a partir de una fecha de nacimiento."
+  },
+  {
+    "id": 180,
+    "nombre": "AGREGAR.DIAS",
+    "alias": "ADDDAYS",
+    "categoria": "Fecha y hora",
+    "descripcion": "Suma una cantidad de días a una fecha."
+  },
+  {
+    "id": 181,
+    "nombre": "AGREGAR.MESES",
+    "alias": "ADDMONTHS",
+    "categoria": "Fecha y hora",
+    "descripcion": "Suma una cantidad de meses a una fecha."
+  },
+  {
+    "id": 182,
+    "nombre": "DIFERENCIA.DIAS",
+    "alias": "DAYSDIFF",
+    "categoria": "Fecha y hora",
+    "descripcion": "Calcula la diferencia absoluta en días entre dos fechas."
+  },
+  {
+    "id": 183,
+    "nombre": "IVA",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula el monto de IVA sobre una base (13% por defecto en CR)."
+  },
+  {
+    "id": 184,
+    "nombre": "PAGO",
+    "alias": "PMT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la cuota periódica de un préstamo."
+  },
+  {
+    "id": 185,
+    "nombre": "VA",
+    "alias": "PV",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el valor actual de una serie de pagos."
+  },
+  {
+    "id": 186,
+    "nombre": "VF",
+    "alias": "FV",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el valor futuro de una inversión."
+  },
+  {
+    "id": 187,
+    "nombre": "VNA",
+    "alias": "NPV",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el valor actual neto de flujos de caja."
+  },
+  {
+    "id": 188,
+    "nombre": "TIR",
+    "alias": "IRR",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa interna de retorno de flujos de caja."
+  },
+  {
+    "id": 189,
+    "nombre": "TASA",
+    "alias": "RATE",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa de interés de un préstamo o inversión."
+  },
+  {
+    "id": 190,
+    "nombre": "NPER",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula el número de períodos de un préstamo."
+  },
+  {
+    "id": 191,
+    "nombre": "INT.EFECTIVO",
+    "alias": "EFFECT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa de interés efectiva anual."
+  },
+  {
+    "id": 192,
+    "nombre": "TASA.NOMINAL",
+    "alias": "NOMINAL",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa de interés nominal anual."
+  },
+  {
+    "id": 193,
+    "nombre": "SLN",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula la depreciación en línea recta de un activo."
+  },
+  {
+    "id": 194,
+    "nombre": "DB",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula la depreciación por saldo fijo decreciente."
+  },
+  {
+    "id": 195,
+    "nombre": "DDB",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula la depreciación por doble saldo decreciente."
+  },
+  {
+    "id": 196,
+    "nombre": "DVS",
+    "alias": "VDB",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la depreciación variable entre dos períodos."
+  },
+  {
+    "id": 197,
+    "nombre": "PAGOINT",
+    "alias": "IPMT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la parte de interés de un pago de préstamo."
+  },
+  {
+    "id": 198,
+    "nombre": "PAGOPRIN",
+    "alias": "PPMT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la parte de capital de un pago de préstamo."
+  },
+  {
+    "id": 199,
+    "nombre": "TIRM",
+    "alias": "MIRR",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa interna de retorno modificada."
+  },
+  {
+    "id": 200,
+    "nombre": "RRI",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa de interés equivalente de una inversión."
+  },
+  {
+    "id": 201,
+    "nombre": "P.DURACION",
+    "alias": "PDURATION",
+    "categoria": "Financieras",
+    "descripcion": "Calcula los períodos necesarios para alcanzar un valor futuro."
+  },
+  {
+    "id": 202,
+    "nombre": "PAGO.INT.ENTRE",
+    "alias": "CUMIPMT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el interés acumulado entre dos períodos de un préstamo."
+  },
+  {
+    "id": 203,
+    "nombre": "PAGO.PRINC.ENTRE",
+    "alias": "CUMPRINC",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el capital acumulado entre dos períodos de un préstamo."
+  },
+  {
+    "id": 204,
+    "nombre": "TASA.DESC",
+    "alias": "DISC",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa de descuento de un título."
+  },
+  {
+    "id": 205,
+    "nombre": "PRECIO.DESCUENTO",
+    "alias": "PRICEDISC",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el precio de un título descontado."
+  },
+  {
+    "id": 206,
+    "nombre": "RENDTO.DESC",
+    "alias": "YIELDDISC",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el rendimiento anual de un título descontado."
+  },
+  {
+    "id": 207,
+    "nombre": "PRECIO.VENCIMIENTO",
+    "alias": "PRICEMAT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el precio de un título que paga interés al vencimiento."
+  },
+  {
+    "id": 208,
+    "nombre": "RENDTO.VENCIMIENTO",
+    "alias": "YIELDMAT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el rendimiento de un título al vencimiento."
+  },
+  {
+    "id": 209,
+    "nombre": "TASA.INT",
+    "alias": "INTRATE",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la tasa de interés de un título totalmente invertido."
+  },
+  {
+    "id": 210,
+    "nombre": "TASA.EQUIVALENTE",
+    "alias": null,
+    "categoria": "Financieras",
+    "descripcion": "Calcula una tasa de interés equivalente entre períodos."
+  },
+  {
+    "id": 211,
+    "nombre": "INT.ACUM.V",
+    "alias": "ACCRINTM",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el interés acumulado de un valor al vencimiento."
+  },
+  {
+    "id": 212,
+    "nombre": "CUPON.NUM",
+    "alias": "COUPNUM",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el número de cupones a pagar entre dos fechas."
+  },
+  {
+    "id": 213,
+    "nombre": "CUPON.DIAS",
+    "alias": "COUPDAYS",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la cantidad de días del período de cupón."
+  },
+  {
+    "id": 214,
+    "nombre": "PRECIO",
+    "alias": "PRICE",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el precio de un bono con pagos periódicos."
+  },
+  {
+    "id": 215,
+    "nombre": "RENDTO",
+    "alias": "YIELD",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el rendimiento de un bono con pagos periódicos."
+  },
+  {
+    "id": 216,
+    "nombre": "DURACION",
+    "alias": "DURATION",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la duración de un valor con pagos periódicos."
+  },
+  {
+    "id": 217,
+    "nombre": "DURACION.MODIF",
+    "alias": "MDURATION",
+    "categoria": "Financieras",
+    "descripcion": "Calcula la duración modificada de Macaulay."
+  },
+  {
+    "id": 218,
+    "nombre": "CONV.DECIMAL",
+    "alias": "DOLLARDE",
+    "categoria": "Financieras",
+    "descripcion": "Convierte un precio en fracción a decimal."
+  },
+  {
+    "id": 219,
+    "nombre": "CONV.EN.FRACCION",
+    "alias": "DOLLARFR",
+    "categoria": "Financieras",
+    "descripcion": "Convierte un precio decimal a fracción."
+  },
+  {
+    "id": 220,
+    "nombre": "LETRA.DE.TES.PRECIO",
+    "alias": "TBILLPRICE",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el precio de una letra del tesoro."
+  },
+  {
+    "id": 221,
+    "nombre": "LETRA.DE.TES.RENDTO",
+    "alias": "TBILLYIELD",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el rendimiento de una letra del tesoro."
+  },
+  {
+    "id": 222,
+    "nombre": "INT.PAGO.DIR",
+    "alias": "ISPMT",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el interés pagado durante un período específico."
+  },
+  {
+    "id": 223,
+    "nombre": "VF.PLAN",
+    "alias": "FVSCHEDULE",
+    "categoria": "Financieras",
+    "descripcion": "Calcula el valor futuro aplicando una serie de tasas variables."
+  },
+  {
+    "id": 224,
+    "nombre": "IVA.INCLUIDO",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Extrae el monto de IVA contenido en un total (CR)."
+  },
+  {
+    "id": 225,
+    "nombre": "MONTO.SIN.IVA",
+    "alias": "BASE.IVA",
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula el monto base sin IVA a partir de un total (CR)."
+  },
+  {
+    "id": 226,
+    "nombre": "PLANILLA.CCSS",
+    "alias": "CARGAS.SOCIALES",
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula las cargas sociales patronales y obreras según la CCSS."
+  },
+  {
+    "id": 227,
+    "nombre": "AGUINALDO",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula el aguinaldo proporcional según meses trabajados (CR)."
+  },
+  {
+    "id": 228,
+    "nombre": "PREAVISO",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula el preaviso laboral según antigüedad (Art. 28, Código de Trabajo CR)."
+  },
+  {
+    "id": 229,
+    "nombre": "CESANTIA",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula la cesantía según la tabla oficial de años laborados (Art. 29, CR)."
+  },
+  {
+    "id": 230,
+    "nombre": "RENTA.TRABAJO",
+    "alias": "IMPUESTO.RENTA",
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula el impuesto sobre la renta del trabajo por tramos (CR)."
+  },
+  {
+    "id": 231,
+    "nombre": "TIPO.CAMBIO",
+    "alias": "TC.BCCR",
+    "categoria": "Financieras CR",
+    "descripcion": "Devuelve un tipo de cambio de referencia para una moneda."
+  },
+  {
+    "id": 232,
+    "nombre": "BUSCARV",
+    "alias": "VLOOKUP",
+    "categoria": "Búsqueda",
+    "descripcion": "Busca un valor en la primera columna de un rango y devuelve otro dato de esa fila."
+  },
+  {
+    "id": 233,
+    "nombre": "BUSCARH",
+    "alias": "HLOOKUP",
+    "categoria": "Búsqueda",
+    "descripcion": "Busca un valor en la primera fila de un rango y devuelve otro dato de esa columna."
+  },
+  {
+    "id": 234,
+    "nombre": "BUSCARX",
+    "alias": "XLOOKUP",
+    "categoria": "Búsqueda",
+    "descripcion": "Busca un valor y devuelve el resultado correspondiente de otro rango."
+  },
+  {
+    "id": 235,
+    "nombre": "COINCIDIR",
+    "alias": "MATCH",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve la posición de un valor dentro de un rango."
+  },
+  {
+    "id": 236,
+    "nombre": "INDICE",
+    "alias": "INDEX",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve el valor en la intersección de una fila y columna de un rango."
+  },
+  {
+    "id": 237,
+    "nombre": "DESREF",
+    "alias": "OFFSET",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve una referencia desplazada desde una celda base."
+  },
+  {
+    "id": 238,
+    "nombre": "INDIRECTO",
+    "alias": "INDIRECT",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve la referencia especificada por una cadena de texto."
+  },
+  {
+    "id": 239,
+    "nombre": "ELEGIR",
+    "alias": "CHOOSE",
+    "categoria": "Búsqueda",
+    "descripcion": "Elige un valor de una lista según un índice."
+  },
+  {
+    "id": 240,
+    "nombre": "FILA",
+    "alias": "ROW",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve el número de fila de una referencia."
+  },
+  {
+    "id": 241,
+    "nombre": "COLUMNA",
+    "alias": "COLUMN",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve el número de columna de una referencia."
+  },
+  {
+    "id": 242,
+    "nombre": "FILAS",
+    "alias": "ROWS",
+    "categoria": "Búsqueda",
+    "descripcion": "Cuenta la cantidad de filas en un rango."
+  },
+  {
+    "id": 243,
+    "nombre": "COLUMNAS",
+    "alias": "COLUMNS",
+    "categoria": "Búsqueda",
+    "descripcion": "Cuenta la cantidad de columnas en un rango."
+  },
+  {
+    "id": 244,
+    "nombre": "TRANSPONER",
+    "alias": "TRANSPOSE",
+    "categoria": "Búsqueda",
+    "descripcion": "Invierte filas y columnas de un rango."
+  },
+  {
+    "id": 245,
+    "nombre": "FILTRAR",
+    "alias": "FILTER",
+    "categoria": "Búsqueda",
+    "descripcion": "Filtra un rango según una condición."
+  },
+  {
+    "id": 246,
+    "nombre": "ORDENAR",
+    "alias": "SORT",
+    "categoria": "Búsqueda",
+    "descripcion": "Ordena los valores de un rango."
+  },
+  {
+    "id": 247,
+    "nombre": "UNICOS",
+    "alias": "UNIQUE",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve los valores únicos de un rango."
+  },
+  {
+    "id": 248,
+    "nombre": "APILARV",
+    "alias": "VSTACK",
+    "categoria": "Búsqueda",
+    "descripcion": "Apila varios rangos verticalmente."
+  },
+  {
+    "id": 249,
+    "nombre": "APILARH",
+    "alias": "HSTACK",
+    "categoria": "Búsqueda",
+    "descripcion": "Apila varios rangos horizontalmente."
+  },
+  {
+    "id": 250,
+    "nombre": "SECUENCIA",
+    "alias": "SEQUENCE",
+    "categoria": "Búsqueda",
+    "descripcion": "Genera una secuencia de números."
+  },
+  {
+    "id": 251,
+    "nombre": "COINCIDIRX",
+    "alias": "XMATCH",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve la posición de un valor, con más opciones de coincidencia."
+  },
+  {
+    "id": 252,
+    "nombre": "TOMAR",
+    "alias": "TAKE",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve una cantidad de filas o columnas desde el inicio o final."
+  },
+  {
+    "id": 253,
+    "nombre": "EXCLUIR",
+    "alias": "DROP",
+    "categoria": "Búsqueda",
+    "descripcion": "Excluye una cantidad de filas o columnas de un rango."
+  },
+  {
+    "id": 254,
+    "nombre": "EXPANDIR",
+    "alias": "EXPAND",
+    "categoria": "Búsqueda",
+    "descripcion": "Expande un rango a un tamaño indicado, rellenando con un valor."
+  },
+  {
+    "id": 255,
+    "nombre": "ELEGIRCOLS",
+    "alias": "CHOOSECOLS",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve columnas específicas de un rango."
+  },
+  {
+    "id": 256,
+    "nombre": "ELEGIRFILAS",
+    "alias": "CHOOSEROWS",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve filas específicas de un rango."
+  },
+  {
+    "id": 257,
+    "nombre": "ENCOL",
+    "alias": "TOCOL",
+    "categoria": "Búsqueda",
+    "descripcion": "Convierte un rango en una sola columna."
+  },
+  {
+    "id": 258,
+    "nombre": "ENFILA",
+    "alias": "TOROW",
+    "categoria": "Búsqueda",
+    "descripcion": "Convierte un rango en una sola fila."
+  },
+  {
+    "id": 259,
+    "nombre": "HIPERVINCULO",
+    "alias": "HYPERLINK",
+    "categoria": "Búsqueda",
+    "descripcion": "Crea un acceso directo a otra ubicación o documento."
+  },
+  {
+    "id": 260,
+    "nombre": "RECORTAR.RANGO",
+    "alias": "TRIMRANGE",
+    "categoria": "Búsqueda",
+    "descripcion": "Elimina valores vacíos al final de un rango."
+  },
+  {
+    "id": 261,
+    "nombre": "BUSCAR.REGEX",
+    "alias": null,
+    "categoria": "Búsqueda",
+    "descripcion": "Busca un valor usando una expresión regular."
+  },
+  {
+    "id": 262,
+    "nombre": "BUSCAR.ULTIMA",
+    "alias": "LASTMATCH",
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve la última coincidencia de un valor en un rango."
+  },
+  {
+    "id": 263,
+    "nombre": "POSICION.TEXTO",
+    "alias": null,
+    "categoria": "Búsqueda",
+    "descripcion": "Devuelve todas las posiciones donde aparece un texto."
+  },
+  {
+    "id": 264,
+    "nombre": "CONTAR.OCURRENCIAS",
+    "alias": null,
+    "categoria": "Búsqueda",
+    "descripcion": "Cuenta cuántas veces aparece un texto dentro de otro."
+  },
+  {
+    "id": 265,
+    "nombre": "BUSCAR.NESIMO",
+    "alias": null,
+    "categoria": "Búsqueda",
+    "descripcion": "Busca la N-ésima coincidencia de un valor en un rango."
+  },
+  {
+    "id": 266,
+    "nombre": "CONTAR.SI",
+    "alias": "COUNTIF",
+    "categoria": "Condicionales",
+    "descripcion": "Cuenta las celdas de un rango que cumplen una condición."
+  },
+  {
+    "id": 267,
+    "nombre": "CONTAR.SI.CONJUNTO",
+    "alias": "COUNTIFS",
+    "categoria": "Condicionales",
+    "descripcion": "Cuenta celdas que cumplen varias condiciones a la vez."
+  },
+  {
+    "id": 268,
+    "nombre": "SUMAR.SI",
+    "alias": "SUMIF",
+    "categoria": "Condicionales",
+    "descripcion": "Suma los valores de un rango que cumplen una condición."
+  },
+  {
+    "id": 269,
+    "nombre": "SUMAR.SI.CONJUNTO",
+    "alias": "SUMIFS",
+    "categoria": "Condicionales",
+    "descripcion": "Suma valores que cumplen varias condiciones a la vez."
+  },
+  {
+    "id": 270,
+    "nombre": "PROMEDIO.SI",
+    "alias": "AVERAGEIF",
+    "categoria": "Condicionales",
+    "descripcion": "Promedia los valores que cumplen una condición."
+  },
+  {
+    "id": 271,
+    "nombre": "MAX.SI.CONJUNTO",
+    "alias": "MAXIFS",
+    "categoria": "Condicionales",
+    "descripcion": "Devuelve el máximo entre valores que cumplen varias condiciones."
+  },
+  {
+    "id": 272,
+    "nombre": "MIN.SI.CONJUNTO",
+    "alias": "MINIFS",
+    "categoria": "Condicionales",
+    "descripcion": "Devuelve el mínimo entre valores que cumplen varias condiciones."
+  },
+  {
+    "id": 273,
+    "nombre": "DESVEST.M",
+    "alias": "STDEV.S",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la desviación estándar de una muestra."
+  },
+  {
+    "id": 274,
+    "nombre": "DESVEST.P",
+    "alias": "STDEV.P",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la desviación estándar de una población completa."
+  },
+  {
+    "id": 275,
+    "nombre": "MEDIANA",
+    "alias": "MEDIAN",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el valor central de un conjunto de datos."
+  },
+  {
+    "id": 276,
+    "nombre": "K.ESIMO.MAYOR",
+    "alias": "LARGE",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el k-ésimo valor mayor de un rango."
+  },
+  {
+    "id": 277,
+    "nombre": "K.ESIMO.MENOR",
+    "alias": "SMALL",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el k-ésimo valor menor de un rango."
+  },
+  {
+    "id": 278,
+    "nombre": "COEF.DE.CORREL",
+    "alias": "CORREL / PEARSON",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el coeficiente de correlación entre dos rangos."
+  },
+  {
+    "id": 279,
+    "nombre": "VAR.S",
+    "alias": "VAR",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la varianza de una muestra."
+  },
+  {
+    "id": 280,
+    "nombre": "VAR.P",
+    "alias": "VARP",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la varianza de una población completa."
+  },
+  {
+    "id": 281,
+    "nombre": "PERCENTIL.INC",
+    "alias": "PERCENTILE",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el percentil k de un rango (inclusivo)."
+  },
+  {
+    "id": 282,
+    "nombre": "CUARTIL.INC",
+    "alias": "QUARTILE",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el cuartil de un conjunto de datos (inclusivo)."
+  },
+  {
+    "id": 283,
+    "nombre": "CURTOSIS",
+    "alias": "KURT",
+    "categoria": "Estadísticas",
+    "descripcion": "Mide el grado de apuntamiento de una distribución."
+  },
+  {
+    "id": 284,
+    "nombre": "COEFICIENTE.ASIMETRIA",
+    "alias": "SKEW",
+    "categoria": "Estadísticas",
+    "descripcion": "Mide la asimetría de una distribución de datos."
+  },
+  {
+    "id": 285,
+    "nombre": "PENDIENTE",
+    "alias": "SLOPE",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la pendiente de la línea de regresión lineal."
+  },
+  {
+    "id": 286,
+    "nombre": "INTERSECCION.EJE",
+    "alias": "INTERCEPT",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el punto donde la línea de regresión corta el eje Y."
+  },
+  {
+    "id": 287,
+    "nombre": "JERARQUIA",
+    "alias": "RANK",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve la posición (ranking) de un valor dentro de un rango."
+  },
+  {
+    "id": 288,
+    "nombre": "JERARQUIA.MEDIA",
+    "alias": "RANK.AVG",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el ranking promedio de un valor con empates."
+  },
+  {
+    "id": 289,
+    "nombre": "MEDIA.ACOTADA",
+    "alias": "TRIMMEAN",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el promedio excluyendo un porcentaje de valores extremos."
+  },
+  {
+    "id": 290,
+    "nombre": "DISTR.BETA",
+    "alias": "BETA.DIST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la función de distribución beta."
+  },
+  {
+    "id": 291,
+    "nombre": "INV.BETA",
+    "alias": "BETA.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la inversa de la función de distribución beta."
+  },
+  {
+    "id": 292,
+    "nombre": "DISTR.GAMMA",
+    "alias": "GAMMA.DIST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la función de distribución gamma."
+  },
+  {
+    "id": 293,
+    "nombre": "INV.GAMMA",
+    "alias": "GAMMA.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la inversa de la distribución gamma."
+  },
+  {
+    "id": 294,
+    "nombre": "GAMMA.LN",
+    "alias": "GAMMALN",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el logaritmo natural de la función gamma."
+  },
+  {
+    "id": 295,
+    "nombre": "FUNCION.GAMMA",
+    "alias": "GAMMA",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el valor de la función gamma."
+  },
+  {
+    "id": 296,
+    "nombre": "DISTR.HIPERGEOM",
+    "alias": "HYPGEOM.DIST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la distribución hipergeométrica."
+  },
+  {
+    "id": 297,
+    "nombre": "DISTR.BINOM.NEG",
+    "alias": "NEGBINOM.DIST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la distribución binomial negativa."
+  },
+  {
+    "id": 298,
+    "nombre": "DISTR.WEIBULL",
+    "alias": "WEIBULL.DIST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la distribución de Weibull."
+  },
+  {
+    "id": 299,
+    "nombre": "DISTR.LOGNORM",
+    "alias": "LOGNORM.DIST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la distribución logarítmico-normal."
+  },
+  {
+    "id": 300,
+    "nombre": "INV.LOGNORM",
+    "alias": "LOGNORM.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la inversa de la distribución logarítmico-normal."
+  },
+  {
+    "id": 301,
+    "nombre": "INV.T",
+    "alias": "T.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el valor inverso de la distribución t de Student."
+  },
+  {
+    "id": 302,
+    "nombre": "INV.F",
+    "alias": "F.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el valor inverso de la distribución F."
+  },
+  {
+    "id": 303,
+    "nombre": "INV.CHICUAD",
+    "alias": "CHISQ.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el valor inverso de la distribución chi-cuadrado."
+  },
+  {
+    "id": 304,
+    "nombre": "PRUEBA.T",
+    "alias": "T.TEST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la probabilidad asociada a una prueba t de Student."
+  },
+  {
+    "id": 305,
+    "nombre": "PRUEBA.F",
+    "alias": "F.TEST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la probabilidad asociada a una prueba F."
+  },
+  {
+    "id": 306,
+    "nombre": "PRUEBA.Z",
+    "alias": "Z.TEST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el valor p de una prueba Z de una cola."
+  },
+  {
+    "id": 307,
+    "nombre": "PRUEBA.CHICUAD",
+    "alias": "CHISQ.TEST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la prueba de independencia chi-cuadrado."
+  },
+  {
+    "id": 308,
+    "nombre": "COVARIANZA.P",
+    "alias": "COVARIANCE.P",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la covarianza poblacional entre dos rangos."
+  },
+  {
+    "id": 309,
+    "nombre": "COVARIANZA.M",
+    "alias": "COVARIANCE.S",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la covarianza muestral entre dos rangos."
+  },
+  {
+    "id": 310,
+    "nombre": "BINOM.INV",
+    "alias": null,
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el valor mínimo donde la distribución binomial acumulada supera un criterio."
+  },
+  {
+    "id": 311,
+    "nombre": "DISTR.BINOM.SERIE",
+    "alias": "BINOM.DIST.RANGE",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la probabilidad binomial de un rango de éxitos."
+  },
+  {
+    "id": 312,
+    "nombre": "PERMUTACIONES.A",
+    "alias": "PERMUTATIONA",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula permutaciones permitiendo repeticiones."
+  },
+  {
+    "id": 313,
+    "nombre": "PROBABILIDAD",
+    "alias": "PROB",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la probabilidad de que valores estén en un rango dado."
+  },
+  {
+    "id": 314,
+    "nombre": "ESTIMACION.LINEAL",
+    "alias": "LINEST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula los parámetros de una regresión lineal."
+  },
+  {
+    "id": 315,
+    "nombre": "ESTIMACION.LOGARITMICA",
+    "alias": "LOGEST",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula los parámetros de una curva exponencial."
+  },
+  {
+    "id": 316,
+    "nombre": "CRECIMIENTO",
+    "alias": "GROWTH",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula valores de crecimiento exponencial proyectado."
+  },
+  {
+    "id": 317,
+    "nombre": "TENDENCIA",
+    "alias": "TREND",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula valores proyectados según una tendencia lineal."
+  },
+  {
+    "id": 318,
+    "nombre": "FRECUENCIA",
+    "alias": "FREQUENCY",
+    "categoria": "Estadísticas",
+    "descripcion": "Cuenta la frecuencia de valores dentro de intervalos."
+  },
+  {
+    "id": 319,
+    "nombre": "DESVESTA",
+    "alias": "STDEVA",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la desviación estándar incluyendo valores lógicos y texto."
+  },
+  {
+    "id": 320,
+    "nombre": "DESVESTPA",
+    "alias": "STDEVPA",
+    "categoria": "Estadísticas",
+    "descripcion": "Desviación estándar poblacional incluyendo lógicos y texto."
+  },
+  {
+    "id": 321,
+    "nombre": "VARA",
+    "alias": null,
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la varianza muestral incluyendo lógicos y texto."
+  },
+  {
+    "id": 322,
+    "nombre": "VARPA",
+    "alias": null,
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la varianza poblacional incluyendo lógicos y texto."
+  },
+  {
+    "id": 323,
+    "nombre": "MODA.VARIOS",
+    "alias": "MODE.MULT",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve todos los valores más frecuentes de un rango."
+  },
+  {
+    "id": 324,
+    "nombre": "FISHER",
+    "alias": null,
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la transformación de Fisher."
+  },
+  {
+    "id": 325,
+    "nombre": "FISHER.INV",
+    "alias": "FISHERINV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la inversa de la transformación de Fisher."
+  },
+  {
+    "id": 326,
+    "nombre": "INV.NORM.ESTAND",
+    "alias": "NORM.S.INV",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la inversa de la distribución normal estándar."
+  },
+  {
+    "id": 327,
+    "nombre": "INTERVALO.CONFIANZA.T",
+    "alias": "CONFIDENCE.T",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el intervalo de confianza usando la distribución t."
+  },
+  {
+    "id": 328,
+    "nombre": "INTERVALO.CONFIANZA",
+    "alias": "CONFIDENCE.NORM",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el intervalo de confianza para una media poblacional."
+  },
+  {
+    "id": 329,
+    "nombre": "COEFICIENTE.R2",
+    "alias": "RSQ",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el coeficiente de determinación (R²)."
+  },
+  {
+    "id": 330,
+    "nombre": "ERROR.TIPICO.XY",
+    "alias": "STEYX",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el error estándar de una predicción en regresión."
+  },
+  {
+    "id": 331,
+    "nombre": "PRONOSTICO",
+    "alias": "FORECAST",
+    "categoria": "Estadísticas",
+    "descripcion": "Predice un valor futuro basado en una tendencia lineal."
+  },
+  {
+    "id": 332,
+    "nombre": "RANGO.PERCENTIL",
+    "alias": "PERCENTRANK",
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve la posición porcentual de un valor en un rango."
+  },
+  {
+    "id": 333,
+    "nombre": "PERCENTIL.EXC",
+    "alias": "PERCENTILE.EXC",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el percentil k de forma exclusiva."
+  },
+  {
+    "id": 334,
+    "nombre": "CUARTIL.EXC",
+    "alias": "QUARTILE.EXC",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula el cuartil de forma exclusiva."
+  },
+  {
+    "id": 335,
+    "nombre": "RANGO.PERCENTIL.EXC",
+    "alias": "PERCENTRANK.EXC",
+    "categoria": "Estadísticas",
+    "descripcion": "Posición porcentual de un valor, versión exclusiva."
+  },
+  {
+    "id": 336,
+    "nombre": "PROMEDIOA",
+    "alias": "AVERAGEA",
+    "categoria": "Estadísticas",
+    "descripcion": "Promedia incluyendo valores lógicos y texto."
+  },
+  {
+    "id": 337,
+    "nombre": "MAXA",
+    "alias": null,
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el máximo incluyendo valores lógicos y texto."
+  },
+  {
+    "id": 338,
+    "nombre": "MINA",
+    "alias": null,
+    "categoria": "Estadísticas",
+    "descripcion": "Devuelve el mínimo incluyendo valores lógicos y texto."
+  },
+  {
+    "id": 339,
+    "nombre": "MEDIA.GEOMETRICA",
+    "alias": "GEOMEAN",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la media geométrica de un conjunto de datos."
+  },
+  {
+    "id": 340,
+    "nombre": "MEDIA.ARMONICA",
+    "alias": "HARMEAN",
+    "categoria": "Estadísticas",
+    "descripcion": "Calcula la media armónica de un conjunto de datos."
+  },
+  {
+    "id": 341,
+    "nombre": "TIPIFICAR",
+    "alias": "NORMALIZE",
+    "categoria": "Estadísticas",
+    "descripcion": "Normaliza un valor según media y desviación estándar."
+  },
+  {
+    "id": 342,
+    "nombre": "PRONOSTICO.ETS",
+    "alias": "FORECAST.ETS",
+    "categoria": "Estadísticas",
+    "descripcion": "Predice un valor futuro usando suavizado exponencial."
+  },
+  {
+    "id": 343,
+    "nombre": "ESBLANCO",
+    "alias": "ISBLANK",
+    "categoria": "Información",
+    "descripcion": "Indica si una celda está vacía."
+  },
+  {
+    "id": 344,
+    "nombre": "ESNUMERO",
+    "alias": "ISNUMBER",
+    "categoria": "Información",
+    "descripcion": "Indica si un valor es numérico."
+  },
+  {
+    "id": 345,
+    "nombre": "ESTEXTO",
+    "alias": "ISTEXT",
+    "categoria": "Información",
+    "descripcion": "Indica si un valor es texto."
+  },
+  {
+    "id": 346,
+    "nombre": "ESERROR",
+    "alias": "ISERROR",
+    "categoria": "Información",
+    "descripcion": "Indica si un valor es un error."
+  },
+  {
+    "id": 347,
+    "nombre": "ESFORMULA",
+    "alias": "ISFORMULA",
+    "categoria": "Información",
+    "descripcion": "Indica si una celda contiene una fórmula."
+  },
+  {
+    "id": 348,
+    "nombre": "ES.PAR",
+    "alias": "ISEVEN",
+    "categoria": "Información",
+    "descripcion": "Indica si un número es par."
+  },
+  {
+    "id": 349,
+    "nombre": "ES.IMPAR",
+    "alias": "ISODD",
+    "categoria": "Información",
+    "descripcion": "Indica si un número es impar."
+  },
+  {
+    "id": 350,
+    "nombre": "N",
+    "alias": null,
+    "categoria": "Información",
+    "descripcion": "Convierte un valor a número."
+  },
+  {
+    "id": 351,
+    "nombre": "TIPO.DE.ERROR",
+    "alias": "ERROR.TYPE",
+    "categoria": "Información",
+    "descripcion": "Devuelve un código numérico según el tipo de error."
+  },
+  {
+    "id": 352,
+    "nombre": "HOJA",
+    "alias": "SHEET",
+    "categoria": "Información",
+    "descripcion": "Devuelve el número de la hoja activa."
+  },
+  {
+    "id": 353,
+    "nombre": "HOJAS",
+    "alias": "SHEETS",
+    "categoria": "Información",
+    "descripcion": "Devuelve la cantidad de hojas del libro."
+  },
+  {
+    "id": 354,
+    "nombre": "ESREF",
+    "alias": "ISREF",
+    "categoria": "Información",
+    "descripcion": "Indica si un valor es una referencia válida."
+  },
+  {
+    "id": 355,
+    "nombre": "ESLOGICO",
+    "alias": "ISLOGICAL",
+    "categoria": "Información",
+    "descripcion": "Indica si un valor es lógico (VERDADERO/FALSO)."
+  },
+  {
+    "id": 356,
+    "nombre": "ESNOTEXTO",
+    "alias": "ISNONTEXT",
+    "categoria": "Información",
+    "descripcion": "Indica si un valor no es texto."
+  },
+  {
+    "id": 357,
+    "nombre": "NOD",
+    "alias": "NA",
+    "categoria": "Información",
+    "descripcion": "Devuelve el valor de error #N/A."
+  },
+  {
+    "id": 358,
+    "nombre": "INFO",
+    "alias": null,
+    "categoria": "Información",
+    "descripcion": "Devuelve información sobre el entorno del programa."
+  },
+  {
+    "id": 359,
+    "nombre": "CELDA",
+    "alias": "CELL",
+    "categoria": "Información",
+    "descripcion": "Devuelve información sobre el formato o contenido de una celda."
+  },
+  {
+    "id": 360,
+    "nombre": "TIPO",
+    "alias": "TYPE",
+    "categoria": "Información",
+    "descripcion": "Devuelve un código numérico según el tipo de valor."
+  },
+  {
+    "id": 361,
+    "nombre": "AREAS",
+    "alias": null,
+    "categoria": "Información",
+    "descripcion": "Cuenta el número de áreas en una referencia."
+  },
+  {
+    "id": 362,
+    "nombre": "DIRECCION",
+    "alias": "ADDRESS",
+    "categoria": "Información",
+    "descripcion": "Construye una referencia de celda como texto."
+  },
+  {
+    "id": 363,
+    "nombre": "CONVERTIR",
+    "alias": "CONVERT",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número entre distintas unidades de medida."
+  },
+  {
+    "id": 364,
+    "nombre": "BIN.A.DEC",
+    "alias": "BIN2DEC",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número binario a decimal."
+  },
+  {
+    "id": 365,
+    "nombre": "DEC.A.BIN",
+    "alias": "DEC2BIN",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número decimal a binario."
+  },
+  {
+    "id": 366,
+    "nombre": "DEC.A.HEX",
+    "alias": "DEC2HEX",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número decimal a hexadecimal."
+  },
+  {
+    "id": 367,
+    "nombre": "HEX.A.DEC",
+    "alias": "HEX2DEC",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número hexadecimal a decimal."
+  },
+  {
+    "id": 368,
+    "nombre": "OCT.A.DEC",
+    "alias": "OCT2DEC",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número octal a decimal."
+  },
+  {
+    "id": 369,
+    "nombre": "DEC.A.OCT",
+    "alias": "DEC2OCT",
+    "categoria": "Ingeniería",
+    "descripcion": "Convierte un número decimal a octal."
+  },
+  {
+    "id": 370,
+    "nombre": "BIT.Y",
+    "alias": "BITAND",
+    "categoria": "Ingeniería",
+    "descripcion": "Realiza una operación lógica AND a nivel de bits."
+  },
+  {
+    "id": 371,
+    "nombre": "BIT.O",
+    "alias": "BITOR",
+    "categoria": "Ingeniería",
+    "descripcion": "Realiza una operación lógica OR a nivel de bits."
+  },
+  {
+    "id": 372,
+    "nombre": "BIT.XO",
+    "alias": "BITXOR",
+    "categoria": "Ingeniería",
+    "descripcion": "Realiza una operación lógica XOR a nivel de bits."
+  },
+  {
+    "id": 373,
+    "nombre": "DELTA",
+    "alias": null,
+    "categoria": "Ingeniería",
+    "descripcion": "Indica si dos números son iguales."
+  },
+  {
+    "id": 374,
+    "nombre": "FUN.ERROR",
+    "alias": "ERF",
+    "categoria": "Ingeniería",
+    "descripcion": "Calcula la función de error (erf)."
+  },
+  {
+    "id": 375,
+    "nombre": "FUN.ERROR.COMPL",
+    "alias": "ERFC",
+    "categoria": "Ingeniería",
+    "descripcion": "Calcula la función de error complementaria."
+  },
+  {
+    "id": 376,
+    "nombre": "MAYOR.O.IGUAL",
+    "alias": "GESTEP",
+    "categoria": "Ingeniería",
+    "descripcion": "Indica si un número es mayor o igual a un valor umbral."
+  },
+  {
+    "id": 377,
+    "nombre": "BESSELJ",
+    "alias": null,
+    "categoria": "Ingeniería",
+    "descripcion": "Calcula la función de Bessel de primera clase."
+  },
+  {
+    "id": 378,
+    "nombre": "BESSELY",
+    "alias": null,
+    "categoria": "Ingeniería",
+    "descripcion": "Calcula la función de Bessel de segunda clase."
+  },
+  {
+    "id": 379,
+    "nombre": "BDSUMA",
+    "alias": "DSUM",
+    "categoria": "Base de datos",
+    "descripcion": "Suma valores de una base de datos que cumplen criterios."
+  },
+  {
+    "id": 380,
+    "nombre": "BDPROMEDIO",
+    "alias": "DAVERAGE",
+    "categoria": "Base de datos",
+    "descripcion": "Promedia valores de una base de datos que cumplen criterios."
+  },
+  {
+    "id": 381,
+    "nombre": "BDMAX",
+    "alias": "DMAX",
+    "categoria": "Base de datos",
+    "descripcion": "Devuelve el máximo de una base de datos que cumple criterios."
+  },
+  {
+    "id": 382,
+    "nombre": "BDMIN",
+    "alias": "DMIN",
+    "categoria": "Base de datos",
+    "descripcion": "Devuelve el mínimo de una base de datos que cumple criterios."
+  },
+  {
+    "id": 383,
+    "nombre": "BDCONTAR",
+    "alias": "DCOUNT",
+    "categoria": "Base de datos",
+    "descripcion": "Cuenta celdas numéricas de una base que cumplen criterios."
+  },
+  {
+    "id": 384,
+    "nombre": "BDCONTARA",
+    "alias": "DCOUNTA",
+    "categoria": "Base de datos",
+    "descripcion": "Cuenta celdas no vacías de una base que cumplen criterios."
+  },
+  {
+    "id": 385,
+    "nombre": "BDEXTRAER",
+    "alias": "DGET",
+    "categoria": "Base de datos",
+    "descripcion": "Extrae un único valor de una base de datos que cumple criterios."
+  },
+  {
+    "id": 386,
+    "nombre": "SERVICIOWEB",
+    "alias": "WEBSERVICE",
+    "categoria": "Web",
+    "descripcion": "Obtiene datos desde un servicio web (requiere conexión externa)."
+  },
+  {
+    "id": 387,
+    "nombre": "URLCODIF",
+    "alias": "ENCODEURL",
+    "categoria": "Web",
+    "descripcion": "Codifica un texto para usarlo en una URL."
+  },
+  {
+    "id": 388,
+    "nombre": "XMLFILTRO",
+    "alias": "FILTERXML",
+    "categoria": "Web",
+    "descripcion": "Extrae datos específicos de contenido XML."
+  },
+  {
+    "id": 389,
+    "nombre": "VALORCUBO",
+    "alias": "CUBEVALUE",
+    "categoria": "Cubos OLAP",
+    "descripcion": "Devuelve un valor agregado desde un cubo OLAP."
+  },
+  {
+    "id": 390,
+    "nombre": "MIEMBROCUBO",
+    "alias": "CUBEMEMBER",
+    "categoria": "Cubos OLAP",
+    "descripcion": "Devuelve un miembro de una jerarquía de un cubo OLAP."
+  },
+  {
+    "id": 391,
+    "nombre": "CONJUNTOCUBO",
+    "alias": "CUBESET",
+    "categoria": "Cubos OLAP",
+    "descripcion": "Define un conjunto de miembros de un cubo OLAP."
+  },
+  {
+    "id": 392,
+    "nombre": "RECUENTOCONJUNTOCUBO",
+    "alias": "CUBESETCOUNT",
+    "categoria": "Cubos OLAP",
+    "descripcion": "Cuenta los elementos de un conjunto de un cubo OLAP."
+  }
+]
 
