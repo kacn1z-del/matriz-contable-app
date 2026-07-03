@@ -83,3 +83,4 @@ const styles = StyleSheet.create({
   backBtn: { fontSize: 13, fontWeight: '700', color: '#2d7a0c' },
   toolbarTitle: { fontSize: 13, fontWeight: '700', color: '#3d6020' },
 })
+
