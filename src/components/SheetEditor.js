@@ -2,13 +2,16 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
 
-// Motor de hoja de cálculo tipo Excel / Matriz Contable web:
-// múltiples hojas (renombrar/duplicar/eliminar con doble toque),
-// barra de fórmulas, deshacer (25 pasos), navegación con flechas,
-// formato (negrita/moneda), plantillas contables (Diario, Mayor,
-// Balance, Conciliación), gráficos (barras/línea/torta),
-// barra de estado con suma/promedio/conteo de rango rápido,
-// exportar CSV y autoguardado.
+// Motor de hoja de cálculo tipo Excel / Matriz Contable web (versión ampliada):
+// múltiples hojas, barra de fórmulas, deshacer, navegación con flechas,
+// SELECCIÓN DE RANGO ARRASTRANDO EL DEDO, copiar/pegar celdas,
+// formato (negrita/moneda/porcentaje), notas por celda, 5 plantillas
+// contables, gráficos (barras/línea/torta/dona) con EXPORTAR PNG,
+// eliminar fila, calcular totales automático, barra de estado con
+// suma/promedio/conteo, exportar CSV, ~75 fórmulas (matemáticas,
+// estadísticas, texto, fecha, búsqueda, financieras y exclusivas de
+// Costa Rica: IVA, CCSS, Aguinaldo, Preaviso, Cesantía, Renta del
+// Trabajo) y autoguardado.
 const SHEET_HTML = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,19 +44,21 @@ const SHEET_HTML = `<!DOCTYPE html>
   #formulaInput { flex: 1; padding: 6px 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; }
   #saveStatus { font-size: 10px; color: #6b8f48; min-width: 60px; text-align: right; white-space: nowrap; }
 
-  #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; user-select: none; }
   table { border-collapse: collapse; }
   th, td { border: 1px solid #d7ead0; font-size: 12px; padding: 0; text-align: center; }
   th { background: #d8f5b0; color: #245f09; font-weight: 700; padding: 6px 4px; position: sticky; top: 0; z-index: 3; min-width: 78px; }
   th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: #b7e07a; min-width: 34px; }
   td.rowhead { background: #d8f5b0; color: #245f09; font-weight: 700; width: 34px; position: sticky; left: 0; z-index: 2; }
-  .cell { min-width: 78px; height: 26px; line-height: 26px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; }
+  .cell { min-width: 78px; height: 26px; line-height: 26px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; }
   .cell.selected { background: #fffbcc; outline: 2px solid #5abf2a; outline-offset: -2px; }
+  .cell.in-range { background: #eaf7d8; }
   .cell.bold { font-weight: 800; color: #1e5208; }
+  .cell.has-note::after { content: '●'; color: #d97706; font-size: 8px; position: absolute; top: 1px; right: 2px; }
 
   #statusBar {
     display: flex; gap: 14px; align-items: center; padding: 5px 10px;
-    background: #d8f5b0; font-size: 11px; color: #245f09; font-weight: 700; flex-shrink: 0;
+    background: #d8f5b0; font-size: 11px; color: #245f09; font-weight: 700; flex-shrink: 0; flex-wrap: wrap;
   }
   #statusBar input { width: 90px; padding: 3px 6px; border: 1px solid #b7e07a; border-radius: 5px; font-size: 11px; }
 
@@ -62,14 +67,15 @@ const SHEET_HTML = `<!DOCTYPE html>
   .tab.active { background: #fff; color: #2d7a0c; }
   #addTabBtn { padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: 800; background: #245f09; color: #fff; flex-shrink: 0; }
 
-  #chartOverlay, #tabMenuOverlay {
+  #chartOverlay, #tabMenuOverlay, #noteOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9000;
     display: none; align-items: center; justify-content: center; padding: 12px;
   }
-  #chartOverlay.show, #tabMenuOverlay.show { display: flex; }
-  #chartModal, #tabMenuModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
-  #chartModal h3, #tabMenuModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
-  #chartModal select, #chartModal input, #tabMenuModal input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; }
+  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show { display: flex; }
+  #chartModal, #tabMenuModal, #noteModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
+  #chartModal h3, #tabMenuModal h3, #noteModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
+  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
+  #noteModal textarea { min-height: 80px; resize: vertical; }
   .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
   .row button, #tabMenuModal .action-btn { padding: 8px 14px; border-radius: 7px; border: none; font-size: 13px; font-weight: 700; }
   .cancel { background: #eee; color: #555; }
@@ -77,7 +83,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   .danger { background: #dc2626; color: #fff; }
   #tabMenuModal .action-btn { width: 100%; margin-bottom: 6px; text-align: left; background: #f2f9ea; color: #245f09; }
   .chart-float { position: absolute; background: #fff; border: 2px solid #cce9ae; border-radius: 10px; padding: 8px; z-index: 40; }
-  .chart-float .chead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 11px; font-weight: 700; color: #245f09; }
+  .chart-float .chead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 11px; font-weight: 700; color: #245f09; gap: 4px; }
   .chart-float .chead button { background: none; border: none; font-size: 13px; cursor: pointer; }
 </style>
 </head>
@@ -90,14 +96,21 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="mayor">📗 Libro Mayor</option>
       <option value="balance">📊 Balance Comprobación</option>
       <option value="conciliacion">🏦 Conciliación Bancaria</option>
+      <option value="d151">🛒 D-151 Compras/Ventas</option>
       <option value="blank">🗋 Hoja en blanco</option>
     </select>
     <button id="btnUndo" disabled>↶ Deshacer</button>
+    <button id="btnCopy">⧉ Copiar</button>
+    <button id="btnPaste">📋 Pegar</button>
     <button id="btnBold">N</button>
     <button id="btnCurrency">₡</button>
+    <button id="btnPercent">%</button>
+    <button id="btnNote">📝 Nota</button>
     <button id="btnChart">📊 Gráfico</button>
+    <button id="btnTotales">Σ Totales</button>
     <button id="btnCSV">⬇ CSV</button>
     <button id="btnAddRow">+Fila</button>
+    <button id="btnDelRow">-Fila</button>
     <button id="btnAddCol">+Col</button>
     <button id="btnClear">Borrar</button>
   </div>
@@ -113,8 +126,8 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 
   <div id="statusBar">
-    <span>Rango rápido:</span>
-    <input id="quickRange" type="text" placeholder="ej: A1:A5" />
+    <span>Rango:</span>
+    <input id="quickRange" type="text" placeholder="arrastrá celdas o escribí ej: A1:A5" />
     <span id="quickSum">Suma: 0</span>
     <span id="quickAvg">Prom: 0</span>
     <span id="quickCount">Cont: 0</span>
@@ -130,6 +143,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="bar">Barras</option>
       <option value="line">Línea</option>
       <option value="pie">Torta</option>
+      <option value="donut">Dona</option>
     </select>
     <input id="chartRange" type="text" placeholder="Rango de datos, ej: B2:B6" />
     <input id="chartLabels" type="text" placeholder="Rango de etiquetas, ej: A2:A6" />
@@ -152,6 +166,18 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="noteOverlay">
+  <div id="noteModal">
+    <h3>📝 Nota en <span id="noteCellRef">A1</span></h3>
+    <textarea id="noteText" placeholder="Escribí una nota para esta celda..."></textarea>
+    <div class="row">
+      <button class="cancel" id="noteCancel">Cancelar</button>
+      <button class="danger" id="noteDelete">Eliminar nota</button>
+      <button class="ok" id="noteSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════════════════
 // ESTADO
@@ -161,22 +187,26 @@ var sheets = ['Hoja1', 'Hoja2', 'Hoja3'];
 var activeSheet = 'Hoja1';
 var sheetData = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetFormats = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+var sheetNotes = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var undoStack = [];
 var tabMenuTarget = null;
+var clipboard = null;
+var selRangeStart = null, selRangeEnd = null, isSelecting = false;
 
 function colLetter(i) { return String.fromCharCode(65 + i); }
 function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i < s.length; i++) n = n * 26 + s.charCodeAt(i) - 64; return n - 1; }
 function cellId(r, c) { return colLetter(c) + (r + 1); }
 
 function snapshot() {
-  undoStack.push(JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, activeSheet: activeSheet }));
+  undoStack.push(JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS }));
   if (undoStack.length > 25) undoStack.shift();
   document.getElementById('btnUndo').disabled = false;
 }
 function undo() {
   if (!undoStack.length) return;
   var prev = JSON.parse(undoStack.pop());
-  sheets = prev.sheets; sheetData = prev.sheetData; sheetFormats = prev.sheetFormats; activeSheet = prev.activeSheet;
+  sheets = prev.sheets; sheetData = prev.sheetData; sheetFormats = prev.sheetFormats;
+  sheetNotes = prev.sheetNotes || {}; activeSheet = prev.activeSheet; ROWS = prev.ROWS || ROWS; COLS = prev.COLS || COLS;
   buildTable(); autoSave();
   if (!undoStack.length) document.getElementById('btnUndo').disabled = true;
 }
@@ -185,7 +215,7 @@ function undo() {
 // MOTOR DE FÓRMULAS
 // ══════════════════════════════════════════════
 function getRaw(id) { return (sheetData[activeSheet] && sheetData[activeSheet][id] !== undefined) ? sheetData[activeSheet][id] : ''; }
-function toNum(v) { if (v === '' || v === null || v === undefined) return 0; var n = parseFloat(String(v).replace(/[₡,\\s]/g, '')); return isNaN(n) ? 0 : n; }
+function toNum(v) { if (v === '' || v === null || v === undefined) return 0; var n = parseFloat(String(v).replace(/[₡,%\\s]/g, '')); return isNaN(n) ? 0 : n; }
 function fmtNum(n) { if (n === null || n === undefined || isNaN(n)) return '#VALOR!'; return Number(n).toLocaleString('es-CR', { maximumFractionDigits: 10 }); }
 function splitArgs(s) {
   var args = [], depth = 0, cur = '', inStr = false, sc = '';
@@ -282,6 +312,7 @@ function computeExpr(expr) {
     }
     var inner, args;
 
+    // ── Matemáticas básicas ──
     if ((inner = matchFn('SUMA|SUM')) !== null) {
       args = splitArgs(inner); var s = 0;
       args.forEach(function (a) { if (isRange(a)) rangeNums(a).forEach(function (n) { s += n; }); else s += resolveNum(a); });
@@ -335,17 +366,54 @@ function computeExpr(expr) {
       critRng.forEach(function (v, i) { if (matchCrit(v, crit)) s2 += sumRng[i] || 0; });
       return fmtNum(s2);
     }
+    if ((inner = matchFn('MEDIANA|MEDIAN')) !== null) {
+      args = splitArgs(inner); var numsM = isRange(args[0]) ? rangeNums(args[0]) : args.map(resolveNum);
+      numsM.sort(function (a, b) { return a - b; }); var mid = Math.floor(numsM.length / 2);
+      return fmtNum(numsM.length % 2 ? numsM[mid] : (numsM[mid - 1] + numsM[mid]) / 2);
+    }
+    if ((inner = matchFn('DESVEST|STDEV')) !== null) {
+      args = splitArgs(inner); var numsD = isRange(args[0]) ? rangeNums(args[0]) : args.map(resolveNum);
+      var meanD = numsD.reduce(function (a, b) { return a + b; }, 0) / numsD.length;
+      return fmtNum(Math.sqrt(numsD.reduce(function (s, n) { return s + (n - meanD) * (n - meanD); }, 0) / (numsD.length - 1)));
+    }
+    if ((inner = matchFn('VAR|VARIANZA')) !== null) {
+      args = splitArgs(inner); var numsV = isRange(args[0]) ? rangeNums(args[0]) : args.map(resolveNum);
+      var meanV = numsV.reduce(function (a, b) { return a + b; }, 0) / numsV.length;
+      return fmtNum(numsV.reduce(function (s, n) { return s + (n - meanV) * (n - meanV); }, 0) / (numsV.length - 1));
+    }
+    if ((inner = matchFn('K\\\\.ESIMO\\\\.MAYOR|LARGE')) !== null) {
+      args = splitArgs(inner); var nl = isRange(args[0]) ? rangeNums(args[0]) : [resolveNum(args[0])];
+      nl.sort(function (a, b) { return b - a; }); return fmtNum(nl[resolveNum(args[1]) - 1]);
+    }
+    if ((inner = matchFn('K\\\\.ESIMO\\\\.MENOR|SMALL')) !== null) {
+      args = splitArgs(inner); var ns = isRange(args[0]) ? rangeNums(args[0]) : [resolveNum(args[0])];
+      ns.sort(function (a, b) { return a - b; }); return fmtNum(ns[resolveNum(args[1]) - 1]);
+    }
+    if ((inner = matchFn('MODA|MODE')) !== null) {
+      args = splitArgs(inner); var numsMo = isRange(args[0]) ? rangeNums(args[0]) : args.map(resolveNum);
+      var freq = {}; numsMo.forEach(function (n) { freq[n] = (freq[n] || 0) + 1; });
+      var best = numsMo[0], bestC = 0;
+      Object.keys(freq).forEach(function (k) { if (freq[k] > bestC) { bestC = freq[k]; best = k; } });
+      return fmtNum(parseFloat(best));
+    }
+
+    // ── Lógicas ──
     if ((inner = matchFn('SI|IF')) !== null) {
       args = splitArgs(inner);
       return evalCond(args[0]) ? String(resolveArg(args[1] || '')) : String(resolveArg(args[2] || ''));
     }
     if ((inner = matchFn('Y|AND')) !== null) { args = splitArgs(inner); return args.every(function (a) { return evalCond(a); }) ? 'VERDADERO' : 'FALSO'; }
     if ((inner = matchFn('O|OR')) !== null) { args = splitArgs(inner); return args.some(function (a) { return evalCond(a); }) ? 'VERDADERO' : 'FALSO'; }
+    if ((inner = matchFn('NO|NOT')) !== null) { return evalCond(splitArgs(inner)[0]) ? 'FALSO' : 'VERDADERO'; }
+    if ((inner = matchFn('SI\\\\.ERROR|IFERROR')) !== null) {
+      args = splitArgs(inner);
+      try { var v2 = resolveArg(args[0]); if (String(v2).charAt(0) === '#') return String(resolveArg(args[1])); return String(v2); }
+      catch (e2) { return String(resolveArg(args[1])); }
+    }
+
+    // ── Texto ──
     if ((inner = matchFn('CONCATENAR|CONCATENATE|CONCAT')) !== null) {
       return splitArgs(inner).map(function (a) { return isRange(a) ? rangeVals(a).join('') : String(resolveArg(a)); }).join('');
-    }
-    if ((inner = matchFn('REDONDEAR|ROUND')) !== null) {
-      args = splitArgs(inner); return fmtNum(parseFloat(resolveNum(args[0]).toFixed(parseInt(resolveNum(args[1] || '0')))));
     }
     if ((inner = matchFn('MAYUSC|UPPER')) !== null) { return String(resolveArg(splitArgs(inner)[0])).toUpperCase(); }
     if ((inner = matchFn('MINUSC|LOWER')) !== null) { return String(resolveArg(splitArgs(inner)[0])).toLowerCase(); }
@@ -353,21 +421,63 @@ function computeExpr(expr) {
       return String(resolveArg(splitArgs(inner)[0])).replace(/\\w\\S*/g, function (w) { return w.charAt(0).toUpperCase() + w.substr(1).toLowerCase(); });
     }
     if ((inner = matchFn('ESPACIOS|TRIM')) !== null) { return String(resolveArg(splitArgs(inner)[0])).replace(/\\s+/g, ' ').trim(); }
+    if ((inner = matchFn('LARGO|LEN')) !== null) { return String(String(resolveArg(splitArgs(inner)[0])).length); }
+    if ((inner = matchFn('IZQUIERDA|LEFT')) !== null) { args = splitArgs(inner); var sL = String(resolveArg(args[0])); return sL.substring(0, args[1] ? parseInt(resolveNum(args[1])) : 1); }
+    if ((inner = matchFn('DERECHA|RIGHT')) !== null) { args = splitArgs(inner); var sR = String(resolveArg(args[0])); var nR = args[1] ? parseInt(resolveNum(args[1])) : 1; return sR.substring(sR.length - nR); }
+    if ((inner = matchFn('EXTRAE|MID')) !== null) { args = splitArgs(inner); return String(resolveArg(args[0])).substring(parseInt(resolveNum(args[1])) - 1, parseInt(resolveNum(args[1])) - 1 + parseInt(resolveNum(args[2]))); }
+    if ((inner = matchFn('ENCONTRAR|FIND')) !== null) { args = splitArgs(inner); var pos = String(resolveArg(args[1])).indexOf(String(resolveArg(args[0]))); return pos >= 0 ? String(pos + 1) : '#VALOR!'; }
+    if ((inner = matchFn('HALLAR|SEARCH')) !== null) { args = splitArgs(inner); var pos2 = String(resolveArg(args[1])).toLowerCase().indexOf(String(resolveArg(args[0])).toLowerCase()); return pos2 >= 0 ? String(pos2 + 1) : '#VALOR!'; }
+    if ((inner = matchFn('SUSTITUIR|SUBSTITUTE')) !== null) { args = splitArgs(inner); return String(resolveArg(args[0])).split(String(resolveArg(args[1]))).join(String(resolveArg(args[2]))); }
+    if ((inner = matchFn('REPETIR|REPT')) !== null) { args = splitArgs(inner); return String(resolveArg(args[0])).repeat(parseInt(resolveNum(args[1]))); }
+    if ((inner = matchFn('VALOR|VALUE')) !== null) { return fmtNum(parseFloat(String(resolveArg(splitArgs(inner)[0])).replace(/[₡,\\s]/g, ''))); }
+    if ((inner = matchFn('ESTEXTO|ISTEXT')) !== null) { var vt = resolveArg(splitArgs(inner)[0]); return (isNaN(parseFloat(vt)) && typeof vt === 'string' && vt !== '') ? 'VERDADERO' : 'FALSO'; }
+    if ((inner = matchFn('ESERROR|ISERROR')) !== null) { try { var ve = String(resolveArg(splitArgs(inner)[0])); return ve.charAt(0) === '#' ? 'VERDADERO' : 'FALSO'; } catch (e4) { return 'VERDADERO'; } }
     if ((inner = matchFn('ESBLANCO|ISBLANK')) !== null) { var vb = resolveArg(splitArgs(inner)[0]); return (vb === '' || vb === null) ? 'VERDADERO' : 'FALSO'; }
     if ((inner = matchFn('ESNUMERO|ISNUMBER')) !== null) { var vn2 = resolveArg(splitArgs(inner)[0]); return !isNaN(parseFloat(vn2)) && vn2 !== '' ? 'VERDADERO' : 'FALSO'; }
-    if ((inner = matchFn('ABS')) !== null) { return fmtNum(Math.abs(resolveNum(splitArgs(inner)[0]))); }
-    if ((inner = matchFn('POTENCIA|POWER')) !== null) { args = splitArgs(inner); return fmtNum(Math.pow(resolveNum(args[0]), resolveNum(args[1]))); }
-    if ((inner = matchFn('RAIZ|SQRT')) !== null) { return fmtNum(Math.sqrt(resolveNum(splitArgs(inner)[0]))); }
-    if (exprUp === 'HOY()' || exprUp === 'TODAY()') return new Date().toLocaleDateString('es-CR');
-    if (exprUp === 'AHORA()' || exprUp === 'NOW()') return new Date().toLocaleString('es-CR');
-    if ((inner = matchFn('DIA|DAY')) !== null) { var dd = new Date(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dd.getTime()) ? '#VALOR!' : String(dd.getDate()); }
-    if ((inner = matchFn('MES|MONTH')) !== null) { var dm = new Date(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dm.getTime()) ? '#VALOR!' : String(dm.getMonth() + 1); }
-    if ((inner = matchFn('AÑO|YEAR')) !== null) { var dy = new Date(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dy.getTime()) ? '#VALOR!' : String(dy.getFullYear()); }
     if ((inner = matchFn('TEXTO|TEXT')) !== null) {
       args = splitArgs(inner); var nT = resolveNum(args[0]); var fmt4 = String(resolveArg(args[1] || ''));
       if (fmt4.indexOf('#,##0') >= 0) return nT.toLocaleString('es-CR', { minimumFractionDigits: fmt4.indexOf('.00') >= 0 ? 2 : 0 });
       return String(nT);
     }
+
+    // ── Matemáticas extra ──
+    if ((inner = matchFn('ABS')) !== null) { return fmtNum(Math.abs(resolveNum(splitArgs(inner)[0]))); }
+    if ((inner = matchFn('POTENCIA|POWER')) !== null) { args = splitArgs(inner); return fmtNum(Math.pow(resolveNum(args[0]), resolveNum(args[1]))); }
+    if ((inner = matchFn('RAIZ|SQRT')) !== null) { return fmtNum(Math.sqrt(resolveNum(splitArgs(inner)[0]))); }
+    if ((inner = matchFn('REDONDEAR|ROUND')) !== null) { args = splitArgs(inner); return fmtNum(parseFloat(resolveNum(args[0]).toFixed(parseInt(resolveNum(args[1] || '0'))))); }
+    if ((inner = matchFn('REDONDEAR\\\\.MAS|ROUNDUP')) !== null) { args = splitArgs(inner); var dRU = parseInt(resolveNum(args[1])); var pRU = Math.pow(10, dRU); return fmtNum(Math.ceil(resolveNum(args[0]) * pRU) / pRU); }
+    if ((inner = matchFn('REDONDEAR\\\\.MENOS|ROUNDDOWN')) !== null) { args = splitArgs(inner); var dRD = parseInt(resolveNum(args[1])); var pRD = Math.pow(10, dRD); return fmtNum(Math.floor(resolveNum(args[0]) * pRD) / pRD); }
+    if ((inner = matchFn('ENTERO|INT')) !== null) { return fmtNum(Math.floor(resolveNum(splitArgs(inner)[0]))); }
+    if ((inner = matchFn('RESIDUO|MOD')) !== null) { args = splitArgs(inner); var aM = resolveNum(args[0]), bM = resolveNum(args[1]); return fmtNum(aM - Math.floor(aM / bM) * bM); }
+    if ((inner = matchFn('FACT')) !== null) { var fn3 = resolveNum(splitArgs(inner)[0]); var f3 = 1; for (var i3 = 2; i3 <= fn3; i3++) f3 *= i3; return fmtNum(f3); }
+    if ((inner = matchFn('SIGNO|SIGN')) !== null) { var svS = resolveNum(splitArgs(inner)[0]); return String(svS > 0 ? 1 : svS < 0 ? -1 : 0); }
+    if ((inner = matchFn('PI')) !== null) { return fmtNum(Math.PI); }
+    if ((inner = matchFn('GRADOS|DEGREES')) !== null) { return fmtNum(resolveNum(splitArgs(inner)[0]) * 180 / Math.PI); }
+    if ((inner = matchFn('RADIANES|RADIANS')) !== null) { return fmtNum(resolveNum(splitArgs(inner)[0]) * Math.PI / 180); }
+    if ((inner = matchFn('LN')) !== null) { return fmtNum(Math.log(resolveNum(splitArgs(inner)[0]))); }
+    if ((inner = matchFn('LOG10')) !== null) { return fmtNum(Math.log10(resolveNum(splitArgs(inner)[0]))); }
+    if ((inner = matchFn('EXP')) !== null) { return fmtNum(Math.exp(resolveNum(splitArgs(inner)[0]))); }
+
+    // ── Fecha ──
+    if (exprUp === 'HOY()' || exprUp === 'TODAY()') return new Date().toLocaleDateString('es-CR');
+    if (exprUp === 'AHORA()' || exprUp === 'NOW()') return new Date().toLocaleString('es-CR');
+    if ((inner = matchFn('DIA(?!S)|DAY')) !== null) { var dd = new Date(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dd.getTime()) ? '#VALOR!' : String(dd.getDate()); }
+    if ((inner = matchFn('MES|MONTH')) !== null) { var dm = new Date(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dm.getTime()) ? '#VALOR!' : String(dm.getMonth() + 1); }
+    if ((inner = matchFn('AÑO|YEAR')) !== null) { var dy = new Date(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dy.getTime()) ? '#VALOR!' : String(dy.getFullYear()); }
+    if ((inner = matchFn('DIAS|DAYS')) !== null) { args = splitArgs(inner); var d1D = new Date(String(resolveArg(args[0]))); var d2D = new Date(String(resolveArg(args[1]))); return String(Math.round((d1D - d2D) / 86400000)); }
+    if ((inner = matchFn('DIASEM|WEEKDAY')) !== null) { var dw = new Date(String(resolveArg(splitArgs(inner)[0]))); return String(dw.getDay() + 1); }
+    if ((inner = matchFn('FIN\\\\.MES|EOMONTH')) !== null) { args = splitArgs(inner); var dE = new Date(String(resolveArg(args[0]))); var mE = dE.getMonth() + 1 + parseInt(resolveNum(args[1])); return new Date(dE.getFullYear(), mE, 0).toLocaleDateString('es-CR'); }
+    if ((inner = matchFn('SIFECHA|DATEDIF')) !== null) {
+      args = splitArgs(inner);
+      var d1 = new Date(String(resolveArg(args[0]))), d2 = new Date(String(resolveArg(args[1])));
+      var unit = String(resolveArg(args[2])).toUpperCase();
+      var diff = d2 - d1;
+      if (unit === 'Y') return String(Math.floor(diff / (365.25 * 86400000)));
+      if (unit === 'M') return String(Math.floor(diff / (30.44 * 86400000)));
+      return String(Math.floor(diff / 86400000));
+    }
+
+    // ── Búsqueda ──
     if ((inner = matchFn('BUSCARV|VLOOKUP')) !== null) {
       args = splitArgs(inner);
       var sv = String(resolveArg(args[0])).toLowerCase();
@@ -411,12 +521,11 @@ function computeExpr(expr) {
       }
       return '#REF!';
     }
-    if ((inner = matchFn('IVA')) !== null) {
-      args = splitArgs(inner);
-      var base = isRange(args[0]) ? rangeNums(args[0]).reduce(function (a, b) { return a + b; }, 0) : resolveNum(args[0]);
-      var rate = args[1] ? resolveNum(args[1]) : 0.13;
-      return fmtNum(base * rate);
-    }
+    if ((inner = matchFn('ELEGIR|CHOOSE')) !== null) { args = splitArgs(inner); var idxE = parseInt(resolveNum(args[0])); return args[idxE] ? String(resolveArg(args[idxE])) : '#VALOR!'; }
+    if ((inner = matchFn('FILA|ROW')) !== null) { var rf = splitArgs(inner)[0]; if (rf) { var mF = rf.match(/\\d+/); return mF ? mF[0] : ''; } return ''; }
+    if ((inner = matchFn('COLUMNA|COLUMN')) !== null) { var rc = splitArgs(inner)[0]; if (rc) { var lm = rc.match(/[A-Za-z]+/); return lm ? String(colIndex(lm[0]) + 1) : ''; } return ''; }
+
+    // ── Financieras ──
     if ((inner = matchFn('PAGO|PMT')) !== null) {
       args = splitArgs(inner);
       var r3 = resolveNum(args[0]), n = resolveNum(args[1]), pv = resolveNum(args[2]);
@@ -435,14 +544,72 @@ function computeExpr(expr) {
       var pv2 = args[3] ? resolveNum(args[3]) : 0;
       return fmtNum(-pv2 * Math.pow(1 + r5, n3) - pmt2 * (Math.pow(1 + r5, n3) - 1) / r5);
     }
-    if ((inner = matchFn('SIFECHA|DATEDIF')) !== null) {
+    if ((inner = matchFn('VNA|NPV')) !== null) {
+      args = splitArgs(inner); var r6 = resolveNum(args[0]); var npv = 0;
+      for (var i5 = 1; i5 < args.length; i5++) { var fv2 = resolveNum(args[i5]); npv += fv2 / Math.pow(1 + r6, i5); }
+      return fmtNum(npv);
+    }
+    if ((inner = matchFn('NPER')) !== null) {
+      args = splitArgs(inner); var r9 = resolveNum(args[0]), pmt4 = resolveNum(args[1]), pv4 = resolveNum(args[2]);
+      if (r9 === 0) return fmtNum(-pv4 / pmt4);
+      return fmtNum(Math.log(-pmt4 / (pmt4 + r9 * pv4)) / Math.log(1 + r9));
+    }
+    if ((inner = matchFn('SLN')) !== null) { args = splitArgs(inner); return fmtNum((resolveNum(args[0]) - resolveNum(args[1])) / resolveNum(args[2])); }
+
+    // ── Fórmulas exclusivas de Costa Rica ──
+    if ((inner = matchFn('IVA')) !== null) {
       args = splitArgs(inner);
-      var d1 = new Date(String(resolveArg(args[0]))), d2 = new Date(String(resolveArg(args[1])));
-      var unit = String(resolveArg(args[2])).toUpperCase();
-      var diff = d2 - d1;
-      if (unit === 'Y') return String(Math.floor(diff / (365.25 * 86400000)));
-      if (unit === 'M') return String(Math.floor(diff / (30.44 * 86400000)));
-      return String(Math.floor(diff / 86400000));
+      var base = isRange(args[0]) ? rangeNums(args[0]).reduce(function (a, b) { return a + b; }, 0) : resolveNum(args[0]);
+      var rate = args[1] ? resolveNum(args[1]) : 0.13;
+      return fmtNum(base * rate);
+    }
+    if ((inner = matchFn('MONTO\\\\.SIN\\\\.IVA|BASE\\\\.IVA')) !== null) {
+      args = splitArgs(inner);
+      var monto = resolveNum(args[0]), rateI = args[1] ? resolveNum(args[1]) : 0.13;
+      return fmtNum(monto / (1 + rateI));
+    }
+    if ((inner = matchFn('PLANILLA\\\\.CCSS|CARGAS\\\\.SOCIALES')) !== null) {
+      args = splitArgs(inner);
+      var salario = resolveNum(args[0]);
+      var tipo = args[1] ? String(resolveArg(args[1])).toLowerCase() : 'total';
+      var patronal = 0.2683, obrero = 0.1083;
+      if (tipo === 'patronal') return fmtNum(salario * patronal);
+      if (tipo === 'obrero') return fmtNum(salario * obrero);
+      return fmtNum(salario * (patronal + obrero));
+    }
+    if ((inner = matchFn('AGUINALDO')) !== null) {
+      args = splitArgs(inner);
+      var salario2 = resolveNum(args[0]);
+      var meses = args[1] ? resolveNum(args[1]) : 12;
+      return fmtNum(salario2 * meses / 12);
+    }
+    if ((inner = matchFn('PREAVISO')) !== null) {
+      args = splitArgs(inner);
+      var salario3 = resolveNum(args[0]), anios = resolveNum(args[1]);
+      if (anios < 0.25) return '0';
+      if (anios < 0.5) return fmtNum(salario3 / 30 * 7);
+      if (anios < 1) return fmtNum(salario3 / 30 * 15);
+      return fmtNum(salario3);
+    }
+    if ((inner = matchFn('CESANTIA')) !== null) {
+      args = splitArgs(inner);
+      var salario4 = resolveNum(args[0]), anios2 = resolveNum(args[1]);
+      if (anios2 < 0.25) return '0';
+      if (anios2 < 0.5) return fmtNum(salario4 / 30 * 7);
+      if (anios2 < 1) return fmtNum(salario4 / 30 * 14);
+      var tabla = [19.5, 20, 20.5, 21, 21.24, 21.5, 22, 22];
+      var completos = Math.min(Math.floor(anios2), 8);
+      var dias = 0;
+      for (var ic = 0; ic < completos; ic++) dias += tabla[ic];
+      return fmtNum(salario4 / 30 * dias);
+    }
+    if ((inner = matchFn('RENTA\\\\.TRABAJO|IMPUESTO\\\\.RENTA')) !== null) {
+      var ingreso = resolveNum(splitArgs(inner)[0]);
+      if (ingreso <= 918000) return fmtNum(0);
+      if (ingreso <= 1347000) return fmtNum((ingreso - 918000) * 0.10);
+      if (ingreso <= 2364000) return fmtNum(42900 + (ingreso - 1347000) * 0.15);
+      if (ingreso <= 4727000) return fmtNum(195450 + (ingreso - 2364000) * 0.20);
+      return fmtNum(668050 + (ingreso - 4727000) * 0.25);
     }
 
     if (isRange(expr)) {
@@ -493,6 +660,8 @@ function buildTable() {
 function renderAllCells() {
   var data = sheetData[activeSheet] || {};
   var formats = sheetFormats[activeSheet] || {};
+  var notes = sheetNotes[activeSheet] || {};
+  document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-note'); });
   Object.keys(data).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
     if (!el || document.activeElement === el) return;
@@ -500,10 +669,16 @@ function renderAllCells() {
     var fmt = formats[id] || {};
     if (fmt.currency && val !== '' && !isNaN(parseFloat(String(val).replace(/[₡,]/g, '')))) {
       el.textContent = '₡' + parseFloat(String(val).replace(/[₡,\\s]/g, '')).toLocaleString('es-CR', { minimumFractionDigits: 2 });
+    } else if (fmt.percent && val !== '' && !isNaN(parseFloat(val))) {
+      el.textContent = (parseFloat(val) * 100).toFixed(1) + '%';
     } else {
       el.textContent = val;
     }
     el.classList.toggle('bold', !!fmt.bold);
+  });
+  Object.keys(notes).forEach(function (id) {
+    var el = document.getElementById('cell_' + id);
+    if (el && notes[id]) el.classList.add('has-note');
   });
 }
 
@@ -518,11 +693,8 @@ function renderTabs() {
     t.addEventListener('click', function () {
       var name = this.dataset.sheet;
       var now = Date.now();
-      if (lastTap[name] && now - lastTap[name] < 400) {
-        openTabMenu(name);
-      } else {
-        activeSheet = name; buildTable();
-      }
+      if (lastTap[name] && now - lastTap[name] < 400) { openTabMenu(name); }
+      else { activeSheet = name; buildTable(); }
       lastTap[name] = now;
     });
   });
@@ -530,14 +702,14 @@ function renderTabs() {
     snapshot();
     var n = sheets.length + 1; var name = 'Hoja' + n;
     while (sheets.indexOf(name) >= 0) { n++; name = 'Hoja' + n; }
-    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {};
+    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {};
     activeSheet = name; buildTable(); autoSave();
   });
 }
 
 function openTabMenu(name) {
   tabMenuTarget = name;
-  document.getElementById('tabMenuTitle').textContent = 'Hoja: ' + name + ' (toca 2 veces para renombrar/duplicar/eliminar)';
+  document.getElementById('tabMenuTitle').textContent = 'Hoja: ' + name;
   document.getElementById('renameInput').value = name;
   document.getElementById('tabMenuOverlay').classList.add('show');
 }
@@ -550,6 +722,7 @@ document.getElementById('btnRenameConfirm').addEventListener('click', function (
   sheets[idx] = newName;
   sheetData[newName] = sheetData[tabMenuTarget]; delete sheetData[tabMenuTarget];
   sheetFormats[newName] = sheetFormats[tabMenuTarget]; delete sheetFormats[tabMenuTarget];
+  sheetNotes[newName] = sheetNotes[tabMenuTarget] || {}; delete sheetNotes[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -561,26 +734,71 @@ document.getElementById('btnDuplicate').addEventListener('click', function () {
   sheets.push(newName);
   sheetData[newName] = JSON.parse(JSON.stringify(sheetData[tabMenuTarget] || {}));
   sheetFormats[newName] = JSON.parse(JSON.stringify(sheetFormats[tabMenuTarget] || {}));
+  sheetNotes[newName] = JSON.parse(JSON.stringify(sheetNotes[tabMenuTarget] || {}));
   activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
 });
 document.getElementById('btnDeleteSheet').addEventListener('click', function () {
   if (sheets.length <= 1) { alert('Debe quedar al menos una hoja.'); return; }
-  if (!confirm('¿Eliminar la hoja "' + tabMenuTarget + '"? Esta acción no se puede deshacer con el botón Deshacer una vez guardada.')) return;
+  if (!confirm('¿Eliminar la hoja "' + tabMenuTarget + '"?')) return;
   snapshot();
   var idx = sheets.indexOf(tabMenuTarget);
   sheets.splice(idx, 1);
-  delete sheetData[tabMenuTarget];
-  delete sheetFormats[tabMenuTarget];
+  delete sheetData[tabMenuTarget]; delete sheetFormats[tabMenuTarget]; delete sheetNotes[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = sheets[0];
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
 });
 
 // ══════════════════════════════════════════════
-// EVENTOS DE CELDA + NAVEGACIÓN
+// NOTAS
 // ══════════════════════════════════════════════
+document.getElementById('btnNote').addEventListener('click', function () {
+  var id = document.getElementById('cellRef').textContent;
+  document.getElementById('noteCellRef').textContent = id;
+  document.getElementById('noteText').value = (sheetNotes[activeSheet] && sheetNotes[activeSheet][id]) || '';
+  document.getElementById('noteOverlay').classList.add('show');
+});
+document.getElementById('noteCancel').addEventListener('click', function () { document.getElementById('noteOverlay').classList.remove('show'); });
+document.getElementById('noteSave').addEventListener('click', function () {
+  snapshot();
+  var id = document.getElementById('cellRef').textContent;
+  if (!sheetNotes[activeSheet]) sheetNotes[activeSheet] = {};
+  sheetNotes[activeSheet][id] = document.getElementById('noteText').value;
+  document.getElementById('noteOverlay').classList.remove('show');
+  renderAllCells(); autoSave();
+});
+document.getElementById('noteDelete').addEventListener('click', function () {
+  snapshot();
+  var id = document.getElementById('cellRef').textContent;
+  if (sheetNotes[activeSheet]) delete sheetNotes[activeSheet][id];
+  document.getElementById('noteOverlay').classList.remove('show');
+  renderAllCells(); autoSave();
+});
+
+// ══════════════════════════════════════════════
+// EVENTOS DE CELDA + NAVEGACIÓN + SELECCIÓN DE RANGO
+// ══════════════════════════════════════════════
+function clearRangeHighlight() {
+  document.querySelectorAll('.cell.in-range').forEach(function (e) { e.classList.remove('in-range'); });
+}
+function highlightRange(idA, idB) {
+  clearRangeHighlight();
+  if (!idA || !idB) return;
+  var mA = idA.match(/([A-Za-z]+)(\\d+)/), mB = idB.match(/([A-Za-z]+)(\\d+)/);
+  if (!mA || !mB) return;
+  var c1 = colIndex(mA[1]), r1 = parseInt(mA[2]) - 1, c2 = colIndex(mB[1]), r2 = parseInt(mB[2]) - 1;
+  var minC = Math.min(c1, c2), maxC = Math.max(c1, c2), minR = Math.min(r1, r2), maxR = Math.max(r1, r2);
+  for (var r = minR; r <= maxR; r++) for (var c = minC; c <= maxC; c++) {
+    var el = document.getElementById('cell_' + cellId(r, c));
+    if (el) el.classList.add('in-range');
+  }
+  var rangeStr = cellId(minR, minC) + ':' + cellId(maxR, maxC);
+  document.getElementById('quickRange').value = rangeStr;
+  document.getElementById('quickRange').dispatchEvent(new Event('input'));
+}
+
 function attachCellEvents() {
   document.querySelectorAll('.cell').forEach(function (el) {
     el.addEventListener('focus', function () {
@@ -599,7 +817,15 @@ function attachCellEvents() {
       else if (e.key === 'ArrowLeft' && el.textContent === '') { e.preventDefault(); el.blur(); moveSelection(-1, 0); }
       else if (e.key === 'ArrowRight' && el.textContent === '') { e.preventDefault(); el.blur(); moveSelection(1, 0); }
     });
+    // Selección de rango arrastrando (mouse) o long-press+drag (touch simplificado con pointer events)
+    el.addEventListener('pointerdown', function (e) {
+      isSelecting = true; selRangeStart = el.dataset.id; selRangeEnd = el.dataset.id;
+    });
+    el.addEventListener('pointerenter', function () {
+      if (isSelecting) { selRangeEnd = el.dataset.id; highlightRange(selRangeStart, selRangeEnd); }
+    });
   });
+  document.addEventListener('pointerup', function () { isSelecting = false; });
 }
 function commitCell(el) {
   var id = el.dataset.id;
@@ -633,6 +859,22 @@ document.getElementById('formulaInput').addEventListener('keydown', function (e)
 
 document.getElementById('btnUndo').addEventListener('click', undo);
 
+document.getElementById('btnCopy').addEventListener('click', function () {
+  var id = document.getElementById('cellRef').textContent;
+  clipboard = { value: getRaw(id), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || null };
+  document.getElementById('saveStatus').textContent = 'Copiado ' + id;
+});
+document.getElementById('btnPaste').addEventListener('click', function () {
+  if (!clipboard) { alert('Nada para pegar. Usá Copiar primero.'); return; }
+  snapshot();
+  var id = document.getElementById('cellRef').textContent;
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  if (clipboard.value === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = clipboard.value;
+  if (clipboard.format) { if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {}; sheetFormats[activeSheet][id] = JSON.parse(JSON.stringify(clipboard.format)); }
+  document.getElementById('formulaInput').value = clipboard.value;
+  renderAllCells(); autoSave();
+});
+
 document.getElementById('btnBold').addEventListener('click', function () {
   snapshot();
   var id = document.getElementById('cellRef').textContent;
@@ -647,6 +889,16 @@ document.getElementById('btnCurrency').addEventListener('click', function () {
   if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
   if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
   sheetFormats[activeSheet][id].currency = !sheetFormats[activeSheet][id].currency;
+  if (sheetFormats[activeSheet][id].currency) sheetFormats[activeSheet][id].percent = false;
+  renderAllCells(); autoSave();
+});
+document.getElementById('btnPercent').addEventListener('click', function () {
+  snapshot();
+  var id = document.getElementById('cellRef').textContent;
+  if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+  if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
+  sheetFormats[activeSheet][id].percent = !sheetFormats[activeSheet][id].percent;
+  if (sheetFormats[activeSheet][id].percent) sheetFormats[activeSheet][id].currency = false;
   renderAllCells(); autoSave();
 });
 document.getElementById('btnClear').addEventListener('click', function () {
@@ -654,11 +906,60 @@ document.getElementById('btnClear').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
   delete sheetData[activeSheet][id];
   if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
+  if (sheetNotes[activeSheet]) delete sheetNotes[activeSheet][id];
   document.getElementById('formulaInput').value = '';
   renderAllCells(); autoSave();
 });
 document.getElementById('btnAddRow').addEventListener('click', function () { snapshot(); ROWS += 10; buildTable(); });
 document.getElementById('btnAddCol').addEventListener('click', function () { snapshot(); COLS = Math.min(26, COLS + 4); buildTable(); });
+
+document.getElementById('btnDelRow').addEventListener('click', function () {
+  var id = document.getElementById('cellRef').textContent;
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
+  var targetRow = parseInt(m[2]) - 1;
+  if (!confirm('¿Eliminar la fila ' + (targetRow + 1) + '?')) return;
+  snapshot();
+  var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
+  for (var r = targetRow; r < ROWS - 1; r++) {
+    for (var c = 0; c < COLS; c++) {
+      var nk = cellId(r + 1, c), ck = cellId(r, c);
+      if (d[nk] !== undefined) d[ck] = d[nk]; else delete d[ck];
+      if (f[nk] !== undefined) f[ck] = f[nk]; else delete f[ck];
+    }
+  }
+  for (var c2 = 0; c2 < COLS; c2++) { delete d[cellId(ROWS - 1, c2)]; delete f[cellId(ROWS - 1, c2)]; }
+  buildTable(); autoSave();
+});
+
+document.getElementById('btnTotales').addEventListener('click', function () {
+  var id = document.getElementById('cellRef').textContent;
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
+  var startRow = parseInt(m[2]) - 1, startCol = colIndex(m[1]);
+  var endRow = startRow;
+  for (var r = startRow; r < ROWS; r++) {
+    var hasData = false;
+    for (var c = startCol; c < Math.min(COLS, startCol + 12); c++) { if (getRaw(cellId(r, c))) { hasData = true; break; } }
+    if (hasData) endRow = r; else if (r > startRow + 1) break;
+  }
+  var numCols = 0;
+  for (var r2 = startRow; r2 <= endRow; r2++)
+    for (var c2 = startCol; c2 < startCol + 12; c2++)
+      if (getRaw(cellId(r2, c2))) numCols = Math.max(numCols, c2 - startCol + 1);
+  snapshot();
+  var totalRow = endRow + 1;
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+  sheetData[activeSheet][cellId(totalRow, startCol)] = 'TOTAL';
+  sheetFormats[activeSheet][cellId(totalRow, startCol)] = { bold: true };
+  var added = 0;
+  for (var nc = 1; nc < numCols; nc++) {
+    var hasNums = false;
+    for (var ri = startRow; ri <= endRow; ri++) { var v = getRaw(cellId(ri, startCol + nc)) || ''; if (v && !isNaN(parseFloat(String(v).replace(/[₡,\\s]/g, '')))) { hasNums = true; break; } }
+    if (hasNums) { sheetData[activeSheet][cellId(totalRow, startCol + nc)] = '=SUMA(' + cellId(startRow, startCol + nc) + ':' + cellId(endRow, startCol + nc) + ')'; added++; }
+  }
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = 'Totales (' + added + ' col.)';
+});
 
 document.getElementById('templateSelect').addEventListener('change', function () {
   var v = this.value; if (!v) return; snapshot(); loadTemplate(v); this.value = '';
@@ -667,10 +968,10 @@ document.getElementById('templateSelect').addEventListener('change', function ()
 function loadTemplate(tipo) {
   var hoy = new Date().toLocaleDateString('es-CR');
   var n = sheets.length + 1;
-  var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : 'Hoja';
+  var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {};
   activeSheet = name;
   var d = sheetData[name], f = sheetFormats[name];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
@@ -710,6 +1011,15 @@ function loadTemplate(tipo) {
       .forEach(function (row, i) { row.forEach(function (v, j) { set(3 + i, j, v); }); });
     set(6, 0, 'Saldo ajustado banco', true);
     d[cellId(6, 1)] = '=SUMA(B4:B6)';
+  } else if (tipo === 'd151') {
+    set(0, 0, '🛒 D-151 COMPRAS Y VENTAS', true);
+    ['Fecha', 'Tipo', 'N° Doc.', 'Cédula', 'Nombre', 'Condición', 'Subtotal (₡)', 'IVA (₡)', 'Total (₡)'].forEach(function (h, i) { set(1, i, h, true); });
+    [[hoy, 'FE', '001-001-000001', '3-101-000000', 'Cliente A S.A.', 'Contado', '50000', '6500', '56500'],
+     [hoy, 'FE', '001-001-000002', '1-234-567890', 'Juan Pérez', 'Crédito', '20000', '2600', '22600'],
+     [hoy, 'FC', '001-002-000001', '3-102-111222', 'Proveedor B S.A.', 'Contado', '35000', '4550', '39550']]
+      .forEach(function (row, i) { row.forEach(function (v, j) { set(2 + i, j, v); }); });
+    set(5, 5, 'TOTALES', true);
+    d[cellId(5, 6)] = '=SUMA(G3:G5)'; d[cellId(5, 7)] = '=SUMA(H3:H5)'; d[cellId(5, 8)] = '=SUMA(I3:I5)';
   }
   buildTable(); autoSave();
 }
@@ -730,7 +1040,11 @@ document.getElementById('quickRange').addEventListener('input', function () {
 // ══════════════════════════════════════════════
 // GRÁFICOS
 // ══════════════════════════════════════════════
-document.getElementById('btnChart').addEventListener('click', function () { document.getElementById('chartOverlay').classList.add('show'); });
+document.getElementById('btnChart').addEventListener('click', function () {
+  var qr = document.getElementById('quickRange').value.trim();
+  if (isRange(qr)) document.getElementById('chartRange').value = qr;
+  document.getElementById('chartOverlay').classList.add('show');
+});
 document.getElementById('chartCancel').addEventListener('click', function () { document.getElementById('chartOverlay').classList.remove('show'); });
 document.getElementById('chartInsert').addEventListener('click', function () {
   var type = document.getElementById('chartType').value;
@@ -752,7 +1066,9 @@ function insertChart(type, title, labels, values) {
   wrap.className = 'chart-float';
   wrap.style.left = (40 + chartCount * 10) + 'px';
   wrap.style.top = (60 + chartCount * 10) + 'px';
-  wrap.innerHTML = '<div class="chead"><span>📊 ' + title + '</span><button onclick="this.closest(\\'.chart-float\\').remove()">✕</button></div>' +
+  wrap.innerHTML = '<div class="chead"><span>📊 ' + title + '</span>' +
+    '<button id="dl_' + id + '" title="Descargar PNG">⬇</button>' +
+    '<button onclick="this.closest(\\'.chart-float\\').remove()">✕</button></div>' +
     '<canvas id="' + id + '" width="260" height="160"></canvas>';
   document.getElementById('gridWrap').appendChild(wrap);
 
@@ -761,7 +1077,16 @@ function insertChart(type, title, labels, values) {
   document.addEventListener('mousemove', function (e) { if (isDrag) { wrap.style.left = (e.clientX - dx) + 'px'; wrap.style.top = (e.clientY - dy) + 'px'; } });
   document.addEventListener('mouseup', function () { isDrag = false; });
 
-  setTimeout(function () { drawChart(id, type, title, labels, values); }, 30);
+  setTimeout(function () {
+    drawChart(id, type, title, labels, values);
+    document.getElementById('dl_' + id).addEventListener('click', function (e) {
+      e.stopPropagation();
+      var link = document.createElement('a');
+      link.download = title.replace(/\\s+/g, '_') + '.png';
+      link.href = document.getElementById(id).toDataURL('image/png');
+      link.click();
+    });
+  }, 30);
 }
 
 function drawChart(canvasId, type, title, labels, values) {
@@ -795,7 +1120,7 @@ function drawChart(canvasId, type, title, labels, values) {
       var x3 = padL + i * pw, y3 = padT + cH - (v / max) * cH;
       ctx.beginPath(); ctx.arc(x3, y3, 3, 0, Math.PI * 2); ctx.fillStyle = colors[0]; ctx.fill();
     });
-  } else if (type === 'pie') {
+  } else if (type === 'pie' || type === 'donut') {
     var total = values.reduce(function (a, b) { return a + b; }, 0) || 1;
     var start = -Math.PI / 2, cx = W / 2, cy = H / 2, r = Math.min(cW, cH) / 2;
     values.forEach(function (v, i) {
@@ -804,6 +1129,7 @@ function drawChart(canvasId, type, title, labels, values) {
       ctx.fillStyle = colors[i % colors.length]; ctx.fill();
       start += slice;
     });
+    if (type === 'donut') { ctx.beginPath(); ctx.arc(cx, cy, r * 0.5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); }
   }
   ctx.fillStyle = '#1e5208'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
   ctx.fillText(title, W / 2, 10);
@@ -843,22 +1169,25 @@ document.getElementById('btnCSV').addEventListener('click', function () {
 // ══════════════════════════════════════════════
 function autoSave() {
   try {
-    localStorage.setItem('mcr_sheets_v3', JSON.stringify(sheets));
-    localStorage.setItem('mcr_data_v3', JSON.stringify(sheetData));
-    localStorage.setItem('mcr_formats_v3', JSON.stringify(sheetFormats));
-    localStorage.setItem('mcr_active_v3', activeSheet);
+    localStorage.setItem('mcr_sheets_v5', JSON.stringify(sheets));
+    localStorage.setItem('mcr_data_v5', JSON.stringify(sheetData));
+    localStorage.setItem('mcr_formats_v5', JSON.stringify(sheetFormats));
+    localStorage.setItem('mcr_notes_v5', JSON.stringify(sheetNotes));
+    localStorage.setItem('mcr_active_v5', activeSheet);
     document.getElementById('saveStatus').textContent = '💾 ' + new Date().toLocaleTimeString('es-CR');
   } catch (e) {}
 }
 function restore() {
   try {
-    var s = localStorage.getItem('mcr_sheets_v3');
-    var d = localStorage.getItem('mcr_data_v3');
-    var f = localStorage.getItem('mcr_formats_v3');
-    var a = localStorage.getItem('mcr_active_v3');
+    var s = localStorage.getItem('mcr_sheets_v5');
+    var d = localStorage.getItem('mcr_data_v5');
+    var f = localStorage.getItem('mcr_formats_v5');
+    var no = localStorage.getItem('mcr_notes_v5');
+    var a = localStorage.getItem('mcr_active_v5');
     if (s) sheets = JSON.parse(s);
     if (d) sheetData = JSON.parse(d);
     if (f) sheetFormats = JSON.parse(f);
+    if (no) sheetNotes = JSON.parse(no);
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
   } catch (e) {}
 }
