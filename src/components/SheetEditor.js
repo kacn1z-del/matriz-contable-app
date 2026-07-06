@@ -149,11 +149,72 @@ const SHEET_HTML = `<!DOCTYPE html>
   #feBtnXml { background: #245f09; color: #fff; }
   #feBtnPdf { background: #2d7a0c; color: #fff; }
   #feBtnClear { background: #eee; color: #555; }
+
+  #feHistOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #feHistOverlay.show { display: flex; }
+  #feHistModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
+  #feHistHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #feHistHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #feHistHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #feHistList { overflow-y: auto; padding: 6px 10px; }
+  .feHistItem { padding: 8px 6px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .feHistItem .fhInfo { font-size: 12px; }
+  .feHistItem .fhNum { font-weight: 800; color: #1e5208; }
+  .feHistItem .fhMeta { color: #777; font-size: 10.5px; }
+  .feHistItem button { background: #2d7a0c; color: #fff; border: none; border-radius: 6px; padding: 5px 9px; font-size: 11px; font-weight: 700; }
+  #feHistEmpty { padding: 20px 10px; color: #888; font-size: 12.5px; text-align: center; }
+  .feSignBox { margin-top: 6px; padding: 6px 8px; background: #eaf7d8; border-radius: 6px; font-size: 10px; color: #3d6020; word-break: break-all; }
+
+  #brOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9300; display: none; align-items: flex-start; justify-content: center; padding-top: 15vh; }
+  #brOverlay.show { display: flex; }
+  #brModal { background: #fff; border-radius: 12px; width: 92%; max-width: 380px; padding: 12px; }
+  #brModal h3 { margin: 0 0 8px; font-size: 14px; color: #245f09; }
+  #brModal input { width: 100%; padding: 8px 9px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
+  #brStatus { font-size: 11px; color: #6b8f48; margin-bottom: 8px; }
+  #brBtnRow { display: flex; gap: 6px; flex-wrap: wrap; }
+  #brBtnRow button { flex: 1; min-width: 80px; padding: 8px 6px; border: none; border-radius: 7px; font-size: 12px; font-weight: 700; }
+  #brFind { background: #245f09; color: #fff; }
+  #brReplace { background: #2d7a0c; color: #fff; }
+  #brReplaceAll { background: #1e5208; color: #fff; }
+  #brCancelBtn { background: #eee; color: #555; }
+
+  #undoGestureHint { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(36,95,9,.92); color: #fff; padding: 6px 12px; border-radius: 16px; font-size: 11px; z-index: 9999; display: none; }
+  #undoGestureHint.show { display: block; }
+
+  #siboOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9200; display: none; align-items: flex-end; justify-content: center; }
+  #siboOverlay.show { display: flex; }
+  #siboModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; height: 82vh; display: flex; flex-direction: column; overflow: hidden; }
+  #siboHead { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: linear-gradient(135deg, #2d7a0c, #1e5208); flex-shrink: 0; }
+  #siboHead .shTitle { display: flex; align-items: center; gap: 6px; color: #fff; }
+  #siboHead .shTitle span.dot { width: 7px; height: 7px; border-radius: 50%; background: #b7e07a; display: inline-block; animation: sibodot 2s infinite; }
+  @keyframes sibodot { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  #siboHead h3 { margin: 0; font-size: 14px; }
+  #siboHead .shBtns button { background: none; border: none; color: #fff; font-size: 15px; margin-left: 8px; }
+  #siboChips { display: flex; gap: 5px; overflow-x: auto; padding: 8px 10px; flex-shrink: 0; background: #eaf7d8; -webkit-overflow-scrolling: touch; }
+  .siboChip { flex-shrink: 0; padding: 6px 11px; border-radius: 14px; background: #cce9ae; color: #245f09; font-size: 11px; font-weight: 700; white-space: nowrap; border: none; }
+  #siboMessages { flex: 1; overflow-y: auto; padding: 10px 12px; -webkit-overflow-scrolling: touch; background: #fbfdf8; }
+  .siboMsgUser, .siboMsgBot { max-width: 85%; padding: 8px 11px; border-radius: 12px; margin-bottom: 8px; font-size: 12.5px; line-height: 1.4; word-wrap: break-word; }
+  .siboMsgUser { background: #2d7a0c; color: #fff; margin-left: auto; border-bottom-right-radius: 3px; }
+  .siboMsgBot { background: #eaf7d8; color: #1e3a0a; border-bottom-left-radius: 3px; }
+  .siboMsgBot b { color: #1e5208; }
+  #siboInputRow { display: flex; gap: 6px; padding: 8px 10px; border-top: 1.5px solid #cce9ae; flex-shrink: 0; background: #fff; }
+  #siboInputRow input { flex: 1; padding: 9px 10px; border: 1px solid #cce9ae; border-radius: 20px; font-size: 13px; }
+  #siboInputRow button { background: #2d7a0c; color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; flex-shrink: 0; }
 </style>
 </head>
 <body>
 <div id="app">
   <div id="toolbar">
+    <select id="langSelector">
+      <option value="es">🇨🇷 Español</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="bribri">Bribri</option>
+      <option value="cabecar">Cabécar</option>
+      <option value="ngabe">Ngäbe</option>
+      <option value="boruca">Boruca</option>
+      <option value="terraba">Térraba</option>
+      <option value="maleku">Maleku</option>
+    </select>
     <select id="templateSelect">
       <option value="">📁 Plantilla...</option>
       <option value="diario">📘 Libro Diario</option>
@@ -161,6 +222,8 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="balance">📊 Balance Comprobación</option>
       <option value="conciliacion">🏦 Conciliación Bancaria</option>
       <option value="d151">🛒 D-151 Compras/Ventas</option>
+      <option value="resultados">📈 Estado de Resultados</option>
+      <option value="balancegeneral">🏛️ Balance General</option>
       <option value="blank">🗋 Hoja en blanco</option>
     </select>
     <button id="btnUndo" disabled>↶ Deshacer</button>
@@ -173,6 +236,8 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnNote">📝 Nota</button>
     <button id="btnChart">📊 Gráfico</button>
     <button id="btnTotales">Σ Totales</button>
+    <button id="btnSibo">✦ Sibö</button>
+    <button id="btnBuscarReemplazar">🔎 Buscar</button>
     <button id="btnFactura">🧾 Factura</button>
     <button id="btnFxLib">fx Funciones</button>
     <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
@@ -368,6 +433,10 @@ const SHEET_HTML = `<!DOCTYPE html>
       </div>
 
       <div class="feField"><label>Observaciones</label><input id="fe-observaciones" placeholder="Opcional" /></div>
+      <div class="feField" style="display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" id="fe-firma-check" style="width:auto;" />
+        <label style="margin:0;" for="fe-firma-check">Incluir firma digital simulada</label>
+      </div>
 
       <div id="feTotalsBox">
         <div class="ftRow"><span>Subtotal:</span><span id="fe-subtotal">₡0.00</span></div>
@@ -376,9 +445,54 @@ const SHEET_HTML = `<!DOCTYPE html>
       </div>
     </div>
     <div id="feFooter">
+      <button id="feBtnHistorial">🕐 Historial</button>
       <button id="feBtnClear">Limpiar</button>
       <button id="feBtnXml">⬇ XML</button>
       <button id="feBtnPdf">⬇ PDF</button>
+    </div>
+  </div>
+</div>
+
+<div id="feHistOverlay">
+  <div id="feHistModal">
+    <div id="feHistHead">
+      <h3>🕐 Historial de facturas</h3>
+      <button id="feHistClose">✕</button>
+    </div>
+    <div id="feHistList"></div>
+  </div>
+</div>
+
+<div id="brOverlay">
+  <div id="brModal">
+    <h3>🔎 Buscar y reemplazar</h3>
+    <input id="brFindInput" type="text" placeholder="Buscar..." />
+    <input id="brReplaceInput" type="text" placeholder="Reemplazar con..." />
+    <div id="brStatus"></div>
+    <div id="brBtnRow">
+      <button id="brFind">Buscar siguiente</button>
+      <button id="brReplace">Reemplazar</button>
+      <button id="brReplaceAll">Reemplazar todo</button>
+      <button id="brCancelBtn">Cerrar</button>
+    </div>
+  </div>
+</div>
+<div id="undoGestureHint">↶ Deshecho (gesto de 2 dedos)</div>
+
+<div id="siboOverlay">
+  <div id="siboModal">
+    <div id="siboHead">
+      <div class="shTitle"><span class="dot"></span><h3>✦ Sibö — Asistente contable</h3></div>
+      <div class="shBtns">
+        <button id="siboClearBtn" title="Limpiar chat">🗑</button>
+        <button id="siboCloseBtn">✕</button>
+      </div>
+    </div>
+    <div id="siboChips"></div>
+    <div id="siboMessages"></div>
+    <div id="siboInputRow">
+      <input id="siboInput" type="text" placeholder="Preguntale a Sibö sobre contabilidad CR..." />
+      <button id="siboSendBtn">➤</button>
     </div>
   </div>
 </div>
@@ -1066,7 +1180,7 @@ if ((inner = matchFn('UNIRCADENAS|TEXTJOIN')) !== null) {
     }
 if ((inner = matchFn('MAYUSC|UPPER')) !== null) { return String(resolveArg(splitArgs(inner)[0])).toUpperCase(); }
 if ((inner = matchFn('MINUSC|LOWER')) !== null) { return String(resolveArg(splitArgs(inner)[0])).toLowerCase(); }
-if ((inner = matchFn('NOMPROPIO|PROPER')) !== null) { return String(resolveArg(splitArgs(inner)[0])).replace(/\w\S*/g, function(w){return w.charAt(0).toUpperCase()+w.substr(1).toLowerCase();}); }
+if ((inner = matchFn('NOMPROPIO|PROPER')) !== null) { return String(resolveArg(splitArgs(inner)[0])).replace(/\\w\\S*/g, function(w){return w.charAt(0).toUpperCase()+w.substr(1).toLowerCase();}); }
 if ((inner = matchFn('LARGO|LEN')) !== null) { return String(String(resolveArg(splitArgs(inner)[0])).length); }
 if ((inner = matchFn('IZQUIERDA|LEFT')) !== null) { args = splitArgs(inner); var s2 = String(resolveArg(args[0])); return s2.substring(0, args[1] ? parseInt(resolveNum(args[1])) : 1); }
 if ((inner = matchFn('DERECHA|RIGHT')) !== null) { args = splitArgs(inner); var s3 = String(resolveArg(args[0])); var n4 = args[1] ? parseInt(resolveNum(args[1])) : 1; return s3.substring(s3.length - n4); }
@@ -1075,9 +1189,9 @@ if ((inner = matchFn('ENCONTRAR|FIND')) !== null) { args = splitArgs(inner); var
 if ((inner = matchFn('HALLAR|SEARCH')) !== null) { args = splitArgs(inner); var pos2 = String(resolveArg(args[1])).toLowerCase().indexOf(String(resolveArg(args[0])).toLowerCase()); return pos2 >= 0 ? String(pos2+1) : '#VALOR!'; }
 if ((inner = matchFn('SUSTITUIR|SUBSTITUTE')) !== null) { args = splitArgs(inner); return String(resolveArg(args[0])).split(String(resolveArg(args[1]))).join(String(resolveArg(args[2]))); }
 if ((inner = matchFn('REEMPLAZAR|REPLACE')) !== null) { args = splitArgs(inner); var orig = String(resolveArg(args[0])); var start4 = parseInt(resolveNum(args[1]))-1; var len4 = parseInt(resolveNum(args[2])); return orig.substring(0,start4)+String(resolveArg(args[3]))+orig.substring(start4+len4); }
-if ((inner = matchFn('ESPACIOS|TRIM')) !== null) { return String(resolveArg(splitArgs(inner)[0])).replace(/\s+/g,' ').trim(); }
+if ((inner = matchFn('ESPACIOS|TRIM')) !== null) { return String(resolveArg(splitArgs(inner)[0])).replace(/\\s+/g,' ').trim(); }
 if ((inner = matchFn('REPETIR|REPT')) !== null) { args = splitArgs(inner); return String(resolveArg(args[0])).repeat(parseInt(resolveNum(args[1]))); }
-if ((inner = matchFn('VALOR|VALUE')) !== null) { return fmtNum(parseFloat(String(resolveArg(splitArgs(inner)[0])).replace(/[₡,\s]/g,''))); }
+if ((inner = matchFn('VALOR|VALUE')) !== null) { return fmtNum(parseFloat(String(resolveArg(splitArgs(inner)[0])).replace(/[₡,\\s]/g,''))); }
 if ((inner = matchFn('MONEDA|DOLLAR')) !== null) { args = splitArgs(inner); var d5 = args[1] ? parseInt(resolveNum(args[1])) : 2; return '₡'+resolveNum(args[0]).toLocaleString('es-CR',{minimumFractionDigits:d5,maximumFractionDigits:d5}); }
 if ((inner = matchFn('TEXTO|TEXT')) !== null) {
       args = splitArgs(inner); var n5 = resolveNum(args[0]); var fmt4 = String(resolveArg(args[1]));
@@ -1188,8 +1302,8 @@ if ((inner = matchFn('BUSCARV|VLOOKUP')) !== null) {
       if (isRange(rng3)) {
         var parts2 = rng3.trim().split(':');
         var fc3 = colIndex(parts2[0].match(/[A-Za-z]+/)[0].toUpperCase());
-        var fr2 = parseInt(parts2[0].match(/\d+/)[0]) - 1;
-        var tr3 = parseInt(parts2[1].match(/\d+/)[0]) - 1;
+        var fr2 = parseInt(parts2[0].match(/\\d+/)[0]) - 1;
+        var tr3 = parseInt(parts2[1].match(/\\d+/)[0]) - 1;
         for (var ri2 = fr2; ri2 <= tr3; ri2++) {
           if (String(computeValue(cellId(ri2, fc3))).toLowerCase() === sv2) {
             return String(computeValue(cellId(ri2, fc3 + colN2)));
@@ -1224,7 +1338,7 @@ if ((inner = matchFn('INDICE|INDEX')) !== null) {
       if (isRange(args[0])) {
         var p3 = args[0].trim().split(':');
         var fc4 = colIndex(p3[0].match(/[A-Za-z]+/)[0].toUpperCase());
-        var fr3 = parseInt(p3[0].match(/\d+/)[0]) - 1;
+        var fr3 = parseInt(p3[0].match(/\\d+/)[0]) - 1;
         return String(computeValue(cellId(fr3 + r10, fc4 + c10)));
       }
       return '#REF!';
@@ -1232,9 +1346,9 @@ if ((inner = matchFn('INDICE|INDEX')) !== null) {
 if ((inner = matchFn('DESREF|OFFSET')) !== null) {
       args = splitArgs(inner); var ref = args[0].trim();
       var dr = parseInt(resolveNum(args[1])), dc2 = parseInt(resolveNum(args[2]));
-      if (/^[A-Za-z]+\d+$/.test(ref)) {
+      if (/^[A-Za-z]+\\d+$/.test(ref)) {
         var rc = colIndex(ref.match(/[A-Za-z]+/)[0].toUpperCase());
-        var rr = parseInt(ref.match(/\d+/)[0]) - 1;
+        var rr = parseInt(ref.match(/\\d+/)[0]) - 1;
         return String(computeValue(cellId(rr + dr, rc + dc2)));
       }
       return '#REF!';
@@ -1247,9 +1361,9 @@ if ((inner = matchFn('ELEGIR|CHOOSE')) !== null) {
       args = splitArgs(inner); var idx2 = parseInt(resolveNum(args[0]));
       return args[idx2] ? String(resolveArg(args[idx2])) : '#VALOR!';
     }
-if ((inner = matchFn('FILA|ROW')) !== null) { var rf = splitArgs(inner)[0]; if (!rf) return String(row+1); var m4 = rf.match(/\d+/); return m4 ? m4[0] : String(row+1); }
+if ((inner = matchFn('FILA|ROW')) !== null) { var rf = splitArgs(inner)[0]; if (!rf) return String(row+1); var m4 = rf.match(/\\d+/); return m4 ? m4[0] : String(row+1); }
 if ((inner = matchFn('COLUMNA|COLUMN')) !== null) { var rc2 = splitArgs(inner)[0]; if (!rc2) return String(col+1); var lm = rc2.match(/[A-Za-z]+/); return lm ? String(colIndex(lm[0].toUpperCase())+1) : String(col+1); }
-if ((inner = matchFn('FILAS|ROWS')) !== null) { if (isRange(inner)) { var p4=inner.split(':'); return String(parseInt(p4[1].match(/\d+/)[0])-parseInt(p4[0].match(/\d+/)[0])+1); } return '1'; }
+if ((inner = matchFn('FILAS|ROWS')) !== null) { if (isRange(inner)) { var p4=inner.split(':'); return String(parseInt(p4[1].match(/\\d+/)[0])-parseInt(p4[0].match(/\\d+/)[0])+1); } return '1'; }
 if ((inner = matchFn('COLUMNAS|COLUMNS')) !== null) { if (isRange(inner)) { var p5=inner.split(':'); return String(colIndex(p5[1].match(/[A-Za-z]+/)[0].toUpperCase())-colIndex(p5[0].match(/[A-Za-z]+/)[0].toUpperCase())+1); } return '1'; }
 if ((inner = matchFn('TRANSPONER|TRANSPOSE')) !== null) { return inner; }
 if ((inner = matchFn('ESBLANCO|ISBLANK')) !== null) { var v4 = resolveArg(splitArgs(inner)[0]); return (v4===''||v4===null||v4===undefined)?'VERDADERO':'FALSO'; }
@@ -1267,7 +1381,7 @@ if ((inner = matchFn('BUSCARH|HLOOKUP')) !== null) {
       if (isRange(rng)) {
         var p = rng.trim().split(':');
         var fc2 = colIndex(p[0].match(/[A-Za-z]+/)[0]);
-        var fr2 = parseInt(p[0].match(/\d+/)[0]) - 1;
+        var fr2 = parseInt(p[0].match(/\\d+/)[0]) - 1;
         var tc2 = colIndex(p[1].match(/[A-Za-z]+/)[0]);
         for (var ci = fc2; ci <= tc2; ci++) {
           if (String(computeValue(cellId(fr2, ci))).toLowerCase() === sv)
@@ -1356,7 +1470,7 @@ if ((inner = matchFn('CARACTER|CAR|CHAR')) !== null) {
       return String.fromCharCode(parseInt(resolveNum(splitArgs(inner)[0])));
     }
 if ((inner = matchFn('LIMPIAR|CLEAN')) !== null) {
-      return String(resolveArg(splitArgs(inner)[0])).replace(/[\x00-\x1F]/g, '');
+      return String(resolveArg(splitArgs(inner)[0])).replace(/[\\x00-\\x1F]/g, '');
     }
 if ((inner = matchFn('UNICODE')) !== null) {
       var s2 = String(resolveArg(splitArgs(inner)[0]));
@@ -1660,7 +1774,7 @@ if ((inner = matchFn('MUNIT')) !== null) {
       for (var i=0;i<dim;i++) {
         var row2 = [];
         for (var j=0;j<dim;j++) row2.push(i===j?'1':'0');
-        rows4.push(row2.join('\t'));
+        rows4.push(row2.join('\\t'));
       }
       return rows4.join(' | ');
     }
@@ -2294,8 +2408,8 @@ if((inner=matchFn('ELEGIRCOLS|CHOOSECOLS'))!==null){
       if(isRange(args[0])&&args.length>1){
         var p6=args[0].trim().split(':');
         var fc5=colIndex(p6[0].match(/[A-Za-z]+/)[0]);
-        var fr4=parseInt(p6[0].match(/\d+/)[0])-1;
-        var tr4=parseInt(p6[1].match(/\d+/)[0])-1;
+        var fr4=parseInt(p6[0].match(/\\d+/)[0])-1;
+        var tr4=parseInt(p6[1].match(/\\d+/)[0])-1;
         var result2=[];
         for(var i14=1;i14<args.length;i14++){
           var colOff=parseInt(resolveNum(args[i14]))-1;
@@ -2311,7 +2425,7 @@ if((inner=matchFn('ELEGIRFILAS|CHOOSEROWS'))!==null){
         var p7=args[0].trim().split(':');
         var fc6=colIndex(p7[0].match(/[A-Za-z]+/)[0]);
         var tc3=colIndex(p7[1].match(/[A-Za-z]+/)[0]);
-        var fr5=parseInt(p7[0].match(/\d+/)[0])-1;
+        var fr5=parseInt(p7[0].match(/\\d+/)[0])-1;
         var result3=[];
         for(var i15=1;i15<args.length;i15++){
           var rowOff=parseInt(resolveNum(args[i15]))-1;
@@ -2356,7 +2470,7 @@ if((inner=matchFn('HOJAS|SHEETS'))!==null){
     }
 if((inner=matchFn('ESREF|ISREF'))!==null){
       var ref2=splitArgs(inner)[0].trim();
-      return /^[A-Za-z]+\d+(:[A-Za-z]+\d+)?$/.test(ref2)?'VERDADERO':'FALSO';
+      return /^[A-Za-z]+\\d+(:[A-Za-z]+\\d+)?$/.test(ref2)?'VERDADERO':'FALSO';
     }
 if((inner=matchFn('ESLOGICO|ISLOGICAL'))!==null){
       var v2=resolveArg(splitArgs(inner)[0]);
@@ -2380,7 +2494,7 @@ if((inner=matchFn('CELDA|CELL'))!==null){
       var ref3=args[1]?args[1].trim().toUpperCase():cellId(row,col);
       if(tipo2==='address')return '$'+ref3;
       if(tipo2==='col')return String(colIndex((ref3.match(/[A-Z]+/)||['A'])[0])+1);
-      if(tipo2==='row')return String(parseInt((ref3.match(/\d+/)||[1])[0]));
+      if(tipo2==='row')return String(parseInt((ref3.match(/\\d+/)||[1])[0]));
       if(tipo2==='contents')return String(computeValue(ref3));
       if(tipo2==='type'){var v4=computeValue(ref3);return v4===''?'b':(!isNaN(parseFloat(v4))?'n':'l');}
       if(tipo2==='format')return 'G';
@@ -3102,9 +3216,9 @@ if((inner=matchFn('SUMAR\\.DIAGONAL|TRACE'))!==null){
       if(isRange(args[0])){
         var p=args[0].trim().split(':');
         var fc=colIndex(p[0].match(/[A-Za-z]+/)[0]);
-        var fr=parseInt(p[0].match(/\d+/)[0])-1;
+        var fr=parseInt(p[0].match(/\\d+/)[0])-1;
         var tc=colIndex(p[1].match(/[A-Za-z]+/)[0]);
-        var tr=parseInt(p[1].match(/\d+/)[0])-1;
+        var tr=parseInt(p[1].match(/\\d+/)[0])-1;
         var n=Math.min(tc-fc,tr-fr)+1,sum=0;
         for(var i=0;i<n;i++)sum+=toNum(computeValue(cellId(fr+i,fc+i)));
         return fmtNum(sum);
@@ -3173,7 +3287,7 @@ if((inner=matchFn('INVERTIR\\.TEXTO|REVERSETEXT'))!==null){
     }
 if((inner=matchFn('CONTAR\\.PALABRAS|WORDCOUNT'))!==null){
       var s4=String(resolveArg(splitArgs(inner)[0])).trim();
-      return s4?String(s4.split(/\s+/).length):'0';
+      return s4?String(s4.split(/\\s+/).length):'0';
     }
 if((inner=matchFn('ENMASCARAR|MASK'))!==null){
       args=splitArgs(inner);
@@ -3305,7 +3419,7 @@ if((inner=matchFn('ARCHIVOMAKEARRAY|MAKEARRAY'))!==null){
       args=splitArgs(inner);
       var rows=parseInt(resolveNum(args[0])),cols=parseInt(resolveNum(args[1]));
       var result=[];
-      for(var r=0;r<rows;r++){var row=[];for(var c=0;c<cols;c++)row.push(r*cols+c+1);result.push(row.join('\t'));}
+      for(var r=0;r<rows;r++){var row=[];for(var c=0;c<cols;c++)row.push(r*cols+c+1);result.push(row.join('\\t'));}
       return result.join(' | ');
     }
 if((inner=matchFn('VALOR\\.CAMPO|FIELDVALUE'))!==null){
@@ -3321,7 +3435,7 @@ if((inner=matchFn('DESREF\\.DINAMICO'))!==null){
       args=splitArgs(inner);
       var ref2=String(resolveArg(args[0])).toUpperCase();
       var dr=parseInt(resolveNum(args[1])),dc=parseInt(resolveNum(args[2]));
-      var match=ref2.match(/([A-Z]+)(\d+)/);
+      var match=ref2.match(/([A-Z]+)(\\d+)/);
       if(match){var c2=colIndex(match[1]),r2=parseInt(match[2])-1;return String(computeValue(cellId(r2+dr,c2+dc)));}
       return '#REF!';
     }
@@ -3338,8 +3452,8 @@ if((inner=matchFn('BUSCAR\\.REGEX'))!==null){
       if(isRange(args[1])){
         var p=args[1].trim().split(':');
         var fc=colIndex(p[0].match(/[A-Za-z]+/)[0]);
-        var fr=parseInt(p[0].match(/\d+/)[0])-1;
-        var tr=parseInt(p[1].match(/\d+/)[0])-1;
+        var fr=parseInt(p[0].match(/\\d+/)[0])-1;
+        var tr=parseInt(p[1].match(/\\d+/)[0])-1;
         for(var ri=fr;ri<=tr;ri++){
           if(pattern.test(String(computeValue(cellId(ri,fc)))))return String(computeValue(cellId(ri,fc+colN)));
         }
@@ -3630,8 +3744,172 @@ function limpiarFactura() {
     .forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ''; });
   var tbody = document.getElementById('fe-lineas-body');
   tbody.innerHTML = '';
+  document.getElementById('fe-firma-check').checked = false;
   agregarLineaFactura();
 }
+
+// ── Firma digital simulada ──
+function generarFirmaDigital(datos) {
+  var base = (datos.num || '') + '|' + (datos.fecha || '') + '|' + (datos.emisor || '') + '|' + (datos.total || '') + '|' + Date.now() + '|' + Math.random();
+  var hash = '';
+  try { hash = btoa(unescape(encodeURIComponent(base))).replace(/[^A-Za-z0-9]/g, '').substring(0, 40); }
+  catch (e) { hash = base.split('').reduce(function (a, c) { return ((a << 5) - a + c.charCodeAt(0)) | 0; }, 0).toString(16); }
+  return { hash: hash.toUpperCase(), timestamp: new Date().toISOString() };
+}
+
+// ── Historial de facturas (localStorage) ──
+function getFacturasHistorial() {
+  try { return JSON.parse(localStorage.getItem('kcn_facturas_historial') || '[]'); }
+  catch (e) { return []; }
+}
+function guardarFacturaHistorial() {
+  function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
+  var lineas = [];
+  document.querySelectorAll('#fe-lineas-body tr').forEach(function (row) {
+    lineas.push({
+      qty: (row.querySelector('.feQty') || {}).value || '1',
+      desc: (row.querySelector('.feDesc') || {}).value || '',
+      price: (row.querySelector('.fePrice') || {}).value || '0'
+    });
+  });
+  var entry = {
+    num: gv('fe-num'), fecha: gv('fe-fecha'), ivaRate: gv('fe-iva-rate'),
+    emisorNombre: gv('fe-emisor-nombre'), emisorCedula: gv('fe-emisor-cedula'),
+    emisorTelefono: gv('fe-emisor-telefono'), emisorEmail: gv('fe-emisor-email'),
+    receptorNombre: gv('fe-receptor-nombre'), receptorCedula: gv('fe-receptor-cedula'),
+    receptorTelefono: gv('fe-receptor-telefono'), receptorEmail: gv('fe-receptor-email'),
+    observaciones: gv('fe-observaciones'), lineas: lineas,
+    total: gv('fe-total'), savedAt: new Date().toISOString()
+  };
+  var hist = getFacturasHistorial();
+  hist.unshift(entry);
+  if (hist.length > 50) hist = hist.slice(0, 50);
+  try { localStorage.setItem('kcn_facturas_historial', JSON.stringify(hist)); } catch (e) {}
+}
+function renderHistorialList() {
+  var hist = getFacturasHistorial();
+  var wrap = document.getElementById('feHistList');
+  if (!hist.length) { wrap.innerHTML = '<div id="feHistEmpty">Todavía no hay facturas guardadas. Se guardan automáticamente al exportar XML o PDF.</div>'; return; }
+  var html = '';
+  hist.forEach(function (h, i) {
+    html += '<div class="feHistItem"><div class="fhInfo"><div class="fhNum">' + (h.num || '—') + ' · ' + (h.receptorNombre || 'Sin receptor') + '</div>' +
+      '<div class="fhMeta">' + (h.fecha || '') + ' · ' + (h.total || '') + '</div></div>' +
+      '<button data-idx="' + i + '">Cargar</button></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('button[data-idx]').forEach(function (btn) {
+    btn.addEventListener('click', function () { cargarFacturaDeHistorial(hist[parseInt(btn.dataset.idx)]); });
+  });
+}
+function cargarFacturaDeHistorial(entry) {
+  if (!entry) return;
+  document.getElementById('fe-num').value = entry.num || '';
+  document.getElementById('fe-fecha').value = entry.fecha || '';
+  document.getElementById('fe-iva-rate').value = entry.ivaRate || '0.13';
+  document.getElementById('fe-emisor-nombre').value = entry.emisorNombre || '';
+  document.getElementById('fe-emisor-cedula').value = entry.emisorCedula || '';
+  document.getElementById('fe-emisor-telefono').value = entry.emisorTelefono || '';
+  document.getElementById('fe-emisor-email').value = entry.emisorEmail || '';
+  document.getElementById('fe-receptor-nombre').value = entry.receptorNombre || '';
+  document.getElementById('fe-receptor-cedula').value = entry.receptorCedula || '';
+  document.getElementById('fe-receptor-telefono').value = entry.receptorTelefono || '';
+  document.getElementById('fe-receptor-email').value = entry.receptorEmail || '';
+  document.getElementById('fe-observaciones').value = entry.observaciones || '';
+  var tbody = document.getElementById('fe-lineas-body');
+  tbody.innerHTML = '';
+  (entry.lineas || []).forEach(function (l) {
+    agregarLineaFactura();
+    var tr = tbody.lastElementChild;
+    tr.querySelector('.feQty').value = l.qty;
+    tr.querySelector('.feDesc').value = l.desc;
+    tr.querySelector('.fePrice').value = l.price;
+  });
+  if (!tbody.children.length) agregarLineaFactura();
+  recalcularFactura();
+  document.getElementById('feHistOverlay').classList.remove('show');
+}
+document.getElementById('feBtnHistorial').addEventListener('click', function () {
+  renderHistorialList();
+  document.getElementById('feHistOverlay').classList.add('show');
+});
+document.getElementById('feHistClose').addEventListener('click', function () {
+  document.getElementById('feHistOverlay').classList.remove('show');
+});
+
+// ══════════════════════════════════════════════
+// BUSCAR Y REEMPLAZAR
+// ══════════════════════════════════════════════
+var brMatches = [], brMatchIdx = -1;
+function brFindMatches(query) {
+  var data = sheetData[activeSheet] || {};
+  var q = query.toLowerCase();
+  var matches = [];
+  Object.keys(data).forEach(function (id) {
+    var raw = String(data[id] || '');
+    if (raw.toLowerCase().indexOf(q) >= 0) matches.push(id);
+  });
+  matches.sort(function (a, b) {
+    var ma = a.match(/([A-Za-z]+)(\\d+)/), mb = b.match(/([A-Za-z]+)(\\d+)/);
+    var ra = parseInt(ma[2]), rb = parseInt(mb[2]);
+    if (ra !== rb) return ra - rb;
+    return colIndex(ma[1]) - colIndex(mb[1]);
+  });
+  return matches;
+}
+document.getElementById('btnBuscarReemplazar').addEventListener('click', function () {
+  document.getElementById('brFindInput').value = '';
+  document.getElementById('brReplaceInput').value = '';
+  document.getElementById('brStatus').textContent = '';
+  brMatches = []; brMatchIdx = -1;
+  document.getElementById('brOverlay').classList.add('show');
+  document.getElementById('brFindInput').focus();
+});
+document.getElementById('brCancelBtn').addEventListener('click', function () {
+  document.getElementById('brOverlay').classList.remove('show');
+});
+document.getElementById('brFindInput').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('brFind').click(); }
+});
+document.getElementById('brFind').addEventListener('click', function () {
+  var q = document.getElementById('brFindInput').value;
+  if (!q) { document.getElementById('brStatus').textContent = 'Escribí algo para buscar.'; return; }
+  brMatches = brFindMatches(q);
+  if (!brMatches.length) { document.getElementById('brStatus').textContent = 'Sin resultados en esta hoja.'; return; }
+  brMatchIdx = (brMatchIdx + 1) % brMatches.length;
+  var id = brMatches[brMatchIdx];
+  var el = document.getElementById('cell_' + id);
+  if (el) { el.scrollIntoView({ block: 'center', inline: 'center' }); el.focus(); }
+  document.getElementById('brStatus').textContent = (brMatchIdx + 1) + ' de ' + brMatches.length + ' — celda ' + id;
+});
+document.getElementById('brReplace').addEventListener('click', function () {
+  if (brMatchIdx < 0 || !brMatches.length) { document.getElementById('brFind').click(); return; }
+  var q = document.getElementById('brFindInput').value;
+  var rep = document.getElementById('brReplaceInput').value;
+  var id = brMatches[brMatchIdx];
+  snapshot();
+  var raw = String(sheetData[activeSheet][id] || '');
+  var re = new RegExp(q.replace(/[.*+?^{}()|[\\]\\\\$]/g, '\\\\$&'), 'i');
+  sheetData[activeSheet][id] = raw.replace(re, rep);
+  renderAllCells(); autoSave();
+  document.getElementById('brStatus').textContent = 'Reemplazado en ' + id + '.';
+  document.getElementById('brFind').click();
+});
+document.getElementById('brReplaceAll').addEventListener('click', function () {
+  var q = document.getElementById('brFindInput').value;
+  var rep = document.getElementById('brReplaceInput').value;
+  if (!q) { document.getElementById('brStatus').textContent = 'Escribí algo para buscar.'; return; }
+  var matches = brFindMatches(q);
+  if (!matches.length) { document.getElementById('brStatus').textContent = 'Sin resultados en esta hoja.'; return; }
+  snapshot();
+  var re = new RegExp(q.replace(/[.*+?^{}()|[\\]\\\\$]/g, '\\\\$&'), 'gi');
+  matches.forEach(function (id) {
+    var raw = String(sheetData[activeSheet][id] || '');
+    sheetData[activeSheet][id] = raw.replace(re, rep);
+  });
+  renderAllCells(); autoSave();
+  document.getElementById('brStatus').textContent = 'Reemplazadas ' + matches.length + ' celdas.';
+  brMatches = []; brMatchIdx = -1;
+});
 
 document.getElementById('btnFactura').addEventListener('click', function () {
   if (!document.getElementById('fe-lineas-body').children.length) {
@@ -3652,28 +3930,35 @@ document.getElementById('feBtnClear').addEventListener('click', function () {
 document.getElementById('feBtnXml').addEventListener('click', function () {
   function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
   var fecha = gv('fe-fecha') || new Date().toISOString().split('T')[0];
-  var sub = (gv('fe-subtotal') || '0').replace(/[^\d.]/g, '');
-  var iva = (gv('fe-iva-amount') || '0').replace(/[^\d.]/g, '');
-  var tot = (gv('fe-total') || '0').replace(/[^\d.]/g, '');
+  var sub = (gv('fe-subtotal') || '0').replace(/[^\\d.]/g, '');
+  var iva = (gv('fe-iva-amount') || '0').replace(/[^\\d.]/g, '');
+  var tot = (gv('fe-total') || '0').replace(/[^\\d.]/g, '');
   var lineas = '';
   document.querySelectorAll('#fe-lineas-body tr').forEach(function (row, i) {
     var qty = (row.querySelector('.feQty') || {}).value || '1';
     var desc = (row.querySelector('.feDesc') || {}).value || '';
     var price = (row.querySelector('.fePrice') || {}).value || '0';
-    var lt = ((row.querySelector('.feLineTotal') || {}).textContent || '0').replace(/[^\d.]/g, '');
+    var lt = ((row.querySelector('.feLineTotal') || {}).textContent || '0').replace(/[^\\d.]/g, '');
     lineas += '  <LineaDetalle><NumeroLinea>' + (i + 1) + '</NumeroLinea><Cantidad>' + qty + '</Cantidad><Descripcion>' + desc + '</Descripcion><PrecioUnitario>' + price + '</PrecioUnitario><MontoTotal>' + lt + '</MontoTotal></LineaDetalle>\\n';
   });
+  var firmaBlock = '';
+  if (document.getElementById('fe-firma-check').checked) {
+    var firma = generarFirmaDigital({ num: gv('fe-num'), fecha: fecha, emisor: gv('fe-emisor-nombre'), total: tot });
+    firmaBlock = '  <FirmaDigital><Hash>' + firma.hash + '</Hash><Timestamp>' + firma.timestamp + '</Timestamp><Nota>Firma simulada — no válida ante Hacienda</Nota></FirmaDigital>\\n';
+  }
   var xml = '<?xml version="1.0" encoding="UTF-8"?>\\n<FacturaElectronica xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica">\\n' +
     '  <NumeroConsecutivo>' + gv('fe-num') + '</NumeroConsecutivo>\\n' +
     '  <FechaEmision>' + fecha + 'T09:00:00-06:00</FechaEmision>\\n' +
     '  <Emisor><Nombre>' + gv('fe-emisor-nombre') + '</Nombre><Identificacion><Numero>' + gv('fe-emisor-cedula') + '</Numero></Identificacion></Emisor>\\n' +
     '  <Receptor><Nombre>' + gv('fe-receptor-nombre') + '</Nombre><Identificacion><Numero>' + gv('fe-receptor-cedula') + '</Numero></Identificacion></Receptor>\\n' +
-    lineas + '  <ResumenFactura><TotalVenta>' + sub + '</TotalVenta><TotalImpuesto>' + iva + '</TotalImpuesto><TotalComprobante>' + tot + '</TotalComprobante></ResumenFactura>\\n</FacturaElectronica>';
+    lineas + '  <ResumenFactura><TotalVenta>' + sub + '</TotalVenta><TotalImpuesto>' + iva + '</TotalImpuesto><TotalComprobante>' + tot + '</TotalComprobante></ResumenFactura>\\n' +
+    firmaBlock + '</FacturaElectronica>';
   var blob = new Blob([xml], { type: 'application/xml' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'factura-' + fecha + '.xml';
   a.click();
+  guardarFacturaHistorial();
   document.getElementById('saveStatus').textContent = 'XML exportado';
 });
 
@@ -3790,6 +4075,19 @@ document.getElementById('feBtnPdf').addEventListener('click', function () {
     doc.text('Observaciones: ' + obs.substring(0, 80), 10, rowY + 38);
   }
 
+  if (document.getElementById('fe-firma-check').checked) {
+    var firmaPdf = generarFirmaDigital({ num: num, fecha: fecha, emisor: emisor, total: total });
+    var firmaY = rowY + 45;
+    doc.setDrawColor(g2[0], g2[1], g2[2]);
+    doc.setFillColor(bg[0], bg[1], bg[2]);
+    doc.roundedRect(10, firmaY, 190, 16, 2, 2, 'FD');
+    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(g3[0], g3[1], g3[2]);
+    doc.text('✓ Documento firmado digitalmente (simulado)', 14, firmaY + 6);
+    doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 100, 60);
+    doc.text('Hash: ' + firmaPdf.hash, 14, firmaY + 11);
+    doc.text('Fecha/hora: ' + firmaPdf.timestamp, 14, firmaY + 14.5);
+  }
+
   doc.setFillColor(g3[0], g3[1], g3[2]);
   doc.rect(0, 282, 210, 15, 'F');
   doc.setTextColor(255, 255, 255);
@@ -3797,7 +4095,194 @@ document.getElementById('feBtnPdf').addEventListener('click', function () {
   doc.text('KCN Studio · Matriz Contable CR · Costa Rica 🇨🇷', 105, 290, { align: 'center' });
 
   doc.save('factura-' + fecha + '.pdf');
+  guardarFacturaHistorial();
   document.getElementById('saveStatus').textContent = 'PDF exportado';
+});
+
+// ══════════════════════════════════════════════
+// SELECTOR DE IDIOMA
+// Español e inglés: traducción completa.
+// Bribri / Cabécar / Ngäbe / Boruca / Térraba / Maleku:
+// SOLO se traducen los conceptos con palabra verificada
+// en un diccionario real (2,515 entradas). Todo lo demás
+// queda en español — no se inventa vocabulario.
+// ══════════════════════════════════════════════
+var TRANSLATIONS = {
+  es: {
+    undo: '↶ Deshacer', copy: '⧉ Copiar', paste: '📋 Pegar', bold: 'N',
+    currency: '₡', percent: '%', format: '🔢 Formato', note: '📝 Nota',
+    chart: '📊 Gráfico', totals: 'Σ Totales', csv: '⬇ CSV', addrow: '+Fila',
+    delrow: '-Fila', addcol: '+Col', clear: 'Borrar', sync: '☁ Sincronizar',
+    search: '🔎 Buscar', invoice: '🧾 Factura', fxlib: 'fx Funciones',
+    mayorauto: '📗 Mayor Auto', balanceauto: '📊 Balance Auto', flujoauto: '💧 Flujo Efectivo',
+    d101: '🇨🇷 D-101', history: '🕐 Historial', ready: 'Listo',
+    formulaPh: 'Valor o fórmula: =SUMA(A1:A5)', rangePh: 'arrastrá celdas o escribí ej: A1:A5',
+    close: '✕'
+  },
+  en: {
+    undo: '↶ Undo', copy: '⧉ Copy', paste: '📋 Paste', bold: 'B',
+    currency: '$', percent: '%', format: '🔢 Format', note: '📝 Note',
+    chart: '📊 Chart', totals: 'Σ Totals', csv: '⬇ CSV', addrow: '+Row',
+    delrow: '-Row', addcol: '+Col', clear: 'Clear', sync: '☁ Sync',
+    search: '🔎 Search', invoice: '🧾 Invoice', fxlib: 'fx Functions',
+    mayorauto: '📗 Ledger Auto', balanceauto: '📊 Trial Balance Auto', flujoauto: '💧 Cash Flow',
+    d101: '🇨🇷 D-101', history: '🕐 History', ready: 'Ready',
+    formulaPh: 'Value or formula: =SUM(A1:A5)', rangePh: 'drag cells or type e.g. A1:A5',
+    close: '✕'
+  },
+  bribri: { search: '🔎 Ëyö bë', close: '✕ Kë yö bë', history: '🕐 Bë tsö kö' },
+  cabecar: { search: '🔎 Ká bë', close: '✕ Kë wák bë', history: '🕐 Bë tsö kö' },
+  maleku: { search: '🔎 Shíi nori', close: '✕ Kë jiri nori', history: '🕐 Nori nöri köri' },
+  boruca: { search: '🔎 día', close: '✕ du ah' },
+  ngabe: { search: '🔎 Jä migä', close: '✕ Kë bri migä', history: '🕐 Migä tsö kra' },
+  terraba: { close: '✕ bong sas' }
+};
+var LANG_ELEMENTS = [
+  { id: 'btnUndo', key: 'undo' }, { id: 'btnCopy', key: 'copy' }, { id: 'btnPaste', key: 'paste' },
+  { id: 'btnCurrency', key: 'currency' }, { id: 'btnPercent', key: 'percent' },
+  { id: 'btnFormat', key: 'format' }, { id: 'btnNote', key: 'note' }, { id: 'btnChart', key: 'chart' },
+  { id: 'btnTotales', key: 'totals' }, { id: 'btnCSV', key: 'csv' }, { id: 'btnAddRow', key: 'addrow' },
+  { id: 'btnDelRow', key: 'delrow' }, { id: 'btnAddCol', key: 'addcol' }, { id: 'btnClear', key: 'clear' },
+  { id: 'btnSync', key: 'sync' }, { id: 'btnBuscarReemplazar', key: 'search' },
+  { id: 'btnFactura', key: 'invoice' }, { id: 'btnFxLib', key: 'fxlib' },
+  { id: 'btnLibroMayorAuto', key: 'mayorauto' }, { id: 'btnBalanceAuto', key: 'balanceauto' },
+  { id: 'btnFlujoAuto', key: 'flujoauto' }, { id: 'btnD101', key: 'd101' },
+  { id: 'feBtnHistorial', key: 'history' },
+  { id: 'fnClose', key: 'close' }, { id: 'feClose', key: 'close' }, { id: 'feHistClose', key: 'close' },
+  { id: 'siboCloseBtn', key: 'close' }, { id: 'brCancelBtn', key: 'close' }
+];
+var LANG_PLACEHOLDERS = [
+  { id: 'formulaInput', key: 'formulaPh' }, { id: 'quickRange', key: 'rangePh' }
+];
+function applyLanguage(lang) {
+  var t = TRANSLATIONS[lang] || {};
+  var es = TRANSLATIONS.es;
+  LANG_ELEMENTS.forEach(function (m) {
+    var el = document.getElementById(m.id);
+    if (el) el.textContent = t[m.key] || es[m.key] || el.textContent;
+  });
+  LANG_PLACEHOLDERS.forEach(function (m) {
+    var el = document.getElementById(m.id);
+    if (el) el.placeholder = t[m.key] || es[m.key] || el.placeholder;
+  });
+  try { localStorage.setItem('kcn_idioma', lang); } catch (e) {}
+}
+document.getElementById('langSelector').addEventListener('change', function () {
+  applyLanguage(this.value);
+});
+(function () {
+  var saved = null;
+  try { saved = localStorage.getItem('kcn_idioma'); } catch (e) {}
+  if (saved) {
+    document.getElementById('langSelector').value = saved;
+    applyLanguage(saved);
+  }
+})();
+
+// ══════════════════════════════════════════════
+// SIBÖ ✦ — Asistente contable (modo local, sin conexión externa)
+// ══════════════════════════════════════════════
+var SIBO_KB = [
+  { k: ['iva', 'impuesto al valor'], r: 'El <b>IVA</b> en Costa Rica tiene tasa general de <b>13%</b>. Tasas reducidas: <b>4%</b> (boletos aéreos, servicios de salud privados), <b>2%</b> (medicamentos, seguros privados de salud, servicios educativos privados, primas de seguro), <b>1%</b> (canasta básica, insumos agropecuarios, equipo/material médico). Se declara mensualmente en el D-104 vía ATV de Hacienda. En la hoja podés usar la fórmula <b>=IVA(monto)</b> o <b>=IVA(monto;tasa)</b>.' },
+  { k: ['factura electronica', 'factura electrónica', 'comprobante electronico'], r: 'La <b>Factura Electrónica</b> es obligatoria en Costa Rica desde 2018. La versión vigente es la <b>4.3</b>. Se estructura en XML, se firma digitalmente y se envía al sistema ATV de Hacienda; el receptor puede aceptar/rechazar el comprobante. En esta app tenés el botón <b>🧾 Factura</b> para generar el XML y el PDF con esa estructura, incluyendo firma digital simulada e historial de facturas.' },
+  { k: ['libro diario', 'asiento contable', 'partida doble'], r: 'El <b>Libro Diario</b> registra cronológicamente cada transacción bajo el principio de <b>partida doble</b>: Débitos = Créditos, siempre. Es obligatorio según el Código de Comercio de Costa Rica. Usá la plantilla "📘 Libro Diario" del selector de plantillas para empezar con la estructura correcta.' },
+  { k: ['libro mayor'], r: 'El <b>Libro Mayor</b> agrupa los movimientos del Libro Diario por cuenta contable, mostrando el saldo acumulado de cada una. En esta app tenés el botón <b>📗 Mayor Auto</b>, que lee tu hoja activa (columnas Fecha/Cuenta/Debe/Haber) y genera el mayor automáticamente en una hoja nueva.' },
+  { k: ['balance de comprobacion', 'balance de comprobación'], r: 'El <b>Balance de Comprobación</b> lista todas las cuentas con sus totales de débito y crédito, para verificar que la contabilidad esté cuadrada (Total Debe = Total Haber). Usá el botón <b>📊 Balance Auto</b> — genera el balance desde tu hoja activa y te dice si está "✓ Cuadrado" o cuál es la diferencia.' },
+  { k: ['conciliacion bancaria', 'conciliación bancaria', 'estado de cuenta'], r: 'La <b>conciliación bancaria</b> compara el saldo del estado de cuenta del banco contra el saldo en libros, ajustando por cheques en tránsito, depósitos no acreditados, comisiones bancarias y errores. Usá la plantilla "🏦 Conciliación Bancaria" del selector.' },
+  { k: ['niif', 'ifrs', 'pcga'], r: 'Las <b>NIIF</b> (Normas Internacionales de Información Financiera) son adoptadas oficialmente en Costa Rica por el CONASSIF. Existen las <b>NIIF completas</b> (empresas grandes/reguladas) y <b>NIIF para PyMEs</b> (versión simplificada para la mayoría de empresas costarricenses). Reemplazaron a los antiguos PCGA.' },
+  { k: ['ccss', 'cargas sociales', 'seguro social'], r: 'Las <b>cargas sociales</b> (CCSS) en Costa Rica suman aproximadamente <b>26.83%</b> a cargo del patrono y <b>10.83%</b> a cargo del trabajador sobre el salario bruto. Usá la fórmula <b>=PLANILLA.CCSS(salario)</b> para el total, o <b>=PLANILLA.CCSS(salario;"patronal")</b> / <b>"obrero"</b> para cada parte por separado.' },
+  { k: ['aguinaldo'], r: 'El <b>aguinaldo</b> en Costa Rica se calcula sumando todos los salarios brutos devengados entre el 1 de diciembre y el 30 de noviembre del año siguiente, dividido entre 12. Se paga antes del 20 de diciembre. Fórmula: <b>=AGUINALDO(salario_promedio;meses_trabajados)</b>.' },
+  { k: ['cesantia', 'cesantía'], r: 'La <b>cesantía</b> es una indemnización por despido sin justa causa, calculada según años laborados (tope de 8 años según el Código de Trabajo). Fórmula: <b>=CESANTIA(salario;años_laborados)</b>. Para menos de 3 meses no aplica; entre 3 meses y 1 año se calcula distinto que después del primer año.' },
+  { k: ['preaviso'], r: 'El <b>preaviso</b> es el aviso previo que debe dar el patrono (o compensar en dinero) al despedir a un trabajador sin justa causa. Va de 0 días (menos de 3 meses laborados) hasta 1 mes completo (más de 1 año). Fórmula: <b>=PREAVISO(salario;años_laborados)</b>.' },
+  { k: ['renta', 'd-101', 'd101', 'impuesto sobre la renta'], r: 'El <b>Impuesto sobre la Renta</b> para personas físicas con actividad lucrativa se calcula por tramos progresivos (0%, 10%, 15%, 20%, 25% para 2026). Usá el botón <b>🇨🇷 D-101</b> para generar una hoja completa con ingresos, gastos deducibles y el cálculo automático vía <b>=IMPUESTO.D101(renta_neta;"PF")</b> (también aceptás "PYME" o "GENERAL").' },
+  { k: ['planilla', 'nomina', 'nómina'], r: 'Para armar una planilla necesitás: salario bruto, deducciones de ley (CCSS obrero ~10.83%, renta si aplica), y el neto a pagar. Combiná <b>=PLANILLA.CCSS(salario;"obrero")</b> con <b>=RENTA.TRABAJO(salario)</b> para el cálculo completo de deducciones por empleado.' },
+  { k: ['formula', 'fórmula', 'como calculo', 'cómo calculo'], r: 'Esta app tiene cerca de <b>500 fórmulas</b> disponibles: matemáticas, estadísticas, texto, fecha, búsqueda, financieras y las exclusivas de Costa Rica (IVA, CCSS, Aguinaldo, Cesantía, Preaviso, Renta). Tocá el botón <b>fx Funciones</b> para buscarlas por categoría o por nombre, y usá "Insertar en celda" para no tener que escribirlas de memoria.' },
+  { k: ['plantilla', 'template'], r: 'Tenés plantillas contables listas en el selector "📁 Plantilla...": Libro Diario, Libro Mayor, Balance de Comprobación, Conciliación Bancaria, D-151, Estado de Resultados y Balance General. Elegí una y se crea una hoja nueva con la estructura y fórmulas ya armadas.' },
+  { k: ['grafico', 'gráfico', 'chart'], r: 'Para insertar un gráfico: seleccioná el rango de datos (arrastrando el dedo sobre las celdas), tocá <b>📊 Gráfico</b>, elegí el tipo (barras, línea, torta o dona), y confirmá. Podés descargarlo como PNG con el botón ⬇ dentro del gráfico.' },
+  { k: ['sincroniza', 'nube', 'compartir hoja', 'colaborar'], r: 'Con el botón <b>☁ Sincronizar</b> podés compartir una matriz en tiempo real: ponele un código a la hoja (ej. MATRIZ-CLIENTE-001) y cualquiera con ese mismo código en su app va a ver los cambios sincronizados automáticamente.' },
+  { k: ['ayuda', 'que puedes hacer', 'qué podés hacer', 'que sabes hacer'], r: 'Puedo ayudarte con temas contables de Costa Rica: <b>IVA</b>, <b>Factura Electrónica</b>, <b>Libro Diario/Mayor</b>, <b>Balance de Comprobación</b>, <b>Conciliación Bancaria</b>, <b>NIIF</b>, <b>CCSS</b>, <b>Aguinaldo</b>, <b>Cesantía</b>, <b>Preaviso</b>, <b>Renta/D-101</b> y <b>Planillas</b>. También te oriento sobre cómo usar las fórmulas, plantillas, gráficos y sincronización de esta app. Preguntame lo que necesités.' }
+];
+var SIBO_DEFAULT = 'No tengo una respuesta preparada para eso todavía — estoy corriendo en <b>modo local</b> (sin conexión a un servidor de IA externo), así que respondo por palabras clave. Probá con: IVA, Factura Electrónica, Libro Diario, Balance, Conciliación, NIIF, CCSS, Aguinaldo, Cesantía, Preaviso, Renta, Planilla, Fórmulas, Plantillas o Gráficos.';
+
+function siboBuscarRespuesta(msg) {
+  var m = msg.toLowerCase();
+  for (var i = 0; i < SIBO_KB.length; i++) {
+    var entry = SIBO_KB[i];
+    for (var j = 0; j < entry.k.length; j++) {
+      if (m.indexOf(entry.k[j]) >= 0) return entry.r;
+    }
+  }
+  return SIBO_DEFAULT;
+}
+
+function siboGetHistorial() {
+  try { return JSON.parse(localStorage.getItem('kcn_sibo_historial') || '[]'); } catch (e) { return []; }
+}
+function siboGuardarHistorial(hist) {
+  try { localStorage.setItem('kcn_sibo_historial', JSON.stringify(hist.slice(-40))); } catch (e) {}
+}
+function siboRenderMensaje(texto, esUsuario) {
+  var wrap = document.getElementById('siboMessages');
+  var div = document.createElement('div');
+  div.className = esUsuario ? 'siboMsgUser' : 'siboMsgBot';
+  div.innerHTML = texto;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+function siboRenderHistorial() {
+  var wrap = document.getElementById('siboMessages');
+  wrap.innerHTML = '';
+  var hist = siboGetHistorial();
+  if (!hist.length) {
+    siboRenderMensaje('¡Hola! Soy <b>Sibö ✦</b>, tu asistente contable de Matriz Contable CR. Preguntame sobre IVA, facturas, libros contables, CCSS, y más — o tocá uno de los chips de arriba.', false);
+    return;
+  }
+  hist.forEach(function (h) { siboRenderMensaje(h.texto, h.user); });
+}
+function siboEnviarTexto(texto) {
+  texto = (texto || '').trim();
+  if (!texto) return;
+  var hist = siboGetHistorial();
+  hist.push({ user: true, texto: texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') });
+  siboRenderMensaje(hist[hist.length - 1].texto, true);
+  var respuesta = siboBuscarRespuesta(texto);
+  hist.push({ user: false, texto: respuesta });
+  siboGuardarHistorial(hist);
+  setTimeout(function () { siboRenderMensaje(respuesta, false); }, 260);
+}
+function renderSiboChips() {
+  var chips = ['IVA CR', 'Factura Electrónica', 'Libro Diario', 'Balance', 'Conciliación Bancaria', 'CCSS', 'Aguinaldo', 'Renta D-101', 'Fórmulas', 'Plantillas'];
+  var wrap = document.getElementById('siboChips');
+  wrap.innerHTML = chips.map(function (c) { return '<button class="siboChip">' + c + '</button>'; }).join('');
+  wrap.querySelectorAll('.siboChip').forEach(function (btn) {
+    btn.addEventListener('click', function () { siboEnviarTexto(btn.textContent); });
+  });
+}
+document.getElementById('btnSibo').addEventListener('click', function () {
+  renderSiboChips();
+  siboRenderHistorial();
+  document.getElementById('siboOverlay').classList.add('show');
+  document.getElementById('siboInput').focus();
+});
+document.getElementById('siboCloseBtn').addEventListener('click', function () {
+  document.getElementById('siboOverlay').classList.remove('show');
+});
+document.getElementById('siboClearBtn').addEventListener('click', function () {
+  if (!confirm('¿Limpiar el historial del chat con Sibö?')) return;
+  siboGuardarHistorial([]);
+  siboRenderHistorial();
+});
+document.getElementById('siboSendBtn').addEventListener('click', function () {
+  var inp = document.getElementById('siboInput');
+  siboEnviarTexto(inp.value);
+  inp.value = '';
+});
+document.getElementById('siboInput').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    siboEnviarTexto(this.value);
+    this.value = '';
+  }
 });
 
 // ══════════════════════════════════════════════
@@ -3973,6 +4458,29 @@ function attachCellEvents() {
   });
   document.addEventListener('pointerup', function () { isSelecting = false; });
 }
+
+// ── Gesto de deshacer: toque simultáneo con 2 dedos sobre la grilla ──
+(function () {
+  var gridWrap = document.getElementById('gridWrap');
+  var gestureFired = false;
+  gridWrap.addEventListener('touchstart', function (e) {
+    if (e.touches.length >= 2) {
+      isSelecting = false;
+      clearRangeHighlight();
+      document.getElementById('rangeActionsBar').classList.remove('show');
+      if (!gestureFired) {
+        gestureFired = true;
+        undo();
+        var hint = document.getElementById('undoGestureHint');
+        hint.classList.add('show');
+        setTimeout(function () { hint.classList.remove('show'); }, 1200);
+      }
+    }
+  }, { passive: true });
+  gridWrap.addEventListener('touchend', function (e) {
+    if (e.touches.length === 0) { gestureFired = false; }
+  }, { passive: true });
+})();
 function commitCell(el) {
   var id = el.dataset.id;
   var val = el.textContent.trim();
@@ -4114,7 +4622,7 @@ document.getElementById('templateSelect').addEventListener('change', function ()
 function loadTemplate(tipo) {
   var hoy = new Date().toLocaleDateString('es-CR');
   var n = sheets.length + 1;
-  var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : 'Hoja';
+  var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
   sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; colWidths[name] = {};
@@ -4166,6 +4674,77 @@ function loadTemplate(tipo) {
       .forEach(function (row, i) { row.forEach(function (v, j) { set(2 + i, j, v); }); });
     set(5, 5, 'TOTALES', true);
     d[cellId(5, 6)] = '=SUMA(G3:G5)'; d[cellId(5, 7)] = '=SUMA(H3:H5)'; d[cellId(5, 8)] = '=SUMA(I3:I5)';
+  } else if (tipo === 'resultados') {
+    set(0, 0, '📈 ESTADO DE RESULTADOS', true);
+    set(1, 0, 'Período: ' + hoy);
+    set(3, 0, 'INGRESOS', true);
+    set(4, 0, 'Ventas'); set(4, 1, '450000');
+    set(5, 0, 'Otros ingresos'); set(5, 1, '15000');
+    set(6, 0, 'TOTAL INGRESOS', true);
+    d[cellId(6, 1)] = '=SUMA(B5:B6)';
+
+    set(8, 0, 'COSTO DE VENTAS', true);
+    set(9, 0, 'Costo de mercadería vendida'); set(9, 1, '210000');
+    set(10, 0, 'TOTAL COSTO DE VENTAS', true);
+    d[cellId(10, 1)] = '=B10';
+
+    set(12, 0, 'UTILIDAD BRUTA', true);
+    d[cellId(12, 1)] = '=B7-B11';
+
+    set(14, 0, 'GASTOS OPERATIVOS', true);
+    set(15, 0, 'Salarios'); set(15, 1, '90000');
+    set(16, 0, 'Alquiler'); set(16, 1, '35000');
+    set(17, 0, 'Servicios públicos'); set(17, 1, '12000');
+    set(18, 0, 'Depreciación'); set(18, 1, '8000');
+    set(19, 0, 'TOTAL GASTOS OPERATIVOS', true);
+    d[cellId(19, 1)] = '=SUMA(B16:B19)';
+
+    set(21, 0, 'UTILIDAD DE OPERACIÓN', true);
+    d[cellId(21, 1)] = '=B13-B20';
+
+    set(23, 0, 'IMPUESTO DE RENTA (D-101)', true);
+    d[cellId(23, 1)] = '=IMPUESTO.D101(B22;"PF")';
+
+    set(25, 0, 'UTILIDAD NETA', true);
+    d[cellId(25, 1)] = '=B22-B24';
+    f[cellId(25, 1)] = { bold: true };
+  } else if (tipo === 'balancegeneral') {
+    set(0, 0, '🏛️ BALANCE GENERAL', true);
+    set(1, 0, 'Al: ' + hoy);
+
+    set(3, 0, 'ACTIVO', true);
+    set(4, 0, 'Activo Circulante', true);
+    set(5, 0, 'Caja y Bancos'); set(5, 1, '85000');
+    set(6, 0, 'Cuentas por Cobrar'); set(6, 1, '42000');
+    set(7, 0, 'Inventario'); set(7, 1, '63000');
+    set(8, 0, 'Total Activo Circulante', true);
+    d[cellId(8, 1)] = '=SUMA(B6:B8)';
+
+    set(10, 0, 'Activo No Circulante', true);
+    set(11, 0, 'Mobiliario y Equipo'); set(11, 1, '120000');
+    set(12, 0, '(-) Depreciación Acumulada'); set(12, 1, '-25000');
+    set(13, 0, 'Total Activo No Circulante', true);
+    d[cellId(13, 1)] = '=SUMA(B12:B13)';
+
+    set(15, 0, 'TOTAL ACTIVO', true);
+    d[cellId(15, 1)] = '=B9+B14';
+    f[cellId(15, 1)] = { bold: true };
+
+    set(17, 0, 'PASIVO', true);
+    set(18, 0, 'Cuentas por Pagar'); set(18, 1, '38000');
+    set(19, 0, 'Préstamos por Pagar'); set(19, 1, '55000');
+    set(20, 0, 'TOTAL PASIVO', true);
+    d[cellId(20, 1)] = '=SUMA(B19:B20)';
+
+    set(22, 0, 'PATRIMONIO', true);
+    set(23, 0, 'Capital Social'); set(23, 1, '150000');
+    set(24, 0, 'Utilidades Retenidas'); set(24, 1, '42000');
+    set(25, 0, 'TOTAL PATRIMONIO', true);
+    d[cellId(25, 1)] = '=SUMA(B24:B25)';
+
+    set(27, 0, 'TOTAL PASIVO + PATRIMONIO', true);
+    d[cellId(27, 1)] = '=B21+B26';
+    f[cellId(27, 1)] = { bold: true };
   }
   buildTable(); autoSave();
 }
@@ -4181,7 +4760,7 @@ function leerHojaParaModulos() {
   var src = sheetData[activeSheet] || {};
   var headers = [], maxCol = 0, maxRow = 0;
   Object.keys(src).forEach(function (key) {
-    var m = key.match(/^([A-Z]+)(\d+)/);
+    var m = key.match(/^([A-Z]+)(\\d+)/);
     if (!m) return;
     var c = colIndex(m[1]), r = parseInt(m[2]) - 1;
     if (c > maxCol) maxCol = c;
