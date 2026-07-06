@@ -361,6 +361,9 @@ const SHEET_HTML = `<!DOCTYPE html>
       <input id="authEmail" type="text" placeholder="vos@correo.com" autocapitalize="none" />
       <span class="field-label">Contraseña</span>
       <input id="authPassword" type="password" placeholder="Mínimo 6 caracteres" />
+      <div style="text-align:right;margin-bottom:8px;">
+        <a href="#" id="authForgotLink" style="font-size:11px;color:#2d7a0c;">¿Olvidaste tu contraseña?</a>
+      </div>
       <div id="authError" style="color:#dc2626;font-size:11.5px;margin-bottom:6px;"></div>
       <div class="row" style="justify-content:space-between;">
         <button class="cancel" id="authCancel">Cerrar</button>
@@ -5281,7 +5284,7 @@ var FIREBASE_CONFIG = {
   projectId: "matriz-contable-cr-app",
   storageBucket: "matriz-contable-cr-app.firebasestorage.app",
   messagingSenderId: "687675833771",
-  appId: "1:687675833771:web:6420c87bf65dff6bc326ee"
+  appId: "1:687675833771:web:fe3ff15c4a26ca04c326ee"
 };
 
 function setSyncStatus(state, text) {
@@ -5341,6 +5344,19 @@ document.getElementById('authLoginBtn').addEventListener('click', function () {
     document.getElementById('authOverlay').classList.remove('show');
   }).catch(function (err) {
     document.getElementById('authError').textContent = err.message;
+  });
+});
+document.getElementById('authForgotLink').addEventListener('click', function (e) {
+  e.preventDefault();
+  var email = document.getElementById('authEmail').value.trim().toLowerCase();
+  var errEl = document.getElementById('authError');
+  errEl.style.color = '#dc2626';
+  if (!email) { errEl.textContent = 'Escribí tu email arriba primero.'; return; }
+  firebase.auth().sendPasswordResetEmail(email).then(function () {
+    errEl.style.color = '#2d7a0c';
+    errEl.textContent = '✓ Te mandamos un correo a ' + email + ' con instrucciones para restablecer tu contraseña.';
+  }).catch(function (err) {
+    errEl.textContent = err.message;
   });
 });
 document.getElementById('authLogoutBtn').addEventListener('click', function () {
