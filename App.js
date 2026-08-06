@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { StatusBar } from 'expo-status-bar'
 import { LangProvider, useLang } from './src/context/LangContext'
 import HomeScreen from './src/screens/HomeScreen'
 import FunctionsScreen from './src/screens/FunctionsScreen'
+import LoginScreen from './src/screens/LoginScreen'
 import SheetEditor from './src/components/SheetEditor'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './src/services/firebase'
 
 const Stack = createNativeStackNavigator()
 
@@ -47,6 +50,15 @@ function PlaceholderScreen({ navigation, route, title }) {
   )
 }
 
+// ─── Pantalla de carga mientras Firebase revisa si hay sesión activa ─
+function CargandoScreen() {
+  return (
+    <View style={styles.loadingScreen}>
+      <ActivityIndicator size="large" color="#fff" />
+    </View>
+  )
+}
+
 function AppNavigator() {
   return (
     <NavigationContainer>
@@ -68,11 +80,29 @@ function AppNavigator() {
 }
 
 export default function App() {
+  // ─── Estado de sesión: null = cargando, false = sin sesión, objeto = con sesión ─
+  const [usuario, setUsuario] = useState(null)
+  const [cargandoSesion, setCargandoSesion] = useState(true)
+
+  useEffect(() => {
+    const dejarDeEscuchar = onAuthStateChanged(auth, (user) => {
+      setUsuario(user)
+      setCargandoSesion(false)
+    })
+    return dejarDeEscuchar
+  }, [])
+
   return (
     <SafeAreaProvider>
       <LangProvider>
         <StatusBar style="light" />
-        <AppNavigator />
+        {cargandoSesion ? (
+          <CargandoScreen />
+        ) : usuario ? (
+          <AppNavigator />
+        ) : (
+          <LoginScreen />
+        )}
       </LangProvider>
     </SafeAreaProvider>
   )
@@ -86,4 +116,8 @@ const styles = StyleSheet.create({
   },
   backBtn: { fontSize: 13, fontWeight: '700', color: '#2d7a0c' },
   toolbarTitle: { fontSize: 13, fontWeight: '700', color: '#3d6020' },
+  loadingScreen: {
+    flex: 1, backgroundColor: '#2d7a0c',
+    justifyContent: 'center', alignItems: 'center',
+  },
 })
