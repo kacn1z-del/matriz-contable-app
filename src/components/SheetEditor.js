@@ -581,7 +581,11 @@ var selRangeStart = null, selRangeEnd = null, isSelecting = false;
 // ── Puente al servidor (SERVICIOWEB / XMLFILTRO) ──────────
 // Reemplazá esta URL por la que te dé Firebase al desplegar la función
 // "webproxy" (Firebase Console → Functions → copiar la URL del trigger).
-var WEBPROXY_URL = 'https://us-central1-matriz-contable-cr-app.cloudfunctions.net/webproxy';
+// ⚠️ Reemplazá "TU-PROYECTO" por el dominio real que te dé Vercel al
+// desplegar (Vercel Dashboard → tu proyecto → Domains, algo como
+// matriz-contable-app.vercel.app).
+var WEBPROXY_URL = 'https://TU-PROYECTO.vercel.app/api/webproxy';
+var SIBO_CHAT_URL = 'https://TU-PROYECTO.vercel.app/api/sibo-chat';
 var webCache = {};
 var webPending = {};
 
@@ -4366,10 +4370,42 @@ function siboEnviarTexto(texto) {
   var hist = siboGetHistorial();
   hist.push({ user: true, texto: texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') });
   siboRenderMensaje(hist[hist.length - 1].texto, true);
-  var respuesta = siboBuscarRespuesta(texto);
-  hist.push({ user: false, texto: respuesta });
   siboGuardarHistorial(hist);
-  setTimeout(function () { siboRenderMensaje(respuesta, false); }, 260);
+
+  // Indicador "escribiendo..." mientras esperamos la respuesta real
+  var wrap = document.getElementById('siboMessages');
+  var typingEl = document.createElement('div');
+  typingEl.className = 'siboMsgBot';
+  typingEl.id = 'siboTypingIndicator';
+  typingEl.textContent = 'Sibö está escribiendo...';
+  wrap.appendChild(typingEl);
+  wrap.scrollTop = wrap.scrollHeight;
+
+  fetch(SIBO_CHAT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: texto, history: hist.slice(0, -1) }),
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var el = document.getElementById('siboTypingIndicator');
+      if (el) el.remove();
+      var respuesta = data.text || siboBuscarRespuesta(texto);
+      var h2 = siboGetHistorial();
+      h2.push({ user: false, texto: respuesta });
+      siboGuardarHistorial(h2);
+      siboRenderMensaje(respuesta, false);
+    })
+    .catch(function () {
+      // Sin conexión al servidor: usamos la base de respuestas local como respaldo
+      var el = document.getElementById('siboTypingIndicator');
+      if (el) el.remove();
+      var respuesta = siboBuscarRespuesta(texto) + '<br><small style="opacity:.6">(sin conexión a Sibö IA — respuesta básica)</small>';
+      var h3 = siboGetHistorial();
+      h3.push({ user: false, texto: respuesta });
+      siboGuardarHistorial(h3);
+      siboRenderMensaje(respuesta, false);
+    });
 }
 function renderSiboChips() {
   var chips = ['IVA CR', 'Factura Electrónica', 'Libro Diario', 'Balance', 'Conciliación Bancaria', 'CCSS', 'Aguinaldo', 'Renta D-101', 'Fórmulas', 'Plantillas'];
