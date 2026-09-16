@@ -245,8 +245,10 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnBalanceAuto">📊 Balance Auto</button>
     <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
     <button id="btnDashboard">📊 Dashboard</button>
+    <button id="btnVencimientos">🗓 Vencimientos</button>
     <button id="btnD101">🇨🇷 D-101</button>
     <button id="btnCSV">⬇ CSV</button>
+    <button id="btnPdfReporte">⬇ PDF Reporte</button>
     <button id="btnAddRow">+Fila</button>
     <button id="btnDelRow">-Fila</button>
     <button id="btnAddCol">+Col</button>
@@ -4396,6 +4398,30 @@ function siboRenderMensaje(texto, esUsuario) {
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
 }
+function siboOfrecerInsertar(texto) {
+  var plano = texto.replace(/<[^>]*>/g, ' ');
+  var m = plano.match(/=[A-Za-zÁÉÍÓÚÑ.]+\\([^()]*\\)/);
+  if (!m) return;
+  var formula = m[0];
+  var wrap = document.getElementById('siboMessages');
+  var div = document.createElement('div');
+  div.className = 'siboMsgBot';
+  var btnId = 'siboIns_' + Date.now();
+  div.innerHTML = '<button id="' + btnId + '" style="padding:6px 10px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">📥 Insertar ' + formula + ' en celda ' + document.getElementById('cellRef').textContent + '</button>';
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+  document.getElementById(btnId).addEventListener('click', function () {
+    var id = document.getElementById('cellRef').textContent;
+    var el = document.getElementById('cell_' + id);
+    snapshot();
+    document.getElementById('formulaInput').value = formula;
+    if (el) el.textContent = formula;
+    if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+    sheetData[activeSheet][id] = formula;
+    buildTable(); autoSave();
+    if (el) el.focus();
+  });
+}
 function siboRenderHistorial() {
   var wrap = document.getElementById('siboMessages');
   wrap.innerHTML = '';
@@ -4405,6 +4431,17 @@ function siboRenderHistorial() {
     return;
   }
   hist.forEach(function (h) { siboRenderMensaje(h.texto, h.user); });
+}
+function siboSnapshotHoja() {
+  var src = sheetData[activeSheet] || {};
+  var keys = Object.keys(src);
+  if (!keys.length) return '(hoja vacía)';
+  var lines = [];
+  keys.slice(0, 120).forEach(function (id) {
+    var v = computeValue(id);
+    if (v !== '' && v !== undefined && v !== null) lines.push(id + '=' + v);
+  });
+  return 'Hoja activa: ' + activeSheet + '\\n' + lines.join(' | ');
 }
 function siboEnviarTexto(texto) {
   texto = (texto || '').trim();
@@ -4426,7 +4463,7 @@ function siboEnviarTexto(texto) {
   fetch(SIBO_CHAT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: texto, history: hist.slice(0, -1) }),
+    body: JSON.stringify({ message: texto, history: hist.slice(0, -1), sheetContext: siboSnapshotHoja() }),
   })
     .then(function (r) { return r.json(); })
     .then(function (data) {
@@ -4437,6 +4474,7 @@ function siboEnviarTexto(texto) {
       h2.push({ user: false, texto: respuesta });
       siboGuardarHistorial(h2);
       siboRenderMensaje(respuesta, false);
+      siboOfrecerInsertar(respuesta);
     })
     .catch(function () {
       // Sin conexión al servidor: usamos la base de respuestas local como respaldo
@@ -4786,7 +4824,7 @@ document.getElementById('btnDelRow').addEventListener('click', function () {
 
 document.getElementById('btnInsertarTabla').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
-  var m = id.match(/([A-Za-z]+)(\\\\d+)/);
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
   var startCol = colIndex(m[1]), startRow = parseInt(m[2]) - 1;
   var hoy = new Date().toLocaleDateString('es-CR');
   snapshot();
@@ -5210,6 +5248,37 @@ document.getElementById('btnDashboard').addEventListener('click', function () {
     insertChart('pie', 'Gastos por Cuenta', gastoKeys, gastoValues);
   }
   document.getElementById('saveStatus').textContent = '✓ Dashboard generado';
+});
+
+document.getElementById('btnVencimientos').addEventListener('click', function () {
+  var hoy = new Date();
+  function proximaFecha(dia, mesesLista) {
+    var y = hoy.getFullYear();
+    var candidatos = [];
+    mesesLista.forEach(function (mes) {
+      var d = new Date(y, mes, dia);
+      if (d < hoy) d = new Date(y + 1, mes, dia);
+      candidatos.push(d);
+    });
+    candidatos.sort(function (a, b) { return a - b; });
+    return candidatos[0];
+  }
+  var todosMeses = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  var items = [
+    { nombre: 'IVA (D-104) mensual', fecha: proximaFecha(15, todosMeses) },
+    { nombre: 'Planilla CCSS mensual', fecha: proximaFecha(5, todosMeses) },
+    { nombre: 'D-151 (Declaración informativa) anual', fecha: proximaFecha(28, [1]) },
+    { nombre: 'Renta / D-101 anual', fecha: proximaFecha(15, [2]) },
+  ];
+  items.forEach(function (it) {
+    var dias = Math.ceil((it.fecha - hoy) / 86400000);
+    it.dias = dias;
+  });
+  items.sort(function (a, b) { return a.dias - b.dias; });
+  var texto = '🗓 PRÓXIMOS VENCIMIENTOS FISCALES CR\\n\\n' + items.map(function (it) {
+    return it.nombre + ': ' + it.fecha.toLocaleDateString('es-CR') + ' (en ' + it.dias + ' días)';
+  }).join('\\n') + '\\n\\nNota: fechas aproximadas según el calendario típico de Hacienda/CCSS — verificá siempre las fechas exactas vigentes en hacienda.go.cr y ccss.sa.cr, ya que pueden variar.';
+  alert(texto);
 });
 
 document.getElementById('btnD101').addEventListener('click', function () {
@@ -5639,6 +5708,59 @@ document.getElementById('btnCSV').addEventListener('click', function () {
   a.download = 'MatrizContableCR_' + activeSheet + '.csv';
   a.click();
   document.getElementById('saveStatus').textContent = 'CSV exportado';
+});
+
+document.getElementById('btnPdfReporte').addEventListener('click', function () {
+  var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
+  if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return; }
+  var data = sheetData[activeSheet] || {};
+  var maxRow = 0, maxCol = 0;
+  Object.keys(data).forEach(function (key) {
+    var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
+    var r = parseInt(m[2]) - 1; var c = colIndex(m[1]);
+    if (r > maxRow) maxRow = r; if (c > maxCol) maxCol = c;
+  });
+  if (!Object.keys(data).length) { alert('No hay datos para exportar.'); return; }
+  maxCol = Math.min(maxCol, 6);
+
+  var g3 = [45, 122, 12], bg = [238, 248, 228], border = [204, 233, 174];
+  var doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var pageW = 210, marginX = 12, usableW = pageW - marginX * 2;
+  var colW = usableW / (maxCol + 1);
+
+  function drawHeader() {
+    doc.setFillColor(g3[0], g3[1], g3[2]);
+    doc.rect(0, 0, pageW, 24, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(15); doc.setFont('helvetica', 'bold');
+    doc.text('MATRIZ CONTABLE CR', marginX, 11);
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text(activeSheet, marginX, 18);
+    doc.text(new Date().toLocaleDateString('es-CR'), pageW - marginX, 11, { align: 'right' });
+  }
+  drawHeader();
+
+  var y = 34;
+  for (var r = 0; r <= maxRow; r++) {
+    if (y > 275) { doc.addPage(); drawHeader(); y = 34; }
+    var isHeaderRow = (r === 0);
+    if (r % 2 === 0 && !isHeaderRow) {
+      doc.setFillColor(bg[0], bg[1], bg[2]);
+      doc.rect(marginX, y - 4.5, usableW, 7, 'F');
+    }
+    doc.setDrawColor(border[0], border[1], border[2]);
+    doc.setFont('helvetica', isHeaderRow ? 'bold' : 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(isHeaderRow ? g3[0] : 30, isHeaderRow ? g3[1] : 30, isHeaderRow ? g3[2] : 30);
+    for (var c = 0; c <= maxCol; c++) {
+      var val = computeValue(cellId(r, c)) || '';
+      var txt = String(val).substring(0, 22);
+      doc.text(txt, marginX + c * colW + 1, y);
+    }
+    y += 7;
+  }
+  doc.save('MatrizContableCR_' + activeSheet + '.pdf');
+  document.getElementById('saveStatus').textContent = 'PDF exportado';
 });
 
 // ══════════════════════════════════════════════
