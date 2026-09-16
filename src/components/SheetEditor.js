@@ -244,6 +244,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
     <button id="btnBalanceAuto">📊 Balance Auto</button>
     <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
+    <button id="btnDashboard">📊 Dashboard</button>
     <button id="btnD101">🇨🇷 D-101</button>
     <button id="btnCSV">⬇ CSV</button>
     <button id="btnAddRow">+Fila</button>
@@ -622,10 +623,10 @@ function filtrarXML(xmlText, xpath) {
 
     var path = xpath.trim();
     var wantAttr = null;
-    var attrMatch = path.match(/\/@([\w:-]+)$/);
-    if (attrMatch) { wantAttr = attrMatch[1]; path = path.replace(/\/@[\w:-]+$/, ''); }
+    var attrMatch = path.match(/\\/@([\\w:-]+)$/);
+    if (attrMatch) { wantAttr = attrMatch[1]; path = path.replace(/\\/@[\\w:-]+$/, ''); }
 
-    var tagPath = path.replace(/^\/\//, '').split('/').filter(Boolean);
+    var tagPath = path.replace(/^\\/\\//, '').split('/').filter(Boolean);
     var tagName = tagPath[tagPath.length - 1];
     var nodes = doc.getElementsByTagName(tagName);
     if (!nodes.length) return '#N/A';
@@ -850,6 +851,47 @@ function computeExpr(expr) {
     }
     if ((inner = matchFn('Y|AND')) !== null) { args = splitArgs(inner); return args.every(function (a) { return evalCond(a); }) ? 'VERDADERO' : 'FALSO'; }
     if ((inner = matchFn('O|OR')) !== null) { args = splitArgs(inner); return args.some(function (a) { return evalCond(a); }) ? 'VERDADERO' : 'FALSO'; }
+    if ((inner = matchFn('AGUINALDO')) !== null) {
+      args = splitArgs(inner); var numsAg = isRange(args[0]) ? rangeNums(args[0]) : args.map(resolveNum);
+      var totalAg = numsAg.reduce(function (a, b) { return a + b; }, 0);
+      return fmtNum(totalAg / 12);
+    }
+    if ((inner = matchFn('CESANTIA')) !== null) {
+      args = splitArgs(inner);
+      var salProm = resolveNum(args[0]);
+      var aniosServ = Math.min(resolveNum(args[1] || '0'), 8);
+      return fmtNum(salProm * aniosServ);
+    }
+    if ((inner = matchFn('VALIDACEDULA')) !== null) {
+      args = splitArgs(inner);
+      var cedTxt = String(resolveArg(args[0])).split('-').join('').split(' ').join('');
+      var cedOk = false;
+      if (cedTxt.length === 9 && !isNaN(cedTxt)) cedOk = true;
+      if (cedTxt.length === 10 && cedTxt.charAt(0) === '3' && !isNaN(cedTxt)) cedOk = true;
+      return cedOk ? 'VERDADERO' : 'FALSO';
+    }
+    if ((inner = matchFn('RETENCIONFUENTE')) !== null) {
+      args = splitArgs(inner);
+      var montoRet = resolveNum(args[0]);
+      var tipoRet = String(resolveArg(args[1] || '')).toUpperCase();
+      var pctRet = 0.15;
+      if (tipoRet.indexOf('SALARIO') !== -1) pctRet = 0.10;
+      if (tipoRet.indexOf('DIETA') !== -1) pctRet = 0.15;
+      if (tipoRet.indexOf('ALQUILER') !== -1) pctRet = 0.15;
+      if (tipoRet.indexOf('INTERES') !== -1) pctRet = 0.15;
+      if (tipoRet.indexOf('PROFESIONAL') !== -1) pctRet = 0.15;
+      return fmtNum(montoRet * pctRet);
+    }
+    if ((inner = matchFn('PLANILLACCSS')) !== null) {
+      args = splitArgs(inner);
+      var salBruto = resolveNum(args[0]);
+      var modoCcss = args[1] ? resolveNum(args[1]) : 0;
+      var trabajadorCcss = salBruto * 0.1067;
+      var patronoCcss = salBruto * 0.2667;
+      if (modoCcss === 1) return fmtNum(patronoCcss);
+      if (modoCcss === 2) return fmtNum(trabajadorCcss + patronoCcss);
+      return fmtNum(trabajadorCcss);
+    }
     if ((inner = matchFn('NO|NOT')) !== null) { return evalCond(splitArgs(inner)[0]) ? 'FALSO' : 'VERDADERO'; }
     if ((inner = matchFn('SI\\\\.ERROR|IFERROR')) !== null) {
       args = splitArgs(inner);
@@ -5115,6 +5157,59 @@ document.getElementById('btnFlujoAuto').addEventListener('click', function () {
     .forEach(function (row, i) { row.forEach(function (v, j) { set(13 + i, j, v); }); });
 
   buildTable(); autoSave();
+});
+
+document.getElementById('btnDashboard').addEventListener('click', function () {
+  var data = leerHojaParaModulos();
+  if (!data.rows.length) { alert('No se detectaron movimientos (columnas Fecha/Cuenta/Debe/Haber) en la hoja activa.'); return; }
+  snapshot();
+  var origen = activeSheet;
+  var name = crearHojaDestino('Dashboard');
+  activeSheet = name;
+  var d = sheetData[name], f = sheetFormats[name];
+  function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
+
+  var totalIngresos = 0, totalGastos = 0;
+  var porCuentaIng = {}, porCuentaGasto = {};
+  data.rows.forEach(function (row) {
+    var c = (row.cuenta || '').toLowerCase();
+    var neto = row.debe - row.haber;
+    if (/venta|ingreso/.test(c)) {
+      totalIngresos += -neto;
+      porCuentaIng[row.cuenta] = (porCuentaIng[row.cuenta] || 0) + (-neto);
+    }
+    if (/costo|gasto|compra/.test(c)) {
+      totalGastos += neto;
+      porCuentaGasto[row.cuenta] = (porCuentaGasto[row.cuenta] || 0) + neto;
+    }
+  });
+  var utilidadNeta = totalIngresos - totalGastos;
+  var margen = totalIngresos !== 0 ? (utilidadNeta / totalIngresos) * 100 : 0;
+
+  set(0, 0, '📊 DASHBOARD — origen: ' + origen, true);
+  set(2, 0, 'Total Ingresos', true); set(2, 1, totalIngresos);
+  set(3, 0, 'Total Gastos', true); set(3, 1, totalGastos);
+  set(4, 0, 'Utilidad Neta', true); set(4, 1, utilidadNeta, true);
+  set(5, 0, 'Margen Neto (%)', true); set(5, 1, fmtNum(margen) + '%');
+
+  set(7, 0, 'Gastos por cuenta', true);
+  var rGasto = 8;
+  Object.keys(porCuentaGasto).sort().forEach(function (k) {
+    set(rGasto, 0, k); set(rGasto, 1, porCuentaGasto[k]); rGasto++;
+  });
+
+  buildTable(); autoSave();
+
+  var chartLabels = ['Ingresos', 'Gastos', 'Utilidad Neta'];
+  var chartValues = [totalIngresos, totalGastos, utilidadNeta];
+  insertChart('bar', 'Resumen ' + origen, chartLabels, chartValues);
+
+  var gastoKeys = Object.keys(porCuentaGasto);
+  if (gastoKeys.length) {
+    var gastoValues = gastoKeys.map(function (k) { return porCuentaGasto[k]; });
+    insertChart('pie', 'Gastos por Cuenta', gastoKeys, gastoValues);
+  }
+  document.getElementById('saveStatus').textContent = '✓ Dashboard generado';
 });
 
 document.getElementById('btnD101').addEventListener('click', function () {
