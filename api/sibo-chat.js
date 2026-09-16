@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     return
   }
 
-  const { message, history } = req.body || {}
+  const { message, history, sheetContext } = req.body || {}
   if (!message || typeof message !== 'string') {
     res.status(400).json({ error: 'Falta "message" en el body.' })
     return
@@ -39,7 +39,10 @@ module.exports = async (req, res) => {
   const pastMessages = (Array.isArray(history) ? history : [])
     .slice(-10)
     .map((h) => ({ role: h.user ? 'user' : 'assistant', content: String(h.texto || '') }))
-  pastMessages.push({ role: 'user', content: message })
+  const userContent = sheetContext
+    ? 'Contexto de la hoja activa (celda=valor):\n' + String(sheetContext).slice(0, 4000) + '\n\nPregunta del usuario: ' + message
+    : message
+  pastMessages.push({ role: 'user', content: userContent })
 
   try {
     const apiRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -58,7 +61,12 @@ module.exports = async (req, res) => {
           'Tu especialidad es contabilidad, IVA (13%), CCSS, planillas, facturación electrónica ' +
           '4.3, aguinaldo, cesantía, preaviso, renta del trabajo, y el uso de las fórmulas y ' +
           'plantillas de esta hoja de cálculo. Si te preguntan algo totalmente fuera de ese tema, ' +
-          'respondé brevemente igual pero redirigí con amabilidad hacia temas contables.',
+          'respondé brevemente igual pero redirigí con amabilidad hacia temas contables. ' +
+          'Si el mensaje incluye un "Contexto de la hoja activa", úsalo para responder preguntas ' +
+          'concretas sobre los datos (por ejemplo cuánto suma una columna, o qué celda tiene un valor). ' +
+          'Cuando sugieras una fórmula para que el usuario la use, escribila siempre completa y sola ' +
+          'en su propia línea empezando con "=", por ejemplo: =SUMA(A1:A10) — así la app puede detectarla ' +
+          'y ofrecer insertarla directo en la celda seleccionada.',
         messages: pastMessages,
       }),
     })
