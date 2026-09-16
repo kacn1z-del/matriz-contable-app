@@ -585,8 +585,8 @@ var selRangeStart = null, selRangeEnd = null, isSelecting = false;
 // ⚠️ Reemplazá "TU-PROYECTO" por el dominio real que te dé Vercel al
 // desplegar (Vercel Dashboard → tu proyecto → Domains, algo como
 // matriz-contable-app.vercel.app).
-var WEBPROXY_URL = 'https://TU-PROYECTO.vercel.app/api/webproxy';
-var SIBO_CHAT_URL = 'https://TU-PROYECTO.vercel.app/api/sibo-chat';
+var WEBPROXY_URL = 'https://matriz-contable-app.vercel.app/api/webproxy';
+var SIBO_CHAT_URL = 'https://matriz-contable-app.vercel.app/api/sibo-chat';
 var webCache = {};
 var webPending = {};
 
