@@ -1,6 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
+import * as Notifications from 'expo-notifications'
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+})
 
 const SHEET_HTML = `<!DOCTYPE html>
 <html lang="es">
@@ -98,6 +107,25 @@ const SHEET_HTML = `<!DOCTYPE html>
   #fnOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9500; display: none; align-items: flex-end; justify-content: center; }
   #fnOverlay.show { display: flex; }
   #fnModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+  #dictOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9500; display: none; align-items: flex-end; justify-content: center; }
+  #dictOverlay.show { display: flex; }
+  #dictModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+  #dictHead { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #2d7a0c; color: #fff; }
+  #dictHead h3 { margin: 0; font-size: 15px; }
+  #dictLangTabs { display: flex; overflow-x: auto; gap: 6px; padding: 8px 10px; background: #eef8e4; }
+  #dictLangTabs button { flex-shrink: 0; padding: 5px 10px; border-radius: 999px; border: 1px solid #cce9ae; background: #fff; font-size: 12px; }
+  #dictLangTabs button.active { background: #2d7a0c; color: #fff; border-color: #2d7a0c; }
+  #dictSearchRow { padding: 8px 10px; }
+  #dictSearchRow input { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #cce9ae; box-sizing: border-box; }
+  #dictListWrap { flex: 1; overflow-y: auto; padding: 0 10px; }
+  .dictItem { padding: 8px; border-bottom: 1px solid #eee; }
+  .dictItem b { color: #2d7a0c; }
+  .dictItem .meta { font-size: 11px; color: #888; }
+  #dictAddPanel { padding: 10px; border-top: 2px solid #eef8e4; background: #fafffa; }
+  #dictAddPanel h4 { margin: 0 0 6px 0; font-size: 13px; }
+  #dictAddPanel input, #dictAddPanel select { width: 100%; padding: 7px; margin-bottom: 6px; border-radius: 8px; border: 1px solid #cce9ae; box-sizing: border-box; }
+  #dictAddBtn { width: 100%; padding: 9px; border-radius: 8px; background: #2d7a0c; color: #fff; border: none; }
+  #dictAddStatus { font-size: 11.5px; color: #6b8f48; margin-top: 4px; }
   #fnHead { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #2d7a0c; flex-shrink: 0; }
   #fnHead h3 { margin: 0; color: #fff; font-size: 14px; }
   #fnHead button { background: none; border: none; color: #fff; font-size: 18px; }
@@ -241,6 +269,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnBuscarReemplazar">🔎 Buscar</button>
     <button id="btnFactura">🧾 Factura</button>
     <button id="btnFxLib">fx Funciones</button>
+    <button id="btnDiccionario">📖 Diccionario</button>
     <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
     <button id="btnBalanceAuto">📊 Balance Auto</button>
     <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
@@ -249,6 +278,11 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnD101">🇨🇷 D-101</button>
     <button id="btnCSV">⬇ CSV</button>
     <button id="btnPdfReporte">⬇ PDF Reporte</button>
+    <button id="btnExcelExport">⬇ Excel</button>
+    <button id="btnExcelImport">⬆ Importar Excel</button>
+    <button id="btnConciliacion">🏦 Conciliación</button>
+    <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none" />
+    <input type="file" id="bankFileInput" accept=".csv,.txt,.xlsx,.xls" style="display:none" />
     <button id="btnAddRow">+Fila</button>
     <button id="btnDelRow">-Fila</button>
     <button id="btnAddCol">+Col</button>
@@ -446,6 +480,42 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="dictOverlay">
+  <div id="dictModal">
+    <div id="dictHead">
+      <h3>📖 Diccionario Indígena · <span id="dictTotalBadge">0</span> palabras</h3>
+      <button id="dictClose">✕</button>
+    </div>
+    <div id="dictLangTabs">
+      <button data-lang="todos" class="active">Todos</button>
+      <button data-lang="bribri">Bribri</button>
+      <button data-lang="cabecar">Cabécar</button>
+      <button data-lang="maleku">Maléku</button>
+      <button data-lang="boruca">Boruca</button>
+      <button data-lang="ngabe">Ngäbere</button>
+      <button data-lang="terraba">Térraba</button>
+    </div>
+    <div id="dictSearchRow"><input id="dictSearchInput" type="text" placeholder="Buscar palabra en español o indígena..." /></div>
+    <div id="dictListWrap"><div id="dictList"></div></div>
+    <div id="dictAddPanel">
+      <h4>➕ Agregar palabra (colaborativo — cualquiera puede sumar)</h4>
+      <select id="dictAddLang">
+        <option value="bribri">Bribri</option>
+        <option value="cabecar">Cabécar</option>
+        <option value="maleku">Maléku</option>
+        <option value="boruca">Boruca</option>
+        <option value="ngabe">Ngäbere</option>
+        <option value="terraba">Térraba</option>
+      </select>
+      <input id="dictAddEs" type="text" placeholder="Palabra en español" />
+      <input id="dictAddIndigena" type="text" placeholder="Palabra en la lengua indígena" />
+      <input id="dictAddNotas" type="text" placeholder="Notas / pronunciación (opcional)" />
+      <button id="dictAddBtn">Agregar al diccionario</button>
+      <div id="dictAddStatus"></div>
+    </div>
+  </div>
+</div>
+
 <div id="feOverlay">
   <div id="feModal">
     <div id="feHead">
@@ -562,6 +632,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -4576,6 +4647,86 @@ document.getElementById('btnFxLib').addEventListener('click', function () {
 document.getElementById('fnClose').addEventListener('click', function () {
   document.getElementById('fnOverlay').classList.remove('show');
 });
+
+// ══════════════════════════════════════════════
+// DICCIONARIO INDÍGENA COLABORATIVO (Firestore compartido)
+// ══════════════════════════════════════════════
+var dictCache = [];
+var dictLangActual = 'todos';
+
+function dictCargar() {
+  if (!firestoreDB) { document.getElementById('dictList').innerHTML = '<div class="dictItem">Iniciá sesión para ver y agregar palabras.</div>'; return; }
+  document.getElementById('dictList').innerHTML = '<div class="dictItem">Cargando...</div>';
+  firestoreDB.collection('diccionarioIndigena').orderBy('palabraEspanol').get().then(function (snap) {
+    dictCache = [];
+    snap.forEach(function (doc) { dictCache.push(Object.assign({ id: doc.id }, doc.data())); });
+    document.getElementById('dictTotalBadge').textContent = dictCache.length;
+    dictRenderLista();
+  }).catch(function (err) {
+    document.getElementById('dictList').innerHTML = '<div class="dictItem">No se pudo cargar el diccionario. ' + (err && err.message ? err.message : '') + '</div>';
+  });
+}
+
+function dictRenderLista() {
+  var q = (document.getElementById('dictSearchInput').value || '').toLowerCase();
+  var wrap = document.getElementById('dictList');
+  var filtrado = dictCache.filter(function (w) {
+    if (dictLangActual !== 'todos' && w.idioma !== dictLangActual) return false;
+    if (!q) return true;
+    return (w.palabraEspanol || '').toLowerCase().indexOf(q) !== -1 || (w.palabraIndigena || '').toLowerCase().indexOf(q) !== -1;
+  });
+  if (!filtrado.length) { wrap.innerHTML = '<div class="dictItem">Sin resultados. ¡Sé la primera persona en agregar esta palabra!</div>'; return; }
+  var nombresIdioma = { bribri: 'Bribri', cabecar: 'Cabécar', maleku: 'Maléku', boruca: 'Boruca', ngabe: 'Ngäbere', terraba: 'Térraba' };
+  wrap.innerHTML = filtrado.map(function (w) {
+    return '<div class="dictItem"><b>' + (w.palabraIndigena || '') + '</b> — ' + (w.palabraEspanol || '') +
+      '<div class="meta">' + (nombresIdioma[w.idioma] || w.idioma) + (w.notas ? ' · ' + w.notas : '') +
+      (w.autor ? ' · agregado por ' + w.autor : '') + '</div></div>';
+  }).join('');
+}
+
+document.getElementById('btnDiccionario').addEventListener('click', function () {
+  document.getElementById('dictOverlay').classList.add('show');
+  dictCargar();
+});
+document.getElementById('dictClose').addEventListener('click', function () {
+  document.getElementById('dictOverlay').classList.remove('show');
+});
+document.getElementById('dictSearchInput').addEventListener('input', dictRenderLista);
+document.querySelectorAll('#dictLangTabs button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('#dictLangTabs button').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    dictLangActual = btn.dataset.lang;
+    dictRenderLista();
+  });
+});
+document.getElementById('dictAddBtn').addEventListener('click', function () {
+  var idioma = document.getElementById('dictAddLang').value;
+  var es = document.getElementById('dictAddEs').value.trim();
+  var indigena = document.getElementById('dictAddIndigena').value.trim();
+  var notas = document.getElementById('dictAddNotas').value.trim();
+  var statusEl = document.getElementById('dictAddStatus');
+  if (!es || !indigena) { statusEl.textContent = 'Completá al menos la palabra en español y en la lengua indígena.'; return; }
+  if (!firestoreDB) { statusEl.textContent = 'Iniciá sesión para poder agregar palabras.'; return; }
+  statusEl.textContent = 'Guardando...';
+  firestoreDB.collection('diccionarioIndigena').add({
+    idioma: idioma,
+    palabraEspanol: es,
+    palabraIndigena: indigena,
+    notas: notas,
+    autor: (currentUser && (currentUser.email || currentUser.displayName)) || 'Colaborador anónimo',
+    fecha: new Date().toISOString(),
+  }).then(function () {
+    statusEl.textContent = '✓ ¡Palabra agregada! Gracias por tu aporte.';
+    document.getElementById('dictAddEs').value = '';
+    document.getElementById('dictAddIndigena').value = '';
+    document.getElementById('dictAddNotas').value = '';
+    dictCargar();
+  }).catch(function (err) {
+    statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido');
+  });
+});
+
 document.getElementById('fnSearchInput').addEventListener('input', function () {
   var q = this.value.trim().toLowerCase();
   if (!q) { renderFnList(fnData[fnCurrentCat] || []); return; }
@@ -4593,10 +4744,13 @@ document.getElementById('fnInsertBtn').addEventListener('click', function () {
   var el = document.getElementById('cell_' + id);
   var toInsert = '=' + (fnSelectedItem.s || (fnSelectedItem.n + '()'));
   snapshot();
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  sheetData[activeSheet][id] = toInsert;
   document.getElementById('formulaInput').value = toInsert;
-  if (el) el.textContent = toInsert;
   document.getElementById('fnOverlay').classList.remove('show');
-  if (el) { el.focus(); }
+  buildTable(); autoSave();
+  var elAfter = document.getElementById('cell_' + id);
+  if (elAfter) { elAfter.focus(); }
 });
 
 document.getElementById('btnNote').addEventListener('click', function () {
@@ -5764,7 +5918,148 @@ document.getElementById('btnPdfReporte').addEventListener('click', function () {
 });
 
 // ══════════════════════════════════════════════
-// CUENTA (Firebase Auth) + MIS MATRICES (Firestore)
+// EXCEL (.xlsx) EXPORT / IMPORT
+// ══════════════════════════════════════════════
+document.getElementById('btnExcelExport').addEventListener('click', function () {
+  if (!window.XLSX) { alert('No se pudo cargar el generador de Excel. Revisá tu conexión a internet.'); return; }
+  var data = sheetData[activeSheet] || {};
+  var maxRow = 0, maxCol = 0;
+  Object.keys(data).forEach(function (key) {
+    var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
+    var r = parseInt(m[2]) - 1; var c = colIndex(m[1]);
+    if (r > maxRow) maxRow = r; if (c > maxCol) maxCol = c;
+  });
+  if (!Object.keys(data).length) { alert('No hay datos para exportar.'); return; }
+  var aoa = [];
+  for (var r = 0; r <= maxRow; r++) {
+    var row = [];
+    for (var c = 0; c <= maxCol; c++) row.push(computeValue(cellId(r, c)) || '');
+    aoa.push(row);
+  }
+  var ws = XLSX.utils.aoa_to_sheet(aoa);
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, activeSheet.substring(0, 31));
+  var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  var blob = new Blob([wbout], { type: 'application/octet-stream' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'MatrizContableCR_' + activeSheet + '.xlsx';
+  a.click();
+  document.getElementById('saveStatus').textContent = 'Excel exportado';
+});
+
+document.getElementById('btnExcelImport').addEventListener('click', function () {
+  document.getElementById('excelFileInput').click();
+});
+document.getElementById('excelFileInput').addEventListener('change', function (e) {
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (!window.XLSX) { alert('No se pudo cargar el lector de Excel. Revisá tu conexión a internet.'); return; }
+  var reader = new FileReader();
+  reader.onload = function (ev) {
+    try {
+      var wb = XLSX.read(ev.target.result, { type: 'binary' });
+      var wsName = wb.SheetNames[0];
+      var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wsName], { header: 1, raw: false });
+      snapshot();
+      var name = crearHojaDestino('Importado_' + wsName);
+      activeSheet = name;
+      if (!sheetData[name]) sheetData[name] = {};
+      aoa.forEach(function (row, ri) {
+        row.forEach(function (val, ci) {
+          if (val !== '' && val !== undefined && val !== null) sheetData[name][cellId(ri, ci)] = String(val);
+        });
+      });
+      buildTable(); autoSave();
+      document.getElementById('saveStatus').textContent = 'Excel importado en hoja "' + name + '"';
+    } catch (err) {
+      alert('No se pudo leer el archivo. Verificá que sea un .xlsx válido.');
+    }
+    document.getElementById('excelFileInput').value = '';
+  };
+  reader.readAsBinaryString(file);
+});
+
+// ══════════════════════════════════════════════
+// CONCILIACIÓN BANCARIA
+// ══════════════════════════════════════════════
+document.getElementById('btnConciliacion').addEventListener('click', function () {
+  document.getElementById('bankFileInput').click();
+});
+document.getElementById('bankFileInput').addEventListener('change', function (e) {
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  var nombreArchivo = file.name.toLowerCase();
+  var esExcel = nombreArchivo.indexOf('.xls') !== -1;
+  var reader = new FileReader();
+  reader.onload = function (ev) {
+    var movimientosBanco = [];
+    try {
+      if (esExcel) {
+        if (!window.XLSX) { alert('No se pudo cargar el lector de Excel.'); return; }
+        var wb = XLSX.read(ev.target.result, { type: 'binary' });
+        var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false });
+        aoa.forEach(function (row) {
+          if (!row.length) return;
+          var monto = parseFloat(String(row[2] || row[1] || '0').replace(/[^0-9.-]/g, ''));
+          if (!isNaN(monto) && monto !== 0) movimientosBanco.push({ fecha: row[0] || '', desc: row[1] || '', monto: monto });
+        });
+      } else {
+        var texto = ev.target.result;
+        var sep = texto.indexOf(';') !== -1 ? ';' : ',';
+        texto.split('\\n').forEach(function (linea) {
+          if (!linea.trim()) return;
+          var cols = linea.split(sep).map(function (c) { return c.replace(/^"|"$/g, '').trim(); });
+          if (!cols.length) return;
+          var monto = parseFloat(String(cols[2] || cols[1] || '0').replace(/[^0-9.-]/g, ''));
+          if (!isNaN(monto) && monto !== 0) movimientosBanco.push({ fecha: cols[0] || '', desc: cols[1] || '', monto: monto });
+        });
+      }
+    } catch (err) { alert('No se pudo leer el archivo del banco.'); return; }
+    if (!movimientosBanco.length) { alert('No se detectaron movimientos en el archivo. Se espera: Fecha, Descripción, Monto por fila.'); return; }
+
+    var libros = leerHojaParaModulos();
+    var movimientosLibros = libros.rows.map(function (row) {
+      return { fecha: row.fecha || '', desc: row.cuenta || '', monto: row.debe - row.haber };
+    });
+    var usados = {};
+    var resultado = movimientosBanco.map(function (mb) {
+      var match = null;
+      for (var i = 0; i < movimientosLibros.length; i++) {
+        if (usados[i]) continue;
+        if (Math.abs(Math.abs(movimientosLibros[i].monto) - Math.abs(mb.monto)) < 0.5) { match = i; break; }
+      }
+      if (match !== null) usados[match] = true;
+      return { banco: mb, libro: match !== null ? movimientosLibros[match] : null };
+    });
+    var pendientesLibros = movimientosLibros.filter(function (_, i) { return !usados[i]; });
+
+    snapshot();
+    var name = crearHojaDestino('Conciliación');
+    activeSheet = name;
+    var d = sheetData[name], f = sheetFormats[name];
+    function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
+    set(0, 0, '🏦 CONCILIACIÓN BANCARIA', true);
+    var hdr = ['Fecha (banco)', 'Descripción (banco)', 'Monto (banco)', 'Cuenta (libros)', 'Estado'];
+    hdr.forEach(function (h, i) { set(2, i, h, true); });
+    var r = 3;
+    resultado.forEach(function (it) {
+      set(r, 0, it.banco.fecha); set(r, 1, it.banco.desc); set(r, 2, it.banco.monto);
+      set(r, 3, it.libro ? it.libro.desc : '—');
+      set(r, 4, it.libro ? '✅ Conciliado' : '⚠ Solo en banco');
+      r++;
+    });
+    pendientesLibros.forEach(function (mv) {
+      set(r, 0, mv.fecha); set(r, 1, mv.desc); set(r, 2, ''); set(r, 3, mv.desc);
+      set(r, 4, '⚠ Solo en libros');
+      r++;
+    });
+    buildTable(); autoSave();
+    document.getElementById('bankFileInput').value = '';
+    document.getElementById('saveStatus').textContent = '✓ Conciliación generada (' + Object.keys(usados).length + ' conciliados)';
+  };
+  if (esExcel) reader.readAsBinaryString(file); else reader.readAsText(file);
+});
 // ══════════════════════════════════════════════
 var FIREBASE_CONFIG = {
   apiKey: "AIzaSyBxyfSmdUMUY5d-QHzh2l1qus6GNsr28EI",
@@ -6025,7 +6320,64 @@ setInterval(autoSave, 20000);
 </body>
 </html>`
 
+function proximaFechaNativa(dia, mesesLista) {
+  var hoy = new Date()
+  var y = hoy.getFullYear()
+  var candidatos = []
+  mesesLista.forEach(function (mes) {
+    var d = new Date(y, mes, dia, 9, 0, 0)
+    if (d < hoy) d = new Date(y + 1, mes, dia, 9, 0, 0)
+    candidatos.push(d)
+  })
+  candidatos.sort(function (a, b) { return a - b })
+  return candidatos[0]
+}
+
+async function programarNotificacionesVencimientos() {
+  const { status } = await Notifications.getPermissionsAsync()
+  let finalStatus = status
+  if (status !== 'granted') {
+    const req = await Notifications.requestPermissionsAsync()
+    finalStatus = req.status
+  }
+  if (finalStatus !== 'granted') return
+
+  await Notifications.cancelAllScheduledNotificationsAsync()
+  const todosMeses = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  const items = [
+    { nombre: 'IVA (D-104) mensual', fecha: proximaFechaNativa(15, todosMeses) },
+    { nombre: 'Planilla CCSS mensual', fecha: proximaFechaNativa(5, todosMeses) },
+    { nombre: 'D-151 (Declaración informativa) anual', fecha: proximaFechaNativa(28, [1]) },
+    { nombre: 'Renta / D-101 anual', fecha: proximaFechaNativa(15, [2]) },
+  ]
+  for (const it of items) {
+    const avisoTemprano = new Date(it.fecha.getTime() - 3 * 24 * 60 * 60 * 1000)
+    if (avisoTemprano > new Date()) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '🗓 Vencimiento fiscal próximo',
+          body: it.nombre + ' vence el ' + it.fecha.toLocaleDateString('es-CR') + ' (en 3 días)',
+        },
+        trigger: avisoTemprano,
+      })
+    }
+    if (it.fecha > new Date()) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '⚠️ Vencimiento fiscal HOY',
+          body: it.nombre + ' vence hoy, ' + it.fecha.toLocaleDateString('es-CR'),
+        },
+        trigger: it.fecha,
+      })
+    }
+  }
+}
+
 export default function SheetEditor({ userId, sheetId }) {
+  useEffect(() => {
+    programarNotificacionesVencimientos()
+  }, [])
+
   return (
     <View style={styles.container}>
       <WebView
