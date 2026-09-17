@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -7,7 +7,11 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLang } from '../context/LangContext'
+import OnboardingModal from '../components/OnboardingModal'
+
+const ONBOARDING_KEY = 'kcn_onboarding_visto'
 
 const MENU_ITEMS = [
   {
@@ -51,19 +55,43 @@ const MENU_ITEMS = [
 
 export default function HomeScreen({ navigation }) {
   const { t } = useLang()
+  const [onboardingVisible, setOnboardingVisible] = useState(false)
 
   const translate = (key, fallback) => {
     const value = t ? t(key) : null
     return value && value !== key ? value : fallback
   }
 
+  useEffect(() => {
+    let activo = true
+    AsyncStorage.getItem(ONBOARDING_KEY).then((visto) => {
+      if (activo && !visto) setOnboardingVisible(true)
+    })
+    return () => { activo = false }
+  }, [])
+
+  function cerrarOnboarding() {
+    setOnboardingVisible(false)
+    AsyncStorage.setItem(ONBOARDING_KEY, '1').catch(() => {})
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logo}>Matriz Contable CR</Text>
-        <Text style={styles.tagline}>
-          {translate('menu.inicio', 'Inicio')}
-        </Text>
+        <View style={styles.headerRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.logo}>Matriz Contable CR</Text>
+            <Text style={styles.tagline}>
+              {translate('menu.inicio', 'Inicio')}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={styles.helpBtn}
+            onPress={() => setOnboardingVisible(true)}
+          >
+            <Text style={styles.helpBtnText}>❔</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.grid}>
@@ -84,6 +112,8 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
+
+      <OnboardingModal visible={onboardingVisible} onClose={cerrarOnboarding} />
     </SafeAreaView>
   )
 }
@@ -101,6 +131,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderBottomColor: '#245f09',
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   logo: {
     fontSize: 20,
     fontWeight: '800',
@@ -111,6 +145,20 @@ const styles = StyleSheet.create({
     color: '#d8f5b0',
     marginTop: 2,
     marginBottom: 12,
+  },
+  helpBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  helpBtnText: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 14,
   },
   grid: {
     flexDirection: 'row',
