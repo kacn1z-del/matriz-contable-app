@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from 'firebase/auth'
 import { auth } from '../services/firebase'
 
@@ -27,6 +28,7 @@ function traducirError(codigo) {
 
 export default function LoginScreen() {
   const [modo, setModo] = useState('login') // 'login' | 'registro'
+  const [nombre, setNombre] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
@@ -41,6 +43,10 @@ export default function LoginScreen() {
       Alert.alert('Faltan datos', 'Completá el correo y la contraseña.')
       return
     }
+    if (esRegistro && !nombre.trim()) {
+      Alert.alert('Falta tu nombre', 'Ingresá tu nombre para personalizar tu cuenta.')
+      return
+    }
     if (esRegistro && password !== password2) {
       Alert.alert('Las contraseñas no coinciden', 'Verificá que ambas contraseñas sean iguales.')
       return
@@ -49,7 +55,8 @@ export default function LoginScreen() {
     setCargando(true)
     try {
       if (esRegistro) {
-        await createUserWithEmailAndPassword(auth, correo, password)
+        const credencial = await createUserWithEmailAndPassword(auth, correo, password)
+        await updateProfile(credencial.user, { displayName: nombre.trim() })
       } else {
         await signInWithEmailAndPassword(auth, correo, password)
       }
@@ -78,6 +85,20 @@ export default function LoginScreen() {
           </Text>
 
           <View style={styles.card}>
+            {esRegistro && (
+              <>
+                <Text style={styles.label}>Tu nombre</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ej: Keny Chinchilla"
+                  placeholderTextColor="#9db98a"
+                  value={nombre}
+                  onChangeText={setNombre}
+                  editable={!cargando}
+                />
+              </>
+            )}
+
             <Text style={styles.label}>Correo electrónico</Text>
             <TextInput
               style={styles.input}
