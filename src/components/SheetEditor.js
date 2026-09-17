@@ -98,6 +98,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 
   #tabsRow { display: flex; align-items: center; background: #cce9ae; padding: 4px 6px; gap: 4px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; }
   .tab { padding: 6px 12px; border-radius: 6px 6px 0 0; font-size: 12px; font-weight: 700; color: #3d6020; background: #b7e07a; white-space: nowrap; position: relative; }
+  .tabMenuBtn { margin-left: 6px; padding: 0 4px; opacity: .6; }
   .tab.active { background: #fff; color: #2d7a0c; }
   #addTabBtn { padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: 800; background: #245f09; color: #fff; flex-shrink: 0; }
 
@@ -323,6 +324,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="terraba">Térraba</option>
       <option value="maleku">Maleku</option>
     </select>
+    <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
     <select id="templateSelect">
       <option value="">📁 Plantilla...</option>
       <option value="diario">📘 Libro Diario</option>
@@ -353,7 +355,6 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnDiccionario">📖 Diccionario</button>
     <button id="btnDarkMode">🌙</button>
     <button id="btnAuditoria">🕐 Auditoría</button>
-    <button id="btnAyuda">❔</button>
     <button id="btnBackup">☁️ Backups</button>
     <button id="btnRecibo">📷 Recibo</button>
     <button id="btnContactos">👥 Clientes/Prov.</button>
@@ -4052,10 +4053,16 @@ function renderAllCells() {
 function renderTabs() {
   var tabsRow = document.getElementById('tabsRow');
   var html = '';
-  sheets.forEach(function (s) { html += '<div class="tab' + (s === activeSheet ? ' active' : '') + '" data-sheet="' + s + '">' + s + '</div>'; });
+  sheets.forEach(function (s) { html += '<div class="tab' + (s === activeSheet ? ' active' : '') + '" data-sheet="' + s + '">' + s + '<span class="tabMenuBtn" data-sheet="' + s + '">⋯</span></div>'; });
   html += '<div id="addTabBtn">+</div>';
   tabsRow.innerHTML = html;
   var lastTap = {};
+  tabsRow.querySelectorAll('.tabMenuBtn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      openTabMenu(this.dataset.sheet);
+    });
+  });
   tabsRow.querySelectorAll('.tab').forEach(function (t) {
     t.addEventListener('click', function () {
       var name = this.dataset.sheet;
@@ -6247,7 +6254,7 @@ document.getElementById('btnCSV').addEventListener('click', function () {
   document.getElementById('saveStatus').textContent = 'CSV exportado';
 });
 
-document.getElementById('btnPdfReporte').addEventListener('click', function () {
+function generarYCompartirPdfReporte(paraImprimir) {
   var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
   if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return; }
   var data = sheetData[activeSheet] || {};
@@ -6299,7 +6306,10 @@ document.getElementById('btnPdfReporte').addEventListener('click', function () {
   var pdfDataUri = doc.output('datauristring');
   var pdfBase64 = pdfDataUri.split(',')[1];
   guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.pdf', pdfBase64, 'application/pdf');
-  document.getElementById('saveStatus').textContent = 'PDF exportado';
+  document.getElementById('saveStatus').textContent = paraImprimir ? 'Listo para imprimir' : 'PDF exportado';
+}
+document.getElementById('btnPdfReporte').addEventListener('click', function () {
+  generarYCompartirPdfReporte(false);
 });
 
 // ══════════════════════════════════════════════
@@ -6927,11 +6937,7 @@ try {
 
 // ── Vista de impresión ──
 document.getElementById('btnImprimir').addEventListener('click', function () {
-  try {
-    window.print();
-  } catch (e) {
-    alert('La impresión directa no está disponible en este dispositivo. Usá "⬇ PDF Reporte" y luego imprimí ese archivo desde el diálogo de compartir.');
-  }
+  generarYCompartirPdfReporte(true);
 });
 
 // ── Indicador de guardado más visible ──
