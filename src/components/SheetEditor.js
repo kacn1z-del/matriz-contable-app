@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
 import * as Notifications from 'expo-notifications'
+import * as FileSystem from 'expo-file-system'
+import * as Sharing from 'expo-sharing'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,6 +21,24 @@ const SHEET_HTML = `<!DOCTYPE html>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; margin: 0; font-family: -apple-system, Roboto, Arial, sans-serif; background: #e6f0e6; overflow: hidden; }
+  body.dark-mode { filter: invert(1) hue-rotate(180deg); background: #1a1a1a; }
+  body.dark-mode img, body.dark-mode canvas, body.dark-mode .chart-float, body.dark-mode .emoji { filter: invert(1) hue-rotate(180deg); }
+  #btnDarkMode { min-width: 34px; }
+  #offlineBanner { display: none; background: #b3261e; color: #fff; text-align: center; font-size: 12px; padding: 6px 10px; }
+  #offlineBanner.show { display: block; }
+  #onboardingOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.75); z-index: 10000; display: none; align-items: center; justify-content: center; }
+  #onboardingOverlay.show { display: flex; }
+  #onboardingModal { background: #fff; border-radius: 16px; width: 88%; max-width: 380px; padding: 22px 18px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #onboardingSlide .emoji { font-size: 44px; margin-bottom: 10px; }
+  #onboardingSlide h3 { margin: 0 0 8px 0; color: #2d7a0c; font-size: 17px; }
+  #onboardingSlide p { margin: 0; font-size: 13.5px; color: #444; line-height: 1.5; }
+  #onboardingDots { display: flex; gap: 6px; margin: 16px 0; }
+  #onboardingDots span { width: 7px; height: 7px; border-radius: 50%; background: #dce9d0; }
+  #onboardingDots span.active { background: #2d7a0c; }
+  #onboardingBtnRow { display: flex; gap: 10px; width: 100%; }
+  #onboardingSkip { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #cce9ae; background: #fff; color: #2d7a0c; }
+  #onboardingNext { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #2d7a0c; color: #fff; }
+  #btnAyuda { min-width: 34px; }
   #app { display: flex; flex-direction: column; height: 100%; }
 
   #toolbar {
@@ -56,6 +76,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   .cell.in-range { background: #eaf7d8; }
   .cell.bold { font-weight: 800; color: #1e5208; }
   .cell.has-note::after { content: '●'; color: #d97706; font-size: 8px; position: absolute; top: 1px; right: 2px; }
+  .cell.has-attachment::before { content: '📎'; font-size: 8px; position: absolute; top: 1px; left: 2px; }
 
   #statusBar {
     display: flex; gap: 14px; align-items: center; padding: 5px 10px;
@@ -99,6 +120,8 @@ const SHEET_HTML = `<!DOCTYPE html>
   .chart-float .chead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 11px; font-weight: 700; color: #245f09; gap: 4px; }
   .chart-float .chead button { background: none; border: none; font-size: 13px; cursor: pointer; }
   .field-label { font-size: 11px; font-weight: 700; color: #3d6020; margin-bottom: 3px; display: block; }
+  #saveStatus { padding: 3px 9px; border-radius: 999px; background: #eef8e4; color: #2d7a0c; font-size: 11px; font-weight: 600; transition: background .25s, color .25s; }
+  #saveStatus.flash { background: #2d7a0c; color: #fff; }
   #syncStatusDot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #999; margin-right: 4px; }
   #syncStatusDot.online { background: #2d7a0c; }
   #syncStatusDot.syncing { background: #d97706; }
@@ -126,6 +149,26 @@ const SHEET_HTML = `<!DOCTYPE html>
   #dictAddPanel input, #dictAddPanel select { width: 100%; padding: 7px; margin-bottom: 6px; border-radius: 8px; border: 1px solid #cce9ae; box-sizing: border-box; }
   #dictAddBtn { width: 100%; padding: 9px; border-radius: 8px; background: #2d7a0c; color: #fff; border: none; }
   #dictAddStatus { font-size: 11.5px; color: #6b8f48; margin-top: 4px; }
+  #contactosOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9500; display: none; align-items: flex-end; justify-content: center; }
+  #contactosOverlay.show { display: flex; }
+  #contactosModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+  #contactosHead { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #2d7a0c; color: #fff; }
+  #contactosHead h3 { margin: 0; font-size: 15px; }
+  #contactosTabs { display: flex; gap: 6px; padding: 8px 10px; background: #eef8e4; }
+  #contactosTabs button { padding: 5px 10px; border-radius: 999px; border: 1px solid #cce9ae; background: #fff; font-size: 12px; }
+  #contactosTabs button.active { background: #2d7a0c; color: #fff; border-color: #2d7a0c; }
+  #contactosSearchRow { padding: 8px 10px; }
+  #contactosSearchRow input { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #cce9ae; box-sizing: border-box; }
+  #contactosListWrap { flex: 1; overflow-y: auto; padding: 0 10px; }
+  .contactoItem { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .contactoItem b { color: #2d7a0c; }
+  .contactoItem .meta { font-size: 11px; color: #888; }
+  .contactoUsarBtn { padding: 6px 10px; border-radius: 6px; background: #2d7a0c; color: #fff; border: none; font-size: 11px; flex-shrink: 0; }
+  #contactosAddPanel { padding: 10px; border-top: 2px solid #eef8e4; background: #fafffa; }
+  #contactosAddPanel h4 { margin: 0 0 6px 0; font-size: 13px; }
+  #contactosAddPanel input, #contactosAddPanel select { width: 100%; padding: 7px; margin-bottom: 6px; border-radius: 8px; border: 1px solid #cce9ae; box-sizing: border-box; }
+  #contactosAddBtn { width: 100%; padding: 9px; border-radius: 8px; background: #2d7a0c; color: #fff; border: none; }
+  #contactosAddStatus { font-size: 11.5px; color: #6b8f48; margin-top: 4px; }
   #fnHead { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #2d7a0c; flex-shrink: 0; }
   #fnHead h3 { margin: 0; color: #fff; font-size: 14px; }
   #fnHead button { background: none; border: none; color: #fff; font-size: 18px; }
@@ -180,11 +223,27 @@ const SHEET_HTML = `<!DOCTYPE html>
 
   #feHistOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #feHistOverlay.show { display: flex; }
-  #feHistModal, #matricesModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
-  #feHistHead, #matricesHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
-  #feHistHead h3, #matricesHead h3 { color: #fff; margin: 0; font-size: 13px; }
-  #feHistHead button, #matricesHead button { background: none; border: none; color: #fff; font-size: 18px; }
-  #feHistList { overflow-y: auto; padding: 6px 10px; }
+  #auditOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #auditOverlay.show { display: flex; }
+  #backupOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #backupOverlay.show { display: flex; }
+  #reciboOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #reciboOverlay.show { display: flex; }
+  #feHistModal, #matricesModal, #auditModal, #backupModal, #reciboModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
+  #feHistHead, #matricesHead, #auditHead, #backupHead, #reciboHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #feHistHead h3, #matricesHead h3, #auditHead h3, #backupHead h3, #reciboHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #feHistHead button, #matricesHead button, #auditHead button, #backupHead button, #reciboHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #feHistList, #auditList, #backupList { overflow-y: auto; padding: 6px 10px; }
+  #buscarGlobalOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #buscarGlobalOverlay.show { display: flex; }
+  #buscarGlobalModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden; }
+  #buscarGlobalHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #buscarGlobalHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #buscarGlobalHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #buscarGlobalList { overflow-y: auto; padding: 6px 10px; }
+  .buscarGlobalItem { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; }
+  .buscarGlobalItem b { color: #2d7a0c; }
+  .buscarGlobalIrBtn { padding: 6px 10px; border-radius: 6px; background: #2d7a0c; color: #fff; border: none; font-size: 11px; flex-shrink: 0; }
   .feHistItem { padding: 8px 6px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
   .feHistItem .fhInfo { font-size: 12px; }
   .feHistItem .fhNum { font-weight: 800; color: #1e5208; }
@@ -228,9 +287,30 @@ const SHEET_HTML = `<!DOCTYPE html>
   #siboInputRow { display: flex; gap: 6px; padding: 8px 10px; border-top: 1.5px solid #cce9ae; flex-shrink: 0; background: #fff; }
   #siboInputRow input { flex: 1; padding: 9px 10px; border: 1px solid #cce9ae; border-radius: 20px; font-size: 13px; }
   #siboInputRow button { background: #2d7a0c; color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; flex-shrink: 0; }
+  @media print {
+    #toolbar, #formulaBarRow, #rangeActionsBar, #statusBar, #tabsBar, #offlineBanner,
+    #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay,
+    #auditOverlay, #backupOverlay, #reciboOverlay, #fnOverlay, #feOverlay, #feHistOverlay,
+    #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
+    #noteOverlay, #formatOverlay, #tabMenuOverlay { display: none !important; }
+    #gridWrap { overflow: visible !important; height: auto !important; }
+    body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
+    .cell.has-note::after, .cell.has-attachment::before { display: none; }
+  }
 </style>
 </head>
 <body>
+<div id="offlineBanner">🔌 Sin conexión a internet — tus cambios se guardan solo en este dispositivo hasta que vuelva la señal</div>
+<div id="onboardingOverlay">
+  <div id="onboardingModal">
+    <div id="onboardingSlide"></div>
+    <div id="onboardingDots"></div>
+    <div id="onboardingBtnRow">
+      <button id="onboardingSkip">Saltar</button>
+      <button id="onboardingNext">Siguiente</button>
+    </div>
+  </div>
+</div>
 <div id="app">
   <div id="toolbar">
     <select id="langSelector">
@@ -252,6 +332,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="d151">🛒 D-151 Compras/Ventas</option>
       <option value="resultados">📈 Estado de Resultados</option>
       <option value="balancegeneral">🏛️ Balance General</option>
+      <option value="planilla">👥 Planilla Mensual (CCSS)</option>
       <option value="blank">🗋 Hoja en blanco</option>
     </select>
     <button id="btnUndo" disabled>↶ Deshacer</button>
@@ -270,6 +351,15 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnFactura">🧾 Factura</button>
     <button id="btnFxLib">fx Funciones</button>
     <button id="btnDiccionario">📖 Diccionario</button>
+    <button id="btnDarkMode">🌙</button>
+    <button id="btnAuditoria">🕐 Auditoría</button>
+    <button id="btnAyuda">❔</button>
+    <button id="btnBackup">☁️ Backups</button>
+    <button id="btnRecibo">📷 Recibo</button>
+    <button id="btnContactos">👥 Clientes/Prov.</button>
+    <button id="btnBuscarGlobal">🔍 Buscar en todo</button>
+    <button id="btnImprimir">🖨 Imprimir</button>
+    <input type="file" id="reciboFileInput" accept="image/*" capture="environment" style="display:none" />
     <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
     <button id="btnBalanceAuto">📊 Balance Auto</button>
     <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
@@ -281,8 +371,8 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnExcelExport">⬇ Excel</button>
     <button id="btnExcelImport">⬆ Importar Excel</button>
     <button id="btnConciliacion">🏦 Conciliación</button>
-    <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none" />
-    <input type="file" id="bankFileInput" accept=".csv,.txt,.xlsx,.xls" style="display:none" />
+    <input type="file" id="excelFileInput" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,*/*" style="display:none" />
+    <input type="file" id="bankFileInput" accept=".csv,.txt,.xlsx,.xls,text/csv,text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*" style="display:none" />
     <button id="btnAddRow">+Fila</button>
     <button id="btnDelRow">-Fila</button>
     <button id="btnAddCol">+Col</button>
@@ -549,6 +639,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 
       <div class="feCard">
         <div class="feCardTitle">RECEPTOR</div>
+        <button id="fe-buscar-cliente-btn" type="button" style="margin-bottom:8px;padding:7px 10px;border-radius:8px;background:#eef8e4;border:1px solid #cce9ae;color:#2d7a0c;font-size:12px;">👥 Elegir cliente guardado</button>
         <div class="feField"><label>Nombre</label><input id="fe-receptor-nombre" placeholder="Cliente S.A." /></div>
         <div class="feField"><label>Cédula</label><input id="fe-receptor-cedula" placeholder="1-000-000000" /></div>
         <div class="feRow2">
@@ -594,6 +685,80 @@ const SHEET_HTML = `<!DOCTYPE html>
       <button id="feHistClose">✕</button>
     </div>
     <div id="feHistList"></div>
+  </div>
+</div>
+
+<div id="auditOverlay">
+  <div id="auditModal">
+    <div id="auditHead">
+      <h3>🕐 Historial de cambios (auditoría)</h3>
+      <button id="auditClose">✕</button>
+    </div>
+    <div id="auditList"></div>
+  </div>
+</div>
+
+<div id="backupOverlay">
+  <div id="backupModal">
+    <div id="backupHead">
+      <h3>☁️ Copias de respaldo</h3>
+      <button id="backupClose">✕</button>
+    </div>
+    <div style="padding:10px;"><button id="backupCrearAhoraBtn" style="width:100%;padding:9px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;">📥 Crear backup ahora</button></div>
+    <div id="backupList"></div>
+  </div>
+</div>
+
+<div id="reciboOverlay">
+  <div id="reciboModal">
+    <div id="reciboHead">
+      <h3>📎 Recibo adjunto</h3>
+      <button id="reciboClose">✕</button>
+    </div>
+    <div style="padding:10px;overflow-y:auto;">
+      <img id="reciboImg" style="width:100%;border-radius:8px;" />
+      <button id="reciboEliminarBtn" style="width:100%;margin-top:10px;padding:9px;border-radius:8px;background:#dc2626;color:#fff;border:none;">🗑 Eliminar recibo</button>
+    </div>
+  </div>
+</div>
+
+<div id="contactosOverlay">
+  <div id="contactosModal">
+    <div id="contactosHead">
+      <h3>👥 Clientes / Proveedores · <span id="contactosTotalBadge">0</span></h3>
+      <button id="contactosClose">✕</button>
+    </div>
+    <div id="contactosTabs">
+      <button data-tipo="todos" class="active">Todos</button>
+      <button data-tipo="cliente">Clientes</button>
+      <button data-tipo="proveedor">Proveedores</button>
+    </div>
+    <div id="contactosSearchRow"><input id="contactosSearchInput" type="text" placeholder="Buscar por nombre o cédula..." /></div>
+    <div id="contactosListWrap"><div id="contactosList"></div></div>
+    <div id="contactosAddPanel">
+      <h4>➕ Agregar cliente/proveedor</h4>
+      <select id="contactosAddTipo">
+        <option value="cliente">Cliente</option>
+        <option value="proveedor">Proveedor</option>
+      </select>
+      <input id="contactosAddNombre" type="text" placeholder="Nombre completo o razón social" />
+      <input id="contactosAddCedula" type="text" placeholder="Cédula física o jurídica" />
+      <input id="contactosAddTelefono" type="text" placeholder="Teléfono (opcional)" />
+      <input id="contactosAddEmail" type="text" placeholder="Email (opcional)" />
+      <button id="contactosAddBtn">Guardar</button>
+      <div id="contactosAddStatus"></div>
+    </div>
+  </div>
+</div>
+
+<div id="buscarGlobalOverlay">
+  <div id="buscarGlobalModal">
+    <div id="buscarGlobalHead">
+      <h3>🔍 Buscar en todas las hojas</h3>
+      <button id="buscarGlobalClose">✕</button>
+    </div>
+    <div style="padding:8px 10px;"><input id="buscarGlobalInput" type="text" placeholder="Buscar valor o texto..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #cce9ae;box-sizing:border-box;" /></div>
+    <div id="buscarGlobalList"></div>
   </div>
 </div>
 
@@ -646,6 +811,7 @@ var activeSheet = 'Hoja1';
 var sheetData = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetFormats = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetNotes = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+var sheetAttachments = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var colWidths = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var undoStack = [];
 var tabMenuTarget = null;
@@ -659,6 +825,19 @@ var selRangeStart = null, selRangeEnd = null, isSelecting = false;
 // desplegar (Vercel Dashboard → tu proyecto → Domains, algo como
 // matriz-contable-app.vercel.app).
 var WEBPROXY_URL = 'https://matriz-contable-app.vercel.app/api/webproxy';
+function guardarArchivoNativo(filename, base64, mime) {
+  if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+    window.ReactNativeWebView.postMessage(JSON.stringify({ tipo: 'guardarArchivo', filename: filename, base64: base64, mime: mime }));
+  } else {
+    var link = document.createElement('a');
+    link.href = 'data:' + mime + ';base64,' + base64;
+    link.download = filename;
+    link.click();
+  }
+}
+function utf8ToBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
 var SIBO_CHAT_URL = 'https://matriz-contable-app.vercel.app/api/sibo-chat';
 var webCache = {};
 var webPending = {};
@@ -3862,6 +4041,12 @@ function renderAllCells() {
     var el = document.getElementById('cell_' + id);
     if (el && notes[id]) el.classList.add('has-note');
   });
+  document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-attachment'); });
+  var attachments = sheetAttachments[activeSheet] || {};
+  Object.keys(attachments).forEach(function (id) {
+    var el = document.getElementById('cell_' + id);
+    if (el && attachments[id]) el.classList.add('has-attachment');
+  });
 }
 
 function renderTabs() {
@@ -3884,7 +4069,7 @@ function renderTabs() {
     snapshot();
     var n = sheets.length + 1; var name = 'Hoja' + n;
     while (sheets.indexOf(name) >= 0) { n++; name = 'Hoja' + n; }
-    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; colWidths[name] = {};
+    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {};
     activeSheet = name; buildTable(); autoSave();
   });
 }
@@ -3986,6 +4171,8 @@ function limpiarFactura() {
   tbody.innerHTML = '';
   document.getElementById('fe-firma-check').checked = false;
   agregarLineaFactura();
+  var numEl = document.getElementById('fe-num');
+  if (numEl) numEl.value = siguienteConsecutivo();
 }
 
 // ── Firma digital simulada ──
@@ -4151,12 +4338,28 @@ document.getElementById('brReplaceAll').addEventListener('click', function () {
   brMatches = []; brMatchIdx = -1;
 });
 
+// ── Numeración consecutiva automática ──
+function siguienteConsecutivo() {
+  var hist = getFacturasHistorial();
+  if (!hist.length) return '001-001-00000001';
+  var ultimo = hist[0].num || '001-001-00000000';
+  var partes = ultimo.split('-');
+  if (partes.length !== 3) return '001-001-00000001';
+  var siguiente = parseInt(partes[2], 10) + 1;
+  if (isNaN(siguiente)) siguiente = 1;
+  return partes[0] + '-' + partes[1] + '-' + String(siguiente).padStart(8, '0');
+}
+
 document.getElementById('btnFactura').addEventListener('click', function () {
   if (!document.getElementById('fe-lineas-body').children.length) {
     if (!document.getElementById('fe-fecha').value) {
       document.getElementById('fe-fecha').value = new Date().toISOString().split('T')[0];
     }
     agregarLineaFactura();
+  }
+  var numEl = document.getElementById('fe-num');
+  if (numEl && (numEl.value === '001-001-00000001' || !numEl.value)) {
+    numEl.value = siguienteConsecutivo();
   }
   document.getElementById('feOverlay').classList.add('show');
 });
@@ -4334,7 +4537,8 @@ document.getElementById('feBtnPdf').addEventListener('click', function () {
   doc.setFontSize(8); doc.setFont('helvetica', 'normal');
   doc.text('KCN Studio · Matriz Contable CR · Costa Rica 🇨🇷', 105, 290, { align: 'center' });
 
-  doc.save('factura-' + fecha + '.pdf');
+  var facturaPdfUri = doc.output('datauristring');
+  guardarArchivoNativo('factura-' + fecha + '.pdf', facturaPdfUri.split(',')[1], 'application/pdf');
   guardarFacturaHistorial();
   document.getElementById('saveStatus').textContent = 'PDF exportado';
 });
@@ -4727,6 +4931,148 @@ document.getElementById('dictAddBtn').addEventListener('click', function () {
   });
 });
 
+// ══════════════════════════════════════════════
+// CLIENTES / PROVEEDORES
+// ══════════════════════════════════════════════
+var contactosCache = [];
+var contactosTipoActual = 'todos';
+var contactosModoSeleccion = false;
+
+function contactosCargar() {
+  if (!firestoreDB || !currentUser) { document.getElementById('contactosList').innerHTML = '<div class="contactoItem">Iniciá sesión para ver y guardar tus clientes/proveedores.</div>'; return; }
+  document.getElementById('contactosList').innerHTML = '<div class="contactoItem">Cargando...</div>';
+  firestoreDB.collection('contactos').where('ownerId', '==', currentUser.uid).orderBy('nombre').get().then(function (snap) {
+    contactosCache = [];
+    snap.forEach(function (doc) { contactosCache.push(Object.assign({ id: doc.id }, doc.data())); });
+    document.getElementById('contactosTotalBadge').textContent = contactosCache.length;
+    contactosRenderLista();
+  }).catch(function (err) {
+    document.getElementById('contactosList').innerHTML = '<div class="contactoItem">No se pudo cargar. ' + (err && err.message ? err.message : '') + '</div>';
+  });
+}
+function contactosRenderLista() {
+  var q = (document.getElementById('contactosSearchInput').value || '').toLowerCase();
+  var wrap = document.getElementById('contactosList');
+  var filtrado = contactosCache.filter(function (c) {
+    if (contactosTipoActual !== 'todos' && c.tipo !== contactosTipoActual) return false;
+    if (!q) return true;
+    return (c.nombre || '').toLowerCase().indexOf(q) !== -1 || (c.cedula || '').toLowerCase().indexOf(q) !== -1;
+  });
+  if (!filtrado.length) { wrap.innerHTML = '<div class="contactoItem">Sin resultados. Agregá uno abajo.</div>'; return; }
+  wrap.innerHTML = filtrado.map(function (c) {
+    return '<div class="contactoItem"><div><b>' + (c.nombre || '') + '</b>' +
+      '<div class="meta">' + (c.tipo === 'proveedor' ? 'Proveedor' : 'Cliente') + ' · ' + (c.cedula || '') + (c.telefono ? ' · ' + c.telefono : '') + '</div></div>' +
+      (contactosModoSeleccion ? '<button class="contactoUsarBtn" data-id="' + c.id + '">Usar</button>' : '') + '</div>';
+  }).join('');
+  if (contactosModoSeleccion) {
+    wrap.querySelectorAll('.contactoUsarBtn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var c = contactosCache.filter(function (x) { return x.id === btn.dataset.id; })[0];
+        if (!c) return;
+        document.getElementById('fe-receptor-nombre').value = c.nombre || '';
+        document.getElementById('fe-receptor-cedula').value = c.cedula || '';
+        document.getElementById('fe-receptor-telefono').value = c.telefono || '';
+        document.getElementById('fe-receptor-email').value = c.email || '';
+        document.getElementById('contactosOverlay').classList.remove('show');
+        contactosModoSeleccion = false;
+      });
+    });
+  }
+}
+document.getElementById('btnContactos').addEventListener('click', function () {
+  contactosModoSeleccion = false;
+  document.getElementById('contactosOverlay').classList.add('show');
+  contactosCargar();
+});
+document.getElementById('fe-buscar-cliente-btn').addEventListener('click', function () {
+  contactosModoSeleccion = true;
+  contactosTipoActual = 'cliente';
+  document.querySelectorAll('#contactosTabs button').forEach(function (b) { b.classList.toggle('active', b.dataset.tipo === 'cliente'); });
+  document.getElementById('contactosOverlay').classList.add('show');
+  contactosCargar();
+});
+document.getElementById('contactosClose').addEventListener('click', function () {
+  document.getElementById('contactosOverlay').classList.remove('show');
+  contactosModoSeleccion = false;
+});
+document.getElementById('contactosSearchInput').addEventListener('input', contactosRenderLista);
+document.querySelectorAll('#contactosTabs button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('#contactosTabs button').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    contactosTipoActual = btn.dataset.tipo;
+    contactosRenderLista();
+  });
+});
+document.getElementById('contactosAddBtn').addEventListener('click', function () {
+  var tipo = document.getElementById('contactosAddTipo').value;
+  var nombre = document.getElementById('contactosAddNombre').value.trim();
+  var cedula = document.getElementById('contactosAddCedula').value.trim();
+  var telefono = document.getElementById('contactosAddTelefono').value.trim();
+  var email = document.getElementById('contactosAddEmail').value.trim();
+  var statusEl = document.getElementById('contactosAddStatus');
+  if (!nombre) { statusEl.textContent = 'Completá al menos el nombre.'; return; }
+  if (!firestoreDB || !currentUser) { statusEl.textContent = 'Iniciá sesión primero.'; return; }
+  statusEl.textContent = 'Guardando...';
+  firestoreDB.collection('contactos').add({
+    tipo: tipo, nombre: nombre, cedula: cedula, telefono: telefono, email: email,
+    ownerId: currentUser.uid, fecha: new Date().toISOString(),
+  }).then(function () {
+    statusEl.textContent = '✓ Guardado.';
+    document.getElementById('contactosAddNombre').value = '';
+    document.getElementById('contactosAddCedula').value = '';
+    document.getElementById('contactosAddTelefono').value = '';
+    document.getElementById('contactosAddEmail').value = '';
+    contactosCargar();
+  }).catch(function (err) {
+    statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido');
+  });
+});
+
+// ══════════════════════════════════════════════
+// BUSCADOR GLOBAL (todas las hojas)
+// ══════════════════════════════════════════════
+function buscarGlobalEjecutar() {
+  var q = document.getElementById('buscarGlobalInput').value.trim().toLowerCase();
+  var wrap = document.getElementById('buscarGlobalList');
+  if (!q) { wrap.innerHTML = '<div class="buscarGlobalItem">Escribí algo para buscar.</div>'; return; }
+  var resultados = [];
+  sheets.forEach(function (hoja) {
+    var data = sheetData[hoja] || {};
+    Object.keys(data).forEach(function (id) {
+      var raw = String(data[id] || '');
+      if (raw.toLowerCase().indexOf(q) !== -1 && resultados.length < 60) {
+        resultados.push({ hoja: hoja, celda: id, valor: raw });
+      }
+    });
+  });
+  if (!resultados.length) { wrap.innerHTML = '<div class="buscarGlobalItem">Sin resultados.</div>'; return; }
+  wrap.innerHTML = resultados.map(function (r) {
+    return '<div class="buscarGlobalItem"><div><b>' + r.hoja + '!' + r.celda + '</b><div style="color:#888;">' + r.valor.substring(0, 60) + '</div></div>' +
+      '<button class="buscarGlobalIrBtn" data-hoja="' + r.hoja + '" data-celda="' + r.celda + '">Ir</button></div>';
+  }).join('');
+  wrap.querySelectorAll('.buscarGlobalIrBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      activeSheet = btn.dataset.hoja;
+      buildTable();
+      document.getElementById('buscarGlobalOverlay').classList.remove('show');
+      var el = document.getElementById('cell_' + btn.dataset.celda);
+      if (el) { el.scrollIntoView({ block: 'center' }); el.focus(); }
+      document.getElementById('cellRef').textContent = btn.dataset.celda;
+    });
+  });
+}
+document.getElementById('btnBuscarGlobal').addEventListener('click', function () {
+  document.getElementById('buscarGlobalOverlay').classList.add('show');
+  document.getElementById('buscarGlobalInput').value = '';
+  document.getElementById('buscarGlobalList').innerHTML = '';
+  document.getElementById('buscarGlobalInput').focus();
+});
+document.getElementById('buscarGlobalClose').addEventListener('click', function () {
+  document.getElementById('buscarGlobalOverlay').classList.remove('show');
+});
+document.getElementById('buscarGlobalInput').addEventListener('input', buscarGlobalEjecutar);
+
 document.getElementById('fnSearchInput').addEventListener('input', function () {
   var q = this.value.trim().toLowerCase();
   if (!q) { renderFnList(fnData[fnCurrentCat] || []); return; }
@@ -4806,7 +5152,7 @@ function highlightRange(idA, idB) {
   document.getElementById('quickRange').dispatchEvent(new Event('input'));
   var bounds = currentRangeBounds();
   var rab = document.getElementById('rangeActionsBar');
-  if (bounds && bounds.isMulti) {
+  if (bounds) {
     document.getElementById('rangeLabel').textContent = rangeStr;
     rab.classList.add('show');
   } else {
@@ -4841,7 +5187,7 @@ function attachCellEvents() {
     });
     el.addEventListener('pointerdown', function (e) {
       isSelecting = true; selRangeStart = el.dataset.id; selRangeEnd = el.dataset.id;
-      document.getElementById('rangeActionsBar').classList.remove('show');
+      highlightRange(selRangeStart, selRangeEnd);
     });
     el.addEventListener('pointerenter', function () {
       if (isSelecting) { selRangeEnd = el.dataset.id; highlightRange(selRangeStart, selRangeEnd); }
@@ -4872,11 +5218,23 @@ function attachCellEvents() {
     if (e.touches.length === 0) { gestureFired = false; }
   }, { passive: true });
 })();
+function registrarCambioAuditoria(celda, valorAnterior, valorNuevo) {
+  if (!currentMatrizId || !currentUser || !firestoreDB) return;
+  if ((valorAnterior || '') === (valorNuevo || '')) return;
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('historial').add({
+    hoja: activeSheet, celda: celda,
+    valorAnterior: valorAnterior || '(vacío)', valorNuevo: valorNuevo || '(vacío)',
+    usuario: (currentUser.email || currentUser.displayName || 'Desconocido'),
+    fecha: new Date().toISOString(),
+  }).catch(function () {});
+}
 function commitCell(el) {
   var id = el.dataset.id;
   var val = el.textContent.trim();
+  var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
+  registrarCambioAuditoria(id, anterior, val);
   renderAllCells(); el.classList.remove('selected'); autoSave();
 }
 function moveSelection(dc, dr) {
@@ -5048,7 +5406,7 @@ function loadTemplate(tipo) {
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; colWidths[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {};
   activeSheet = name;
   var d = sheetData[name], f = sheetFormats[name];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
@@ -5168,6 +5526,34 @@ function loadTemplate(tipo) {
     set(27, 0, 'TOTAL PASIVO + PATRIMONIO', true);
     d[cellId(27, 1)] = '=B21+B26';
     f[cellId(27, 1)] = { bold: true };
+  } else if (tipo === 'planilla') {
+    set(0, 0, '👥 PLANILLA MENSUAL — ' + hoy, true);
+    var hdrPlanilla = ['Empleado', 'Cédula', 'Salario Bruto', 'CCSS Trabajador', 'Renta', 'Otras Deducciones', 'Salario Neto'];
+    hdrPlanilla.forEach(function (h, i) { set(2, i, h, true); });
+    var filasPlanilla = [
+      ['Empleado 1', '1-1111-1111', '450000'],
+      ['Empleado 2', '2-2222-2222', '380000'],
+    ];
+    filasPlanilla.forEach(function (fila, i) {
+      var r = 3 + i;
+      set(r, 0, fila[0]); set(r, 1, fila[1]); set(r, 2, fila[2]);
+      d[cellId(r, 3)] = '=PLANILLACCSS(' + cellId(r, 2) + ';0)';
+      d[cellId(r, 4)] = '=RETENCIONFUENTE(' + cellId(r, 2) + ';"SALARIO")';
+      set(r, 5, '0');
+      d[cellId(r, 6)] = '=' + cellId(r, 2) + '-' + cellId(r, 3) + '-' + cellId(r, 4) + '-' + cellId(r, 5);
+    });
+    var rTotalPlanilla = 3 + filasPlanilla.length + 1;
+    set(rTotalPlanilla, 0, 'TOTALES', true);
+    d[cellId(rTotalPlanilla, 2)] = '=SUMA(C4:C' + (rTotalPlanilla) + ')';
+    d[cellId(rTotalPlanilla, 3)] = '=SUMA(D4:D' + (rTotalPlanilla) + ')';
+    d[cellId(rTotalPlanilla, 4)] = '=SUMA(E4:E' + (rTotalPlanilla) + ')';
+    d[cellId(rTotalPlanilla, 5)] = '=SUMA(F4:F' + (rTotalPlanilla) + ')';
+    d[cellId(rTotalPlanilla, 6)] = '=SUMA(G4:G' + (rTotalPlanilla) + ')';
+    f[cellId(rTotalPlanilla, 6)] = { bold: true };
+    set(rTotalPlanilla + 2, 0, '👑 CCSS Patrono (~26.67%, informativo)', true);
+    d[cellId(rTotalPlanilla + 2, 2)] = '=PLANILLACCSS(' + cellId(rTotalPlanilla, 2) + ';1)';
+    set(rTotalPlanilla + 3, 0, 'Aguinaldo estimado (dic.)', true);
+    d[cellId(rTotalPlanilla + 3, 2)] = '=AGUINALDO(' + cellId(rTotalPlanilla, 2) + ')';
   }
   buildTable(); autoSave();
 }
@@ -5231,7 +5617,7 @@ function crearHojaDestino(baseName) {
   var n = sheets.length + 1;
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; colWidths[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {};
   return name;
 }
 
@@ -5856,11 +6242,8 @@ document.getElementById('btnCSV').addEventListener('click', function () {
     }
     csv += parts.join(',') + '\\n';
   }
-  var blob = new Blob(['\\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'MatrizContableCR_' + activeSheet + '.csv';
-  a.click();
+  var csvBase64 = utf8ToBase64(String.fromCharCode(65279) + csv);
+  guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.csv', csvBase64, 'text/csv');
   document.getElementById('saveStatus').textContent = 'CSV exportado';
 });
 
@@ -5913,7 +6296,9 @@ document.getElementById('btnPdfReporte').addEventListener('click', function () {
     }
     y += 7;
   }
-  doc.save('MatrizContableCR_' + activeSheet + '.pdf');
+  var pdfDataUri = doc.output('datauristring');
+  var pdfBase64 = pdfDataUri.split(',')[1];
+  guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.pdf', pdfBase64, 'application/pdf');
   document.getElementById('saveStatus').textContent = 'PDF exportado';
 });
 
@@ -5939,12 +6324,8 @@ document.getElementById('btnExcelExport').addEventListener('click', function () 
   var ws = XLSX.utils.aoa_to_sheet(aoa);
   var wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, activeSheet.substring(0, 31));
-  var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-  var blob = new Blob([wbout], { type: 'application/octet-stream' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'MatrizContableCR_' + activeSheet + '.xlsx';
-  a.click();
+  var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+  guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.xlsx', wbout, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   document.getElementById('saveStatus').textContent = 'Excel exportado';
 });
 
@@ -6088,6 +6469,7 @@ function initFirebaseOnce() {
       } else {
         setSyncStatus('', 'Sin cuenta');
         currentMatrizId = null; currentMatrizName = null;
+        if (matrizListenerUnsub) { matrizListenerUnsub(); matrizListenerUnsub = null; }
       }
     });
   }
@@ -6148,7 +6530,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, colWidths: colWidths };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -6156,6 +6538,7 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetData = obj.sheetData || {};
   sheetFormats = obj.sheetFormats || {};
   sheetNotes = obj.sheetNotes || {};
+  sheetAttachments = obj.sheetAttachments || {};
   colWidths = obj.colWidths || {};
   activeSheet = sheets[0];
   buildTable();
@@ -6214,17 +6597,29 @@ function renderListaMatrices(items) {
 document.getElementById('crearMatrizBtn').addEventListener('click', function () {
   var nombre = document.getElementById('nuevaMatrizNombre').value.trim();
   if (!nombre) { alert('Ponele un nombre a la matriz.'); return; }
+  if (matrizListenerUnsub) { matrizListenerUnsub(); matrizListenerUnsub = null; }
   var payload = estadoActualComoObjeto();
   payload.name = nombre; payload.ownerId = currentUser.uid; payload.ownerEmail = currentUser.email;
   payload.sharedWith = []; payload.updatedAt = Date.now();
+  ultimoUpdatedAtEnviado = payload.updatedAt;
   firestoreDB.collection('matrices').add(payload).then(function (doc) {
     currentMatrizId = doc.id; currentMatrizName = nombre;
     document.getElementById('nuevaMatrizNombre').value = '';
     document.getElementById('matricesOverlay').classList.remove('show');
     setSyncStatus('online', currentUser.email + ' · ' + nombre);
+    matrizListenerUnsub = firestoreDB.collection('matrices').doc(doc.id).onSnapshot(function (docSnap) {
+      if (!docSnap.exists || docSnap.metadata.hasPendingWrites) return;
+      var data = docSnap.data();
+      if (!data || data.updatedAt === ultimoUpdatedAtEnviado) return;
+      cargarEstadoDesdeObjeto(data);
+      setSyncStatus('online', '🔄 ' + currentUser.email + ' · ' + nombre + ' (actualizado por otro usuario)');
+    });
   });
 });
+var matrizListenerUnsub = null;
+var ultimoUpdatedAtEnviado = 0;
 function abrirMatriz(id, name) {
+  if (matrizListenerUnsub) { matrizListenerUnsub(); matrizListenerUnsub = null; }
   firestoreDB.collection('matrices').doc(id).get().then(function (doc) {
     if (!doc.exists) { alert('Esa matriz ya no existe.'); return; }
     snapshot();
@@ -6232,6 +6627,13 @@ function abrirMatriz(id, name) {
     currentMatrizId = id; currentMatrizName = name;
     document.getElementById('matricesOverlay').classList.remove('show');
     setSyncStatus('online', currentUser.email + ' · ' + name);
+    matrizListenerUnsub = firestoreDB.collection('matrices').doc(id).onSnapshot(function (docSnap) {
+      if (!docSnap.exists || docSnap.metadata.hasPendingWrites) return;
+      var data = docSnap.data();
+      if (!data || data.updatedAt === ultimoUpdatedAtEnviado) return;
+      cargarEstadoDesdeObjeto(data);
+      setSyncStatus('online', '🔄 ' + currentUser.email + ' · ' + name + ' (actualizado por otro usuario)');
+    });
   });
 }
 function eliminarMatriz(id) {
@@ -6269,11 +6671,16 @@ function guardarMatrizEnNube() {
   if (!currentUser || !currentMatrizId || applyingRemote) return;
   var payload = estadoActualComoObjeto();
   payload.updatedAt = Date.now();
+  ultimoUpdatedAtEnviado = payload.updatedAt;
+  if (!navigator.onLine) { setSyncStatus('error', 'Sin conexión — se guardó solo en este dispositivo'); return; }
   setSyncStatus('syncing', 'Guardando...');
   firestoreDB.collection('matrices').doc(currentMatrizId).update(payload).then(function () {
     setSyncStatus('online', currentUser.email + ' · ' + currentMatrizName);
   }).catch(function (err) {
-    setSyncStatus('error', 'Error al guardar');
+    var msg = 'Error al guardar';
+    if (err && err.code === 'permission-denied') msg = 'Sin permiso para editar esta matriz';
+    else if (!navigator.onLine) msg = 'Sin conexión — se guardó solo en este dispositivo';
+    setSyncStatus('error', msg);
   });
 }
 
@@ -6286,6 +6693,7 @@ function autoSave() {
     localStorage.setItem('mcr_data_v6', JSON.stringify(sheetData));
     localStorage.setItem('mcr_formats_v6', JSON.stringify(sheetFormats));
     localStorage.setItem('mcr_notes_v6', JSON.stringify(sheetNotes));
+    localStorage.setItem('mcr_attachments_v6', JSON.stringify(sheetAttachments));
     localStorage.setItem('mcr_colwidths_v6', JSON.stringify(colWidths));
     localStorage.setItem('mcr_active_v6', activeSheet);
     if (!currentMatrizId) document.getElementById('saveStatus').textContent = '💾 ' + new Date().toLocaleTimeString('es-CR');
@@ -6301,16 +6709,242 @@ function restore() {
     var d = localStorage.getItem('mcr_data_v6');
     var f = localStorage.getItem('mcr_formats_v6');
     var no = localStorage.getItem('mcr_notes_v6');
+    var at = localStorage.getItem('mcr_attachments_v6');
     var cw = localStorage.getItem('mcr_colwidths_v6');
     var a = localStorage.getItem('mcr_active_v6');
     if (s) sheets = JSON.parse(s);
     if (d) sheetData = JSON.parse(d);
     if (f) sheetFormats = JSON.parse(f);
     if (no) sheetNotes = JSON.parse(no);
+    if (at) sheetAttachments = JSON.parse(at);
     if (cw) colWidths = JSON.parse(cw);
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
   } catch (e) {}
 }
+
+// ── Modo oscuro ──
+try {
+  if (localStorage.getItem('kcn_dark_mode') === '1') document.body.classList.add('dark-mode');
+} catch (e) {}
+document.getElementById('btnDarkMode').addEventListener('click', function () {
+  document.body.classList.toggle('dark-mode');
+  try { localStorage.setItem('kcn_dark_mode', document.body.classList.contains('dark-mode') ? '1' : '0'); } catch (e) {}
+});
+
+// ── Detección de conexión ──
+function actualizarEstadoConexion() {
+  var banner = document.getElementById('offlineBanner');
+  if (navigator.onLine) banner.classList.remove('show'); else banner.classList.add('show');
+}
+window.addEventListener('online', actualizarEstadoConexion);
+window.addEventListener('offline', actualizarEstadoConexion);
+actualizarEstadoConexion();
+
+// ── Auditoría ──
+document.getElementById('btnAuditoria').addEventListener('click', function () {
+  var wrap = document.getElementById('auditList');
+  if (!currentMatrizId) { wrap.innerHTML = '<div style="padding:10px;">Guardá esta matriz primero (📁 Mis Matrices) para empezar a registrar su historial de cambios.</div>'; document.getElementById('auditOverlay').classList.add('show'); return; }
+  if (!firestoreDB) { wrap.innerHTML = '<div style="padding:10px;">Iniciá sesión para ver el historial.</div>'; document.getElementById('auditOverlay').classList.add('show'); return; }
+  wrap.innerHTML = '<div style="padding:10px;">Cargando...</div>';
+  document.getElementById('auditOverlay').classList.add('show');
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('historial')
+    .orderBy('fecha', 'desc').limit(50).get().then(function (snap) {
+      if (snap.empty) { wrap.innerHTML = '<div style="padding:10px;">Sin cambios registrados todavía.</div>'; return; }
+      var html = '';
+      snap.forEach(function (doc) {
+        var d = doc.data();
+        var fechaFmt = d.fecha ? new Date(d.fecha).toLocaleString('es-CR') : '';
+        html += '<div style="padding:6px 0;border-bottom:1px solid #eee;font-size:12px;">' +
+          '<b>' + (d.celda || '') + '</b> (' + (d.hoja || '') + ') — ' + (d.usuario || '') +
+          '<div style="color:#888;">' + fechaFmt + '</div>' +
+          '<div>"' + (d.valorAnterior || '') + '" → "' + (d.valorNuevo || '') + '"</div></div>';
+      });
+      wrap.innerHTML = html;
+    }).catch(function (err) {
+      wrap.innerHTML = '<div style="padding:10px;">No se pudo cargar: ' + (err && err.message ? err.message : '') + '</div>';
+    });
+});
+document.getElementById('auditClose').addEventListener('click', function () {
+  document.getElementById('auditOverlay').classList.remove('show');
+});
+
+// ── Copias de respaldo ──
+function crearBackup(silencioso) {
+  if (!currentMatrizId || !currentUser || !firestoreDB) {
+    if (!silencioso) alert('Guardá esta matriz primero (📁 Mis Matrices) para poder respaldarla.');
+    return;
+  }
+  var payload = estadoActualComoObjeto();
+  payload.fecha = new Date().toISOString();
+  payload.creadoPor = currentUser.email || 'Desconocido';
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').add(payload).then(function () {
+    firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').get().then(function (snap) {
+      var docs = snap.docs;
+      if (docs.length > 10) {
+        docs.slice(10).forEach(function (d) { d.ref.delete(); });
+      }
+    });
+    if (!silencioso) { renderBackupList(); document.getElementById('saveStatus').textContent = '✓ Backup creado'; }
+    try { localStorage.setItem('kcn_ultimo_backup', String(Date.now())); } catch (e) {}
+  }).catch(function () {
+    if (!silencioso) alert('No se pudo crear el backup.');
+  });
+}
+function renderBackupList() {
+  var wrap = document.getElementById('backupList');
+  if (!currentMatrizId) { wrap.innerHTML = '<div style="padding:10px;">Guardá esta matriz primero (📁 Mis Matrices) para usar backups.</div>'; return; }
+  wrap.innerHTML = '<div style="padding:10px;">Cargando...</div>';
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').limit(10).get().then(function (snap) {
+    if (snap.empty) { wrap.innerHTML = '<div style="padding:10px;">Sin backups todavía. Creá el primero arriba.</div>'; return; }
+    var html = '';
+    snap.forEach(function (doc) {
+      var d = doc.data();
+      var fechaFmt = d.fecha ? new Date(d.fecha).toLocaleString('es-CR') : '';
+      html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div>' + fechaFmt + '<div style="color:#888;font-size:11px;">' + (d.creadoPor || '') + '</div></div>' +
+        '<button class="backupRestaurarBtn" data-id="' + doc.id + '" style="padding:6px 10px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">Restaurar</button></div>';
+    });
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.backupRestaurarBtn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (!confirm('¿Restaurar este backup? Se reemplazará el contenido actual de la matriz (podés deshacer con ↶ después).')) return;
+        firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').doc(btn.dataset.id).get().then(function (doc) {
+          if (!doc.exists) return;
+          snapshot();
+          cargarEstadoDesdeObjeto(doc.data());
+          autoSave();
+          document.getElementById('backupOverlay').classList.remove('show');
+          document.getElementById('saveStatus').textContent = '✓ Backup restaurado';
+        });
+      });
+    });
+  }).catch(function () {
+    wrap.innerHTML = '<div style="padding:10px;">No se pudieron cargar los backups.</div>';
+  });
+}
+document.getElementById('btnBackup').addEventListener('click', function () {
+  document.getElementById('backupOverlay').classList.add('show');
+  renderBackupList();
+});
+document.getElementById('backupClose').addEventListener('click', function () {
+  document.getElementById('backupOverlay').classList.remove('show');
+});
+document.getElementById('backupCrearAhoraBtn').addEventListener('click', function () { crearBackup(false); });
+
+// ── Foto de recibo adjunta a celda ──
+document.getElementById('btnRecibo').addEventListener('click', function () {
+  var id = document.getElementById('cellRef').textContent;
+  var attachments = sheetAttachments[activeSheet] || {};
+  if (attachments[id]) {
+    document.getElementById('reciboImg').src = attachments[id];
+    document.getElementById('reciboOverlay').classList.add('show');
+  } else {
+    document.getElementById('reciboFileInput').click();
+  }
+});
+document.getElementById('reciboFileInput').addEventListener('change', function (e) {
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  var id = document.getElementById('cellRef').textContent;
+  var reader = new FileReader();
+  reader.onload = function (ev) {
+    var img = new Image();
+    img.onload = function () {
+      var maxW = 700;
+      var scale = Math.min(1, maxW / img.width);
+      var canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.55);
+      if (!sheetAttachments[activeSheet]) sheetAttachments[activeSheet] = {};
+      sheetAttachments[activeSheet][id] = dataUrl;
+      renderAllCells(); autoSave();
+      document.getElementById('saveStatus').textContent = '✓ Recibo adjuntado a ' + id;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('reciboFileInput').value = '';
+});
+document.getElementById('reciboClose').addEventListener('click', function () {
+  document.getElementById('reciboOverlay').classList.remove('show');
+});
+document.getElementById('reciboEliminarBtn').addEventListener('click', function () {
+  if (!confirm('¿Eliminar este recibo adjunto?')) return;
+  var id = document.getElementById('cellRef').textContent;
+  if (sheetAttachments[activeSheet]) delete sheetAttachments[activeSheet][id];
+  renderAllCells(); autoSave();
+  document.getElementById('reciboOverlay').classList.remove('show');
+});
+// Backup automático: una vez al día como máximo, si hay una matriz abierta
+try {
+  var ultimoBackup = parseInt(localStorage.getItem('kcn_ultimo_backup') || '0', 10);
+  if (Date.now() - ultimoBackup > 24 * 60 * 60 * 1000) {
+    setTimeout(function () { crearBackup(true); }, 4000);
+  }
+} catch (e) {}
+
+// ── Tutorial de bienvenida ──
+var onboardingSlides = [
+  { emoji: '🌿', titulo: '¡Bienvenido/a a Matriz Contable CR!', texto: 'Tu hoja de cálculo contable con fórmulas de Costa Rica, reportes automáticos y un asistente de IA. Te mostramos lo esencial en unos segundos.' },
+  { emoji: '📊', titulo: 'Reportes con un toque', texto: 'Usá los botones de Balance Auto, Flujo Efectivo y Dashboard para generar reportes completos (con gráficos) a partir de tus movimientos, sin fórmulas manuales.' },
+  { emoji: '✦', titulo: 'Sibö, tu asistente contable', texto: 'Preguntale a Sibö sobre IVA, CCSS, fórmulas o tus propios datos — puede leer tu hoja activa y hasta sugerirte fórmulas para insertar directo en la celda.' },
+  { emoji: '📖', titulo: 'Diccionario Indígena colaborativo', texto: 'Explorá y aportá palabras en Bribri, Cabécar, Maléku, Boruca, Ngäbere y Térraba — se guarda para toda la comunidad de usuarios.' },
+  { emoji: '🚀', titulo: '¡Listo para empezar!', texto: 'Tocá "🎨 +Tabla" para insertar tu primera tabla de movimientos, o abrí "📁 Plantilla..." para usar una plantilla lista. Podés reabrir este tutorial con el botón ❔.' },
+];
+var onboardingIdx = 0;
+function renderOnboardingSlide() {
+  var s = onboardingSlides[onboardingIdx];
+  document.getElementById('onboardingSlide').innerHTML =
+    '<div class="emoji">' + s.emoji + '</div><h3>' + s.titulo + '</h3><p>' + s.texto + '</p>';
+  document.getElementById('onboardingDots').innerHTML = onboardingSlides.map(function (_, i) {
+    return '<span class="' + (i === onboardingIdx ? 'active' : '') + '"></span>';
+  }).join('');
+  document.getElementById('onboardingNext').textContent = (onboardingIdx === onboardingSlides.length - 1) ? '¡Empezar!' : 'Siguiente';
+}
+function abrirOnboarding() {
+  onboardingIdx = 0;
+  renderOnboardingSlide();
+  document.getElementById('onboardingOverlay').classList.add('show');
+}
+document.getElementById('btnAyuda').addEventListener('click', abrirOnboarding);
+document.getElementById('onboardingSkip').addEventListener('click', function () {
+  document.getElementById('onboardingOverlay').classList.remove('show');
+  try { localStorage.setItem('kcn_onboarding_visto', '1'); } catch (e) {}
+});
+document.getElementById('onboardingNext').addEventListener('click', function () {
+  if (onboardingIdx < onboardingSlides.length - 1) { onboardingIdx++; renderOnboardingSlide(); }
+  else {
+    document.getElementById('onboardingOverlay').classList.remove('show');
+    try { localStorage.setItem('kcn_onboarding_visto', '1'); } catch (e) {}
+  }
+});
+try {
+  if (!localStorage.getItem('kcn_onboarding_visto')) abrirOnboarding();
+} catch (e) {}
+
+// ── Vista de impresión ──
+document.getElementById('btnImprimir').addEventListener('click', function () {
+  try {
+    window.print();
+  } catch (e) {
+    alert('La impresión directa no está disponible en este dispositivo. Usá "⬇ PDF Reporte" y luego imprimí ese archivo desde el diálogo de compartir.');
+  }
+});
+
+// ── Indicador de guardado más visible ──
+(function () {
+  var el = document.getElementById('saveStatus');
+  var timer = null;
+  var obs = new MutationObserver(function () {
+    el.classList.add('flash');
+    clearTimeout(timer);
+    timer = setTimeout(function () { el.classList.remove('flash'); }, 700);
+  });
+  obs.observe(el, { childList: true, characterData: true, subtree: true });
+})();
 
 restore();
 buildTable();
@@ -6373,6 +7007,21 @@ async function programarNotificacionesVencimientos() {
   }
 }
 
+async function manejarArchivoDesdeWebView(base64, filename, mime) {
+  try {
+    const path = FileSystem.cacheDirectory + filename
+    await FileSystem.writeAsStringAsync(path, base64, { encoding: FileSystem.EncodingType.Base64 })
+    const disponible = await Sharing.isAvailableAsync()
+    if (disponible) {
+      await Sharing.shareAsync(path, { mimeType: mime, dialogTitle: filename })
+    } else {
+      Alert.alert('Archivo listo', 'El archivo se generó pero no se pudo abrir el diálogo para compartir/guardar en este dispositivo.')
+    }
+  } catch (err) {
+    Alert.alert('Error al guardar archivo', String(err && err.message ? err.message : err))
+  }
+}
+
 export default function SheetEditor({ userId, sheetId }) {
   useEffect(() => {
     programarNotificacionesVencimientos()
@@ -6386,6 +7035,14 @@ export default function SheetEditor({ userId, sheetId }) {
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        onMessage={(event) => {
+          try {
+            const msg = JSON.parse(event.nativeEvent.data)
+            if (msg && msg.tipo === 'guardarArchivo') {
+              manejarArchivoDesdeWebView(msg.base64, msg.filename, msg.mime)
+            }
+          } catch (e) {}
+        }}
       />
     </View>
   )
