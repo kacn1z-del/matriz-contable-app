@@ -10,6 +10,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLang } from '../context/LangContext'
 import OnboardingModal from '../components/OnboardingModal'
+import { auth } from '../services/firebase'
 
 const ONBOARDING_KEY = 'kcn_onboarding_visto'
 
@@ -57,6 +58,13 @@ export default function HomeScreen({ navigation }) {
   const { t } = useLang()
   const [onboardingVisible, setOnboardingVisible] = useState(false)
 
+  const usuario = auth.currentUser
+  const nombreMostrado = (usuario?.displayName || (usuario?.email ? usuario.email.split('@')[0] : '') || '').trim()
+  const nombreCapitalizado = nombreMostrado
+    ? nombreMostrado.charAt(0).toUpperCase() + nombreMostrado.slice(1)
+    : ''
+  const inicial = nombreMostrado ? nombreMostrado.charAt(0).toUpperCase() : '👤'
+
   const translate = (key, fallback) => {
     const value = t ? t(key) : null
     return value && value !== key ? value : fallback
@@ -95,6 +103,20 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.grid}>
+        {nombreCapitalizado ? (
+          <View style={styles.welcomeBanner}>
+            <View style={styles.avatarCircle}>
+              <Text style={styles.avatarText}>{inicial}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.welcomeTitle}>Hola, {nombreCapitalizado}</Text>
+              <Text style={styles.welcomeText}>
+                Bienvenido/a a Matriz Contable CR. Accedé rápido a tus herramientas desde aquí abajo.
+              </Text>
+            </View>
+          </View>
+        ) : null}
+
         {MENU_ITEMS.map((item) => (
           <TouchableOpacity
             key={item.key}
@@ -165,6 +187,42 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 16,
+  },
+  welcomeBanner: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: '#cce9ae',
+  },
+  avatarCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#2d7a0c',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  avatarText: {
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 18,
+  },
+  welcomeTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#2d3b1f',
+    marginBottom: 3,
+  },
+  welcomeText: {
+    fontSize: 12,
+    color: '#6b8f48',
+    lineHeight: 16,
   },
   card: {
     width: '48%',
