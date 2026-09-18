@@ -7,6 +7,7 @@ import HomeScreen from './src/screens/HomeScreen'
 import FunctionsScreen from './src/screens/FunctionsScreen'
 import LoginScreen from './src/screens/LoginScreen'
 import CertificadoScreen from './src/screens/CertificadoScreen'
+import ProfileScreen from './src/screens/ProfileScreen'
 import SheetEditor from './src/components/SheetEditor'
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -68,6 +69,7 @@ function AppNavigator() {
         <Stack.Screen name="Sheet" component={SheetScreen} />
         <Stack.Screen name="Funciones" component={FunctionsScreen} />
         <Stack.Screen name="Factura" component={CertificadoScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen
           name="Sibo"
           children={(props) => <PlaceholderScreen {...props} title="✦ Sibö Asistente IA" />}
