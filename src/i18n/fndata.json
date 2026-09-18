@@ -2742,5 +2742,26 @@
     "alias": "CUBESETCOUNT",
     "categoria": "Cubos OLAP",
     "descripcion": "Cuenta los elementos de un conjunto de un cubo OLAP."
+  },
+  {
+    "id": 393,
+    "nombre": "VALIDACEDULA",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Valida el formato de una cédula física (9 dígitos) o jurídica (10 dígitos, inicia en 3) de Costa Rica."
+  },
+  {
+    "id": 394,
+    "nombre": "PLANILLACCSS",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula la deducción de CCSS sobre un salario bruto: trabajador (~10.67%), patrono (~26.67%) o el total combinado."
+  },
+  {
+    "id": 395,
+    "nombre": "RETENCIONFUENTE",
+    "alias": null,
+    "categoria": "Financieras CR",
+    "descripcion": "Calcula la retención en la fuente aplicable sobre un monto, según el tipo de renta (servicios profesionales, alquileres, salarios, etc.)."
   }
 ]
