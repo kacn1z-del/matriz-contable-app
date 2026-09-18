@@ -325,6 +325,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="maleku">Maleku</option>
     </select>
     <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
+    <button id="btnAccount" style="background:#1e5c99;">👤 Cuenta</button>
     <select id="templateSelect">
       <option value="">📁 Plantilla...</option>
       <option value="diario">📘 Libro Diario</option>
@@ -378,7 +379,6 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnDelRow">-Fila</button>
     <button id="btnAddCol">+Col</button>
     <button id="btnClear">Borrar</button>
-    <button id="btnAccount">👤 Cuenta</button>
     <button id="btnMisMatrices">📁 Mis Matrices</button>
   </div>
 
