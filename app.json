@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Matriz Contable CR",
-    "slug": "mercedes123",
-    "owner": "mechedes123s-team",
+    "slug": "matriz-contable-app",
+    "owner": "keny2410s-organization",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -34,7 +34,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "5751ff37-94a5-4c50-b519-b57f9a390b3b"
+        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
       }
     }
   }
