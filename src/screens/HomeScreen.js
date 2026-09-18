@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Image,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLang } from '../context/LangContext'
@@ -105,9 +106,15 @@ export default function HomeScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.grid}>
         {nombreCapitalizado ? (
           <View style={styles.welcomeBanner}>
-            <View style={styles.avatarCircle}>
-              <Text style={styles.avatarText}>{inicial}</Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              {usuario?.photoURL ? (
+                <Image source={{ uri: usuario.photoURL }} style={styles.avatarImg} />
+              ) : (
+                <View style={styles.avatarCircle}>
+                  <Text style={styles.avatarText}>{inicial}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
             <View style={{ flex: 1 }}>
               <Text style={styles.welcomeTitle}>Hola, {nombreCapitalizado}</Text>
               <Text style={styles.welcomeText}>
@@ -206,6 +213,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#2d7a0c',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 14,
+  },
+  avatarImg: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     marginRight: 14,
   },
   avatarText: {
