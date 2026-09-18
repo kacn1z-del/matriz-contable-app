@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app'
 import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from 'react-native'
 
@@ -35,5 +36,8 @@ if (Platform.OS === 'web') {
 //     certificados (encriptados) y facturas. ─
 const db = getFirestore(app)
 
-export { app, auth, db }
+// ─── Storage: para guardar la foto de perfil del usuario. ─
+const storage = getStorage(app)
+
+export { app, auth, db, storage }
 
