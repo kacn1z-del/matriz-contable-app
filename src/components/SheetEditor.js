@@ -4709,6 +4709,7 @@ function siguienteSecuenciaHacienda() {
   return siguiente;
 }
 document.getElementById('feBtnHacienda').addEventListener('click', function () {
+ try {
   function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
   if (!currentUser) { alert('Iniciá sesión primero — se necesita tu cuenta para buscar tu certificado y credenciales de Hacienda.'); return; }
 
@@ -4742,10 +4743,11 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
     return;
   }
 
-  if (!confirm('Esto va a firmar la factura con tu certificado real y enviarla a Hacienda (' + (gv('fe-num') ? 'consecutivo actual en pantalla no se usa, se genera uno nuevo automático' : '') + '). ¿Continuar?')) return;
+  if (!confirm('Esto va a firmar la factura con tu certificado real y enviarla a Hacienda. ¿Continuar?')) return;
 
   var statusEl = document.getElementById('saveStatus');
   statusEl.textContent = 'Firmando y enviando a Hacienda...';
+  alert('▶ Enviando petición a: ' + FIRMAR_FACTURA_URL + '\\nEsto puede tardar hasta 1 minuto. Tocá OK y esperá.');
 
   fetch(FIRMAR_FACTURA_URL, {
     method: 'POST',
@@ -4785,6 +4787,9 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
       statusEl.textContent = '✗ Error de conexión';
       alert('No se pudo contactar el servicio de firma: ' + err.message);
     });
+ } catch (errSync) {
+   alert('⚠️ Error antes de enviar: ' + errSync.message + '\\n\\n' + (errSync.stack || ''));
+ }
 });
 
 document.getElementById('feBtnPdf').addEventListener('click', function () {
