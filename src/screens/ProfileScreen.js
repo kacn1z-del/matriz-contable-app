@@ -6,9 +6,14 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker'
 import { updateProfile, signOut } from 'firebase/auth'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { auth, storage } from '../services/firebase'
+import { auth } from '../services/firebase'
 import { useLang } from '../context/LangContext'
+
+// Mismo Cloudinary que ya usa Los Pirchas para fotos, con un preset
+// nuevo dedicado solo a avatares de Matriz Contable (creado como
+// "Unsigned" en Cloudinary → Settings → Upload → Upload presets).
+const CLOUDINARY_CLOUD_NAME = 'kyhdlu4q'
+const CLOUDINARY_UPLOAD_PRESET = 'matriz_avatares'
 
 export default function ProfileScreen({ navigation }) {
   const { t } = useLang()
@@ -22,7 +27,7 @@ export default function ProfileScreen({ navigation }) {
 
   const inicial = (nombre || usuario?.email || '?').trim().charAt(0).toUpperCase()
 
-  // ─── Elegir y subir una foto de perfil nueva ────────────
+  // ─── Elegir y subir una foto de perfil nueva (vía Cloudinary) ───
   async function elegirFoto() {
     const permiso = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permiso.granted) {
@@ -45,13 +50,21 @@ export default function ProfileScreen({ navigation }) {
     if (!usuario) return
     setSubiendoFoto(true)
     try {
-      const respuesta = await fetch(uri)
-      const blob = await respuesta.blob()
-      const referencia = ref(storage, `avatars/${usuario.uid}.jpg`)
-      await uploadBytes(referencia, blob)
-      const url = await getDownloadURL(referencia)
-      await updateProfile(usuario, { photoURL: url })
-      setFotoLocal(url)
+      const formData = new FormData()
+      formData.append('file', { uri, type: 'image/jpeg', name: 'avatar.jpg' })
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+      formData.append('folder', 'matriz-avatares')
+
+      const respuesta = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        { method: 'POST', body: formData }
+      )
+      const datos = await respuesta.json()
+      if (!datos.secure_url) {
+        throw new Error(datos.error?.message || 'Cloudinary no devolvió la imagen.')
+      }
+      await updateProfile(usuario, { photoURL: datos.secure_url })
+      setFotoLocal(datos.secure_url)
     } catch (error) {
       Alert.alert('No se pudo subir la foto', error.message)
     } finally {
