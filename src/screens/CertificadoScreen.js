@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
   ActivityIndicator, Alert, ScrollView,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -18,6 +18,11 @@ export default function CertificadoScreen({ navigation }) {
 
   const [archivo, setArchivo] = useState(null) // { nombre, base64 }
   const [contrasena, setContrasena] = useState('')
+  const [cedulaEmisor, setCedulaEmisor] = useState('')
+  const [usuarioHacienda, setUsuarioHacienda] = useState('')
+  const [passwordHacienda, setPasswordHacienda] = useState('')
+  const [actividadEconomica, setActividadEconomica] = useState('')
+  const [ambiente, setAmbiente] = useState('sandbox') // 'sandbox' | 'production'
   const [subiendo, setSubiendo] = useState(false)
   const [revisando, setRevisando] = useState(true)
   const [tieneCertificado, setTieneCertificado] = useState(false)
@@ -77,7 +82,7 @@ export default function CertificadoScreen({ navigation }) {
     }
   }
 
-  // ─── Enviar certificado + contraseña al Worker ──────────
+  // ─── Enviar certificado + credenciales de Hacienda al Worker ─
   async function guardarCertificado() {
     if (!archivo) {
       Alert.alert('Falta el archivo', 'Elegí tu llave criptográfica (.p12) primero.')
@@ -85,6 +90,13 @@ export default function CertificadoScreen({ navigation }) {
     }
     if (!contrasena) {
       Alert.alert('Falta la contraseña', 'Ingresá la contraseña de tu llave criptográfica.')
+      return
+    }
+    if (!cedulaEmisor || !usuarioHacienda || !passwordHacienda || !actividadEconomica) {
+      Alert.alert(
+        'Faltan datos',
+        'Completá la cédula, el usuario y contraseña de API de Hacienda, y el código de actividad económica.'
+      )
       return
     }
     if (!uid) {
@@ -101,6 +113,11 @@ export default function CertificadoScreen({ navigation }) {
           uid,
           certificadoBase64: archivo.base64,
           contrasena,
+          cedulaEmisor,
+          usuarioHacienda,
+          passwordHacienda,
+          actividadEconomica,
+          ambiente,
         }),
       })
 
@@ -110,9 +127,13 @@ export default function CertificadoScreen({ navigation }) {
         throw new Error(datos.error || 'Error desconocido')
       }
 
-      Alert.alert('Listo', 'Tu llave criptográfica quedó guardada de forma segura.')
+      Alert.alert('Listo', 'Tu llave criptográfica y tus datos de Hacienda quedaron guardados de forma segura.')
       setArchivo(null)
       setContrasena('')
+      setCedulaEmisor('')
+      setUsuarioHacienda('')
+      setPasswordHacienda('')
+      setActividadEconomica('')
       setTieneCertificado(true)
     } catch (error) {
       Alert.alert('No se pudo guardar', error.message)
@@ -123,8 +144,8 @@ export default function CertificadoScreen({ navigation }) {
 
   async function eliminarCertificado() {
     Alert.alert(
-      '¿Eliminar llave criptográfica?',
-      'Vas a tener que subirla de nuevo para facturar electrónicamente.',
+      '¿Eliminar llave criptográfica y datos de Hacienda?',
+      'Vas a tener que subirlos de nuevo para facturar electrónicamente.',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -165,27 +186,22 @@ export default function CertificadoScreen({ navigation }) {
           // ─── Estado: ya tiene certificado guardado ─────────
           <View style={styles.card}>
             <Text style={styles.emoji}>✅</Text>
-            <Text style={styles.tituloCard}>Llave criptográfica guardada</Text>
+            <Text style={styles.tituloCard}>Firma electrónica configurada</Text>
             <Text style={styles.textoSecundario}>
-              Ya tenés tu certificado configurado para emitir facturas electrónicas.
+              Ya tenés tu certificado y tus datos de Hacienda listos para emitir facturas electrónicas firmadas de verdad.
             </Text>
 
             <TouchableOpacity style={styles.botonSecundario} onPress={eliminarCertificado}>
               <Text style={styles.botonSecundarioTexto}>Eliminar y reemplazar</Text>
             </TouchableOpacity>
-
-            <View style={styles.avisoProximaFase}>
-              <Text style={styles.avisoTexto}>
-                🚧 La generación y envío de facturas está en desarrollo. Por ahora podés dejar tu llave lista.
-              </Text>
-            </View>
           </View>
         ) : (
-          // ─── Estado: falta subir el certificado ────────────
+          // ─── Estado: falta subir el certificado y los datos ────
           <View style={styles.card}>
-            <Text style={styles.tituloCard}>Subí tu llave criptográfica</Text>
+            <Text style={styles.tituloCard}>Configurá tu firma electrónica</Text>
             <Text style={styles.textoSecundario}>
-              Necesitás el archivo .p12 o .pfx que te entregó el Ministerio de Hacienda (ATV), junto con su contraseña.
+              Necesitás el archivo .p12 o .pfx que te entregó el Ministerio de Hacienda (ATV), junto con su contraseña,
+              y tus credenciales de acceso a la API de Hacienda.
             </Text>
 
             <TouchableOpacity style={styles.botonArchivo} onPress={elegirArchivo}>
@@ -194,9 +210,74 @@ export default function CertificadoScreen({ navigation }) {
               </Text>
             </TouchableOpacity>
 
-            <Text style={styles.label}>Contraseña de la llave</Text>
-            <View style={styles.inputContainer}>
-              <ContrasenaInput value={contrasena} onChangeText={setContrasena} />
+            <Text style={styles.label}>Contraseña de la llave (.p12)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="••••••••"
+              placeholderTextColor="#9db98a"
+              value={contrasena}
+              onChangeText={setContrasena}
+              secureTextEntry
+            />
+
+            <Text style={styles.separador}>Credenciales de API de Hacienda</Text>
+
+            <Text style={styles.label}>Cédula del emisor</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="1-2345-6789"
+              placeholderTextColor="#9db98a"
+              value={cedulaEmisor}
+              onChangeText={setCedulaEmisor}
+            />
+
+            <Text style={styles.label}>Usuario de API (ovitribucr.hacienda.go.cr)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="cpf-01-XXXXXXXXXX@prod.comprobanteselectronicos.go.cr"
+              placeholderTextColor="#9db98a"
+              value={usuarioHacienda}
+              onChangeText={setUsuarioHacienda}
+              autoCapitalize="none"
+            />
+
+            <Text style={styles.label}>Contraseña de API de Hacienda</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="••••••••"
+              placeholderTextColor="#9db98a"
+              value={passwordHacienda}
+              onChangeText={setPasswordHacienda}
+              secureTextEntry
+            />
+
+            <Text style={styles.label}>Código de actividad económica</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ej: 6920.0"
+              placeholderTextColor="#9db98a"
+              value={actividadEconomica}
+              onChangeText={setActividadEconomica}
+            />
+
+            <Text style={styles.label}>Ambiente</Text>
+            <View style={styles.ambienteRow}>
+              <TouchableOpacity
+                style={[styles.ambienteBtn, ambiente === 'sandbox' && styles.ambienteBtnActivo]}
+                onPress={() => setAmbiente('sandbox')}
+              >
+                <Text style={[styles.ambienteBtnTexto, ambiente === 'sandbox' && styles.ambienteBtnTextoActivo]}>
+                  Pruebas (sandbox)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.ambienteBtn, ambiente === 'production' && styles.ambienteBtnActivo]}
+                onPress={() => setAmbiente('production')}
+              >
+                <Text style={[styles.ambienteBtnTexto, ambiente === 'production' && styles.ambienteBtnTextoActivo]}>
+                  Producción real
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
@@ -212,27 +293,12 @@ export default function CertificadoScreen({ navigation }) {
             </TouchableOpacity>
 
             <Text style={styles.notaSeguridad}>
-              🔒 Tu llave se guarda cifrada. Nunca se comparte ni se muestra en la app.
+              🔒 Todo se guarda cifrado. Nunca se comparte ni se muestra en la app.
             </Text>
           </View>
         )}
       </ScrollView>
     </SafeAreaView>
-  )
-}
-
-// Componente separado solo para mantener el TextInput con estilo consistente
-import { TextInput } from 'react-native'
-function ContrasenaInput({ value, onChangeText }) {
-  return (
-    <TextInput
-      style={styles.input}
-      placeholder="••••••••"
-      placeholderTextColor="#9db98a"
-      value={value}
-      onChangeText={onChangeText}
-      secureTextEntry
-    />
   )
 }
 
@@ -257,13 +323,24 @@ const styles = StyleSheet.create({
     borderRadius: 10, paddingVertical: 16, alignItems: 'center', marginBottom: 16,
   },
   botonArchivoTexto: { color: '#2d7a0c', fontWeight: '600', fontSize: 14 },
-  label: { fontSize: 12, fontWeight: '700', color: '#3d6020', marginBottom: 6 },
-  inputContainer: { marginBottom: 20 },
+  separador: {
+    fontSize: 12.5, fontWeight: '800', color: '#2d7a0c',
+    marginTop: 18, marginBottom: 10, textTransform: 'uppercase',
+  },
+  label: { fontSize: 12, fontWeight: '700', color: '#3d6020', marginBottom: 6, marginTop: 4 },
   input: {
     borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
     paddingHorizontal: 14, paddingVertical: 10,
-    fontSize: 15, color: '#2d3b1f', backgroundColor: '#f7fbf0',
+    fontSize: 15, color: '#2d3b1f', backgroundColor: '#f7fbf0', marginBottom: 12,
   },
+  ambienteRow: { flexDirection: 'row', gap: 10, marginBottom: 20 },
+  ambienteBtn: {
+    flex: 1, borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
+    paddingVertical: 10, alignItems: 'center', backgroundColor: '#fff',
+  },
+  ambienteBtnActivo: { backgroundColor: '#2d7a0c', borderColor: '#2d7a0c' },
+  ambienteBtnTexto: { fontSize: 12.5, fontWeight: '600', color: '#2d7a0c' },
+  ambienteBtnTextoActivo: { color: '#fff' },
   botonPrincipal: {
     backgroundColor: '#2d7a0c', borderRadius: 10,
     paddingVertical: 13, alignItems: 'center',
@@ -276,8 +353,4 @@ const styles = StyleSheet.create({
     paddingVertical: 12, alignItems: 'center', marginTop: 4,
   },
   botonSecundarioTexto: { color: '#c0392b', fontWeight: '600', fontSize: 13 },
-  avisoProximaFase: {
-    backgroundColor: '#fff8e1', borderRadius: 10, padding: 12, marginTop: 18,
-  },
-  avisoTexto: { fontSize: 12, color: '#8a6d00', textAlign: 'center', lineHeight: 17 },
 })
