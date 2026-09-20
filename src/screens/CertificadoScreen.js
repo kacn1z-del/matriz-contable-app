@@ -17,6 +17,8 @@ export default function CertificadoScreen({ navigation }) {
   const insets = useSafeAreaInsets()
 
   const [archivo, setArchivo] = useState(null) // { nombre, base64 }
+  const [modoCarga, setModoCarga] = useState('archivo') // 'archivo' | 'base64'
+  const [base64Pegado, setBase64Pegado] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [cedulaEmisor, setCedulaEmisor] = useState('')
   const [usuarioHacienda, setUsuarioHacienda] = useState('')
@@ -84,8 +86,15 @@ export default function CertificadoScreen({ navigation }) {
 
   // ─── Enviar certificado + credenciales de Hacienda al Worker ─
   async function guardarCertificado() {
-    if (!archivo) {
-      Alert.alert('Falta el archivo', 'Elegí tu llave criptográfica (.p12) primero.')
+    var certificadoBase64Final = modoCarga === 'base64' ? base64Pegado.trim() : (archivo ? archivo.base64 : '')
+
+    if (!certificadoBase64Final) {
+      Alert.alert(
+        'Falta la llave',
+        modoCarga === 'base64'
+          ? 'Pegá el texto en base64 de tu certificado.'
+          : 'Elegí tu llave criptográfica (.p12) primero.'
+      )
       return
     }
     if (!contrasena) {
@@ -111,7 +120,7 @@ export default function CertificadoScreen({ navigation }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           uid,
-          certificadoBase64: archivo.base64,
+          certificadoBase64: certificadoBase64Final,
           contrasena,
           cedulaEmisor,
           usuarioHacienda,
@@ -129,6 +138,7 @@ export default function CertificadoScreen({ navigation }) {
 
       Alert.alert('Listo', 'Tu llave criptográfica y tus datos de Hacienda quedaron guardados de forma segura.')
       setArchivo(null)
+      setBase64Pegado('')
       setContrasena('')
       setCedulaEmisor('')
       setUsuarioHacienda('')
@@ -204,11 +214,50 @@ export default function CertificadoScreen({ navigation }) {
               y tus credenciales de acceso a la API de Hacienda.
             </Text>
 
-            <TouchableOpacity style={styles.botonArchivo} onPress={elegirArchivo}>
-              <Text style={styles.botonArchivoTexto}>
-                {archivo ? `📄 ${archivo.nombre}` : '📎 Elegir archivo .p12'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.modoRow}>
+              <TouchableOpacity
+                style={[styles.modoBtn, modoCarga === 'archivo' && styles.modoBtnActivo]}
+                onPress={() => setModoCarga('archivo')}
+              >
+                <Text style={[styles.modoBtnTexto, modoCarga === 'archivo' && styles.modoBtnTextoActivo]}>
+                  📎 Elegir archivo
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modoBtn, modoCarga === 'base64' && styles.modoBtnActivo]}
+                onPress={() => setModoCarga('base64')}
+              >
+                <Text style={[styles.modoBtnTexto, modoCarga === 'base64' && styles.modoBtnTextoActivo]}>
+                  📋 Pegar base64
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {modoCarga === 'archivo' ? (
+              <TouchableOpacity style={styles.botonArchivo} onPress={elegirArchivo}>
+                <Text style={styles.botonArchivoTexto}>
+                  {archivo ? `📄 ${archivo.nombre}` : '📎 Elegir archivo .p12'}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <>
+                <Text style={styles.textoSecundario}>
+                  Copiá el valor en base64 de tu certificado (por ejemplo, desde una variable de entorno de otro
+                  proyecto tuyo, como HACIENDA_P12_BASE64 en Vercel) y pegalo acá.
+                </Text>
+                <TextInput
+                  style={[styles.input, styles.inputMultilinea]}
+                  placeholder="Pegá aquí el texto en base64..."
+                  placeholderTextColor="#9db98a"
+                  value={base64Pegado}
+                  onChangeText={setBase64Pegado}
+                  multiline
+                  numberOfLines={4}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </>
+            )}
 
             <Text style={styles.label}>Contraseña de la llave (.p12)</Text>
             <TextInput
@@ -311,6 +360,15 @@ const styles = StyleSheet.create({
   backBtn: { fontSize: 13, fontWeight: '700', color: '#2d7a0c' },
   toolbarTitle: { fontSize: 13, fontWeight: '700', color: '#3d6020' },
   contenido: { padding: 20, flexGrow: 1 },
+  modoRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
+  modoBtn: {
+    flex: 1, borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
+    paddingVertical: 9, alignItems: 'center', backgroundColor: '#fff',
+  },
+  modoBtnActivo: { backgroundColor: '#2d7a0c', borderColor: '#2d7a0c' },
+  modoBtnTexto: { fontSize: 12, fontWeight: '600', color: '#2d7a0c' },
+  modoBtnTextoActivo: { color: '#fff' },
+  inputMultilinea: { minHeight: 90, textAlignVertical: 'top' },
   cargando: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 60 },
   card: {
     backgroundColor: '#fff', borderRadius: 16, padding: 20,
