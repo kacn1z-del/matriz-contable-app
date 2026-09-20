@@ -232,6 +232,8 @@ const SHEET_HTML = `<!DOCTYPE html>
   #feLineasTable td { padding: 3px 2px; border-bottom: 1px solid #eee; }
   #feLineasTable input { width: 100%; padding: 4px 5px; border: 1px solid #cce9ae; border-radius: 5px; font-size: 11.5px; }
   #feLineasTable .feQty { width: 40px; }
+  #feLineasTable .feCabys { width: 78px; font-size: 10px; }
+  #feLineasTable .feIva { width: 52px; font-size: 10px; }
   #feLineasTable .fePrice { width: 62px; }
   #feAddLineaBtn { background: #245f09; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 700; }
   #feTotalsBox { background: #eaf7d8; border-radius: 8px; padding: 10px 12px; margin-top: 6px; }
@@ -265,6 +267,18 @@ const SHEET_HTML = `<!DOCTYPE html>
   #buscarGlobalList { overflow-y: auto; padding: 6px 10px; }
   .buscarGlobalItem { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; }
   .buscarGlobalItem b { color: #2d7a0c; }
+  #pivoteOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #pivoteOverlay.show { display: flex; }
+  #pivoteModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; }
+  #pivoteHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #pivoteHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #pivoteHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #pivoteBody { padding: 12px; overflow-y: auto; }
+  #pivoteAyuda { font-size: 11.5px; color: #6b8f48; margin: 0 0 12px 0; }
+  #pivoteBody label { display: block; font-size: 12px; font-weight: 700; color: #3d6020; margin: 10px 0 4px; }
+  #pivoteBody select { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #cce9ae; box-sizing: border-box; background: #f7fbf0; }
+  #pivoteGenerarBtn { width: 100%; margin-top: 16px; padding: 10px; border-radius: 8px; background: #2d7a0c; color: #fff; border: none; font-weight: 700; }
+  #pivoteStatus { font-size: 11.5px; color: #6b8f48; margin-top: 8px; text-align: center; }
   .buscarGlobalIrBtn { padding: 6px 10px; border-radius: 6px; background: #2d7a0c; color: #fff; border: none; font-size: 11px; flex-shrink: 0; }
   .feHistItem { padding: 8px 6px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
   .feHistItem .fhInfo { font-size: 12px; }
@@ -311,7 +325,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   #siboInputRow button { background: #2d7a0c; color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; flex-shrink: 0; }
   @media print {
     #toolbar, #formulaBarRow, #rangeActionsBar, #statusBar, #tabsBar, #offlineBanner,
-    #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay,
+    #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay, #pivoteOverlay,
     #auditOverlay, #backupOverlay, #reciboOverlay, #fnOverlay, #feOverlay, #feHistOverlay,
     #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
     #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay { display: none !important; }
@@ -393,6 +407,8 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
     <button id="btnDashboard">📊 Dashboard</button>
     <button id="btnComparativoMensual">📈 Comparativo Mensual</button>
+    <button id="btnProtegerHoja">🔓 Proteger Hoja</button>
+    <button id="btnTablaDinamica">📐 Tabla Dinámica</button>
     <button id="btnVencimientos">🗓 Vencimientos</button>
     <button id="btnD101">🇨🇷 D-101</button>
     <button id="btnCSV">⬇ CSV</button>
@@ -746,7 +762,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <div class="feCard">
         <div class="feCardTitle">LÍNEAS DE DETALLE</div>
         <table id="feLineasTable">
-          <thead><tr><th>Cant.</th><th>Descripción</th><th>Precio Unit.</th><th>Total</th><th></th></tr></thead>
+          <thead><tr><th>Cant.</th><th>Descripción</th><th>CABYS</th><th>IVA%</th><th>Precio Unit.</th><th>Total</th><th></th></tr></thead>
           <tbody id="fe-lineas-body"></tbody>
         </table>
         <button id="feAddLineaBtn">+ Línea</button>
@@ -769,6 +785,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <button id="feBtnClear">Limpiar</button>
       <button id="feBtnXml">⬇ XML</button>
       <button id="feBtnPdf">⬇ PDF</button>
+      <button id="feBtnHacienda" style="background:#1e5c99;">✅ Firmar y Enviar (real)</button>
     </div>
   </div>
 </div>
@@ -857,6 +874,34 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="pivoteOverlay">
+  <div id="pivoteModal">
+    <div id="pivoteHead">
+      <h3>📐 Tabla Dinámica</h3>
+      <button id="pivoteClose">✕</button>
+    </div>
+    <div id="pivoteBody">
+      <p id="pivoteAyuda">Se usa la fila 1 de "<span id="pivoteOrigenNombre"></span>" como encabezados. Elegí qué agrupar:</p>
+      <label>Campo de filas (agrupar por)</label>
+      <select id="pivoteFilas"></select>
+      <label>Campo de columnas (opcional)</label>
+      <select id="pivoteColumnas"><option value="">— Ninguno —</option></select>
+      <label>Campo de valores (a calcular)</label>
+      <select id="pivoteValores"></select>
+      <label>Función</label>
+      <select id="pivoteFuncion">
+        <option value="suma">SUMA</option>
+        <option value="promedio">PROMEDIO</option>
+        <option value="contar">CONTAR</option>
+        <option value="max">MÁX</option>
+        <option value="min">MÍN</option>
+      </select>
+      <button id="pivoteGenerarBtn">Generar Tabla Dinámica</button>
+      <div id="pivoteStatus"></div>
+    </div>
+  </div>
+</div>
+
 <div id="brOverlay">
   <div id="brModal">
     <h3>🔎 Buscar y reemplazar</h3>
@@ -907,6 +952,7 @@ var sheetData = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetFormats = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetNotes = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetAttachments = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+var sheetProtegida = { Hoja1: false, Hoja2: false, Hoja3: false };
 var colWidths = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetMerges = { Hoja1: [], Hoja2: [], Hoja3: [] };
 var sheetFreeze = { Hoja1: { row: 0, col: 0 }, Hoja2: { row: 0, col: 0 }, Hoja3: { row: 0, col: 0 } };
@@ -4072,6 +4118,12 @@ function getColWidth(c) {
 }
 
 function buildTable() {
+  var btnProteger = document.getElementById('btnProtegerHoja');
+  if (btnProteger) {
+    var protegida = !!sheetProtegida[activeSheet];
+    btnProteger.textContent = protegida ? '🔒 Hoja Protegida' : '🔓 Proteger Hoja';
+    btnProteger.style.background = protegida ? '#dc2626' : '';
+  }
   var table = document.getElementById('sheetTable');
   var merges = sheetMerges[activeSheet] || [];
   var freeze = sheetFreeze[activeSheet] || { row: 0, col: 0 };
@@ -4168,7 +4220,7 @@ document.getElementById('zoomRange').addEventListener('input', function () {
 });
 document.getElementById('btnFreeze').addEventListener('click', function () {
   var idRef = document.getElementById('cellRef').textContent;
-  var mm = idRef.match(/([A-Za-z]+)(\d+)/);
+  var mm = idRef.match(/([A-Za-z]+)(\\d+)/);
   if (!mm) return;
   var col = colIndex(mm[1]), row = parseInt(mm[2]) - 1;
   if (!sheetFreeze[activeSheet]) sheetFreeze[activeSheet] = { row: 0, col: 0 };
@@ -4297,7 +4349,7 @@ function renderTabs() {
     snapshot();
     var n = sheets.length + 1; var name = 'Hoja' + n;
     while (sheets.indexOf(name) >= 0) { n++; name = 'Hoja' + n; }
-    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
+    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
     activeSheet = name; buildTable(); autoSave();
   });
 }
@@ -4388,6 +4440,14 @@ function agregarLineaFactura() {
   var tr = document.createElement('tr');
   tr.innerHTML = '<td><input type="number" value="1" min="0" step="0.01" class="feQty"></td>' +
     '<td><input type="text" value="Servicio" class="feDesc"></td>' +
+    '<td><input type="text" value="8399000000000" class="feCabys" title="Código CABYS de 13 dígitos"></td>' +
+    '<td><select class="feIva">' +
+      '<option value="13">13%</option>' +
+      '<option value="4">4%</option>' +
+      '<option value="2">2%</option>' +
+      '<option value="1">1%</option>' +
+      '<option value="0">0% (exento)</option>' +
+    '</select></td>' +
     '<td><input type="number" value="0" min="0" step="0.01" class="fePrice"></td>' +
     '<td class="feLineTotal" style="font-weight:700;white-space:nowrap;">' + fmtCRC(0) + '</td>' +
     '<td><button class="feDelLinea" style="background:none;border:none;color:#dc2626;font-size:15px;">×</button></td>';
@@ -4639,6 +4699,92 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
   a.click();
   guardarFacturaHistorial();
   document.getElementById('saveStatus').textContent = 'XML exportado';
+});
+
+var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
+function siguienteSecuenciaHacienda() {
+  var actual = parseInt(localStorage.getItem('kcn_hacienda_secuencia') || '0', 10);
+  var siguiente = (isNaN(actual) ? 0 : actual) + 1;
+  localStorage.setItem('kcn_hacienda_secuencia', String(siguiente));
+  return siguiente;
+}
+document.getElementById('feBtnHacienda').addEventListener('click', function () {
+  function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
+  if (!currentUser) { alert('Iniciá sesión primero — se necesita tu cuenta para buscar tu certificado y credenciales de Hacienda.'); return; }
+
+  var cedulaReceptorLimpia = (gv('fe-receptor-cedula') || '').replace(/[^0-9]/g, '');
+  var tipoIdReceptor = '02';
+  if (cedulaReceptorLimpia.length === 9) tipoIdReceptor = '01';
+  else if (cedulaReceptorLimpia.length === 12) tipoIdReceptor = '03';
+
+  var lineas = [];
+  var filasVacias = false;
+  document.querySelectorAll('#fe-lineas-body tr').forEach(function (row, i) {
+    var qty = parseFloat((row.querySelector('.feQty') || {}).value) || 0;
+    var desc = (row.querySelector('.feDesc') || {}).value || '';
+    var cabys = ((row.querySelector('.feCabys') || {}).value || '').replace(/[^0-9]/g, '');
+    var tarifa = parseFloat((row.querySelector('.feIva') || {}).value);
+    var precio = parseFloat((row.querySelector('.fePrice') || {}).value) || 0;
+    if (!desc || !precio || cabys.length !== 13) { filasVacias = true; }
+    lineas.push({
+      numeroLinea: i + 1,
+      codigoCabys: cabys,
+      cantidad: qty || 1,
+      unidadMedida: 'Unid',
+      detalle: desc,
+      precioUnitario: precio,
+      esServicio: true,
+      impuesto: isNaN(tarifa) || tarifa === 0 ? [] : [{ codigo: '01', codigoTarifaIVA: '08', tarifa: tarifa }],
+    });
+  });
+  if (filasVacias) {
+    alert('Revisá las líneas: cada una necesita descripción, precio, y un código CABYS de exactamente 13 dígitos.');
+    return;
+  }
+
+  if (!confirm('Esto va a firmar la factura con tu certificado real y enviarla a Hacienda (' + (gv('fe-num') ? 'consecutivo actual en pantalla no se usa, se genera uno nuevo automático' : '') + '). ¿Continuar?')) return;
+
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Firmando y enviando a Hacienda...';
+
+  fetch(FIRMAR_FACTURA_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      uid: currentUser.uid,
+      receptor: {
+        nombre: gv('fe-receptor-nombre'),
+        identificacion: { tipo: tipoIdReceptor, numero: cedulaReceptorLimpia },
+        correoElectronico: gv('fe-receptor-email') || undefined,
+      },
+      lineas: lineas,
+      condicionVenta: '01',
+      medioPago: ['01'],
+      esTiquete: !cedulaReceptorLimpia,
+      secuencia: siguienteSecuenciaHacienda(),
+    }),
+  })
+    .then(function (r) { return r.json().then(function (datos) { return { ok: r.ok, datos: datos }; }); })
+    .then(function (resultado) {
+      if (!resultado.ok) {
+        statusEl.textContent = '✗ Error de Hacienda';
+        alert('No se pudo facturar: ' + (resultado.datos.error || 'error desconocido') +
+          (resultado.datos.detalles ? '\\n\\n' + JSON.stringify(resultado.datos.detalles) : ''));
+        return;
+      }
+      if (resultado.datos.aceptado) {
+        statusEl.textContent = '✓ Aceptada por Hacienda';
+        alert('¡Factura ACEPTADA por Hacienda! ✅\\n\\nClave: ' + resultado.datos.clave + '\\nConsecutivo: ' + resultado.datos.numeroConsecutivo + '\\nAmbiente: ' + resultado.datos.ambiente);
+      } else {
+        statusEl.textContent = '✗ Rechazada por Hacienda';
+        alert('Hacienda RECHAZÓ la factura. Motivo:\\n\\n' + (resultado.datos.motivoRechazo || 'no especificado'));
+      }
+      guardarFacturaHistorial();
+    })
+    .catch(function (err) {
+      statusEl.textContent = '✗ Error de conexión';
+      alert('No se pudo contactar el servicio de firma: ' + err.message);
+    });
 });
 
 document.getElementById('feBtnPdf').addEventListener('click', function () {
@@ -5309,6 +5455,119 @@ document.getElementById('buscarGlobalClose').addEventListener('click', function 
 });
 document.getElementById('buscarGlobalInput').addEventListener('input', buscarGlobalEjecutar);
 
+// ══════════════════════════════════════════════
+// TABLA DINÁMICA (pivote)
+// ══════════════════════════════════════════════
+function pivoteLeerEncabezados() {
+  var data = sheetData[activeSheet] || {};
+  var maxCol = 0;
+  Object.keys(data).forEach(function (key) {
+    var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
+    if (m[2] !== '1') return; // solo fila 1 (encabezados)
+    var c = colIndex(m[1]);
+    if (c > maxCol) maxCol = c;
+  });
+  var encabezados = [];
+  for (var c = 0; c <= maxCol; c++) {
+    var texto = computeValue(cellId(0, c));
+    encabezados.push({ col: c, nombre: (texto === '' || texto === undefined) ? cellId(0, c).replace(/\\d+/, '') : String(texto) });
+  }
+  return encabezados;
+}
+document.getElementById('btnTablaDinamica').addEventListener('click', function () {
+  var data = sheetData[activeSheet] || {};
+  if (!Object.keys(data).length) { alert('Esta hoja está vacía.'); return; }
+  var encabezados = pivoteLeerEncabezados();
+  if (!encabezados.length) { alert('No se detectaron columnas con datos.'); return; }
+  document.getElementById('pivoteOrigenNombre').textContent = activeSheet;
+  var opciones = encabezados.map(function (e) { return '<option value="' + e.col + '">' + e.nombre + '</option>'; }).join('');
+  document.getElementById('pivoteFilas').innerHTML = opciones;
+  document.getElementById('pivoteValores').innerHTML = opciones;
+  document.getElementById('pivoteColumnas').innerHTML = '<option value="">— Ninguno —</option>' + opciones;
+  document.getElementById('pivoteStatus').textContent = '';
+  document.getElementById('pivoteOverlay').classList.add('show');
+});
+document.getElementById('pivoteClose').addEventListener('click', function () {
+  document.getElementById('pivoteOverlay').classList.remove('show');
+});
+document.getElementById('pivoteGenerarBtn').addEventListener('click', function () {
+  var colFilas = parseInt(document.getElementById('pivoteFilas').value, 10);
+  var colColumnasStr = document.getElementById('pivoteColumnas').value;
+  var colColumnas = colColumnasStr === '' ? null : parseInt(colColumnasStr, 10);
+  var colValores = parseInt(document.getElementById('pivoteValores').value, 10);
+  var funcion = document.getElementById('pivoteFuncion').value;
+
+  var data = sheetData[activeSheet] || {};
+  var maxRow = 0;
+  Object.keys(data).forEach(function (key) {
+    var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
+    var r = parseInt(m[2]) - 1;
+    if (r > maxRow) maxRow = r;
+  });
+
+  var celdas = {}; // celdas[filaKey][colKey] = array de números (o conteo)
+  var columnasVistas = [];
+  var filasVistas = [];
+
+  for (var r = 1; r <= maxRow; r++) {
+    var filaKey = String(computeValue(cellId(r, colFilas)) || '(vacío)');
+    var colKey = colColumnas === null ? 'Valor' : String(computeValue(cellId(r, colColumnas)) || '(vacío)');
+    var valorCrudo = computeValue(cellId(r, colValores));
+    var valorNum = parseFloat(String(valorCrudo).replace(/[₡,\\s]/g, ''));
+
+    if (filasVistas.indexOf(filaKey) === -1) filasVistas.push(filaKey);
+    if (columnasVistas.indexOf(colKey) === -1) columnasVistas.push(colKey);
+    if (!celdas[filaKey]) celdas[filaKey] = {};
+    if (!celdas[filaKey][colKey]) celdas[filaKey][colKey] = [];
+    celdas[filaKey][colKey].push(isNaN(valorNum) ? 0 : valorNum);
+  }
+
+  function agregar(arr) {
+    if (funcion === 'contar') return arr.length;
+    if (!arr.length) return 0;
+    if (funcion === 'suma') return arr.reduce(function (a, b) { return a + b; }, 0);
+    if (funcion === 'promedio') return arr.reduce(function (a, b) { return a + b; }, 0) / arr.length;
+    if (funcion === 'max') return Math.max.apply(null, arr);
+    if (funcion === 'min') return Math.min.apply(null, arr);
+    return 0;
+  }
+
+  snapshot();
+  var origen = activeSheet;
+  var name = crearHojaDestino('Tabla Dinámica');
+  activeSheet = name;
+  var d = sheetData[name], f = sheetFormats[name];
+  function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
+
+  set(0, 0, '📐 TABLA DINÁMICA — origen: ' + origen, true);
+  set(2, 0, encabezados_pivote_filas_label(), true);
+  columnasVistas.forEach(function (colKey, i) { set(2, i + 1, colKey, true); });
+  var totalCol = columnasVistas.length + 1;
+  set(2, totalCol, 'Total', true);
+
+  filasVistas.forEach(function (filaKey, ri) {
+    var r = 3 + ri;
+    set(r, 0, filaKey, true);
+    var totalFila = [];
+    columnasVistas.forEach(function (colKey, ci) {
+      var arr = (celdas[filaKey] && celdas[filaKey][colKey]) || [];
+      var val = agregar(arr);
+      set(r, ci + 1, val);
+      totalFila = totalFila.concat(arr);
+    });
+    set(r, totalCol, agregar(totalFila), true);
+  });
+
+  function encabezados_pivote_filas_label() {
+    var opt = document.getElementById('pivoteFilas');
+    return opt.options[opt.selectedIndex] ? opt.options[opt.selectedIndex].textContent : 'Campo';
+  }
+
+  buildTable(); autoSave();
+  document.getElementById('pivoteOverlay').classList.remove('show');
+  document.getElementById('saveStatus').textContent = '✓ Tabla dinámica generada (' + filasVistas.length + ' filas)';
+});
+
 document.getElementById('fnSearchInput').addEventListener('input', function () {
   var q = this.value.trim().toLowerCase();
   if (!q) { renderFnList(fnData[fnCurrentCat] || []); return; }
@@ -5473,6 +5732,12 @@ function registrarCambioAuditoria(celda, valorAnterior, valorNuevo) {
 }
 function commitCell(el) {
   var id = el.dataset.id;
+  if (sheetProtegida[activeSheet]) {
+    el.textContent = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
+    el.classList.remove('selected');
+    alert('🔒 Esta hoja está protegida. Tocá "🔒 Proteger Hoja" para desbloquearla antes de editar.');
+    return;
+  }
   var val = el.textContent.trim();
   var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
@@ -5701,7 +5966,7 @@ function loadTemplate(tipo) {
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
   activeSheet = name;
   var d = sheetData[name], f = sheetFormats[name];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
@@ -5912,7 +6177,7 @@ function crearHojaDestino(baseName) {
   var n = sheets.length + 1;
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
   return name;
 }
 
@@ -6139,6 +6404,22 @@ document.getElementById('btnComparativoMensual').addEventListener('click', funct
   buildTable(); autoSave();
   insertChart('line', 'Ingresos vs Gastos por mes', labels, ingresosArr, gastosArr);
   document.getElementById('saveStatus').textContent = '✓ Comparativo mensual generado (' + meses.length + ' meses)';
+});
+
+document.getElementById('btnProtegerHoja').addEventListener('click', function () {
+  if (sheetProtegida[activeSheet]) {
+    if (confirm('¿Desbloquear "' + activeSheet + '" para poder editarla de nuevo?')) {
+      sheetProtegida[activeSheet] = false;
+      buildTable(); autoSave();
+      document.getElementById('saveStatus').textContent = '🔓 Hoja desbloqueada';
+    }
+  } else {
+    if (confirm('¿Proteger "' + activeSheet + '" contra edición accidental? (Podés desbloquearla cuando quieras con el mismo botón)')) {
+      sheetProtegida[activeSheet] = true;
+      buildTable(); autoSave();
+      document.getElementById('saveStatus').textContent = '🔒 Hoja protegida';
+    }
+  }
 });
 
 document.getElementById('btnVencimientos').addEventListener('click', function () {
@@ -7075,7 +7356,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, zoomLevel: zoomLevel };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, zoomLevel: zoomLevel };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -7084,6 +7365,7 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetFormats = obj.sheetFormats || {};
   sheetNotes = obj.sheetNotes || {};
   sheetAttachments = obj.sheetAttachments || {};
+  sheetProtegida = obj.sheetProtegida || {};
   colWidths = obj.colWidths || {};
   sheetMerges = obj.sheetMerges || {};
   sheetFreeze = obj.sheetFreeze || {};
@@ -7245,6 +7527,7 @@ function autoSave() {
     localStorage.setItem('mcr_formats_v6', JSON.stringify(sheetFormats));
     localStorage.setItem('mcr_notes_v6', JSON.stringify(sheetNotes));
     localStorage.setItem('mcr_attachments_v6', JSON.stringify(sheetAttachments));
+    localStorage.setItem('mcr_protegida_v6', JSON.stringify(sheetProtegida));
     localStorage.setItem('mcr_colwidths_v6', JSON.stringify(colWidths));
     localStorage.setItem('mcr_merges_v6', JSON.stringify(sheetMerges));
     localStorage.setItem('mcr_freeze_v6', JSON.stringify(sheetFreeze));
@@ -7266,6 +7549,7 @@ function restore() {
     var f = localStorage.getItem('mcr_formats_v6');
     var no = localStorage.getItem('mcr_notes_v6');
     var at = localStorage.getItem('mcr_attachments_v6');
+    var pr = localStorage.getItem('mcr_protegida_v6');
     var cw = localStorage.getItem('mcr_colwidths_v6');
     var mg = localStorage.getItem('mcr_merges_v6');
     var fz = localStorage.getItem('mcr_freeze_v6');
@@ -7278,6 +7562,7 @@ function restore() {
     if (f) sheetFormats = JSON.parse(f);
     if (no) sheetNotes = JSON.parse(no);
     if (at) sheetAttachments = JSON.parse(at);
+    if (pr) sheetProtegida = JSON.parse(pr);
     if (cw) colWidths = JSON.parse(cw);
     if (mg) sheetMerges = JSON.parse(mg);
     if (fz) sheetFreeze = JSON.parse(fz);
@@ -7335,7 +7620,7 @@ document.getElementById('auditClose').addEventListener('click', function () {
 });
 
 // ── Copias de respaldo ──
-function crearBackup(silencioso) {
+function crearBackup(silencioso, nota) {
   if (!currentMatrizId || !currentUser || !firestoreDB) {
     if (!silencioso) alert('Guardá esta matriz primero (📁 Mis Matrices) para poder respaldarla.');
     return;
@@ -7343,11 +7628,12 @@ function crearBackup(silencioso) {
   var payload = estadoActualComoObjeto();
   payload.fecha = new Date().toISOString();
   payload.creadoPor = currentUser.email || 'Desconocido';
+  payload.nota = nota || '';
   firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').add(payload).then(function () {
     firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').get().then(function (snap) {
       var docs = snap.docs;
-      if (docs.length > 10) {
-        docs.slice(10).forEach(function (d) { d.ref.delete(); });
+      if (docs.length > 30) {
+        docs.slice(30).forEach(function (d) { d.ref.delete(); });
       }
     });
     if (!silencioso) { renderBackupList(); document.getElementById('saveStatus').textContent = '✓ Backup creado'; }
@@ -7360,14 +7646,14 @@ function renderBackupList() {
   var wrap = document.getElementById('backupList');
   if (!currentMatrizId) { wrap.innerHTML = '<div style="padding:10px;">Guardá esta matriz primero (📁 Mis Matrices) para usar backups.</div>'; return; }
   wrap.innerHTML = '<div style="padding:10px;">Cargando...</div>';
-  firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').limit(10).get().then(function (snap) {
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').limit(30).get().then(function (snap) {
     if (snap.empty) { wrap.innerHTML = '<div style="padding:10px;">Sin backups todavía. Creá el primero arriba.</div>'; return; }
     var html = '';
     snap.forEach(function (doc) {
       var d = doc.data();
       var fechaFmt = d.fecha ? new Date(d.fecha).toLocaleString('es-CR') : '';
       html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;">' +
-        '<div>' + fechaFmt + '<div style="color:#888;font-size:11px;">' + (d.creadoPor || '') + '</div></div>' +
+        '<div>' + fechaFmt + '<div style="color:#888;font-size:11px;">' + (d.creadoPor || '') + (d.nota ? ' · ' + d.nota : '') + '</div></div>' +
         '<button class="backupRestaurarBtn" data-id="' + doc.id + '" style="padding:6px 10px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">Restaurar</button></div>';
     });
     wrap.innerHTML = html;
@@ -7395,7 +7681,10 @@ document.getElementById('btnBackup').addEventListener('click', function () {
 document.getElementById('backupClose').addEventListener('click', function () {
   document.getElementById('backupOverlay').classList.remove('show');
 });
-document.getElementById('backupCrearAhoraBtn').addEventListener('click', function () { crearBackup(false); });
+document.getElementById('backupCrearAhoraBtn').addEventListener('click', function () {
+  var nota = prompt('Ponele una nota a este backup (opcional, ej. "Antes de cierre de mes"):', '') || '';
+  crearBackup(false, nota);
+});
 
 // ── Foto de recibo adjunta a celda ──
 document.getElementById('btnRecibo').addEventListener('click', function () {
