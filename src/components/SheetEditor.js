@@ -77,6 +77,23 @@ const SHEET_HTML = `<!DOCTYPE html>
   .cell.bold { font-weight: 800; color: #1e5208; }
   .cell.has-note::after { content: '●'; color: #d97706; font-size: 8px; position: absolute; top: 1px; right: 2px; }
   .cell.has-attachment::before { content: '📎'; font-size: 8px; position: absolute; top: 1px; left: 2px; }
+  .cell.italic { font-style: italic; }
+  .cell.bordered { outline: 1.5px solid #245f09 !important; outline-offset: -1.5px; }
+  .frozen-col { position: sticky; z-index: 2; background: #fff; }
+  th.frozen-col { z-index: 5; background: #d8f5b0; }
+  .frozen-row-td { position: sticky; z-index: 2; background: #fff; }
+  .frozen-col.frozen-row-td { z-index: 4; }
+  td.rowhead.frozen-row-head { position: sticky; z-index: 3; background: #d8f5b0; }
+  #sheetTable { transform-origin: top left; }
+  #zoomRange { width: 70px; }
+  #fnAutocomplete { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
+  #validPicker { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
+  #validPicker.show { display: block; }
+  #validPicker div { padding: 8px 10px; font-size: 12.5px; color: #245f09; border-bottom: 1px solid #f2f9ea; }
+  .cell.has-validation::after { content: '▾'; color: #245f09; font-size: 9px; position: absolute; bottom: 0; right: 2px; }
+  #fnAutocomplete.show { display: block; }
+  #fnAutocomplete div { padding: 7px 10px; font-size: 12px; color: #245f09; border-bottom: 1px solid #f2f9ea; }
+  #fnAutocomplete div b { color: #2d7a0c; }
 
   #statusBar {
     display: flex; gap: 14px; align-items: center; padding: 5px 10px;
@@ -102,15 +119,19 @@ const SHEET_HTML = `<!DOCTYPE html>
   .tab.active { background: #fff; color: #2d7a0c; }
   #addTabBtn { padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: 800; background: #245f09; color: #fff; flex-shrink: 0; }
 
-  #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay {
+  #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9000;
     display: none; align-items: center; justify-content: center; padding: 12px;
   }
-  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show, #formatOverlay.show, #authOverlay.show, #matricesOverlay.show, #shareOverlay.show { display: flex; }
-  #chartModal, #tabMenuModal, #noteModal, #formatModal, #authModal, #shareModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
-  #chartModal h3, #tabMenuModal h3, #noteModal h3, #formatModal h3, #authModal h3, #shareModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
-  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea, #formatModal select, #formatModal input, #authModal input, #shareModal input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
+  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show, #formatOverlay.show, #authOverlay.show, #matricesOverlay.show, #shareOverlay.show, #condOverlay.show, #validOverlay.show { display: flex; }
+  #chartModal, #tabMenuModal, #noteModal, #formatModal, #authModal, #shareModal, #condModal, #validModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
+  #chartModal h3, #tabMenuModal h3, #noteModal h3, #formatModal h3, #authModal h3, #shareModal h3, #condModal h3, #validModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
+  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea, #formatModal select, #formatModal input, #authModal input, #shareModal input, #condModal select, #condModal input, #validModal select, #validModal input, #validModal textarea { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
   #noteModal textarea { min-height: 80px; resize: vertical; }
+  .condRuleItem, .validRuleItem { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #f2f9ea; border-radius: 6px; margin-bottom: 6px; font-size: 11.5px; }
+  .condRuleItem span, .validRuleItem span { flex: 1; padding-right: 6px; }
+  .condRuleDel, .validRuleDel { background: #dc2626; color: #fff; border: none; border-radius: 5px; padding: 4px 8px; font-size: 11px; flex-shrink: 0; }
+  .condSwatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
   .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
   .row button, #tabMenuModal .action-btn { padding: 8px 14px; border-radius: 7px; border: none; font-size: 13px; font-weight: 700; }
   .cancel { background: #eee; color: #555; }
@@ -293,10 +314,10 @@ const SHEET_HTML = `<!DOCTYPE html>
     #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay,
     #auditOverlay, #backupOverlay, #reciboOverlay, #fnOverlay, #feOverlay, #feHistOverlay,
     #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
-    #noteOverlay, #formatOverlay, #tabMenuOverlay { display: none !important; }
+    #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay { display: none !important; }
     #gridWrap { overflow: visible !important; height: auto !important; }
     body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
-    .cell.has-note::after, .cell.has-attachment::before { display: none; }
+    .cell.has-note::after, .cell.has-attachment::before, .cell.has-validation::after { display: none; }
   }
 </style>
 </head>
@@ -342,9 +363,14 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnCopy">⧉ Copiar</button>
     <button id="btnPaste">📋 Pegar</button>
     <button id="btnBold">N</button>
+    <button id="btnItalic">I</button>
     <button id="btnCurrency">₡</button>
     <button id="btnPercent">%</button>
     <button id="btnFormat">🔢 Formato</button>
+    <button id="btnCondFormat">🎨 Cond.</button>
+    <button id="btnValidacion">✅ Validación</button>
+    <button id="btnMerge">⛶ Combinar</button>
+    <button id="btnFreeze">❄ Congelar</button>
     <button id="btnNote">📝 Nota</button>
     <button id="btnChart">📊 Gráfico</button>
     <button id="btnInsertarTabla">🎨 +Tabla</button>
@@ -371,7 +397,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnD101">🇨🇷 D-101</button>
     <button id="btnCSV">⬇ CSV</button>
     <button id="btnPdfReporte">⬇ PDF Reporte</button>
-    <button id="btnExcelExport">⬇ Excel</button>
+    <button id="btnExcelExport" title="Exporta todas las hojas en un solo archivo">⬇ Excel</button>
     <button id="btnExcelImport">⬆ Importar Excel</button>
     <button id="btnConciliacion">🏦 Conciliación</button>
     <input type="file" id="excelFileInput" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,*/*" style="display:none" />
@@ -383,18 +409,24 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnMisMatrices">📁 Mis Matrices</button>
   </div>
 
-  <div id="formulaBarRow">
+  <div id="formulaBarRow" style="position:relative;">
     <span id="cellRef">A1</span>
-    <input id="formulaInput" type="text" placeholder="Valor o fórmula: =SUMA(A1:A5)" />
+    <div style="flex:1;position:relative;">
+      <input id="formulaInput" type="text" placeholder="Valor o fórmula: =SUMA(A1:A5)" style="width:100%;" />
+      <div id="fnAutocomplete"></div>
+      <div id="validPicker"></div>
+    </div>
     <span id="saveStatus">Listo</span>
   </div>
 
   <div id="rangeActionsBar">
     <span id="rangeLabel">A1:A1</span>
     <button id="raBold">N Negrita</button>
+    <button id="raItalic">I Cursiva</button>
     <button id="raCurrency">₡ Moneda</button>
     <button id="raPercent">% Porcentaje</button>
     <button id="raFormat">🔢 Formato</button>
+    <button id="raMerge">⛶ Combinar</button>
     <button id="raCopy">⧉ Copiar</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
   </div>
@@ -410,6 +442,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <span id="quickAvg">Prom: 0</span>
     <span id="quickCount">Cont: 0</span>
     <span><span id="syncStatusDot"></span><span id="syncStatusText">Local</span></span>
+    <span>🔍<input id="zoomRange" type="range" min="50" max="150" step="10" value="100" /><span id="zoomLabel">100%</span></span>
   </div>
 
   <div id="tabsRow"></div>
@@ -491,10 +524,70 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="yes">Sí (1,000.00)</option>
       <option value="no">No (1000.00)</option>
     </select>
+    <span class="field-label">Alineación</span>
+    <select id="fmtAlign">
+      <option value="">General</option>
+      <option value="left">Izquierda</option>
+      <option value="center">Centro</option>
+      <option value="right">Derecha</option>
+    </select>
+    <span class="field-label">Color de fondo</span>
+    <input id="fmtBgColor" type="color" value="#ffffff" />
+    <span class="field-label">Tamaño de fuente</span>
+    <input id="fmtFontSize" type="number" min="9" max="28" value="12" />
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
+      <input id="fmtBorder" type="checkbox" style="width:auto;margin:0;" /> Borde marcado
+    </label>
     <div class="row">
       <button class="cancel" id="fmtCancel">Cancelar</button>
       <button class="ok" id="fmtApply">Aplicar</button>
     </div>
+  </div>
+</div>
+
+<div id="condOverlay">
+  <div id="condModal">
+    <h3>🎨 Formato condicional</h3>
+    <span class="field-label">Rango (ej: B2:B20)</span>
+    <input id="condRange" type="text" placeholder="Ej: B2:B20" />
+    <span class="field-label">Condición</span>
+    <select id="condType">
+      <option value="gt">Mayor que</option>
+      <option value="gte">Mayor o igual que</option>
+      <option value="lt">Menor que</option>
+      <option value="lte">Menor o igual que</option>
+      <option value="eq">Igual a</option>
+      <option value="neq">Distinto de</option>
+      <option value="contains">Contiene texto</option>
+      <option value="empty">Está vacía</option>
+      <option value="notempty">No está vacía</option>
+    </select>
+    <span class="field-label">Valor (no aplica a "vacía")</span>
+    <input id="condValue" type="text" placeholder="Ej: 100" />
+    <span class="field-label">Color de fondo</span>
+    <input id="condBgColor" type="color" value="#ffe0e0" />
+    <span class="field-label">Color de texto</span>
+    <input id="condTextColor" type="color" value="#991111" />
+    <div class="row" style="justify-content:space-between;">
+      <button class="cancel" id="condCancel">Cerrar</button>
+      <button class="ok" id="condAddBtn">+ Agregar regla</button>
+    </div>
+    <div id="condRulesList" style="margin-top:10px;"></div>
+  </div>
+</div>
+
+<div id="validOverlay">
+  <div id="validModal">
+    <h3>✅ Validación de datos</h3>
+    <span class="field-label">Rango (ej: C2:C20)</span>
+    <input id="validRange" type="text" placeholder="Ej: C2:C20" />
+    <span class="field-label">Lista de valores permitidos (uno por línea o separados por coma)</span>
+    <textarea id="validList" rows="4" placeholder="Sí&#10;No&#10;Pendiente" style="width:100%;padding:8px;border:1px solid #cce9ae;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical;"></textarea>
+    <div class="row" style="justify-content:space-between;">
+      <button class="cancel" id="validCancel">Cerrar</button>
+      <button class="ok" id="validAddBtn">+ Agregar validación</button>
+    </div>
+    <div id="validRulesList" style="margin-top:10px;"></div>
   </div>
 </div>
 
@@ -815,6 +908,11 @@ var sheetFormats = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetNotes = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetAttachments = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var colWidths = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+var sheetMerges = { Hoja1: [], Hoja2: [], Hoja3: [] };
+var sheetFreeze = { Hoja1: { row: 0, col: 0 }, Hoja2: { row: 0, col: 0 }, Hoja3: { row: 0, col: 0 } };
+var sheetCondFormats = { Hoja1: [], Hoja2: [], Hoja3: [] };
+var sheetValidations = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+var zoomLevel = 100;
 var undoStack = [];
 var tabMenuTarget = null;
 var clipboard = null;
@@ -902,7 +1000,7 @@ function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i
 function cellId(r, c) { return colLetter(c) + (r + 1); }
 
 function snapshot() {
-  undoStack.push(JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS }));
+  undoStack.push(JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS }));
   if (undoStack.length > 25) undoStack.shift();
   document.getElementById('btnUndo').disabled = false;
 }
@@ -911,6 +1009,7 @@ function undo() {
   var prev = JSON.parse(undoStack.pop());
   sheets = prev.sheets; sheetData = prev.sheetData; sheetFormats = prev.sheetFormats;
   sheetNotes = prev.sheetNotes || {}; colWidths = prev.colWidths || {}; activeSheet = prev.activeSheet; ROWS = prev.ROWS || ROWS; COLS = prev.COLS || COLS;
+  sheetCondFormats = prev.sheetCondFormats || sheetCondFormats; sheetValidations = prev.sheetValidations || sheetValidations;
   buildTable(); autoSave();
   if (!undoStack.length) document.getElementById('btnUndo').disabled = true;
 }
@@ -3974,17 +4073,48 @@ function getColWidth(c) {
 
 function buildTable() {
   var table = document.getElementById('sheetTable');
+  var merges = sheetMerges[activeSheet] || [];
+  var freeze = sheetFreeze[activeSheet] || { row: 0, col: 0 };
+  var ROW_H = 27, HEADER_H = 31;
+  var skip = {}; var anchorSpan = {};
+  merges.forEach(function (m) {
+    for (var r = m.r1; r <= m.r2; r++) {
+      for (var c = m.c1; c <= m.c2; c++) {
+        if (r === m.r1 && c === m.c1) continue;
+        skip[r + '_' + c] = true;
+      }
+    }
+    anchorSpan[m.r1 + '_' + m.c1] = { rowSpan: m.r2 - m.r1 + 1, colSpan: m.c2 - m.c1 + 1 };
+  });
+  var colLeft = []; var acc = 34;
+  for (var cg2 = 0; cg2 < COLS; cg2++) { colLeft.push(acc); acc += getColWidth(cg2); }
   var html = '<colgroup><col style="width:34px">';
   for (var cg = 0; cg < COLS; cg++) html += '<col style="width:' + getColWidth(cg) + 'px">';
   html += '</colgroup>';
   html += '<thead><tr><th class="corner"></th>';
-  for (var c = 0; c < COLS; c++) html += '<th data-col="' + c + '">' + colLetter(c) + '<div class="colResizer" data-col="' + c + '"></div></th>';
+  for (var c = 0; c < COLS; c++) {
+    var thFrozen = c < freeze.col;
+    html += '<th' + (thFrozen ? ' class="frozen-col" style="left:' + colLeft[c] + 'px;"' : '') + ' data-col="' + c + '">' + colLetter(c) + '<div class="colResizer" data-col="' + c + '"></div></th>';
+  }
   html += '</tr></thead><tbody>';
   for (var r = 0; r < ROWS; r++) {
-    html += '<tr><td class="rowhead">' + (r + 1) + '</td>';
+    var rFrozen = r < freeze.row;
+    var rowheadCls = 'rowhead' + (rFrozen ? ' frozen-row-head' : '');
+    var rowheadStyle = rFrozen ? (' style="top:' + (HEADER_H + r * ROW_H) + 'px;"') : '';
+    html += '<tr><td class="' + rowheadCls + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
     for (var c2 = 0; c2 < COLS; c2++) {
+      if (skip[r + '_' + c2]) continue;
       var id = cellId(r, c2);
-      html += '<td><div class="cell" id="cell_' + id + '" data-id="' + id + '" contenteditable="true"></div></td>';
+      var span = anchorSpan[r + '_' + c2];
+      var spanAttr = span ? (' rowspan="' + span.rowSpan + '" colspan="' + span.colSpan + '"') : '';
+      var cFrozen = c2 < freeze.col;
+      var tdCls = [];
+      var tdStyleParts = [];
+      if (cFrozen) { tdCls.push('frozen-col'); tdStyleParts.push('left:' + colLeft[c2] + 'px;'); }
+      if (rFrozen) { tdCls.push('frozen-row-td'); tdStyleParts.push('top:' + (HEADER_H + r * ROW_H) + 'px;'); }
+      var tdClsAttr = tdCls.length ? (' class="' + tdCls.join(' ') + '"') : '';
+      var tdStyleAttr = tdStyleParts.length ? (' style="' + tdStyleParts.join('') + '"') : '';
+      html += '<td' + spanAttr + tdClsAttr + tdStyleAttr + '><div class="cell" id="cell_' + id + '" data-id="' + id + '" contenteditable="true"></div></td>';
     }
     html += '</tr>';
   }
@@ -3995,6 +4125,58 @@ function buildTable() {
   renderAllCells();
   renderTabs();
 }
+function mergeToggle(bounds) {
+  if (!bounds) { alert('Seleccioná un rango de celdas para combinar (arrastrá sobre la grilla o escribí un rango en "Rango:").'); return; }
+  var merges = sheetMerges[activeSheet] || (sheetMerges[activeSheet] = []);
+  for (var i = 0; i < merges.length; i++) {
+    var m = merges[i];
+    if (m.r1 === bounds.minR && m.c1 === bounds.minC && m.r2 === bounds.maxR && m.c2 === bounds.maxC) {
+      snapshot();
+      merges.splice(i, 1);
+      buildTable(); autoSave();
+      return;
+    }
+  }
+  if (bounds.minR === bounds.maxR && bounds.minC === bounds.maxC) { alert('Seleccioná más de una celda para combinar.'); return; }
+  snapshot();
+  for (var j = merges.length - 1; j >= 0; j--) {
+    var mm = merges[j];
+    if (!(mm.r2 < bounds.minR || mm.r1 > bounds.maxR || mm.c2 < bounds.minC || mm.c1 > bounds.maxC)) merges.splice(j, 1);
+  }
+  merges.push({ r1: bounds.minR, c1: bounds.minC, r2: bounds.maxR, c2: bounds.maxC });
+  var anchorId = cellId(bounds.minR, bounds.minC);
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var id = cellId(r, c);
+      if (id === anchorId) continue;
+      if (sheetData[activeSheet]) delete sheetData[activeSheet][id];
+    }
+  }
+  buildTable(); autoSave();
+}
+document.getElementById('btnMerge').addEventListener('click', function () { mergeToggle(currentRangeBounds()); });
+document.getElementById('raMerge').addEventListener('click', function () { mergeToggle(currentRangeBounds()); });
+function applyZoom() {
+  var table = document.getElementById('sheetTable');
+  table.style.transform = 'scale(' + (zoomLevel / 100) + ')';
+  document.getElementById('zoomRange').value = zoomLevel;
+  document.getElementById('zoomLabel').textContent = zoomLevel + '%';
+}
+document.getElementById('zoomRange').addEventListener('input', function () {
+  zoomLevel = parseInt(this.value) || 100;
+  applyZoom(); autoSave();
+});
+document.getElementById('btnFreeze').addEventListener('click', function () {
+  var idRef = document.getElementById('cellRef').textContent;
+  var mm = idRef.match(/([A-Za-z]+)(\d+)/);
+  if (!mm) return;
+  var col = colIndex(mm[1]), row = parseInt(mm[2]) - 1;
+  if (!sheetFreeze[activeSheet]) sheetFreeze[activeSheet] = { row: 0, col: 0 };
+  var fr = sheetFreeze[activeSheet];
+  if (fr.row === row && fr.col === col) { fr.row = 0; fr.col = 0; }
+  else { fr.row = row; fr.col = col; }
+  buildTable(); autoSave();
+});
 
 function attachColResizeEvents() {
   document.querySelectorAll('.colResizer').forEach(function (el) {
@@ -4038,6 +4220,11 @@ function renderAllCells() {
       el.textContent = val;
     }
     el.classList.toggle('bold', !!fmt.bold);
+    el.classList.toggle('italic', !!fmt.italic);
+    el.classList.toggle('bordered', !!fmt.border);
+    el.style.textAlign = fmt.align || '';
+    el.style.backgroundColor = fmt.bgColor || '';
+    el.style.fontSize = fmt.fontSize ? (fmt.fontSize + 'px') : '';
   });
   Object.keys(notes).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -4049,6 +4236,39 @@ function renderAllCells() {
     var el = document.getElementById('cell_' + id);
     if (el && attachments[id]) el.classList.add('has-attachment');
   });
+
+  // ── Validación de datos: marcar celdas con lista desplegable ──
+  document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-validation'); });
+  var validations = sheetValidations[activeSheet] || {};
+  Object.keys(validations).forEach(function (range) {
+    condRangeToIds(range).forEach(function (id) {
+      var el = document.getElementById('cell_' + id);
+      if (el) el.classList.add('has-validation');
+    });
+  });
+
+  // ── Formato condicional: recalcular y aplicar estilos por regla ──
+  var condRules = sheetCondFormats[activeSheet] || [];
+  if (condRules.length) {
+    var touched = {};
+    condRules.forEach(function (rule) { condRangeToIds(rule.range).forEach(function (id) { touched[id] = true; }); });
+    Object.keys(touched).forEach(function (id) {
+      var el = document.getElementById('cell_' + id);
+      if (!el || document.activeElement === el) return;
+      el.style.backgroundColor = (formats[id] && formats[id].bgColor) || '';
+      el.style.color = '';
+    });
+    condRules.forEach(function (rule) {
+      condRangeToIds(rule.range).forEach(function (id) {
+        var el = document.getElementById('cell_' + id);
+        if (!el || document.activeElement === el) return;
+        if (evalCondRule(rule, id)) {
+          el.style.backgroundColor = rule.bgColor || '';
+          el.style.color = rule.textColor || '';
+        }
+      });
+    });
+  }
 }
 
 function renderTabs() {
@@ -4077,7 +4297,7 @@ function renderTabs() {
     snapshot();
     var n = sheets.length + 1; var name = 'Hoja' + n;
     while (sheets.indexOf(name) >= 0) { n++; name = 'Hoja' + n; }
-    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {};
+    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
     activeSheet = name; buildTable(); autoSave();
   });
 }
@@ -4099,6 +4319,8 @@ document.getElementById('btnRenameConfirm').addEventListener('click', function (
   sheetFormats[newName] = sheetFormats[tabMenuTarget]; delete sheetFormats[tabMenuTarget];
   sheetNotes[newName] = sheetNotes[tabMenuTarget] || {}; delete sheetNotes[tabMenuTarget];
   colWidths[newName] = colWidths[tabMenuTarget] || {}; delete colWidths[tabMenuTarget];
+  sheetCondFormats[newName] = sheetCondFormats[tabMenuTarget] || []; delete sheetCondFormats[tabMenuTarget];
+  sheetValidations[newName] = sheetValidations[tabMenuTarget] || {}; delete sheetValidations[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -4112,6 +4334,10 @@ document.getElementById('btnDuplicate').addEventListener('click', function () {
   sheetFormats[newName] = JSON.parse(JSON.stringify(sheetFormats[tabMenuTarget] || {}));
   sheetNotes[newName] = JSON.parse(JSON.stringify(sheetNotes[tabMenuTarget] || {}));
   colWidths[newName] = JSON.parse(JSON.stringify(colWidths[tabMenuTarget] || {}));
+  sheetMerges[newName] = JSON.parse(JSON.stringify(sheetMerges[tabMenuTarget] || []));
+  sheetFreeze[newName] = JSON.parse(JSON.stringify(sheetFreeze[tabMenuTarget] || { row: 0, col: 0 }));
+  sheetCondFormats[newName] = JSON.parse(JSON.stringify(sheetCondFormats[tabMenuTarget] || []));
+  sheetValidations[newName] = JSON.parse(JSON.stringify(sheetValidations[tabMenuTarget] || {}));
   activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -4123,6 +4349,8 @@ document.getElementById('btnDeleteSheet').addEventListener('click', function () 
   var idx = sheets.indexOf(tabMenuTarget);
   sheets.splice(idx, 1);
   delete sheetData[tabMenuTarget]; delete sheetFormats[tabMenuTarget]; delete sheetNotes[tabMenuTarget]; delete colWidths[tabMenuTarget];
+  delete sheetMerges[tabMenuTarget]; delete sheetFreeze[tabMenuTarget];
+  delete sheetCondFormats[tabMenuTarget]; delete sheetValidations[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = sheets[0];
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -5184,8 +5412,15 @@ function attachCellEvents() {
       document.getElementById('cellRef').textContent = id;
       document.getElementById('formulaInput').value = getRaw(id);
       el.textContent = getRaw(id);
+      showValidPicker(id);
     });
-    el.addEventListener('blur', function () { commitCell(el); });
+    el.addEventListener('blur', function () {
+      setTimeout(function () {
+        var vp = document.getElementById('validPicker');
+        if (vp && document.activeElement !== el) { vp.classList.remove('show'); vp.innerHTML = ''; }
+      }, 150);
+      commitCell(el);
+    });
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); snapshot(); el.blur(); moveSelection(e.key === 'Tab' ? 1 : 0, e.key === 'Enter' ? 1 : 0); }
       else if (e.key === 'ArrowDown') { e.preventDefault(); el.blur(); moveSelection(0, 1); }
@@ -5243,6 +5478,7 @@ function commitCell(el) {
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
   registrarCambioAuditoria(id, anterior, val);
+  checkValidationOnCommit(id, val);
   renderAllCells(); el.classList.remove('selected'); autoSave();
 }
 function moveSelection(dc, dr) {
@@ -5258,15 +5494,58 @@ document.getElementById('formulaInput').addEventListener('input', function () {
   var id = document.getElementById('cellRef').textContent;
   var el = document.getElementById('cell_' + id);
   if (el) el.textContent = this.value;
+  updateFormulaAutocomplete();
 });
 document.getElementById('formulaInput').addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
+    document.getElementById('fnAutocomplete').classList.remove('show');
     snapshot();
     var id = document.getElementById('cellRef').textContent;
     var el = document.getElementById('cell_' + id);
     if (el) { el.textContent = this.value; commitCell(el); }
+  } else if (e.key === 'Escape') {
+    document.getElementById('fnAutocomplete').classList.remove('show');
   }
 });
+document.getElementById('formulaInput').addEventListener('blur', function () {
+  setTimeout(function () { document.getElementById('fnAutocomplete').classList.remove('show'); }, 150);
+});
+var _allFnNames = null;
+function getAllFnNames() {
+  if (_allFnNames) return _allFnNames;
+  _allFnNames = [];
+  Object.keys(fnData).forEach(function (cat) {
+    fnData[cat].forEach(function (f) { if (f.n) _allFnNames.push(f.n); });
+  });
+  _allFnNames = _allFnNames.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort();
+  return _allFnNames;
+}
+function updateFormulaAutocomplete() {
+  var input = document.getElementById('formulaInput');
+  var box = document.getElementById('fnAutocomplete');
+  var val = input.value;
+  if (!val || val.charAt(0) !== '=') { box.classList.remove('show'); box.innerHTML = ''; return; }
+  var m = val.match(/([A-Za-zÁÉÍÓÚÑáéíóúñ.]+)$/);
+  var token = m ? m[1].toUpperCase() : '';
+  if (!token || token.length < 2) { box.classList.remove('show'); box.innerHTML = ''; return; }
+  var matches = getAllFnNames().filter(function (n) { return n.indexOf(token) === 0; }).slice(0, 8);
+  if (!matches.length) { box.classList.remove('show'); box.innerHTML = ''; return; }
+  box.innerHTML = matches.map(function (n) { return '<div data-fn="' + n + '"><b>' + n + '</b></div>'; }).join('');
+  box.classList.add('show');
+  box.querySelectorAll('div').forEach(function (row) {
+    row.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      var fn = row.getAttribute('data-fn');
+      var newVal = val.slice(0, val.length - token.length) + fn + '(';
+      input.value = newVal;
+      box.classList.remove('show'); box.innerHTML = '';
+      var id = document.getElementById('cellRef').textContent;
+      var elc = document.getElementById('cell_' + id);
+      if (elc) elc.textContent = newVal;
+      input.focus();
+    });
+  });
+}
 
 document.getElementById('btnUndo').addEventListener('click', undo);
 
@@ -5292,6 +5571,14 @@ document.getElementById('btnBold').addEventListener('click', function () {
   if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
   if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
   sheetFormats[activeSheet][id].bold = !sheetFormats[activeSheet][id].bold;
+  renderAllCells(); autoSave();
+});
+document.getElementById('btnItalic').addEventListener('click', function () {
+  snapshot();
+  var id = document.getElementById('cellRef').textContent;
+  if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+  if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
+  sheetFormats[activeSheet][id].italic = !sheetFormats[activeSheet][id].italic;
   renderAllCells(); autoSave();
 });
 document.getElementById('btnCurrency').addEventListener('click', function () {
@@ -5414,7 +5701,7 @@ function loadTemplate(tipo) {
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
   activeSheet = name;
   var d = sheetData[name], f = sheetFormats[name];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
@@ -5625,7 +5912,7 @@ function crearHojaDestino(baseName) {
   var n = sheets.length + 1;
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
   return name;
 }
 
@@ -5943,6 +6230,17 @@ document.getElementById('raBold').addEventListener('click', function () {
   });
   renderAllCells(); autoSave();
 });
+document.getElementById('raItalic').addEventListener('click', function () {
+  snapshot();
+  var ids = rangeCellIds();
+  if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+  var anyItalic = ids.some(function (id) { return sheetFormats[activeSheet][id] && sheetFormats[activeSheet][id].italic; });
+  ids.forEach(function (id) {
+    if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
+    sheetFormats[activeSheet][id].italic = !anyItalic;
+  });
+  renderAllCells(); autoSave();
+});
 document.getElementById('raCurrency').addEventListener('click', function () {
   snapshot();
   var ids = rangeCellIds();
@@ -6000,10 +6298,15 @@ document.getElementById('btnFormat').addEventListener('click', function () { ope
 function openFormatModal(isRangeTarget) {
   formatTargetIsRange = isRangeTarget;
   var id = document.getElementById('cellRef').textContent;
-  var existing = (sheetFormats[activeSheet] && sheetFormats[activeSheet][id] && sheetFormats[activeSheet][id].numFormat) || {};
+  var cellFmt = (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || {};
+  var existing = cellFmt.numFormat || {};
   document.getElementById('fmtType').value = existing.type || 'general';
   document.getElementById('fmtDecimals').value = existing.decimals !== undefined ? existing.decimals : 2;
   document.getElementById('fmtThousands').value = existing.thousands === false ? 'no' : 'yes';
+  document.getElementById('fmtAlign').value = cellFmt.align || '';
+  document.getElementById('fmtBgColor').value = cellFmt.bgColor || '#ffffff';
+  document.getElementById('fmtFontSize').value = cellFmt.fontSize || 12;
+  document.getElementById('fmtBorder').checked = !!cellFmt.border;
   document.getElementById('formatOverlay').classList.add('show');
 }
 document.getElementById('fmtCancel').addEventListener('click', function () { document.getElementById('formatOverlay').classList.remove('show'); });
@@ -6015,16 +6318,170 @@ document.getElementById('fmtApply').addEventListener('click', function () {
     thousands: document.getElementById('fmtThousands').value === 'yes'
   };
   var ids = formatTargetIsRange ? rangeCellIds() : [document.getElementById('cellRef').textContent];
+  var align = document.getElementById('fmtAlign').value;
+  var bgColor = document.getElementById('fmtBgColor').value;
+  var fontSize = parseInt(document.getElementById('fmtFontSize').value) || 12;
+  var border = document.getElementById('fmtBorder').checked;
   if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
   ids.forEach(function (id) {
     if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
     sheetFormats[activeSheet][id].numFormat = numFormat;
     sheetFormats[activeSheet][id].currency = false;
     sheetFormats[activeSheet][id].percent = false;
+    sheetFormats[activeSheet][id].align = align;
+    sheetFormats[activeSheet][id].bgColor = bgColor !== '#ffffff' ? bgColor : '';
+    sheetFormats[activeSheet][id].fontSize = fontSize !== 12 ? fontSize : null;
+    sheetFormats[activeSheet][id].border = border;
   });
   document.getElementById('formatOverlay').classList.remove('show');
   renderAllCells(); autoSave();
 });
+
+// ══════════════════════════════════════════════
+// FORMATO CONDICIONAL
+// ══════════════════════════════════════════════
+function condRangeToIds(rangeStr) {
+  rangeStr = (rangeStr || '').trim().toUpperCase();
+  if (!rangeStr) return [];
+  if (isRange(rangeStr)) { var p = rangeStr.split(':'); return getCells(p[0], p[1]); }
+  if (/^[A-Z]+\\d+$/.test(rangeStr)) return [rangeStr];
+  return [];
+}
+function evalCondRule(rule, id) {
+  var raw = computeValue(id);
+  var rawStr = String(raw === undefined || raw === null ? '' : raw);
+  if (rule.type === 'empty') return rawStr === '';
+  if (rule.type === 'notempty') return rawStr !== '';
+  if (rule.type === 'contains') return rawStr.toLowerCase().indexOf(String(rule.value || '').toLowerCase()) >= 0;
+  var num = parseFloat(rawStr.replace(/[₡,%\\s]/g, ''));
+  var cmpVal = parseFloat(String(rule.value).replace(/[₡,%\\s]/g, ''));
+  if (isNaN(num) || isNaN(cmpVal)) {
+    if (rule.type === 'eq') return rawStr.toLowerCase() === String(rule.value || '').toLowerCase();
+    if (rule.type === 'neq') return rawStr.toLowerCase() !== String(rule.value || '').toLowerCase();
+    return false;
+  }
+  switch (rule.type) {
+    case 'gt': return num > cmpVal;
+    case 'gte': return num >= cmpVal;
+    case 'lt': return num < cmpVal;
+    case 'lte': return num <= cmpVal;
+    case 'eq': return num === cmpVal;
+    case 'neq': return num !== cmpVal;
+  }
+  return false;
+}
+function renderCondRulesList() {
+  var wrap = document.getElementById('condRulesList');
+  var rules = sheetCondFormats[activeSheet] || [];
+  if (!rules.length) { wrap.innerHTML = '<div style="font-size:11.5px;color:#888;">Sin reglas en esta hoja todavía.</div>'; return; }
+  var labels = { gt: 'mayor que', gte: 'mayor o igual que', lt: 'menor que', lte: 'menor o igual que', eq: 'igual a', neq: 'distinto de', contains: 'contiene', empty: 'está vacía', notempty: 'no está vacía' };
+  wrap.innerHTML = rules.map(function (r, i) {
+    var cond = labels[r.type] + (r.type !== 'empty' && r.type !== 'notempty' ? ' "' + r.value + '"' : '');
+    return '<div class="condRuleItem"><span><span class="condSwatch" style="background:' + r.bgColor + '"></span>' + r.range + ' ' + cond + '</span><button class="condRuleDel" data-idx="' + i + '">🗑</button></div>';
+  }).join('');
+  wrap.querySelectorAll('.condRuleDel').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      snapshot();
+      sheetCondFormats[activeSheet].splice(parseInt(btn.dataset.idx), 1);
+      renderCondRulesList(); renderAllCells(); autoSave();
+    });
+  });
+}
+document.getElementById('btnCondFormat').addEventListener('click', function () {
+  var qr = document.getElementById('quickRange').value.trim();
+  document.getElementById('condRange').value = isRange(qr) ? qr : document.getElementById('cellRef').textContent;
+  document.getElementById('condValue').value = '';
+  if (!sheetCondFormats[activeSheet]) sheetCondFormats[activeSheet] = [];
+  renderCondRulesList();
+  document.getElementById('condOverlay').classList.add('show');
+});
+document.getElementById('condCancel').addEventListener('click', function () { document.getElementById('condOverlay').classList.remove('show'); });
+document.getElementById('condAddBtn').addEventListener('click', function () {
+  var range = document.getElementById('condRange').value.trim().toUpperCase();
+  if (!condRangeToIds(range).length) { alert('Rango inválido. Ej: B2:B20 o una celda como B2.'); return; }
+  var type = document.getElementById('condType').value;
+  var value = document.getElementById('condValue').value;
+  if (type !== 'empty' && type !== 'notempty' && !value) { alert('Escribí un valor de comparación.'); return; }
+  var bgColor = document.getElementById('condBgColor').value;
+  var textColor = document.getElementById('condTextColor').value;
+  snapshot();
+  if (!sheetCondFormats[activeSheet]) sheetCondFormats[activeSheet] = [];
+  sheetCondFormats[activeSheet].push({ range: range, type: type, value: value, bgColor: bgColor, textColor: textColor });
+  document.getElementById('condValue').value = '';
+  renderCondRulesList(); renderAllCells(); autoSave();
+});
+
+// ══════════════════════════════════════════════
+// VALIDACIÓN DE DATOS (listas desplegables)
+// ══════════════════════════════════════════════
+function renderValidRulesList() {
+  var wrap = document.getElementById('validRulesList');
+  var vals = sheetValidations[activeSheet] || {};
+  var ranges = Object.keys(vals);
+  if (!ranges.length) { wrap.innerHTML = '<div style="font-size:11.5px;color:#888;">Sin validaciones en esta hoja todavía.</div>'; return; }
+  wrap.innerHTML = ranges.map(function (r) {
+    return '<div class="validRuleItem"><span><b>' + r + '</b>: ' + vals[r].join(', ') + '</span><button class="validRuleDel" data-range="' + r + '">🗑</button></div>';
+  }).join('');
+  wrap.querySelectorAll('.validRuleDel').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      snapshot();
+      delete sheetValidations[activeSheet][btn.dataset.range];
+      renderValidRulesList(); renderAllCells(); autoSave();
+    });
+  });
+}
+document.getElementById('btnValidacion').addEventListener('click', function () {
+  var qr = document.getElementById('quickRange').value.trim();
+  document.getElementById('validRange').value = isRange(qr) ? qr : document.getElementById('cellRef').textContent;
+  document.getElementById('validList').value = '';
+  if (!sheetValidations[activeSheet]) sheetValidations[activeSheet] = {};
+  renderValidRulesList();
+  document.getElementById('validOverlay').classList.add('show');
+});
+document.getElementById('validCancel').addEventListener('click', function () { document.getElementById('validOverlay').classList.remove('show'); });
+document.getElementById('validAddBtn').addEventListener('click', function () {
+  var range = document.getElementById('validRange').value.trim().toUpperCase();
+  if (!condRangeToIds(range).length) { alert('Rango inválido. Ej: C2:C20 o una celda como C2.'); return; }
+  var raw = document.getElementById('validList').value;
+  var list = raw.split(/[\\n,]/).map(function (s) { return s.trim(); }).filter(function (s) { return s !== ''; });
+  if (!list.length) { alert('Escribí al menos un valor permitido (uno por línea o separados por coma).'); return; }
+  snapshot();
+  if (!sheetValidations[activeSheet]) sheetValidations[activeSheet] = {};
+  sheetValidations[activeSheet][range] = list;
+  document.getElementById('validList').value = '';
+  renderValidRulesList(); renderAllCells(); autoSave();
+});
+function getValidationListForCell(id) {
+  var vals = sheetValidations[activeSheet] || {};
+  var keys = Object.keys(vals);
+  for (var i = 0; i < keys.length; i++) {
+    if (condRangeToIds(keys[i]).indexOf(id) >= 0) return vals[keys[i]];
+  }
+  return null;
+}
+function showValidPicker(id) {
+  var box = document.getElementById('validPicker');
+  var list = getValidationListForCell(id);
+  if (!list) { box.classList.remove('show'); box.innerHTML = ''; return; }
+  box.innerHTML = list.map(function (v) { return '<div data-v="' + v.replace(/"/g, '&quot;') + '">' + v + '</div>'; }).join('');
+  box.classList.add('show');
+  box.querySelectorAll('div').forEach(function (row) {
+    row.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      var val = row.getAttribute('data-v');
+      document.getElementById('formulaInput').value = val;
+      box.classList.remove('show'); box.innerHTML = '';
+      var el = document.getElementById('cell_' + id);
+      if (el) { el.textContent = val; snapshot(); commitCell(el); }
+    });
+  });
+}
+function checkValidationOnCommit(id, val) {
+  var list = getValidationListForCell(id);
+  if (!list || val === '') return;
+  var ok = list.some(function (v) { return v.toLowerCase() === val.toLowerCase(); });
+  if (!ok) document.getElementById('saveStatus').textContent = '⚠ "' + val + '" no está en la lista de ' + id;
+}
 
 // ══════════════════════════════════════════════
 // GRÁFICOS
@@ -6372,28 +6829,49 @@ document.getElementById('btnPdfReporte').addEventListener('click', function () {
 // ══════════════════════════════════════════════
 // EXCEL (.xlsx) EXPORT / IMPORT
 // ══════════════════════════════════════════════
+function limpiarNombreHojaExcel(nombre) {
+  var bs = String.fromCharCode(92);
+  var invalidos = [bs, '/', '?', '*', '[', ']', ':'];
+  var limpio = nombre;
+  invalidos.forEach(function (ch) { limpio = limpio.split(ch).join('_'); });
+  limpio = limpio.substring(0, 31);
+  return limpio || 'Hoja';
+}
 document.getElementById('btnExcelExport').addEventListener('click', function () {
   if (!window.XLSX) { alert('No se pudo cargar el generador de Excel. Revisá tu conexión a internet.'); return; }
-  var data = sheetData[activeSheet] || {};
-  var maxRow = 0, maxCol = 0;
-  Object.keys(data).forEach(function (key) {
-    var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
-    var r = parseInt(m[2]) - 1; var c = colIndex(m[1]);
-    if (r > maxRow) maxRow = r; if (c > maxCol) maxCol = c;
-  });
-  if (!Object.keys(data).length) { alert('No hay datos para exportar.'); return; }
-  var aoa = [];
-  for (var r = 0; r <= maxRow; r++) {
-    var row = [];
-    for (var c = 0; c <= maxCol; c++) row.push(computeValue(cellId(r, c)) || '');
-    aoa.push(row);
-  }
-  var ws = XLSX.utils.aoa_to_sheet(aoa);
   var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, activeSheet.substring(0, 31));
+  var originalSheet = activeSheet;
+  var huboDatos = false;
+  var usedNames = {};
+  sheets.forEach(function (sheetName) {
+    var data = sheetData[sheetName] || {};
+    if (!Object.keys(data).length) return;
+    huboDatos = true;
+    var maxRow = 0, maxCol = 0;
+    Object.keys(data).forEach(function (key) {
+      var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
+      var r = parseInt(m[2]) - 1; var c = colIndex(m[1]);
+      if (r > maxRow) maxRow = r; if (c > maxCol) maxCol = c;
+    });
+    activeSheet = sheetName;
+    var aoa = [];
+    for (var r = 0; r <= maxRow; r++) {
+      var row = [];
+      for (var c = 0; c <= maxCol; c++) row.push(computeValue(cellId(r, c)) || '');
+      aoa.push(row);
+    }
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    var safeName = limpiarNombreHojaExcel(sheetName);
+    var uniqueName = safeName, n2 = 1;
+    while (usedNames[uniqueName]) { uniqueName = safeName.substring(0, 27) + '_' + n2; n2++; }
+    usedNames[uniqueName] = true;
+    XLSX.utils.book_append_sheet(wb, ws, uniqueName);
+  });
+  activeSheet = originalSheet;
+  if (!huboDatos) { alert('No hay datos para exportar en ninguna hoja.'); return; }
   var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-  guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.xlsx', wbout, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  document.getElementById('saveStatus').textContent = 'Excel exportado';
+  guardarArchivoNativo('MatrizContableCR.xlsx', wbout, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  document.getElementById('saveStatus').textContent = 'Excel exportado (' + sheets.length + ' hojas)';
 });
 
 document.getElementById('btnExcelImport').addEventListener('click', function () {
@@ -6597,7 +7075,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, colWidths: colWidths };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, zoomLevel: zoomLevel };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -6607,8 +7085,14 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetNotes = obj.sheetNotes || {};
   sheetAttachments = obj.sheetAttachments || {};
   colWidths = obj.colWidths || {};
+  sheetMerges = obj.sheetMerges || {};
+  sheetFreeze = obj.sheetFreeze || {};
+  sheetCondFormats = obj.sheetCondFormats || {};
+  sheetValidations = obj.sheetValidations || {};
+  zoomLevel = obj.zoomLevel || 100;
   activeSheet = sheets[0];
   buildTable();
+  applyZoom();
   applyingRemote = false;
 }
 
@@ -6762,6 +7246,11 @@ function autoSave() {
     localStorage.setItem('mcr_notes_v6', JSON.stringify(sheetNotes));
     localStorage.setItem('mcr_attachments_v6', JSON.stringify(sheetAttachments));
     localStorage.setItem('mcr_colwidths_v6', JSON.stringify(colWidths));
+    localStorage.setItem('mcr_merges_v6', JSON.stringify(sheetMerges));
+    localStorage.setItem('mcr_freeze_v6', JSON.stringify(sheetFreeze));
+    localStorage.setItem('mcr_condformats_v6', JSON.stringify(sheetCondFormats));
+    localStorage.setItem('mcr_validations_v6', JSON.stringify(sheetValidations));
+    localStorage.setItem('mcr_zoom_v6', String(zoomLevel));
     localStorage.setItem('mcr_active_v6', activeSheet);
     if (!currentMatrizId) document.getElementById('saveStatus').textContent = '💾 ' + new Date().toLocaleTimeString('es-CR');
     if (currentMatrizId && currentUser) {
@@ -6778,6 +7267,11 @@ function restore() {
     var no = localStorage.getItem('mcr_notes_v6');
     var at = localStorage.getItem('mcr_attachments_v6');
     var cw = localStorage.getItem('mcr_colwidths_v6');
+    var mg = localStorage.getItem('mcr_merges_v6');
+    var fz = localStorage.getItem('mcr_freeze_v6');
+    var cf = localStorage.getItem('mcr_condformats_v6');
+    var va = localStorage.getItem('mcr_validations_v6');
+    var zm = localStorage.getItem('mcr_zoom_v6');
     var a = localStorage.getItem('mcr_active_v6');
     if (s) sheets = JSON.parse(s);
     if (d) sheetData = JSON.parse(d);
@@ -6785,6 +7279,11 @@ function restore() {
     if (no) sheetNotes = JSON.parse(no);
     if (at) sheetAttachments = JSON.parse(at);
     if (cw) colWidths = JSON.parse(cw);
+    if (mg) sheetMerges = JSON.parse(mg);
+    if (fz) sheetFreeze = JSON.parse(fz);
+    if (cf) sheetCondFormats = JSON.parse(cf);
+    if (va) sheetValidations = JSON.parse(va);
+    if (zm) zoomLevel = parseInt(zm) || 100;
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
   } catch (e) {}
 }
@@ -7009,8 +7508,49 @@ document.getElementById('btnImprimir').addEventListener('click', function () {
   obs.observe(el, { childList: true, characterData: true, subtree: true });
 })();
 
+// ── Atajos de teclado ──
+document.addEventListener('keydown', function (e) {
+  var ctrlOrCmd = e.ctrlKey || e.metaKey;
+  if (!ctrlOrCmd) return;
+  var key = e.key.toLowerCase();
+  var overlayAbierto = document.querySelector('.show[id$="Overlay"]');
+  if (key === 's') {
+    e.preventDefault();
+    autoSave();
+    document.getElementById('saveStatus').textContent = '💾 Guardado (Ctrl+S)';
+    return;
+  }
+  if (key === 'z' && !e.shiftKey) {
+    if (overlayAbierto) return;
+    e.preventDefault();
+    undo();
+    return;
+  }
+  if (overlayAbierto) return;
+  if (key === 'b') {
+    e.preventDefault();
+    var rab = document.getElementById('rangeActionsBar');
+    if (rab.classList.contains('show')) document.getElementById('raBold').click();
+    else document.getElementById('btnBold').click();
+    return;
+  }
+  if (key === 'i') {
+    e.preventDefault();
+    var rab2 = document.getElementById('rangeActionsBar');
+    if (rab2.classList.contains('show')) document.getElementById('raItalic').click();
+    else document.getElementById('btnItalic').click();
+    return;
+  }
+  if (key === 'f') {
+    e.preventDefault();
+    document.getElementById('btnBuscarReemplazar').click();
+    return;
+  }
+});
+
 restore();
 buildTable();
+applyZoom();
 window.addEventListener('beforeunload', autoSave);
 setInterval(autoSave, 20000);
 </script>
