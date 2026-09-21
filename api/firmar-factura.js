@@ -136,28 +136,61 @@ async function obtenerAccessToken(entorno, usuario, password) {
 }
 
 // ─── Envío y sondeo directo a la API de recepción de Hacienda ───
+// "baseUrls" es una lista de direcciones posibles. Se prueba en orden y se
+// usa la primera que acepte el envío. Si todas fallan, el error muestra
+// qué respondió cada una, para poder diagnosticar.
 async function enviarYEsperarDirecto(opciones) {
-  const { baseUrl, entorno, usuario, password, clave, tipoIdEmisor, cedulaEmisor, comprobanteXml } = opciones
+  const { baseUrls, entorno, usuario, password, clave, tipoIdEmisor, cedulaEmisor, comprobanteXml } = opciones
 
   const token = await obtenerAccessToken(entorno, usuario, password)
 
-  const envioRes = await fetch(baseUrl + '/recepcion', {
-    method: 'POST',
-    headers: {
-      Authorization: 'Bearer ' + token,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      clave: clave,
-      fecha: new Date().toISOString(),
-      emisor: { tipoIdentificacion: tipoIdEmisor, numeroIdentificacion: cedulaEmisor },
-      comprobanteXml: comprobanteXml,
-    }),
+  const cuerpoEnvio = JSON.stringify({
+    clave: clave,
+    fecha: new Date().toISOString(),
+    emisor: { tipoIdentificacion: tipoIdEmisor, numeroIdentificacion: cedulaEmisor },
+    comprobanteXml: comprobanteXml,
   })
 
-  if (envioRes.status !== 201 && envioRes.status !== 202) {
-    const texto = await envioRes.text().catch(() => '')
-    throw new Error('Hacienda rechazó el envío (status ' + envioRes.status + '): ' + texto)
+  let baseUrl = null
+  const intentos = []
+
+  for (const candidata of baseUrls) {
+    try {
+      const envioRes = await fetch(candidata + '/recepcion', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        },
+        body: cuerpoEnvio,
+      })
+
+      if (envioRes.status === 201 || envioRes.status === 202) {
+        baseUrl = candidata
+        break
+      }
+
+      const texto = await envioRes.text().catch(() => '')
+      const tipoError = envioRes.headers.get('x-amzn-errortype') || ''
+      const causa = envioRes.headers.get('x-error-cause') || ''
+      intentos.push(
+        candidata + '/recepcion → status ' + envioRes.status +
+          (tipoError ? ' [' + tipoError + ']' : '') +
+          (causa ? ' causa: ' + causa : '') +
+          ' ' + texto.slice(0, 200)
+      )
+
+      // Solo se sigue probando otra dirección si el rechazo es del
+      // "portón" de entrada (403): significa que esa ruta no existe.
+      // Cualquier otro error es de Hacienda y se informa de una vez.
+      if (envioRes.status !== 403) break
+    } catch (errorRed) {
+      intentos.push(candidata + '/recepcion → no se pudo conectar: ' + errorRed.message)
+    }
+  }
+
+  if (!baseUrl) {
+    throw new Error('Hacienda rechazó el envío. Intentos: ' + intentos.join(' | '))
   }
 
   const limite = Date.now() + 55000
@@ -174,7 +207,7 @@ async function enviarYEsperarDirecto(opciones) {
     const indEstado = estado['ind-estado']
 
     if (indEstado === 'aceptado') {
-      return { accepted: true }
+      return { accepted: true, baseUrl: baseUrl }
     }
 
     if (indEstado === 'rechazado') {
@@ -186,7 +219,7 @@ async function enviarYEsperarDirecto(opciones) {
       } catch {
         // Si no se puede leer el detalle, se deja el motivo genérico.
       }
-      return { accepted: false, rejectionReason: motivo }
+      return { accepted: false, rejectionReason: motivo, baseUrl: baseUrl }
     }
     // Si sigue "recibido" o "procesando", seguimos esperando.
   }
@@ -382,13 +415,18 @@ export default async function handler(req, res) {
     const xmlFirmadoBase64 = await signAndEncode(xml, p12Buffer, p12Pin)
 
     // ── 6. Enviar a Hacienda y esperar la respuesta ──
-    const baseUrl =
+    // En sandbox se prueban dos direcciones: la documentada históricamente
+    // y la de "api-sandbox". Se usa la primera que acepte el envío.
+    const baseUrls =
       entorno === 'production'
-        ? 'https://api.comprobanteselectronicos.go.cr/recepcion/v1'
-        : 'https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1'
+        ? ['https://api.comprobanteselectronicos.go.cr/recepcion/v1']
+        : [
+            'https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1',
+            'https://api-sandbox.comprobanteselectronicos.go.cr/recepcion/v1',
+          ]
 
     const resultado = await enviarYEsperarDirecto({
-      baseUrl: baseUrl,
+      baseUrls: baseUrls,
       entorno: entorno,
       usuario: usuarioHacienda,
       password: passwordHacienda,
