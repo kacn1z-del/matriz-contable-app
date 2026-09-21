@@ -4807,6 +4807,8 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       uid: currentUser.uid,
+      emisorNombre: gv('fe-emisor-nombre'),
+      emisorCorreo: gv('fe-emisor-email'),
       receptor: {
         nombre: gv('fe-receptor-nombre'),
         identificacion: { tipo: tipoIdReceptor, numero: cedulaReceptorLimpia },
