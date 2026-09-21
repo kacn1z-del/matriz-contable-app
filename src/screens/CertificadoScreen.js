@@ -25,6 +25,10 @@ export default function CertificadoScreen({ navigation }) {
   const [passwordHacienda, setPasswordHacienda] = useState('')
   const [actividadEconomica, setActividadEconomica] = useState('')
   const [ambiente, setAmbiente] = useState('sandbox') // 'sandbox' | 'production'
+  const [provincia, setProvincia] = useState('')
+  const [canton, setCanton] = useState('')
+  const [distrito, setDistrito] = useState('')
+  const [otrasSenas, setOtrasSenas] = useState('')
   const [subiendo, setSubiendo] = useState(false)
   const [revisando, setRevisando] = useState(true)
   const [tieneCertificado, setTieneCertificado] = useState(false)
@@ -127,6 +131,10 @@ export default function CertificadoScreen({ navigation }) {
           passwordHacienda,
           actividadEconomica,
           ambiente,
+          provincia,
+          canton,
+          distrito,
+          otrasSenas,
         }),
       })
 
@@ -307,6 +315,42 @@ export default function CertificadoScreen({ navigation }) {
               placeholderTextColor="#9db98a"
               value={actividadEconomica}
               onChangeText={setActividadEconomica}
+            />
+
+            <Text style={styles.label}>Provincia (número 1-7)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ej: 1 (San José)"
+              placeholderTextColor="#9db98a"
+              value={provincia}
+              onChangeText={setProvincia}
+            />
+
+            <Text style={styles.label}>Cantón (2 dígitos)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ej: 01"
+              placeholderTextColor="#9db98a"
+              value={canton}
+              onChangeText={setCanton}
+            />
+
+            <Text style={styles.label}>Distrito (2 dígitos)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ej: 01"
+              placeholderTextColor="#9db98a"
+              value={distrito}
+              onChangeText={setDistrito}
+            />
+
+            <Text style={styles.label}>Otras señas</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Dirección exacta de tu negocio"
+              placeholderTextColor="#9db98a"
+              value={otrasSenas}
+              onChangeText={setOtrasSenas}
             />
 
             <Text style={styles.label}>Ambiente</Text>
