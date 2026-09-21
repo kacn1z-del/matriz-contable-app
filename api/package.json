@@ -2,5 +2,11 @@
   "type": "module",
   "engines": {
     "node": "22.x"
+  },
+  "dependencies": {
+    "@dojocoding/hacienda-sdk": "latest"
+  },
+  "overrides": {
+    "jose": "^4.15.9"
   }
 }
