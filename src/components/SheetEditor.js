@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
 import * as Notifications from 'expo-notifications'
@@ -4702,6 +4702,54 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
 });
 
 var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
+
+// En este WebView, las peticiones de red salientes (fetch y XMLHttpRequest
+// por igual) a veces quedan colgadas sin error ni éxito. Como respaldo
+// definitivo, le pedimos a React Native (que no tiene esa restricción) que
+// haga la petición por nosotros, y esperamos su respuesta por el mismo
+// canal que ya se usa para guardar archivos (postMessage).
+var _rpcCallbacks = {};
+var _rpcContador = 0;
+window.recibirRespuestaNativa = function (id, ok, httpOk, textoOrError) {
+  var cb = _rpcCallbacks[id];
+  if (!cb) return;
+  delete _rpcCallbacks[id];
+  if (ok) {
+    cb.resolve({
+      ok: httpOk,
+      json: function () {
+        return new Promise(function (res) {
+          try { res(JSON.parse(textoOrError)); }
+          catch (e) { res({ error: 'Respuesta no es JSON válido: ' + String(textoOrError).slice(0, 200) }); }
+        });
+      },
+    });
+  } else {
+    cb.reject(new Error(textoOrError));
+  }
+};
+function fetchViaXHR(url, opciones) {
+  opciones = opciones || {};
+  return new Promise(function (resolve, reject) {
+    var id = 'rpc' + (_rpcContador++) + '_' + Date.now();
+    var limite = setTimeout(function () {
+      if (_rpcCallbacks[id]) {
+        delete _rpcCallbacks[id];
+        reject(new Error('Tiempo de espera agotado (70s) esperando respuesta de la app.'));
+      }
+    }, 70000);
+    _rpcCallbacks[id] = {
+      resolve: function (r) { clearTimeout(limite); resolve(r); },
+      reject: function (e) { clearTimeout(limite); reject(e); },
+    };
+    window.ReactNativeWebView.postMessage(JSON.stringify({
+      tipo: 'llamarNativo',
+      id: id,
+      url: url,
+      opciones: { method: opciones.method || 'GET', headers: opciones.headers || {}, body: opciones.body },
+    }));
+  });
+}
 function siguienteSecuenciaHacienda() {
   try {
     var actual = parseInt(localStorage.getItem('kcn_hacienda_secuencia') || '0', 10);
@@ -4754,7 +4802,7 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
   var statusEl = document.getElementById('saveStatus');
   statusEl.textContent = 'Firmando y enviando a Hacienda...';
 
-  fetch(FIRMAR_FACTURA_URL, {
+  fetchViaXHR(FIRMAR_FACTURA_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -5127,7 +5175,7 @@ function siboEnviarTexto(texto) {
   wrap.appendChild(typingEl);
   wrap.scrollTop = wrap.scrollHeight;
 
-  fetch(SIBO_CHAT_URL, {
+  fetchViaXHR(SIBO_CHAT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: texto, history: hist.slice(0, -1), sheetContext: siboSnapshotHoja() }),
@@ -7925,13 +7973,51 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
 }
 
 export default function SheetEditor({ userId, sheetId }) {
+  const webViewRef = useRef(null)
+
   useEffect(() => {
     programarNotificacionesVencimientos()
   }, [])
 
+  // En algunos WebView de Android, las peticiones de red salientes (fetch
+  // y XMLHttpRequest por igual) quedan colgadas sin error ni éxito. Para
+  // esos casos, el WebView le pide a React Native (que no tiene esa
+  // restricción) que haga la petición por él, y React Native le devuelve
+  // el resultado inyectando JavaScript de vuelta.
+  async function manejarLlamadaNativa(id, url, opciones) {
+    try {
+      const respuesta = await fetch(url, opciones)
+      const texto = await respuesta.text()
+      const script = `
+        (function(){
+          try {
+            window.recibirRespuestaNativa && window.recibirRespuestaNativa(
+              ${JSON.stringify(id)}, true, ${JSON.stringify(respuesta.ok)}, ${JSON.stringify(texto)}
+            );
+          } catch (e) {}
+        })();
+        true;
+      `
+      webViewRef.current && webViewRef.current.injectJavaScript(script)
+    } catch (error) {
+      const script = `
+        (function(){
+          try {
+            window.recibirRespuestaNativa && window.recibirRespuestaNativa(
+              ${JSON.stringify(id)}, false, false, ${JSON.stringify(String(error && error.message || error))}
+            );
+          } catch (e) {}
+        })();
+        true;
+      `
+      webViewRef.current && webViewRef.current.injectJavaScript(script)
+    }
+  }
+
   return (
     <View style={styles.container}>
       <WebView
+        ref={webViewRef}
         originWhitelist={['*']}
         source={{ html: SHEET_HTML, baseUrl: 'https://matriz-contable-app.vercel.app' }}
         style={styles.webview}
@@ -7944,6 +8030,9 @@ export default function SheetEditor({ userId, sheetId }) {
             const msg = JSON.parse(event.nativeEvent.data)
             if (msg && msg.tipo === 'guardarArchivo') {
               manejarArchivoDesdeWebView(msg.base64, msg.filename, msg.mime)
+            }
+            if (msg && msg.tipo === 'llamarNativo') {
+              manejarLlamadaNativa(msg.id, msg.url, msg.opciones)
             }
           } catch (e) {}
         }}
