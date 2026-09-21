@@ -7933,10 +7933,12 @@ export default function SheetEditor({ userId, sheetId }) {
     <View style={styles.container}>
       <WebView
         originWhitelist={['*']}
-        source={{ html: SHEET_HTML }}
+        source={{ html: SHEET_HTML, baseUrl: 'https://matriz-contable-app.vercel.app' }}
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        mixedContentMode="always"
+        allowFileAccess={true}
         onMessage={(event) => {
           try {
             const msg = JSON.parse(event.nativeEvent.data)
