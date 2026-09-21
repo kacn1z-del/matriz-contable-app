@@ -2,7 +2,7 @@
   "expo": {
     "name": "Matriz Contable CR",
     "slug": "matriz-contable-app",
-    "owner": "keny2410s-organization",
+    "owner": "carlos12chinchillas-team",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -34,7 +34,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
+        "projectId": "d5324e32-3958-4fd7-b85c-776e4584fe07"
       }
     }
   }
