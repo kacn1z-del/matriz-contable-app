@@ -29,8 +29,14 @@ import {
   signAndEncode,
 } from '@dojocoding/hacienda-sdk'
 
-const CERTIFICADOS_WORKER_URL =
+// Se le quitan espacios y barras finales a la URL: con una barra al final
+// la ruta quedaría "//obtener-certificado-firma" y el Worker respondería
+// "Ruta no encontrada".
+const CERTIFICADOS_WORKER_URL = (
   process.env.CERTIFICADOS_WORKER_URL || 'https://matriz-certificados.kacn1z.workers.dev'
+)
+  .trim()
+  .replace(/\/+$/, '')
 
 // Sucursal y terminal fijas (001 / 00001), igual que en Los Pirchas.
 const SUCURSAL = '001'
@@ -245,7 +251,10 @@ export default async function handler(req, res) {
     const datosCert = await leerJsonSeguro(respCert)
     if (!respCert.ok) {
       res.status(502).json({
-        error: 'No se pudo obtener el certificado: ' + (datosCert.error || 'error desconocido'),
+        error:
+          'No se pudo obtener el certificado: ' +
+          (datosCert.error || 'error desconocido') +
+          ' (Worker consultado: ' + CERTIFICADOS_WORKER_URL + ')',
       })
       return
     }
