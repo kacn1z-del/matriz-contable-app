@@ -4703,10 +4703,16 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
 
 var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
 function siguienteSecuenciaHacienda() {
-  var actual = parseInt(localStorage.getItem('kcn_hacienda_secuencia') || '0', 10);
-  var siguiente = (isNaN(actual) ? 0 : actual) + 1;
-  localStorage.setItem('kcn_hacienda_secuencia', String(siguiente));
-  return siguiente;
+  try {
+    var actual = parseInt(localStorage.getItem('kcn_hacienda_secuencia') || '0', 10);
+    var siguiente = (isNaN(actual) ? 0 : actual) + 1;
+    localStorage.setItem('kcn_hacienda_secuencia', String(siguiente));
+    return siguiente;
+  } catch (e) {
+    // Si el WebView bloquea localStorage en este contexto, usamos un
+    // número basado en la hora actual (aún así único y creciente).
+    return Math.floor(Date.now() / 1000) % 10000000000;
+  }
 }
 document.getElementById('feBtnHacienda').addEventListener('click', function () {
  try {
@@ -4747,7 +4753,6 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
 
   var statusEl = document.getElementById('saveStatus');
   statusEl.textContent = 'Firmando y enviando a Hacienda...';
-  alert('▶ Enviando petición a: ' + FIRMAR_FACTURA_URL + '\\nEsto puede tardar hasta 1 minuto. Tocá OK y esperá.');
 
   fetch(FIRMAR_FACTURA_URL, {
     method: 'POST',
