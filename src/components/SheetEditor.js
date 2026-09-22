@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview'
 import * as Notifications from 'expo-notifications'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
+import * as Print from 'expo-print'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -243,6 +244,8 @@ const SHEET_HTML = `<!DOCTYPE html>
   #feFooter button { flex: 1; min-width: 90px; padding: 9px 6px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; }
   #feBtnXml { background: #245f09; color: #fff; }
   #feBtnPdf { background: #2d7a0c; color: #fff; }
+  #feBtnImprimir { background: #4a4a4a; color: #fff; }
+  #feBtnConsultar { background: #7a5c00; color: #fff; }
   #feBtnClear { background: #eee; color: #555; }
 
   #feHistOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
@@ -769,10 +772,6 @@ const SHEET_HTML = `<!DOCTYPE html>
       </div>
 
       <div class="feField"><label>Observaciones</label><input id="fe-observaciones" placeholder="Opcional" /></div>
-      <div class="feField" style="display:flex;align-items:center;gap:6px;">
-        <input type="checkbox" id="fe-firma-check" style="width:auto;" />
-        <label style="margin:0;" for="fe-firma-check">Incluir firma digital simulada</label>
-      </div>
 
       <div id="feTotalsBox">
         <div class="ftRow"><span>Subtotal:</span><span id="fe-subtotal">₡0.00</span></div>
@@ -785,7 +784,9 @@ const SHEET_HTML = `<!DOCTYPE html>
       <button id="feBtnClear">Limpiar</button>
       <button id="feBtnXml">⬇ XML</button>
       <button id="feBtnPdf">⬇ PDF</button>
+      <button id="feBtnImprimir">🖨️ Imprimir</button>
       <button id="feBtnHacienda" style="background:#1e5c99;">✅ Firmar y Enviar (real)</button>
+      <button id="feBtnConsultar" style="background:#7a5c00;">🔍 Consultar estado</button>
     </div>
   </div>
 </div>
@@ -4465,19 +4466,9 @@ function limpiarFactura() {
     .forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ''; });
   var tbody = document.getElementById('fe-lineas-body');
   tbody.innerHTML = '';
-  document.getElementById('fe-firma-check').checked = false;
   agregarLineaFactura();
   var numEl = document.getElementById('fe-num');
   if (numEl) numEl.value = siguienteConsecutivo();
-}
-
-// ── Firma digital simulada ──
-function generarFirmaDigital(datos) {
-  var base = (datos.num || '') + '|' + (datos.fecha || '') + '|' + (datos.emisor || '') + '|' + (datos.total || '') + '|' + Date.now() + '|' + Math.random();
-  var hash = '';
-  try { hash = btoa(unescape(encodeURIComponent(base))).replace(/[^A-Za-z0-9]/g, '').substring(0, 40); }
-  catch (e) { hash = base.split('').reduce(function (a, c) { return ((a << 5) - a + c.charCodeAt(0)) | 0; }, 0).toString(16); }
-  return { hash: hash.toUpperCase(), timestamp: new Date().toISOString() };
 }
 
 // ── Historial de facturas (localStorage) ──
@@ -4680,18 +4671,13 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
     var lt = ((row.querySelector('.feLineTotal') || {}).textContent || '0').replace(/[^\\d.]/g, '');
     lineas += '  <LineaDetalle><NumeroLinea>' + (i + 1) + '</NumeroLinea><Cantidad>' + qty + '</Cantidad><Descripcion>' + desc + '</Descripcion><PrecioUnitario>' + price + '</PrecioUnitario><MontoTotal>' + lt + '</MontoTotal></LineaDetalle>\\n';
   });
-  var firmaBlock = '';
-  if (document.getElementById('fe-firma-check').checked) {
-    var firma = generarFirmaDigital({ num: gv('fe-num'), fecha: fecha, emisor: gv('fe-emisor-nombre'), total: tot });
-    firmaBlock = '  <FirmaDigital><Hash>' + firma.hash + '</Hash><Timestamp>' + firma.timestamp + '</Timestamp><Nota>Firma simulada — no válida ante Hacienda</Nota></FirmaDigital>\\n';
-  }
   var xml = '<?xml version="1.0" encoding="UTF-8"?>\\n<FacturaElectronica xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica">\\n' +
     '  <NumeroConsecutivo>' + gv('fe-num') + '</NumeroConsecutivo>\\n' +
     '  <FechaEmision>' + fecha + 'T09:00:00-06:00</FechaEmision>\\n' +
     '  <Emisor><Nombre>' + gv('fe-emisor-nombre') + '</Nombre><Identificacion><Numero>' + gv('fe-emisor-cedula') + '</Numero></Identificacion></Emisor>\\n' +
     '  <Receptor><Nombre>' + gv('fe-receptor-nombre') + '</Nombre><Identificacion><Numero>' + gv('fe-receptor-cedula') + '</Numero></Identificacion></Receptor>\\n' +
     lineas + '  <ResumenFactura><TotalVenta>' + sub + '</TotalVenta><TotalImpuesto>' + iva + '</TotalImpuesto><TotalComprobante>' + tot + '</TotalComprobante></ResumenFactura>\\n' +
-    firmaBlock + '</FacturaElectronica>';
+    '</FacturaElectronica>';
   var blob = new Blob([xml], { type: 'application/xml' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -4702,6 +4688,8 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
 });
 
 var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
+var CONSULTAR_ESTADO_URL = 'https://matriz-contable-app.vercel.app/api/consultar-estado';
+var ENVIAR_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-correo-factura';
 
 // En este WebView, las peticiones de red salientes (fetch y XMLHttpRequest
 // por igual) a veces quedan colgadas sin error ni éxito. Como respaldo
@@ -4750,18 +4738,11 @@ function fetchViaXHR(url, opciones) {
     }));
   });
 }
-function siguienteSecuenciaHacienda() {
-  try {
-    var actual = parseInt(localStorage.getItem('kcn_hacienda_secuencia') || '0', 10);
-    var siguiente = (isNaN(actual) ? 0 : actual) + 1;
-    localStorage.setItem('kcn_hacienda_secuencia', String(siguiente));
-    return siguiente;
-  } catch (e) {
-    // Si el WebView bloquea localStorage en este contexto, usamos un
-    // número basado en la hora actual (aún así único y creciente).
-    return Math.floor(Date.now() / 1000) % 10000000000;
-  }
-}
+// La secuencia de cada factura/tiquete ya NO se calcula aquí en el celular
+// (antes vivía en localStorage, lo cual mezclaba la numeración entre
+// clientes que usaran el mismo dispositivo). Ahora firmar-factura.js se la
+// pide al Worker de Cloudflare, que la guarda en KV por uid — cada cliente
+// tiene su propio contador, sin importar desde qué celular factura.
 document.getElementById('feBtnHacienda').addEventListener('click', function () {
  try {
   function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
@@ -4818,7 +4799,6 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
       condicionVenta: '01',
       medioPago: ['01'],
       esTiquete: !cedulaReceptorLimpia,
-      secuencia: siguienteSecuenciaHacienda(),
     }),
   })
     .then(function (r) { return r.json().then(function (datos) { return { ok: r.ok, datos: datos }; }); })
@@ -4829,9 +4809,16 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
           (resultado.datos.detalles ? '\\n\\n' + JSON.stringify(resultado.datos.detalles) : ''));
         return;
       }
-      if (resultado.datos.aceptado) {
+      if (resultado.datos.clave) {
+        try { localStorage.setItem('kcn_ultima_clave', resultado.datos.clave); } catch (e) {}
+      }
+      if (resultado.datos.aceptado === true) {
         statusEl.textContent = '✓ Aceptada por Hacienda';
         alert('¡Factura ACEPTADA por Hacienda! ✅\\n\\nClave: ' + resultado.datos.clave + '\\nConsecutivo: ' + resultado.datos.numeroConsecutivo + '\\nAmbiente: ' + resultado.datos.ambiente);
+        enviarCorreoFacturaAceptada(resultado.datos, statusEl);
+      } else if (resultado.datos.pendiente) {
+        statusEl.textContent = '⏳ Pendiente de confirmar';
+        alert('⏳ Hacienda no confirmó a tiempo\\n\\n' + resultado.datos.mensajePendiente + '\\n\\nClave: ' + resultado.datos.clave + '\\nConsecutivo: ' + resultado.datos.numeroConsecutivo);
       } else {
         statusEl.textContent = '✗ Rechazada por Hacienda';
         alert('Hacienda RECHAZÓ la factura. Motivo:\\n\\n' + (resultado.datos.motivoRechazo || 'no especificado'));
@@ -4847,9 +4834,122 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
  }
 });
 
-document.getElementById('feBtnPdf').addEventListener('click', function () {
+// Consulta ante Hacienda el estado actual de un comprobante por su clave
+// (50 dígitos). Útil sobre todo cuando "Firmar y Enviar (real)" devolvió
+// "pendiente" porque Hacienda no confirmó a tiempo, o para revisar
+// facturas viejas.
+document.getElementById('feBtnConsultar').addEventListener('click', function () {
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+
+  var ultimaClave = '';
+  try { ultimaClave = localStorage.getItem('kcn_ultima_clave') || ''; } catch (e) {}
+
+  var clave = prompt('Pegá la clave del comprobante (50 dígitos):', ultimaClave);
+  if (!clave) return;
+  clave = clave.replace(/[^0-9]/g, '');
+  if (clave.length !== 50) {
+    alert('La clave debe tener 50 dígitos. Revisá que la copiaste completa.');
+    return;
+  }
+
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Consultando estado en Hacienda...';
+
+  fetchViaXHR(CONSULTAR_ESTADO_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ uid: currentUser.uid, clave: clave }),
+  })
+    .then(function (r) { return r.json().then(function (datos) { return { ok: r.ok, datos: datos }; }); })
+    .then(function (resultado) {
+      if (!resultado.ok) {
+        statusEl.textContent = '✗ Error al consultar';
+        alert('No se pudo consultar: ' + (resultado.datos.error || 'error desconocido'));
+        return;
+      }
+      var estado = resultado.datos.estado;
+      if (estado === 'aceptado') {
+        statusEl.textContent = '✓ Comprobante aceptado';
+        alert('✅ ACEPTADO por Hacienda\\n\\nClave: ' + resultado.datos.clave + '\\nAmbiente: ' + resultado.datos.ambiente);
+      } else if (estado === 'rechazado') {
+        statusEl.textContent = '✗ Comprobante rechazado';
+        alert('❌ RECHAZADO por Hacienda\\n\\nMotivo:\\n' + (resultado.datos.motivoRechazo || 'no especificado'));
+      } else if (estado === 'no_encontrado') {
+        statusEl.textContent = '? No encontrado';
+        alert('🔎 ' + resultado.datos.mensaje);
+      } else if (estado === 'recibido' || estado === 'procesando') {
+        statusEl.textContent = '⏳ ' + estado;
+        alert('⏳ Hacienda todavía lo está procesando (estado: ' + estado + '). Probá consultar de nuevo en un rato.');
+      } else {
+        statusEl.textContent = '? Estado: ' + estado;
+        alert('Estado devuelto por Hacienda: ' + estado);
+      }
+    })
+    .catch(function (err) {
+      statusEl.textContent = '✗ Error de conexión';
+      alert('No se pudo contactar el servicio de consulta: ' + err.message);
+    });
+});
+
+// Cuando Hacienda ACEPTA una factura, arma el mismo PDF que ya usan los
+// botones "⬇ PDF"/"🖨️ Imprimir" y lo manda junto con el XML firmado
+// (que ya viene en la respuesta de firmar-factura.js) al correo del
+// receptor vía api/enviar-correo-factura.js — así el usuario ya no tiene
+// que reenviarlo a mano. Si el receptor no tiene correo cargado, o si el
+// envío falla, no revienta nada: la factura ya quedó aceptada de todas
+// formas, solo se avisa que el correo no salió.
+function enviarCorreoFacturaAceptada(datosFactura, statusEl) {
+  function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
+  var receptorEmail = gv('fe-receptor-email');
+  if (!receptorEmail) return; // Sin correo del cliente, no hay a quién mandarlo.
+
+  var pdfListo = construirFacturaPdf();
+  if (!pdfListo) return;
+  var facturaPdfUri = pdfListo.doc.output('datauristring');
+
+  statusEl.textContent = 'Enviando correo al cliente...';
+
+  fetchViaXHR(ENVIAR_CORREO_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      receptorEmail: receptorEmail,
+      receptorNombre: gv('fe-receptor-nombre'),
+      emisorNombre: gv('fe-emisor-nombre'),
+      emisorEmail: gv('fe-emisor-email'),
+      clave: datosFactura.clave,
+      numeroConsecutivo: datosFactura.numeroConsecutivo,
+      pdfBase64: facturaPdfUri.split(',')[1],
+      xmlBase64: datosFactura.xmlFirmadoBase64,
+      nombreArchivo: 'factura-' + pdfListo.fecha,
+    }),
+  })
+    .then(function (r) { return r.json().then(function (datos) { return { ok: r.ok, datos: datos }; }); })
+    .then(function (correoResultado) {
+      if (correoResultado.ok) {
+        statusEl.textContent = '✓ Aceptada y enviada por correo';
+      } else {
+        statusEl.textContent = '✓ Aceptada (correo no se pudo enviar)';
+        alert('La factura quedó ACEPTADA, pero no se pudo enviar el correo al cliente: ' +
+          (correoResultado.datos.error || 'error desconocido') +
+          '\\n\\nPodés reenviarla a mano con el botón ⬇ PDF.');
+      }
+    })
+    .catch(function (err) {
+      statusEl.textContent = '✓ Aceptada (correo no se pudo enviar)';
+      alert('La factura quedó ACEPTADA, pero no se pudo contactar el servicio de correo: ' + err.message +
+        '\\n\\nPodés reenviarla a mano con el botón ⬇ PDF.');
+    });
+}
+
+// Arma el PDF de la factura y devuelve el objeto jsPDF ya listo, junto
+// con la fecha (para usarla en el nombre del archivo). La usan tanto el
+// botón "⬇ PDF" (guarda/comparte el archivo) como "🖨️ Imprimir" (lo manda
+// directo al diálogo de impresión nativo), así el diseño queda idéntico
+// en los dos casos y no hay que mantener el mismo código dos veces.
+function construirFacturaPdf() {
   var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
-  if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return; }
+  if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return null; }
   function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
 
   var doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -4960,29 +5060,47 @@ document.getElementById('feBtnPdf').addEventListener('click', function () {
     doc.text('Observaciones: ' + obs.substring(0, 80), 10, rowY + 38);
   }
 
-  if (document.getElementById('fe-firma-check').checked) {
-    var firmaPdf = generarFirmaDigital({ num: num, fecha: fecha, emisor: emisor, total: total });
-    var firmaY = rowY + 45;
-    doc.setDrawColor(g2[0], g2[1], g2[2]);
-    doc.setFillColor(bg[0], bg[1], bg[2]);
-    doc.roundedRect(10, firmaY, 190, 16, 2, 2, 'FD');
-    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(g3[0], g3[1], g3[2]);
-    doc.text('✓ Documento firmado digitalmente (simulado)', 14, firmaY + 6);
-    doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 100, 60);
-    doc.text('Hash: ' + firmaPdf.hash, 14, firmaY + 11);
-    doc.text('Fecha/hora: ' + firmaPdf.timestamp, 14, firmaY + 14.5);
-  }
-
   doc.setFillColor(g3[0], g3[1], g3[2]);
   doc.rect(0, 282, 210, 15, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(8); doc.setFont('helvetica', 'normal');
   doc.text('KCN Studio · Matriz Contable CR · Costa Rica 🇨🇷', 105, 290, { align: 'center' });
 
-  var facturaPdfUri = doc.output('datauristring');
-  guardarArchivoNativo('factura-' + fecha + '.pdf', facturaPdfUri.split(',')[1], 'application/pdf');
+  return { doc: doc, fecha: fecha };
+}
+
+document.getElementById('feBtnPdf').addEventListener('click', function () {
+  var resultado = construirFacturaPdf();
+  if (!resultado) return;
+  var facturaPdfUri = resultado.doc.output('datauristring');
+  guardarArchivoNativo('factura-' + resultado.fecha + '.pdf', facturaPdfUri.split(',')[1], 'application/pdf');
   guardarFacturaHistorial();
   document.getElementById('saveStatus').textContent = 'PDF exportado';
+});
+
+// Manda la factura directo al diálogo de impresión nativo del celular
+// (AirPrint en iOS, el sistema de impresión de Android), sin pasar por
+// el share sheet — el usuario elige la impresora ahí mismo.
+document.getElementById('feBtnImprimir').addEventListener('click', function () {
+  var resultado = construirFacturaPdf();
+  if (!resultado) return;
+  var facturaPdfUri = resultado.doc.output('datauristring');
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Abriendo impresión...';
+
+  if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+    window.ReactNativeWebView.postMessage(JSON.stringify({
+      tipo: 'imprimirArchivo',
+      filename: 'factura-' + resultado.fecha + '.pdf',
+      base64: facturaPdfUri.split(',')[1],
+    }));
+  } else {
+    // Fuera de la app (navegador de escritorio, por ejemplo): abre el
+    // PDF en una pestaña nueva y deja que el navegador ofrezca imprimir.
+    var ventana = window.open(facturaPdfUri, '_blank');
+    if (ventana) ventana.onload = function () { ventana.print(); };
+  }
+  guardarFacturaHistorial();
 });
 
 // ══════════════════════════════════════════════
@@ -5070,7 +5188,7 @@ document.getElementById('langSelector').addEventListener('change', function () {
 // ══════════════════════════════════════════════
 var SIBO_KB = [
   { k: ['iva', 'impuesto al valor'], r: 'El <b>IVA</b> en Costa Rica tiene tasa general de <b>13%</b>. Tasas reducidas: <b>4%</b> (boletos aéreos, servicios de salud privados), <b>2%</b> (medicamentos, seguros privados de salud, servicios educativos privados, primas de seguro), <b>1%</b> (canasta básica, insumos agropecuarios, equipo/material médico). Se declara mensualmente en el D-104 vía ATV de Hacienda. En la hoja podés usar la fórmula <b>=IVA(monto)</b> o <b>=IVA(monto;tasa)</b>.' },
-  { k: ['factura electronica', 'factura electrónica', 'comprobante electronico'], r: 'La <b>Factura Electrónica</b> es obligatoria en Costa Rica desde 2018. La versión vigente es la <b>4.3</b>. Se estructura en XML, se firma digitalmente y se envía al sistema ATV de Hacienda; el receptor puede aceptar/rechazar el comprobante. En esta app tenés el botón <b>🧾 Factura</b> para generar el XML y el PDF con esa estructura, incluyendo firma digital simulada e historial de facturas.' },
+  { k: ['factura electronica', 'factura electrónica', 'comprobante electronico'], r: 'La <b>Factura Electrónica</b> es obligatoria en Costa Rica desde 2018. La versión vigente es la <b>4.3</b>. Se estructura en XML, se firma digitalmente y se envía al sistema ATV de Hacienda; el receptor puede aceptar/rechazar el comprobante. En esta app tenés el botón <b>🧾 Factura</b> para generar el PDF/XML, y el botón <b>✅ Firmar y Enviar (real)</b> para firmarla de verdad con tu certificado y enviarla a Hacienda, con historial de facturas.' },
   { k: ['libro diario', 'asiento contable', 'partida doble'], r: 'El <b>Libro Diario</b> registra cronológicamente cada transacción bajo el principio de <b>partida doble</b>: Débitos = Créditos, siempre. Es obligatorio según el Código de Comercio de Costa Rica. Usá la plantilla "📘 Libro Diario" del selector de plantillas para empezar con la estructura correcta.' },
   { k: ['libro mayor'], r: 'El <b>Libro Mayor</b> agrupa los movimientos del Libro Diario por cuenta contable, mostrando el saldo acumulado de cada una. En esta app tenés el botón <b>📗 Mayor Auto</b>, que lee tu hoja activa (columnas Fecha/Cuenta/Debe/Haber) y genera el mayor automáticamente en una hoja nueva.' },
   { k: ['balance de comprobacion', 'balance de comprobación'], r: 'El <b>Balance de Comprobación</b> lista todas las cuentas con sus totales de débito y crédito, para verificar que la contabilidad esté cuadrada (Total Debe = Total Haber). Usá el botón <b>📊 Balance Auto</b> — genera el balance desde tu hoja activa y te dice si está "✓ Cuadrado" o cuál es la diferencia.' },
@@ -7959,6 +8077,25 @@ async function programarNotificacionesVencimientos() {
   }
 }
 
+async function manejarImpresionDesdeWebView(base64, filename) {
+  try {
+    const path = FileSystem.cacheDirectory + filename
+    await FileSystem.writeAsStringAsync(path, base64, { encoding: FileSystem.EncodingType.Base64 })
+    // Print.printAsync abre el diálogo nativo de impresión (AirPrint en
+    // iOS, el gestor de impresión de Android) directo con este archivo,
+    // sin pasar por el share sheet.
+    await Print.printAsync({ uri: path })
+  } catch (err) {
+    // El usuario cancelando la impresión también cae acá (jsPDF/expo-print
+    // no distingue "cancelado" de otros errores), así que no mostramos
+    // alerta salvo que parezca un error real.
+    const mensaje = String(err && err.message ? err.message : err)
+    if (!/cancel/i.test(mensaje)) {
+      Alert.alert('No se pudo imprimir', mensaje)
+    }
+  }
+}
+
 async function manejarArchivoDesdeWebView(base64, filename, mime) {
   try {
     const path = FileSystem.cacheDirectory + filename
@@ -8032,6 +8169,9 @@ export default function SheetEditor({ userId, sheetId }) {
             const msg = JSON.parse(event.nativeEvent.data)
             if (msg && msg.tipo === 'guardarArchivo') {
               manejarArchivoDesdeWebView(msg.base64, msg.filename, msg.mime)
+            }
+            if (msg && msg.tipo === 'imprimirArchivo') {
+              manejarImpresionDesdeWebView(msg.base64, msg.filename)
             }
             if (msg && msg.tipo === 'llamarNativo') {
               manejarLlamadaNativa(msg.id, msg.url, msg.opciones)
