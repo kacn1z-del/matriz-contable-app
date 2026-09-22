@@ -48,6 +48,11 @@ jobs:
       - name: Instalar dependencias del proyecto
         run: npm install
 
+      - name: Vincular/crear el proyecto EAS (solo hace falta la primera vez)
+        run: eas init --account guiscerdas --non-interactive --force
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
       - name: Compilar (push a main → android preview automático)
         if: github.event_name == 'push'
         run: eas build --platform android --profile preview --non-interactive
