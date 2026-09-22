@@ -48,8 +48,8 @@ jobs:
       - name: Instalar dependencias del proyecto
         run: npm install
 
-      - name: Vincular/crear el proyecto EAS (solo hace falta la primera vez)
-        run: eas init --account guiscerdas --non-interactive --force
+      - name: Vincular/crear el proyecto EAS (idempotente: reutiliza el proyecto si ya existe)
+        run: eas init --account guiscerdas --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
