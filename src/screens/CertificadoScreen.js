@@ -35,6 +35,12 @@ export default function CertificadoScreen({ navigation }) {
 
   const uid = auth.currentUser?.uid
 
+  // ─── Placeholder de usuario que cambia según el ambiente elegido ─
+  const placeholderUsuario =
+    ambiente === 'sandbox'
+      ? 'cpf-01-XXXXXXXXXX@stag.comprobanteselectronicos.go.cr'
+      : 'cpf-01-XXXXXXXXXX@prod.comprobanteselectronicos.go.cr'
+
   // ─── Al entrar, revisa si el cliente ya tiene un certificado guardado ─
   const revisarEstado = useCallback(async () => {
     if (!uid) return
@@ -219,8 +225,40 @@ export default function CertificadoScreen({ navigation }) {
             <Text style={styles.tituloCard}>Configurá tu firma electrónica</Text>
             <Text style={styles.textoSecundario}>
               Necesitás el archivo .p12 o .pfx que te entregó el Ministerio de Hacienda (ATV), junto con su contraseña,
-              y tus credenciales de acceso a la API de Hacienda.
+              y tus credenciales de acceso a la API de Hacienda. Estos datos son personales de tu negocio: cada cliente
+              sube su propia llave y credenciales, nunca se comparten entre cuentas.
             </Text>
+
+            <Text style={styles.separador}>Ambiente</Text>
+            <Text style={styles.textoSecundario}>
+              Elegí primero si vas a facturar en modo de pruebas (sandbox) o en producción real. Tu llave (.p12) y tus
+              credenciales de usuario/contraseña de Hacienda deben corresponder a este mismo ambiente.
+            </Text>
+            <View style={styles.ambienteRow}>
+              <TouchableOpacity
+                style={[styles.ambienteBtn, ambiente === 'sandbox' && styles.ambienteBtnActivo]}
+                onPress={() => setAmbiente('sandbox')}
+              >
+                <Text style={[styles.ambienteBtnTexto, ambiente === 'sandbox' && styles.ambienteBtnTextoActivo]}>
+                  Pruebas (sandbox)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.ambienteBtn, ambiente === 'production' && styles.ambienteBtnActivo]}
+                onPress={() => setAmbiente('production')}
+              >
+                <Text style={[styles.ambienteBtnTexto, ambiente === 'production' && styles.ambienteBtnTextoActivo]}>
+                  Producción real
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.avisoBox}>
+              <Text style={styles.avisoTexto}>
+                ⚠️ Importante: si tu llave o tus credenciales son de un ambiente distinto al que elegiste acá,
+                Hacienda va a rechazar la factura por firma inválida.
+              </Text>
+            </View>
 
             <View style={styles.modoRow}>
               <TouchableOpacity
@@ -291,12 +329,17 @@ export default function CertificadoScreen({ navigation }) {
             <Text style={styles.label}>Usuario de API (ovitribucr.hacienda.go.cr)</Text>
             <TextInput
               style={styles.input}
-              placeholder="cpf-01-XXXXXXXXXX@prod.comprobanteselectronicos.go.cr"
+              placeholder={placeholderUsuario}
               placeholderTextColor="#9db98a"
               value={usuarioHacienda}
               onChangeText={setUsuarioHacienda}
               autoCapitalize="none"
             />
+            <Text style={styles.ayudaCampo}>
+              {ambiente === 'sandbox'
+                ? 'Este usuario debe terminar en @stag.comprobanteselectronicos.go.cr'
+                : 'Este usuario debe terminar en @prod.comprobanteselectronicos.go.cr'}
+            </Text>
 
             <Text style={styles.label}>Contraseña de API de Hacienda</Text>
             <TextInput
@@ -316,6 +359,8 @@ export default function CertificadoScreen({ navigation }) {
               value={actividadEconomica}
               onChangeText={setActividadEconomica}
             />
+
+            <Text style={styles.separador}>Ubicación del negocio</Text>
 
             <Text style={styles.label}>Provincia (número 1-7)</Text>
             <TextInput
@@ -352,26 +397,6 @@ export default function CertificadoScreen({ navigation }) {
               value={otrasSenas}
               onChangeText={setOtrasSenas}
             />
-
-            <Text style={styles.label}>Ambiente</Text>
-            <View style={styles.ambienteRow}>
-              <TouchableOpacity
-                style={[styles.ambienteBtn, ambiente === 'sandbox' && styles.ambienteBtnActivo]}
-                onPress={() => setAmbiente('sandbox')}
-              >
-                <Text style={[styles.ambienteBtnTexto, ambiente === 'sandbox' && styles.ambienteBtnTextoActivo]}>
-                  Pruebas (sandbox)
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.ambienteBtn, ambiente === 'production' && styles.ambienteBtnActivo]}
-                onPress={() => setAmbiente('production')}
-              >
-                <Text style={[styles.ambienteBtnTexto, ambiente === 'production' && styles.ambienteBtnTextoActivo]}>
-                  Producción real
-                </Text>
-              </TouchableOpacity>
-            </View>
 
             <TouchableOpacity
               style={[styles.botonPrincipal, subiendo && styles.botonDisabled]}
@@ -435,7 +460,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 10,
     fontSize: 15, color: '#2d3b1f', backgroundColor: '#f7fbf0', marginBottom: 12,
   },
-  ambienteRow: { flexDirection: 'row', gap: 10, marginBottom: 20 },
+  ayudaCampo: {
+    fontSize: 11, color: '#8fa87a', marginTop: -8, marginBottom: 12,
+  },
+  ambienteRow: { flexDirection: 'row', gap: 10, marginBottom: 14 },
   ambienteBtn: {
     flex: 1, borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
     paddingVertical: 10, alignItems: 'center', backgroundColor: '#fff',
@@ -443,6 +471,11 @@ const styles = StyleSheet.create({
   ambienteBtnActivo: { backgroundColor: '#2d7a0c', borderColor: '#2d7a0c' },
   ambienteBtnTexto: { fontSize: 12.5, fontWeight: '600', color: '#2d7a0c' },
   ambienteBtnTextoActivo: { color: '#fff' },
+  avisoBox: {
+    backgroundColor: '#fff6dd', borderWidth: 1.5, borderColor: '#e8c65a',
+    borderRadius: 10, padding: 12, marginBottom: 20,
+  },
+  avisoTexto: { fontSize: 12, color: '#7a5f10', lineHeight: 17 },
   botonPrincipal: {
     backgroundColor: '#2d7a0c', borderRadius: 10,
     paddingVertical: 13, alignItems: 'center',
