@@ -16,6 +16,12 @@
  * "a mano" con fetch(), igual que en api/facturar.js de Los Pirchas,
  * porque HaciendaClient / HttpClient / submitAndWait del SDK fallan con
  * ERR_PACKAGE_PATH_NOT_EXPORTED por un desajuste interno de versiones.
+ *
+ * NUMERACIÓN: la secuencia de cada factura/tiquete YA NO la calcula el
+ * celular (antes vivía en localStorage del WebView, lo cual mezclaba la
+ * numeración entre clientes que usaran el mismo dispositivo). Ahora se
+ * le pide al Worker (/siguiente-secuencia), que la guarda en KV por
+ * uid + tipo de documento — cada cliente tiene su propio contador.
  */
 
 import {
@@ -47,6 +53,13 @@ const TERMINAL = '00001'
 // Solo dígitos (las cédulas pueden venir con guiones o espacios).
 function soloDigitos(valor) {
   return String(valor || '').replace(/[^0-9]/g, '')
+}
+
+// Quita espacios al inicio/final; un espacio de más en un campo como
+// actividadEconomica hace que Hacienda rechace el comprobante por
+// exceder el largo máximo permitido (ya pasó una vez con "5610.0 ").
+function limpio(valor) {
+  return String(valor || '').trim()
 }
 
 // Tipo de identificación del emisor según el largo de la cédula:
@@ -99,7 +112,7 @@ async function leerJsonSeguro(respuesta) {
   }
 }
 
-// ─── Autenticación directa contra el IDP de Hacienda ────────────
+// ─── Autenticación directa contra el IDP de Hacienda ─────────────
 // "usuario" es el usuario COMPLETO que genera Hacienda, con el formato
 // cpf-01-XXXX-XXXX@prod.comprobanteselectronicos.go.cr
 async function obtenerAccessToken(entorno, usuario, password) {
@@ -135,62 +148,68 @@ async function obtenerAccessToken(entorno, usuario, password) {
   return datos.access_token
 }
 
-// ─── Envío y sondeo directo a la API de recepción de Hacienda ───
-// "baseUrls" es una lista de direcciones posibles. Se prueba en orden y se
-// usa la primera que acepte el envío. Si todas fallan, el error muestra
-// qué respondió cada una, para poder diagnosticar.
+// ─── Le pide al Worker el próximo número de secuencia del cliente ─
+async function obtenerSiguienteSecuencia(uid, tipoDocumento) {
+  const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/siguiente-secuencia', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      uid: uid,
+      secreto: process.env.FIRMA_SERVICE_SECRET,
+      tipoDocumento: tipoDocumento,
+    }),
+  })
+  const datos = await leerJsonSeguro(respuesta)
+  if (!respuesta.ok || !datos.secuencia) {
+    throw new Error(
+      'No se pudo generar el número de secuencia: ' + (datos.error || 'error desconocido')
+    )
+  }
+  return datos.secuencia
+}
+
+// Los mensajes de error de Hacienda vienen con entidades HTML/XML sin
+// decodificar (ej. "&#13;" en vez de un salto de línea real), lo que se ve
+// feo en una alerta. Esto las decodifica y colapsa los saltos de línea
+// repetidos, para que el mensaje quede legible.
+function limpiarMensajeHacienda(texto) {
+  if (!texto) return texto
+  return String(texto)
+    .replace(/&#13;/g, '\n')
+    .replace(/&#10;/g, '\n')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{2,}/g, '\n')
+    .trim()
+}
+
+// ─── Envío y sondeo directo a la API de recepción de Hacienda ────
 async function enviarYEsperarDirecto(opciones) {
-  const { baseUrls, entorno, usuario, password, clave, tipoIdEmisor, cedulaEmisor, comprobanteXml } = opciones
+  const { baseUrl, entorno, usuario, password, clave, tipoIdEmisor, cedulaEmisor, comprobanteXml } = opciones
 
   const token = await obtenerAccessToken(entorno, usuario, password)
 
-  const cuerpoEnvio = JSON.stringify({
-    clave: clave,
-    fecha: new Date().toISOString(),
-    emisor: { tipoIdentificacion: tipoIdEmisor, numeroIdentificacion: cedulaEmisor },
-    comprobanteXml: comprobanteXml,
+  const envioRes = await fetch(baseUrl + '/recepcion', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      clave: clave,
+      fecha: new Date().toISOString(),
+      emisor: { tipoIdentificacion: tipoIdEmisor, numeroIdentificacion: cedulaEmisor },
+      comprobanteXml: comprobanteXml,
+    }),
   })
 
-  let baseUrl = null
-  const intentos = []
-
-  for (const candidata of baseUrls) {
-    try {
-      const envioRes = await fetch(candidata + '/recepcion', {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        },
-        body: cuerpoEnvio,
-      })
-
-      if (envioRes.status === 201 || envioRes.status === 202) {
-        baseUrl = candidata
-        break
-      }
-
-      const texto = await envioRes.text().catch(() => '')
-      const tipoError = envioRes.headers.get('x-amzn-errortype') || ''
-      const causa = envioRes.headers.get('x-error-cause') || ''
-      intentos.push(
-        candidata + '/recepcion → status ' + envioRes.status +
-          (tipoError ? ' [' + tipoError + ']' : '') +
-          (causa ? ' causa: ' + causa : '') +
-          ' ' + texto.slice(0, 200)
-      )
-
-      // Solo se sigue probando otra dirección si el rechazo es del
-      // "portón" de entrada (403): significa que esa ruta no existe.
-      // Cualquier otro error es de Hacienda y se informa de una vez.
-      if (envioRes.status !== 403) break
-    } catch (errorRed) {
-      intentos.push(candidata + '/recepcion → no se pudo conectar: ' + errorRed.message)
-    }
-  }
-
-  if (!baseUrl) {
-    throw new Error('Hacienda rechazó el envío. Intentos: ' + intentos.join(' | '))
+  if (envioRes.status !== 201 && envioRes.status !== 202) {
+    const texto = await envioRes.text().catch(() => '')
+    throw new Error('Hacienda rechazó el envío (status ' + envioRes.status + '): ' + texto)
   }
 
   const limite = Date.now() + 55000
@@ -207,7 +226,7 @@ async function enviarYEsperarDirecto(opciones) {
     const indEstado = estado['ind-estado']
 
     if (indEstado === 'aceptado') {
-      return { accepted: true, baseUrl: baseUrl }
+      return { accepted: true }
     }
 
     if (indEstado === 'rechazado') {
@@ -215,21 +234,25 @@ async function enviarYEsperarDirecto(opciones) {
       try {
         const xmlRespuesta = Buffer.from(estado['respuesta-xml'], 'base64').toString('utf-8')
         const coincidencia = xmlRespuesta.match(/<DetalleMensaje>([^<]*)<\/DetalleMensaje>/i)
-        if (coincidencia) motivo = coincidencia[1]
+        if (coincidencia) motivo = limpiarMensajeHacienda(coincidencia[1])
       } catch {
         // Si no se puede leer el detalle, se deja el motivo genérico.
       }
-      return { accepted: false, rejectionReason: motivo, baseUrl: baseUrl }
+      return { accepted: false, rejectionReason: motivo }
     }
     // Si sigue "recibido" o "procesando", seguimos esperando.
   }
 
-  throw new Error(
-    'Hacienda no respondió a tiempo (55s). Revisá el estado más tarde con la clave: ' + clave
-  )
+  // Hacienda YA recibió el comprobante (pasó la validación del status 201/202
+  // de arriba) pero no confirmó "aceptado" ni "rechazado" dentro de los 55s
+  // que dura esta función serverless. No es un error: la factura pudo haber
+  // quedado enviada igual y solo falta consultar su estado más tarde con la
+  // clave. Se devuelve como "pendiente" en vez de lanzar una excepción, para
+  // que la app pueda avisarle al usuario en vez de mostrar un error genérico.
+  return { accepted: null, pending: true }
 }
 
-// ─── Handler ────────────────────────────────────────────────────
+// ─── Handler ───────────────────────────────────────────────────
 export default async function handler(req, res) {
   // CORS básico, igual que en sibo-chat.js
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -257,14 +280,12 @@ export default async function handler(req, res) {
       condicionVenta, // '01' contado, '02' crédito, etc. (default '01')
       medioPago, // array, ej: ['01'] (default ['01'] efectivo)
       esTiquete, // true => Tiquete Electrónico (04) en vez de Factura (01)
-      secuencia, // número entero, el consecutivo de ESTA factura para este emisor
       emisorNombre, // opcional: nombre / razón social del emisor
-      emisorCorreo, // opcional: correo del emisor
     } = req.body || {}
 
-    if (!uid || !Array.isArray(lineas) || !lineas.length || !secuencia) {
+    if (!uid || !Array.isArray(lineas) || !lineas.length) {
       res.status(400).json({
-        error: 'Faltan datos: uid, lineas (array) y secuencia son obligatorios.',
+        error: 'Faltan datos: uid y lineas (array) son obligatorios.',
       })
       return
     }
@@ -325,7 +346,10 @@ export default async function handler(req, res) {
     const cedulaLimpia = soloDigitos(cedulaEmisor)
     const tipoIdEmisor = tipoIdentificacionEmisor(cedulaLimpia)
 
-    // ── 2. Calcular totales de cada línea y el resumen de la factura ──
+    // ── 2. Pedirle al Worker el próximo número de secuencia de ESTE cliente ──
+    const secuencia = await obtenerSiguienteSecuencia(uid, esTiquete ? 'tiquete' : 'factura')
+
+    // ── 3. Calcular totales de cada línea y el resumen de la factura ──
     const lineasNormalizadas = lineas.map(normalizarLinea)
     const lineasCalculadas = lineasNormalizadas.map(calculateLineItemTotals)
     const resumen = calculateInvoiceSummary(lineasCalculadas)
@@ -361,7 +385,7 @@ export default async function handler(req, res) {
       },
     ]
 
-    // ── 3. Clave numérica + consecutivo de 20 dígitos ──
+    // ── 4. Clave numérica + consecutivo de 20 dígitos ──
     const tipoDocumento = esTiquete
       ? DocumentType.TIQUETE_ELECTRONICO
       : DocumentType.FACTURA_ELECTRONICA
@@ -378,22 +402,24 @@ export default async function handler(req, res) {
     // sucursal(3) + terminal(5) + tipoDocumento(2) + secuencia(10)
     const numeroConsecutivo = SUCURSAL + TERMINAL + codigoTipo + String(secuencia).padStart(10, '0')
 
-    // ── 4. Armar el documento y generar el XML ──
+    // ── 5. Armar el documento y generar el XML ──
+    // limpio() le quita espacios de más a cada campo de texto: un espacio
+    // sobrante (ej. en actividadEconomica) hace que Hacienda rechace el
+    // comprobante por exceder el largo máximo permitido.
     const emisor = {
       nombre: emisorNombre || cedulaLimpia,
       identificacion: { tipo: tipoIdEmisor, numero: cedulaLimpia },
       ubicacion: {
-        provincia: provincia || '1',
-        canton: canton || '01',
-        distrito: distrito || '01',
-        otrasSenas: otrasSenas || 'N/A',
+        provincia: limpio(provincia) || '1',
+        canton: limpio(canton) || '01',
+        distrito: limpio(distrito) || '01',
+        otrasSenas: limpio(otrasSenas) || 'N/A',
       },
-      correoElectronico: emisorCorreo || undefined,
     }
 
     const documento = {
       clave: clave,
-      codigoActividadEmisor: actividadEconomica,
+      codigoActividadEmisor: limpio(actividadEconomica),
       proveedorSistemas: cedulaLimpia, // v4.4 (TRIBU-CR): identificación del proveedor del software
       numeroConsecutivo: numeroConsecutivo,
       fechaEmision: new Date().toISOString(),
@@ -411,22 +437,17 @@ export default async function handler(req, res) {
       xml = buildFacturaXml(documento)
     }
 
-    // ── 5. Firmar de verdad con el certificado del cliente ──
+    // ── 6. Firmar de verdad con el certificado del cliente ──
     const xmlFirmadoBase64 = await signAndEncode(xml, p12Buffer, p12Pin)
 
-    // ── 6. Enviar a Hacienda y esperar la respuesta ──
-    // En sandbox se prueban dos direcciones: la documentada históricamente
-    // y la de "api-sandbox". Se usa la primera que acepte el envío.
-    const baseUrls =
+    // ── 7. Enviar a Hacienda y esperar la respuesta ──
+    const baseUrl =
       entorno === 'production'
-        ? ['https://api.comprobanteselectronicos.go.cr/recepcion/v1']
-        : [
-            'https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1',
-            'https://api-sandbox.comprobanteselectronicos.go.cr/recepcion/v1',
-          ]
+        ? 'https://api.comprobanteselectronicos.go.cr/recepcion/v1'
+        : 'https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1'
 
     const resultado = await enviarYEsperarDirecto({
-      baseUrls: baseUrls,
+      baseUrl: baseUrl,
       entorno: entorno,
       usuario: usuarioHacienda,
       password: passwordHacienda,
@@ -438,8 +459,12 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       ok: true,
-      aceptado: resultado.accepted,
-      motivoRechazo: resultado.accepted ? null : resultado.rejectionReason,
+      aceptado: resultado.accepted, // true | false | null (null = pendiente, ver abajo)
+      pendiente: resultado.pending === true,
+      motivoRechazo: resultado.accepted === false ? resultado.rejectionReason : null,
+      mensajePendiente: resultado.pending === true
+        ? 'Hacienda no confirmó a tiempo (55s), pero el comprobante SÍ fue recibido. Guardá la clave de abajo — probablemente ya quedó aceptada o rechazada; consultala más tarde en ATV con esa clave.'
+        : null,
       clave: clave,
       numeroConsecutivo: numeroConsecutivo,
       ambiente: entorno,
