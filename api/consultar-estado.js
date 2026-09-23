@@ -105,6 +105,28 @@ async function verificarIdToken(idToken) {
   }
 }
 
+// Igual que en firmar-factura.js: si el Worker no responde, se deja
+// pasar — el rate limit es una capa extra, no un punto único de fallo.
+async function verificarLimiteRemoto(clave, limite, ventanaSegundos) {
+  try {
+    const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/verificar-limite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secreto: process.env.FIRMA_SERVICE_SECRET,
+        clave: clave,
+        limite: limite,
+        ventanaSegundos: ventanaSegundos,
+      }),
+    })
+    if (!respuesta.ok) return true
+    const datos = await respuesta.json()
+    return datos.permitido !== false
+  } catch {
+    return true
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -129,6 +151,10 @@ export default async function handler(req, res) {
     const uid = await verificarIdToken(idToken)
     if (!uid) {
       res.status(401).json({ error: 'Sesión inválida o expirada. Volvé a iniciar sesión e intentá de nuevo.' })
+      return
+    }
+    if (!(await verificarLimiteRemoto('consultar:' + uid, 30, 300))) {
+      res.status(429).json({ error: 'Demasiadas consultas. Esperá un momento y probá de nuevo.' })
       return
     }
     if (!clave) {
