@@ -26,6 +26,36 @@
  */
 
 const RESEND_API_URL = 'https://api.resend.com/emails'
+const CERTIFICADOS_WORKER_URL = (
+  process.env.CERTIFICADOS_WORKER_URL || 'https://matriz-certificados.kacn1z.workers.dev'
+)
+  .trim()
+  .replace(/\/+$/, '')
+
+// Esta ruta no recibe idToken (no necesita saber quién la llama para
+// hacer su trabajo), así que el límite se lleva por IP en vez de por
+// uid — evita que alguien la use para mandar spam masivo con tu cuenta
+// de Resend. Si el Worker no responde, se deja pasar (ver comentario
+// igual en firmar-factura.js).
+async function verificarLimiteRemoto(clave, limite, ventanaSegundos) {
+  try {
+    const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/verificar-limite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secreto: process.env.FIRMA_SERVICE_SECRET,
+        clave: clave,
+        limite: limite,
+        ventanaSegundos: ventanaSegundos,
+      }),
+    })
+    if (!respuesta.ok) return true
+    const datos = await respuesta.json()
+    return datos.permitido !== false
+  } catch {
+    return true
+  }
+}
 
 function escaparHtml(texto) {
   return String(texto || '')
@@ -71,6 +101,11 @@ export default async function handler(req, res) {
 
     if (!receptorEmail) {
       res.status(400).json({ error: 'Falta el correo del receptor.' })
+      return
+    }
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'sin-ip').split(',')[0].trim()
+    if (!(await verificarLimiteRemoto('correo:' + ip, 15, 3600))) {
+      res.status(429).json({ error: 'Demasiados correos enviados desde esta conexión. Esperá un rato y probá de nuevo.' })
       return
     }
     if (!pdfBase64) {
