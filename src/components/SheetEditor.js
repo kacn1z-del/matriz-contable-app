@@ -234,6 +234,17 @@ const SHEET_HTML = `<!DOCTYPE html>
   #feLineasTable input { width: 100%; padding: 4px 5px; border: 1px solid #cce9ae; border-radius: 5px; font-size: 11.5px; }
   #feLineasTable .feQty { width: 40px; }
   #feLineasTable .feCabys { width: 78px; font-size: 10px; }
+  #cabysDropdown {
+    position: fixed; z-index: 9999; background: #fff; border: 1.5px solid #2d7a0c;
+    border-radius: 8px; max-height: 220px; overflow-y: auto; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    display: none; width: 260px;
+  }
+  #cabysDropdown.show { display: block; }
+  #cabysDropdown .cabysItem { padding: 7px 9px; border-bottom: 1px solid #eee; font-size: 11px; }
+  #cabysDropdown .cabysItem:active { background: #eaf7d8; }
+  #cabysDropdown .cabysCodigo { font-weight: 800; color: #1e5208; display: block; }
+  #cabysDropdown .cabysDesc { color: #444; font-size: 10.5px; }
+  #cabysDropdown .cabysVacio { padding: 10px; text-align: center; color: #888; font-size: 11px; }
   #feLineasTable .feIva { width: 52px; font-size: 10px; }
   #feLineasTable .fePrice { width: 62px; }
   #feAddLineaBtn { background: #245f09; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 700; }
@@ -260,7 +271,23 @@ const SHEET_HTML = `<!DOCTYPE html>
   #feHistHead, #matricesHead, #auditHead, #backupHead, #reciboHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
   #feHistHead h3, #matricesHead h3, #auditHead h3, #backupHead h3, #reciboHead h3 { color: #fff; margin: 0; font-size: 13px; }
   #feHistHead button, #matricesHead button, #auditHead button, #backupHead button, #reciboHead button { background: none; border: none; color: #fff; font-size: 18px; }
-  #feHistList, #auditList, #backupList { overflow-y: auto; padding: 6px 10px; }
+  #feHistList, #auditList, #backupList, #feHistHaciendaList { overflow-y: auto; padding: 6px 10px; }
+  #feHistTabs { display: flex; gap: 6px; padding: 8px 10px 0; flex-shrink: 0; }
+  #feHistTabs button { flex: 1; border: 1.5px solid #cce9ae; background: #fff; color: #2d7a0c; font-size: 11.5px; font-weight: 700; padding: 7px 4px; border-radius: 8px 8px 0 0; }
+  #feHistTabs button.feHistTabActiva { background: #2d7a0c; color: #fff; border-color: #2d7a0c; }
+  .feHistHItem { padding: 8px 6px; border-bottom: 1px solid #eee; }
+  .feHistHItem .fhhTop { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .feHistHItem .fhhInfo { font-size: 12px; flex: 1; min-width: 0; }
+  .feHistHItem .fhhNum { font-weight: 800; color: #1e5208; }
+  .feHistHItem .fhhMeta { color: #777; font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .feHistHItem .fhhEstado { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; }
+  .fhhEstado.aceptado { background: #dff5d0; color: #2d7a0c; }
+  .fhhEstado.rechazado { background: #fddede; color: #b02a2a; }
+  .fhhEstado.pendiente { background: #fff3cd; color: #8a6500; }
+  .feHistHItem .fhhBtns { display: flex; gap: 6px; margin-top: 6px; }
+  .feHistHItem .fhhBtns button { flex: 1; background: #2d7a0c; color: #fff; border: none; border-radius: 6px; padding: 6px 4px; font-size: 10.5px; font-weight: 700; }
+  .feHistHItem .fhhBtns button.fhhBtnCorreo { background: #1e5c99; }
+  #feHistEmptyH { padding: 20px 10px; text-align: center; color: #888; font-size: 12px; }
   #buscarGlobalOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #buscarGlobalOverlay.show { display: flex; }
   #buscarGlobalModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -723,7 +750,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 <div id="feOverlay">
   <div id="feModal">
     <div id="feHead">
-      <h3>🧾 Factura Electrónica 4.3 · CR</h3>
+      <h3>🧾 Factura Electrónica 4.4 · CR</h3>
       <button id="feClose">✕</button>
     </div>
     <div id="feBody">
@@ -791,13 +818,20 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="cabysDropdown"></div>
+
 <div id="feHistOverlay">
   <div id="feHistModal">
     <div id="feHistHead">
       <h3>🕐 Historial de facturas</h3>
       <button id="feHistClose">✕</button>
     </div>
+    <div id="feHistTabs">
+      <button id="feHistTabBorradores" class="feHistTabActiva">📝 Borradores</button>
+      <button id="feHistTabHacienda">✅ Enviadas a Hacienda</button>
+    </div>
     <div id="feHistList"></div>
+    <div id="feHistHaciendaList" style="display:none;"></div>
   </div>
 </div>
 
@@ -4413,7 +4447,7 @@ document.getElementById('btnDeleteSheet').addEventListener('click', function () 
 // NOTAS
 // ══════════════════════════════════════════════
 // ══════════════════════════════════════════════
-// FACTURA ELECTRÓNICA 4.3 — CR
+// FACTURA ELECTRÓNICA 4.4 — CR
 // ══════════════════════════════════════════════
 function fmtCRC(n) { return '₡' + Number(n || 0).toLocaleString('es-CR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
@@ -4454,6 +4488,23 @@ function agregarLineaFactura() {
     '<td><button class="feDelLinea" style="background:none;border:none;color:#dc2626;font-size:15px;">×</button></td>';
   tbody.appendChild(tr);
   tr.querySelectorAll('.feQty, .fePrice').forEach(function (inp) { inp.addEventListener('input', recalcularFactura); });
+  var inputCabys = tr.querySelector('.feCabys');
+  var timerBusquedaCabys = null;
+  inputCabys.addEventListener('input', function () {
+    clearTimeout(timerBusquedaCabys);
+    var termino = inputCabys.value;
+    timerBusquedaCabys = setTimeout(function () { buscarYMostrarCabys(inputCabys, termino); }, 350);
+  });
+  inputCabys.addEventListener('focus', function () {
+    if (inputCabys.value && isNaN(Number(inputCabys.value))) {
+      buscarYMostrarCabys(inputCabys, inputCabys.value);
+    }
+  });
+  inputCabys.addEventListener('blur', function () {
+    // El pequeño retraso deja que el "click" sobre un resultado del
+    // dropdown alcance a dispararse antes de que blur lo esconda.
+    setTimeout(function () { document.getElementById('cabysDropdown').classList.remove('show'); }, 200);
+  });
   tr.querySelector('.feDelLinea').addEventListener('click', function () {
     if (document.querySelectorAll('#fe-lineas-body tr').length > 1) { tr.remove(); recalcularFactura(); }
   });
@@ -4544,11 +4595,163 @@ function cargarFacturaDeHistorial(entry) {
 }
 document.getElementById('feBtnHistorial').addEventListener('click', function () {
   renderHistorialList();
+  mostrarPestanaHistorial('borradores');
   document.getElementById('feHistOverlay').classList.add('show');
 });
 document.getElementById('feHistClose').addEventListener('click', function () {
   document.getElementById('feHistOverlay').classList.remove('show');
 });
+
+// ── Historial de facturas ENVIADAS A HACIENDA (vive en el servidor, ──
+// por cliente — no se pierde si cambiás de celular, a diferencia de
+// los borradores de arriba que solo viven en este dispositivo).
+function mostrarPestanaHistorial(cual) {
+  var esHacienda = cual === 'hacienda';
+  document.getElementById('feHistList').style.display = esHacienda ? 'none' : '';
+  document.getElementById('feHistHaciendaList').style.display = esHacienda ? '' : 'none';
+  document.getElementById('feHistTabBorradores').className = esHacienda ? '' : 'feHistTabActiva';
+  document.getElementById('feHistTabHacienda').className = esHacienda ? 'feHistTabActiva' : '';
+  if (esHacienda) cargarHistorialHacienda();
+}
+document.getElementById('feHistTabBorradores').addEventListener('click', function () { mostrarPestanaHistorial('borradores'); });
+document.getElementById('feHistTabHacienda').addEventListener('click', function () { mostrarPestanaHistorial('hacienda'); });
+
+var historialHaciendaCache = [];
+
+async function cargarHistorialHacienda() {
+  var wrap = document.getElementById('feHistHaciendaList');
+  if (!currentUser) { wrap.innerHTML = '<div id="feHistEmptyH">Iniciá sesión para ver tu historial de Hacienda.</div>'; return; }
+  wrap.innerHTML = '<div id="feHistEmptyH">Cargando...</div>';
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(LISTAR_HISTORIAL_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: idToken }),
+    });
+    var datos = await respuesta.json();
+    if (!respuesta.ok) {
+      wrap.innerHTML = '<div id="feHistEmptyH">No se pudo cargar: ' + (datos.error || 'error desconocido') + '</div>';
+      return;
+    }
+    historialHaciendaCache = datos.registros || [];
+    renderHistorialHacienda();
+  } catch (err) {
+    wrap.innerHTML = '<div id="feHistEmptyH">No se pudo cargar el historial: ' + err.message + '</div>';
+  }
+}
+
+function renderHistorialHacienda() {
+  var wrap = document.getElementById('feHistHaciendaList');
+  if (!historialHaciendaCache.length) {
+    wrap.innerHTML = '<div id="feHistEmptyH">Todavía no enviaste ninguna factura real a Hacienda desde esta cuenta.</div>';
+    return;
+  }
+  var html = '';
+  historialHaciendaCache.forEach(function (h, i) {
+    var fechaLegible = '';
+    try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { fechaLegible = h.fecha || ''; }
+    html += '<div class="feHistHItem">' +
+      '<div class="fhhTop">' +
+      '<div class="fhhInfo"><div class="fhhNum">' + (h.numeroConsecutivo || h.clave || '—') + '</div>' +
+      '<div class="fhhMeta">' + (h.receptorNombre || (h.esTiquete ? 'Tiquete (sin receptor)' : 'Sin receptor')) + ' · ₡' + (Number(h.total || 0).toLocaleString('es-CR')) + ' · ' + fechaLegible + '</div></div>' +
+      '<span class="fhhEstado ' + (h.estado || 'pendiente') + '">' + (h.estado === 'aceptado' ? 'Aceptada' : h.estado === 'rechazado' ? 'Rechazada' : 'Pendiente') + '</span>' +
+      '</div>' +
+      '<div class="fhhBtns">' +
+      '<button data-idx="' + i + '" data-accion="cargar">📄 Cargar</button>' +
+      (h.receptorEmail ? '<button data-idx="' + i + '" data-accion="correo" class="fhhBtnCorreo">✉️ Reenviar</button>' : '') +
+      '</div></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('button[data-idx]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var registro = historialHaciendaCache[parseInt(btn.dataset.idx)];
+      if (btn.dataset.accion === 'cargar') cargarRegistroHaciendaEnFormulario(registro);
+      else reenviarCorreoDesdeHistorial(registro);
+    });
+  });
+}
+
+// Carga un registro del historial de Hacienda en el formulario, igual
+// que un borrador — útil para ver el detalle o armar una factura
+// parecida. OJO: esto NO vuelve a enviarla a Hacienda por sí solo,
+// solo llena los campos; si el usuario toca "Firmar y Enviar" de nuevo
+// va a generar una factura NUEVA con su propia clave y consecutivo.
+function cargarRegistroHaciendaEnFormulario(registro) {
+  if (!registro) return;
+  document.getElementById('fe-receptor-nombre').value = registro.receptorNombre || '';
+  document.getElementById('fe-receptor-cedula').value = registro.receptorCedula || '';
+  document.getElementById('fe-receptor-email').value = registro.receptorEmail || '';
+  document.getElementById('fe-observaciones').value = 'Copia de referencia — clave original: ' + (registro.clave || '');
+  var tbody = document.getElementById('fe-lineas-body');
+  tbody.innerHTML = '';
+  (registro.lineas || []).forEach(function (l) {
+    agregarLineaFactura();
+    var tr = tbody.lastElementChild;
+    if (tr.querySelector('.feQty')) tr.querySelector('.feQty').value = l.cantidad || 1;
+    if (tr.querySelector('.feDesc')) tr.querySelector('.feDesc').value = l.detalle || '';
+    if (tr.querySelector('.feCabys')) tr.querySelector('.feCabys').value = l.codigoCabys || '';
+    if (tr.querySelector('.fePrice')) tr.querySelector('.fePrice').value = l.precioUnitario || 0;
+    var tarifaLinea = (l.impuesto && l.impuesto[0] && l.impuesto[0].tarifa) || 0;
+    if (tr.querySelector('.feIva')) tr.querySelector('.feIva').value = tarifaLinea;
+  });
+  if (!tbody.children.length) agregarLineaFactura();
+  recalcularFactura();
+  document.getElementById('feHistOverlay').classList.remove('show');
+  alert('Cargado como referencia. Clave original: ' + (registro.clave || '—') + '\\n\\nSi le das "Firmar y Enviar" ahora, se genera una factura NUEVA (clave y consecutivo distintos) — esto no reenvía la original.');
+}
+
+// Reenvía por correo el PDF + XML de una factura YA aceptada, usando
+// los datos guardados en el historial — sin volver a firmarla ni
+// mandarla de nuevo a Hacienda.
+function reenviarCorreoDesdeHistorial(registro) {
+  if (!registro) return;
+  var correo = prompt('¿A qué correo reenviamos esta factura?', registro.receptorEmail || '');
+  if (!correo) return;
+
+  // Llenamos los campos mínimos que necesita construirFacturaPdf() para
+  // regenerar el mismo PDF, sin tocar el resto del formulario actual.
+  var valoresPrevios = {
+    receptorEmail: document.getElementById('fe-receptor-email').value,
+    receptorNombre: document.getElementById('fe-receptor-nombre').value,
+    receptorCedula: document.getElementById('fe-receptor-cedula').value,
+    num: document.getElementById('fe-num') ? document.getElementById('fe-num').value : '',
+    fecha: document.getElementById('fe-fecha') ? document.getElementById('fe-fecha').value : '',
+  };
+  document.getElementById('fe-receptor-email').value = correo;
+  document.getElementById('fe-receptor-nombre').value = registro.receptorNombre || '';
+  document.getElementById('fe-receptor-cedula').value = registro.receptorCedula || '';
+  if (document.getElementById('fe-num')) document.getElementById('fe-num').value = registro.numeroConsecutivo || '';
+  if (document.getElementById('fe-fecha') && registro.fecha) {
+    try { document.getElementById('fe-fecha').value = registro.fecha.slice(0, 10); } catch (e) {}
+  }
+
+  var tbody = document.getElementById('fe-lineas-body');
+  var filasPrevias = tbody.innerHTML;
+  tbody.innerHTML = '';
+  (registro.lineas || []).forEach(function (l) {
+    agregarLineaFactura();
+    var tr = tbody.lastElementChild;
+    if (tr.querySelector('.feQty')) tr.querySelector('.feQty').value = l.cantidad || 1;
+    if (tr.querySelector('.feDesc')) tr.querySelector('.feDesc').value = l.detalle || '';
+    if (tr.querySelector('.fePrice')) tr.querySelector('.fePrice').value = l.precioUnitario || 0;
+  });
+
+  var statusEl = document.getElementById('saveStatus');
+  enviarCorreoFacturaAceptada({
+    clave: registro.clave,
+    numeroConsecutivo: registro.numeroConsecutivo,
+    xmlFirmadoBase64: registro.xmlFirmadoBase64,
+  }, statusEl);
+
+  // Restauramos el formulario a como estaba antes de armar el reenvío.
+  document.getElementById('fe-receptor-email').value = valoresPrevios.receptorEmail;
+  document.getElementById('fe-receptor-nombre').value = valoresPrevios.receptorNombre;
+  document.getElementById('fe-receptor-cedula').value = valoresPrevios.receptorCedula;
+  if (document.getElementById('fe-num')) document.getElementById('fe-num').value = valoresPrevios.num;
+  if (document.getElementById('fe-fecha')) document.getElementById('fe-fecha').value = valoresPrevios.fecha;
+  tbody.innerHTML = filasPrevias;
+}
 
 // ══════════════════════════════════════════════
 // BUSCAR Y REEMPLAZAR
@@ -4671,7 +4874,7 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
     var lt = ((row.querySelector('.feLineTotal') || {}).textContent || '0').replace(/[^\\d.]/g, '');
     lineas += '  <LineaDetalle><NumeroLinea>' + (i + 1) + '</NumeroLinea><Cantidad>' + qty + '</Cantidad><Descripcion>' + desc + '</Descripcion><PrecioUnitario>' + price + '</PrecioUnitario><MontoTotal>' + lt + '</MontoTotal></LineaDetalle>\\n';
   });
-  var xml = '<?xml version="1.0" encoding="UTF-8"?>\\n<FacturaElectronica xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica">\\n' +
+  var xml = '<?xml version="1.0" encoding="UTF-8"?>\\n<FacturaElectronica xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronica">\\n' +
     '  <NumeroConsecutivo>' + gv('fe-num') + '</NumeroConsecutivo>\\n' +
     '  <FechaEmision>' + fecha + 'T09:00:00-06:00</FechaEmision>\\n' +
     '  <Emisor><Nombre>' + gv('fe-emisor-nombre') + '</Nombre><Identificacion><Numero>' + gv('fe-emisor-cedula') + '</Numero></Identificacion></Emisor>\\n' +
@@ -4690,6 +4893,8 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
 var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
 var CONSULTAR_ESTADO_URL = 'https://matriz-contable-app.vercel.app/api/consultar-estado';
 var ENVIAR_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-correo-factura';
+var LISTAR_HISTORIAL_URL = 'https://matriz-certificados.kacn1z.workers.dev/listar-historial';
+var BUSCAR_CABYS_URL = 'https://matriz-certificados.kacn1z.workers.dev/buscar-cabys';
 
 // En este WebView, las peticiones de red salientes (fetch y XMLHttpRequest
 // por igual) a veces quedan colgadas sin error ni éxito. Como respaldo
@@ -4738,12 +4943,77 @@ function fetchViaXHR(url, opciones) {
     }));
   });
 }
+
+// ── Autocompletar CABYS: buscá por nombre del producto/servicio en vez ──
+// de tener que memorizar el código de 13 dígitos. El campo sirve para
+// las dos cosas: si escribís texto, busca; si pegás un código de 13
+// dígitos, lo deja tal cual (no dispara búsqueda al enfocarlo de nuevo).
+var cabysUltimaBusqueda = '';
+
+async function buscarYMostrarCabys(inputEl, termino) {
+  termino = (termino || '').trim();
+  if (termino.length < 2 || !isNaN(Number(termino))) {
+    document.getElementById('cabysDropdown').classList.remove('show');
+    return;
+  }
+  cabysUltimaBusqueda = termino;
+  try {
+    var respuesta = await fetchViaXHR(BUSCAR_CABYS_URL + '?q=' + encodeURIComponent(termino), { method: 'GET' });
+    var datos = await respuesta.json();
+    // Si el usuario ya siguió escribiendo, esta respuesta quedó vieja — se descarta.
+    if (termino !== cabysUltimaBusqueda) return;
+    renderizarDropdownCabys(inputEl, datos.resultados || [], datos.error);
+  } catch (err) {
+    renderizarDropdownCabys(inputEl, [], 'No se pudo buscar: ' + err.message);
+  }
+}
+
+function renderizarDropdownCabys(inputEl, resultados, mensajeError) {
+  var dropdown = document.getElementById('cabysDropdown');
+  if (mensajeError) {
+    dropdown.innerHTML = '<div class="cabysVacio">' + mensajeError + '</div>';
+  } else if (!resultados.length) {
+    dropdown.innerHTML = '<div class="cabysVacio">Sin resultados. Probá con otra palabra o pegá el código de 13 dígitos directo.</div>';
+  } else {
+    dropdown.innerHTML = resultados.map(function (item) {
+      return '<div class="cabysItem" data-codigo="' + (item.codigo || '') + '" data-desc="' + (item.descripcion || '').replace(/"/g, '&quot;') + '">' +
+        '<span class="cabysCodigo">' + (item.codigo || '') + '</span>' +
+        '<span class="cabysDesc">' + (item.descripcion || '') + '</span></div>';
+    }).join('');
+  }
+
+  // Posicionar el dropdown justo debajo del campo activo.
+  var rect = inputEl.getBoundingClientRect();
+  dropdown.style.top = (rect.bottom + 4) + 'px';
+  var left = rect.left;
+  if (left + 260 > window.innerWidth) left = window.innerWidth - 264;
+  dropdown.style.left = Math.max(4, left) + 'px';
+  dropdown.classList.add('show');
+
+  dropdown.querySelectorAll('.cabysItem').forEach(function (el) {
+    el.addEventListener('mousedown', function (ev) {
+      // mousedown (no click) para que dispare ANTES del blur del input.
+      ev.preventDefault();
+      inputEl.value = el.dataset.codigo;
+      var fila = inputEl.closest('tr');
+      if (fila) {
+        var campoDesc = fila.querySelector('.feDesc');
+        // Solo pisa la descripción si el usuario no había escrito ya la suya.
+        if (campoDesc && (!campoDesc.value || campoDesc.value === 'Servicio')) {
+          campoDesc.value = el.dataset.desc;
+        }
+      }
+      dropdown.classList.remove('show');
+      recalcularFactura();
+    });
+  });
+}
 // La secuencia de cada factura/tiquete ya NO se calcula aquí en el celular
 // (antes vivía en localStorage, lo cual mezclaba la numeración entre
 // clientes que usaran el mismo dispositivo). Ahora firmar-factura.js se la
 // pide al Worker de Cloudflare, que la guarda en KV por uid — cada cliente
 // tiene su propio contador, sin importar desde qué celular factura.
-document.getElementById('feBtnHacienda').addEventListener('click', function () {
+document.getElementById('feBtnHacienda').addEventListener('click', async function () {
  try {
   function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
   if (!currentUser) { alert('Iniciá sesión primero — se necesita tu cuenta para buscar tu certificado y credenciales de Hacienda.'); return; }
@@ -4783,11 +5053,13 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
   var statusEl = document.getElementById('saveStatus');
   statusEl.textContent = 'Firmando y enviando a Hacienda...';
 
+  var idTokenFactura = await currentUser.getIdToken();
+
   fetchViaXHR(FIRMAR_FACTURA_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      uid: currentUser.uid,
+      idToken: idTokenFactura,
       emisorNombre: gv('fe-emisor-nombre'),
       emisorCorreo: gv('fe-emisor-email'),
       receptor: {
@@ -4838,7 +5110,7 @@ document.getElementById('feBtnHacienda').addEventListener('click', function () {
 // (50 dígitos). Útil sobre todo cuando "Firmar y Enviar (real)" devolvió
 // "pendiente" porque Hacienda no confirmó a tiempo, o para revisar
 // facturas viejas.
-document.getElementById('feBtnConsultar').addEventListener('click', function () {
+document.getElementById('feBtnConsultar').addEventListener('click', async function () {
   if (!currentUser) { alert('Iniciá sesión primero.'); return; }
 
   var ultimaClave = '';
@@ -4855,10 +5127,12 @@ document.getElementById('feBtnConsultar').addEventListener('click', function () 
   var statusEl = document.getElementById('saveStatus');
   statusEl.textContent = 'Consultando estado en Hacienda...';
 
+  var idTokenConsulta = await currentUser.getIdToken();
+
   fetchViaXHR(CONSULTAR_ESTADO_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ uid: currentUser.uid, clave: clave }),
+    body: JSON.stringify({ idToken: idTokenConsulta, clave: clave }),
   })
     .then(function (r) { return r.json().then(function (datos) { return { ok: r.ok, datos: datos }; }); })
     .then(function (resultado) {
@@ -4977,7 +5251,7 @@ function construirFacturaPdf() {
   doc.setFontSize(18); doc.setFont('helvetica', 'bold');
   doc.text('FACTURA ELECTRÓNICA', 14, 14);
   doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-  doc.text('Costa Rica · Versión 4.3', 14, 21);
+  doc.text('Costa Rica · Versión 4.4', 14, 21);
   doc.text('N° ' + num, 196, 10, { align: 'right' });
   doc.text('Fecha: ' + fecha, 196, 17, { align: 'right' });
 
@@ -5187,8 +5461,8 @@ document.getElementById('langSelector').addEventListener('change', function () {
 // SIBÖ ✦ — Asistente contable (modo local, sin conexión externa)
 // ══════════════════════════════════════════════
 var SIBO_KB = [
-  { k: ['iva', 'impuesto al valor'], r: 'El <b>IVA</b> en Costa Rica tiene tasa general de <b>13%</b>. Tasas reducidas: <b>4%</b> (boletos aéreos, servicios de salud privados), <b>2%</b> (medicamentos, seguros privados de salud, servicios educativos privados, primas de seguro), <b>1%</b> (canasta básica, insumos agropecuarios, equipo/material médico). Se declara mensualmente en el D-104 vía ATV de Hacienda. En la hoja podés usar la fórmula <b>=IVA(monto)</b> o <b>=IVA(monto;tasa)</b>.' },
-  { k: ['factura electronica', 'factura electrónica', 'comprobante electronico'], r: 'La <b>Factura Electrónica</b> es obligatoria en Costa Rica desde 2018. La versión vigente es la <b>4.3</b>. Se estructura en XML, se firma digitalmente y se envía al sistema ATV de Hacienda; el receptor puede aceptar/rechazar el comprobante. En esta app tenés el botón <b>🧾 Factura</b> para generar el PDF/XML, y el botón <b>✅ Firmar y Enviar (real)</b> para firmarla de verdad con tu certificado y enviarla a Hacienda, con historial de facturas.' },
+  { k: ['iva', 'impuesto al valor'], r: 'El <b>IVA</b> en Costa Rica tiene tasa general de <b>13%</b>. Tasas reducidas: <b>4%</b> (boletos aéreos, servicios de salud privados), <b>2%</b> (medicamentos, seguros privados de salud, servicios educativos privados, primas de seguro), <b>1%</b> (canasta básica, insumos agropecuarios, equipo/material médico). Se declara mensualmente en el D-104 vía TRIBU-CR de Hacienda (el portal que reemplazó a ATV desde octubre de 2025). En la hoja podés usar la fórmula <b>=IVA(monto)</b> o <b>=IVA(monto;tasa)</b>.' },
+  { k: ['factura electronica', 'factura electrónica', 'comprobante electronico'], r: 'La <b>Factura Electrónica</b> es obligatoria en Costa Rica desde 2018. La versión vigente es la <b>4.4</b> (obligatoria desde septiembre de 2025). Se estructura en XML, se firma digitalmente y se envía al sistema TRIBU-CR de Hacienda; el receptor puede aceptar/rechazar el comprobante. En esta app tenés el botón <b>🧾 Factura</b> para generar el PDF/XML, y el botón <b>✅ Firmar y Enviar (real)</b> para firmarla de verdad con tu certificado y enviarla a Hacienda, con historial de facturas.' },
   { k: ['libro diario', 'asiento contable', 'partida doble'], r: 'El <b>Libro Diario</b> registra cronológicamente cada transacción bajo el principio de <b>partida doble</b>: Débitos = Créditos, siempre. Es obligatorio según el Código de Comercio de Costa Rica. Usá la plantilla "📘 Libro Diario" del selector de plantillas para empezar con la estructura correcta.' },
   { k: ['libro mayor'], r: 'El <b>Libro Mayor</b> agrupa los movimientos del Libro Diario por cuenta contable, mostrando el saldo acumulado de cada una. En esta app tenés el botón <b>📗 Mayor Auto</b>, que lee tu hoja activa (columnas Fecha/Cuenta/Debe/Haber) y genera el mayor automáticamente en una hoja nueva.' },
   { k: ['balance de comprobacion', 'balance de comprobación'], r: 'El <b>Balance de Comprobación</b> lista todas las cuentas con sus totales de débito y crédito, para verificar que la contabilidad esté cuadrada (Total Debe = Total Haber). Usá el botón <b>📊 Balance Auto</b> — genera el balance desde tu hoja activa y te dice si está "✓ Cuadrado" o cuál es la diferencia.' },
