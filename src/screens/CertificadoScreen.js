@@ -46,7 +46,12 @@ export default function CertificadoScreen({ navigation }) {
     if (!uid) return
     setRevisando(true)
     try {
-      const respuesta = await fetch(`${WORKER_URL}/tiene-certificado?uid=${uid}`)
+      const idToken = await auth.currentUser.getIdToken()
+      const respuesta = await fetch(`${WORKER_URL}/tiene-certificado`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
       const datos = await respuesta.json()
       setTieneCertificado(!!datos.tieneCertificado)
     } catch (error) {
@@ -125,11 +130,12 @@ export default function CertificadoScreen({ navigation }) {
 
     setSubiendo(true)
     try {
+      const idToken = await auth.currentUser.getIdToken()
       const respuesta = await fetch(`${WORKER_URL}/guardar-certificado`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          uid,
+          idToken,
           certificadoBase64: certificadoBase64Final,
           contrasena,
           cedulaEmisor,
@@ -177,10 +183,11 @@ export default function CertificadoScreen({ navigation }) {
           style: 'destructive',
           onPress: async () => {
             try {
+              const idToken = await auth.currentUser.getIdToken()
               await fetch(`${WORKER_URL}/eliminar-certificado`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ uid }),
+                body: JSON.stringify({ idToken }),
               })
               setTieneCertificado(false)
             } catch (error) {
@@ -198,7 +205,7 @@ export default function CertificadoScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.navigate('Home')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <Text style={styles.backBtn}>← {t('menu.inicio')}</Text>
         </TouchableOpacity>
-        <Text style={styles.toolbarTitle}>🧾 Factura Electrónica 4.3</Text>
+        <Text style={styles.toolbarTitle}>🧾 Factura Electrónica 4.4</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.contenido}>
