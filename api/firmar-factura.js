@@ -256,6 +256,30 @@ async function enviarYEsperarDirecto(opciones) {
 // REAL de la sesión (o null si es inválido/expiró). Nunca se confía en
 // un uid que venga suelto en el body: sin esto, cualquiera podría
 // mandar el uid de otro cliente y firmar/consultar con SU certificado.
+// ─── Verifica un límite de peticiones contra el Worker (que es quien ──
+// realmente lleva la cuenta en KV). Si el Worker no responde por algún
+// motivo, se deja pasar la petición — un rate limit caído no debería
+// tumbar el servicio entero, solo es una capa extra de protección.
+async function verificarLimiteRemoto(clave, limite, ventanaSegundos) {
+  try {
+    const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/verificar-limite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secreto: process.env.FIRMA_SERVICE_SECRET,
+        clave: clave,
+        limite: limite,
+        ventanaSegundos: ventanaSegundos,
+      }),
+    })
+    if (!respuesta.ok) return true
+    const datos = await respuesta.json()
+    return datos.permitido !== false
+  } catch {
+    return true
+  }
+}
+
 async function verificarIdToken(idToken) {
   if (!idToken || !process.env.FIREBASE_API_KEY) return null
   try {
@@ -333,6 +357,13 @@ export default async function handler(req, res) {
     const uid = await verificarIdToken(idToken)
     if (!uid) {
       res.status(401).json({ error: 'Sesión inválida o expirada. Volvé a iniciar sesión e intentá de nuevo.' })
+      return
+    }
+    // Máximo 20 facturas reales por hora por cliente — frena un
+    // disparo accidental en bucle o un abuso deliberado, sin molestar
+    // a nadie facturando a un ritmo normal.
+    if (!(await verificarLimiteRemoto('firmar:' + uid, 20, 3600))) {
+      res.status(429).json({ error: 'Alcanzaste el límite de facturas por hora. Esperá un rato y probá de nuevo.' })
       return
     }
     if (!Array.isArray(lineas) || !lineas.length) {
