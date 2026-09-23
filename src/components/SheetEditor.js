@@ -21,7 +21,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; margin: 0; font-family: -apple-system, Roboto, Arial, sans-serif; background: #e6f0e6; overflow: hidden; }
+  html, body { height: 100%; margin: 0; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; background: #f3f2f1; overflow: hidden; }
   body.dark-mode { filter: invert(1) hue-rotate(180deg); background: #1a1a1a; }
   body.dark-mode img, body.dark-mode canvas, body.dark-mode .chart-float, body.dark-mode .emoji { filter: invert(1) hue-rotate(180deg); }
   #btnDarkMode { min-width: 34px; }
@@ -44,47 +44,50 @@ const SHEET_HTML = `<!DOCTYPE html>
 
   #toolbar {
     display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
-    padding: 8px 8px; background: #2d7a0c; overflow-x: auto; flex-shrink: 0;
+    padding: 8px 8px; background: #217346; overflow-x: auto; flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
   }
   #toolbar button {
-    background: #245f09; color: #fff; border: none; border-radius: 6px;
-    padding: 7px 10px; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
+    padding: 7px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
   }
+  #toolbar button:active { background: #14472b; }
   #toolbar button:disabled { opacity: .4; }
   #toolbar select {
-    background: #245f09; color: #fff; border: none; border-radius: 6px;
-    padding: 7px 6px; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
+    padding: 7px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0;
   }
 
   #formulaBarRow {
     display: flex; align-items: center; gap: 8px; padding: 6px 10px;
-    background: #fff; border-bottom: 1.5px solid #cce9ae; flex-shrink: 0;
+    background: #fff; border-bottom: 1px solid #d4d4d4; flex-shrink: 0;
   }
-  #cellRef { font-size: 12px; font-weight: 800; color: #2d7a0c; min-width: 34px; }
-  #formulaInput { flex: 1; padding: 6px 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; }
-  #saveStatus { font-size: 10px; color: #6b8f48; min-width: 60px; text-align: right; white-space: nowrap; }
+  #cellRef { font-size: 12px; font-weight: 700; color: #217346; min-width: 34px; }
+  #formulaInput { flex: 1; padding: 6px 8px; border: 1px solid #d4d4d4; border-radius: 4px; font-size: 13px; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
+  #formulaInput:focus { border-color: #217346; }
+  #saveStatus { font-size: 10px; color: #767676; min-width: 60px; text-align: right; white-space: nowrap; }
 
-  #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; user-select: none; }
+  #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; user-select: none; background: #fff; }
   table { border-collapse: collapse; }
-  th, td { border: 1px solid #d7ead0; font-size: 12px; padding: 0; text-align: center; }
-  th { background: #d8f5b0; color: #245f09; font-weight: 700; padding: 6px 4px; position: sticky; top: 0; z-index: 3; min-width: 78px; position: relative; }
-  th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: #b7e07a; min-width: 34px; }
+  th, td { border: 1px solid #e1e1e1; font-size: 12px; padding: 0; text-align: center; }
+  th { background: #f3f2f1; color: #333333; font-weight: 600; padding: 6px 4px; position: sticky; top: 0; z-index: 3; min-width: 78px; position: relative; border-bottom: 1.5px solid #c8c8c8; }
+  th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: #e8e8e8; min-width: 34px; }
   th .colResizer { position: absolute; right: 0; top: 0; width: 8px; height: 100%; cursor: col-resize; touch-action: none; }
-  th .colResizer::after { content: ''; position: absolute; right: 3px; top: 20%; width: 2px; height: 60%; background: #245f09; opacity: .4; }
-  td.rowhead { background: #d8f5b0; color: #245f09; font-weight: 700; width: 34px; position: sticky; left: 0; z-index: 2; }
-  .cell { min-width: 78px; height: 26px; line-height: 26px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; }
-  .cell.selected { background: #fffbcc; outline: 2px solid #5abf2a; outline-offset: -2px; }
-  .cell.in-range { background: #eaf7d8; }
-  .cell.bold { font-weight: 800; color: #1e5208; }
+  th .colResizer::after { content: ''; position: absolute; right: 3px; top: 20%; width: 2px; height: 60%; background: #999; opacity: .5; }
+  td.rowhead { background: #f3f2f1; color: #333333; font-weight: 600; width: 34px; position: sticky; left: 0; z-index: 2; border-right: 1.5px solid #c8c8c8; }
+  .cell { min-width: 78px; height: 26px; line-height: 26px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
+  .cell.selected { background: #fff; outline: 2px solid #217346; outline-offset: -2px; z-index: 1; box-shadow: 0 1px 4px rgba(33,115,70,.25); }
+  .cell.in-range { background: #e6f2ea; }
+  .cell.bold { font-weight: 800; color: #1a5c38; }
   .cell.has-note::after { content: '●'; color: #d97706; font-size: 8px; position: absolute; top: 1px; right: 2px; }
   .cell.has-attachment::before { content: '📎'; font-size: 8px; position: absolute; top: 1px; left: 2px; }
   .cell.italic { font-style: italic; }
-  .cell.bordered { outline: 1.5px solid #245f09 !important; outline-offset: -1.5px; }
+  .cell.bordered { outline: 1.5px solid #217346 !important; outline-offset: -1.5px; }
   .frozen-col { position: sticky; z-index: 2; background: #fff; }
-  th.frozen-col { z-index: 5; background: #d8f5b0; }
+  th.frozen-col { z-index: 5; background: #f3f2f1; }
   .frozen-row-td { position: sticky; z-index: 2; background: #fff; }
   .frozen-col.frozen-row-td { z-index: 4; }
-  td.rowhead.frozen-row-head { position: sticky; z-index: 3; background: #d8f5b0; }
+  td.rowhead.frozen-row-head { position: sticky; z-index: 3; background: #f3f2f1; }
   #sheetTable { transform-origin: top left; }
   #zoomRange { width: 70px; }
   #fnAutocomplete { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
@@ -98,27 +101,28 @@ const SHEET_HTML = `<!DOCTYPE html>
 
   #statusBar {
     display: flex; gap: 14px; align-items: center; padding: 5px 10px;
-    background: #d8f5b0; font-size: 11px; color: #245f09; font-weight: 700; flex-shrink: 0; flex-wrap: wrap;
+    background: #f3f2f1; font-size: 11px; color: #333; font-weight: 600; flex-shrink: 0; flex-wrap: wrap;
+    border-top: 1px solid #e1e1e1;
   }
-  #statusBar input { width: 90px; padding: 3px 6px; border: 1px solid #b7e07a; border-radius: 5px; font-size: 11px; }
+  #statusBar input { width: 90px; padding: 3px 6px; border: 1px solid #c8c8c8; border-radius: 4px; font-size: 11px; }
 
   #rangeActionsBar {
-    display: none; align-items: center; gap: 6px; padding: 6px 8px; background: #eaf7d8;
-    border-bottom: 1.5px solid #cce9ae; flex-shrink: 0; overflow-x: auto; white-space: nowrap;
+    display: none; align-items: center; gap: 6px; padding: 6px 8px; background: #e6f2ea;
+    border-bottom: 1px solid #d4d4d4; flex-shrink: 0; overflow-x: auto; white-space: nowrap;
   }
   #rangeActionsBar.show { display: flex; }
-  #rangeActionsBar span { font-size: 11px; font-weight: 800; color: #245f09; flex-shrink: 0; }
+  #rangeActionsBar span { font-size: 11px; font-weight: 700; color: #1a5c38; flex-shrink: 0; }
   #rangeActionsBar button {
-    background: #2d7a0c; color: #fff; border: none; border-radius: 6px;
-    padding: 6px 9px; font-size: 11px; font-weight: 700; flex-shrink: 0;
+    background: #217346; color: #fff; border: none; border-radius: 5px;
+    padding: 6px 9px; font-size: 11px; font-weight: 600; flex-shrink: 0;
   }
-  #rangeActionsBar button.danger { background: #dc2626; }
+  #rangeActionsBar button.danger { background: #d13438; }
 
-  #tabsRow { display: flex; align-items: center; background: #cce9ae; padding: 4px 6px; gap: 4px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; }
-  .tab { padding: 6px 12px; border-radius: 6px 6px 0 0; font-size: 12px; font-weight: 700; color: #3d6020; background: #b7e07a; white-space: nowrap; position: relative; }
-  .tabMenuBtn { margin-left: 6px; padding: 0 4px; opacity: .6; }
-  .tab.active { background: #fff; color: #2d7a0c; }
-  #addTabBtn { padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: 800; background: #245f09; color: #fff; flex-shrink: 0; }
+  #tabsRow { display: flex; align-items: center; background: #ebebeb; padding: 4px 6px 0; gap: 2px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; border-top: 1px solid #d4d4d4; }
+  .tab { padding: 7px 14px; border-radius: 4px 4px 0 0; font-size: 12px; font-weight: 600; color: #555; background: #e1e1e1; white-space: nowrap; position: relative; }
+  .tabMenuBtn { margin-left: 6px; opacity: .6; }
+  .tab.active { background: #fff; color: #217346; box-shadow: 0 -1.5px 0 #217346 inset; }
+  #addTabBtn { padding: 6px 10px; border-radius: 4px; font-size: 14px; font-weight: 700; background: #217346; color: #fff; flex-shrink: 0; }
 
   #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9000;
@@ -267,6 +271,25 @@ const SHEET_HTML = `<!DOCTYPE html>
   #backupOverlay.show { display: flex; }
   #reciboOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #reciboOverlay.show { display: flex; }
+  #reportesOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #reportesOverlay.show { display: flex; }
+  #plantillasOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #plantillasOverlay.show { display: flex; }
+  #plantillasModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
+  #plantillasList { overflow-y: auto; padding: 6px 10px; }
+  .plItem { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 4px; border-bottom: 1px solid #eee; }
+  .plItem .plInfo { flex: 1; min-width: 0; }
+  .plItem .plDesc { font-weight: 700; font-size: 12.5px; color: #2d3b1f; }
+  .plItem .plMeta { font-size: 10.5px; color: #888; }
+  .plItem button.plUsar { background: #2d7a0c; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .plItem button.plBorrar { background: none; border: none; color: #b02a2a; font-size: 16px; flex-shrink: 0; }
+  #reportesModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden; }
+  #reportesList { overflow-y: auto; padding: 10px 12px; }
+  .repMes { border: 1px solid #dbeecb; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .repMesTitulo { font-weight: 800; color: #1e5208; font-size: 13px; margin-bottom: 6px; text-transform: capitalize; }
+  .repMesFila { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; color: #333; }
+  .repMesFila.repNeto { font-weight: 800; border-top: 1px solid #eee; margin-top: 4px; padding-top: 5px; color: #1e5208; }
+  .repMesFila .repNegativo { color: #b02a2a; }
   #feHistModal, #matricesModal, #auditModal, #backupModal, #reciboModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
   #feHistHead, #matricesHead, #auditHead, #backupHead, #reciboHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
   #feHistHead h3, #matricesHead h3, #auditHead h3, #backupHead h3, #reciboHead h3 { color: #fff; margin: 0; font-size: 13px; }
@@ -287,6 +310,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   .feHistHItem .fhhBtns { display: flex; gap: 6px; margin-top: 6px; }
   .feHistHItem .fhhBtns button { flex: 1; background: #2d7a0c; color: #fff; border: none; border-radius: 6px; padding: 6px 4px; font-size: 10.5px; font-weight: 700; }
   .feHistHItem .fhhBtns button.fhhBtnCorreo { background: #1e5c99; }
+  .feHistHItem .fhhBtns button.fhhBtnAnular { background: #b02a2a; }
   #feHistEmptyH { padding: 20px 10px; text-align: center; color: #888; font-size: 12px; }
   #buscarGlobalOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #buscarGlobalOverlay.show { display: flex; }
@@ -783,6 +807,7 @@ const SHEET_HTML = `<!DOCTYPE html>
         <button id="fe-buscar-cliente-btn" type="button" style="margin-bottom:8px;padding:7px 10px;border-radius:8px;background:#eef8e4;border:1px solid #cce9ae;color:#2d7a0c;font-size:12px;">👥 Elegir cliente guardado</button>
         <div class="feField"><label>Nombre</label><input id="fe-receptor-nombre" placeholder="Cliente S.A." /></div>
         <div class="feField"><label>Cédula</label><input id="fe-receptor-cedula" placeholder="1-000-000000" /></div>
+        <div id="fe-cedula-estado" style="font-size:11px;margin:-6px 0 10px;"></div>
         <div class="feRow2">
           <div class="feField"><label>Teléfono</label><input id="fe-receptor-telefono" placeholder="8000-0000" /></div>
           <div class="feField"><label>Email</label><input id="fe-receptor-email" placeholder="cliente@correo.cr" /></div>
@@ -808,6 +833,8 @@ const SHEET_HTML = `<!DOCTYPE html>
     </div>
     <div id="feFooter">
       <button id="feBtnHistorial">🕐 Historial</button>
+      <button id="feBtnReportes" style="background:#5b3e96;">📊 Reportes</button>
+      <button id="feBtnPlantillas" style="background:#c8960c;">📋 Plantillas</button>
       <button id="feBtnClear">Limpiar</button>
       <button id="feBtnXml">⬇ XML</button>
       <button id="feBtnPdf">⬇ PDF</button>
@@ -819,6 +846,29 @@ const SHEET_HTML = `<!DOCTYPE html>
 </div>
 
 <div id="cabysDropdown"></div>
+
+<div id="plantillasOverlay">
+  <div id="plantillasModal">
+    <div id="feHistHead">
+      <h3>📋 Plantillas de línea</h3>
+      <button id="plantillasClose">✕</button>
+    </div>
+    <div id="plantillasList"></div>
+  </div>
+</div>
+
+<div id="reportesOverlay">
+  <div id="reportesModal">
+    <div id="feHistHead">
+      <h3>📊 Reportes</h3>
+      <button id="reportesClose">✕</button>
+    </div>
+    <div style="padding:10px 12px 0;flex-shrink:0;">
+      <button id="reportesBtnExportar" style="width:100%;background:#5b3e96;color:#fff;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;">💾 Exportar todo (CSV para el contador)</button>
+    </div>
+    <div id="reportesList"></div>
+  </div>
+</div>
 
 <div id="feHistOverlay">
   <div id="feHistModal">
@@ -4485,9 +4535,12 @@ function agregarLineaFactura() {
     '</select></td>' +
     '<td><input type="number" value="0" min="0" step="0.01" class="fePrice"></td>' +
     '<td class="feLineTotal" style="font-weight:700;white-space:nowrap;">' + fmtCRC(0) + '</td>' +
-    '<td><button class="feDelLinea" style="background:none;border:none;color:#dc2626;font-size:15px;">×</button></td>';
+    '<td><button class="feGuardarPlantilla" title="Guardar como plantilla" style="background:none;border:none;color:#c8960c;font-size:13px;">⭐</button><button class="feDelLinea" style="background:none;border:none;color:#dc2626;font-size:15px;">×</button></td>';
   tbody.appendChild(tr);
   tr.querySelectorAll('.feQty, .fePrice').forEach(function (inp) { inp.addEventListener('input', recalcularFactura); });
+  tr.querySelector('.feGuardarPlantilla').addEventListener('click', function () {
+    guardarLineaComoPlantilla(tr);
+  });
   var inputCabys = tr.querySelector('.feCabys');
   var timerBusquedaCabys = null;
   inputCabys.addEventListener('input', function () {
@@ -4602,6 +4655,268 @@ document.getElementById('feHistClose').addEventListener('click', function () {
   document.getElementById('feHistOverlay').classList.remove('show');
 });
 
+// ── Reportes: total facturado por mes, calculado con lo que ya trae ──
+// el historial de Hacienda (sin pedirle nada nuevo al servidor). Cuenta
+// aparte facturas/tiquetes aceptados vs. notas de crédito, y muestra el
+// neto (lo que realmente quedó facturado después de anulaciones).
+document.getElementById('feBtnReportes').addEventListener('click', async function () {
+  document.getElementById('reportesOverlay').classList.add('show');
+  var lista = document.getElementById('reportesList');
+  lista.innerHTML = '<div id="feHistEmptyH">Cargando...</div>';
+  if (!historialHaciendaCache.length) {
+    await cargarHistorialHacienda();
+  }
+  renderizarReportes();
+});
+document.getElementById('reportesClose').addEventListener('click', function () {
+  document.getElementById('reportesOverlay').classList.remove('show');
+});
+
+// ── Plantillas de línea de factura: guardá los productos/servicios ──
+// que vendés siempre, para no volver a escribir CABYS/precio cada vez.
+// Vive en el servidor (por uid), no en el dispositivo — se pierde solo
+// si el usuario las borra a mano.
+var plantillasCache = null; // null = todavía no se cargaron esta sesión
+
+async function obtenerPlantillas(forzarRecarga) {
+  if (plantillasCache && !forzarRecarga) return plantillasCache;
+  if (!currentUser) return [];
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(OBTENER_PLANTILLAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: idToken }),
+    });
+    var datos = await respuesta.json();
+    plantillasCache = respuesta.ok ? (datos.plantillas || []) : [];
+  } catch (e) {
+    plantillasCache = plantillasCache || [];
+  }
+  return plantillasCache;
+}
+
+async function guardarPlantillasEnServidor(lista) {
+  if (!currentUser) return;
+  try {
+    var idToken = await currentUser.getIdToken();
+    await fetchViaXHR(GUARDAR_PLANTILLAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: idToken, plantillas: lista }),
+    });
+  } catch (e) {
+    // Si falla el guardado remoto, la lista igual queda actualizada en
+    // memoria para esta sesión — no es grave, se reintenta la próxima vez.
+  }
+}
+
+// Guarda la línea de factura donde está el botón ⭐ como una plantilla
+// nueva (o actualiza una existente con el mismo CABYS+descripción).
+async function guardarLineaComoPlantilla(tr) {
+  var descripcion = (tr.querySelector('.feDesc') || {}).value || '';
+  var cabys = (tr.querySelector('.feCabys') || {}).value || '';
+  var precio = Number((tr.querySelector('.fePrice') || {}).value) || 0;
+  var tarifa = Number((tr.querySelector('.feIva') || {}).value);
+  if (!descripcion.trim()) { alert('Escribí una descripción antes de guardar la plantilla.'); return; }
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+
+  var lista = await obtenerPlantillas();
+  var existente = lista.findIndex(function (p) { return p.detalle === descripcion && p.codigoCabys === cabys; });
+  var plantilla = { detalle: descripcion, codigoCabys: cabys, precioUnitario: precio, tarifa: tarifa };
+  if (existente >= 0) lista[existente] = plantilla;
+  else lista.unshift(plantilla);
+  plantillasCache = lista.slice(0, 60);
+
+  await guardarPlantillasEnServidor(plantillasCache);
+  document.getElementById('saveStatus').textContent = '⭐ Plantilla guardada';
+}
+
+document.getElementById('feBtnPlantillas').addEventListener('click', async function () {
+  document.getElementById('plantillasOverlay').classList.add('show');
+  var lista = document.getElementById('plantillasList');
+  lista.innerHTML = '<div id="feHistEmptyH">Cargando...</div>';
+  await obtenerPlantillas(true);
+  renderizarPlantillas();
+});
+document.getElementById('plantillasClose').addEventListener('click', function () {
+  document.getElementById('plantillasOverlay').classList.remove('show');
+});
+
+function renderizarPlantillas() {
+  var lista = document.getElementById('plantillasList');
+  var plantillas = plantillasCache || [];
+  if (!plantillas.length) {
+    lista.innerHTML = '<div id="feHistEmptyH">Todavía no guardaste ninguna plantilla. Armá una línea de factura y tocá la ⭐ para guardarla.</div>';
+    return;
+  }
+  lista.innerHTML = plantillas.map(function (p, i) {
+    return '<div class="plItem">' +
+      '<div class="plInfo"><div class="plDesc">' + p.detalle + '</div>' +
+      '<div class="plMeta">₡' + Number(p.precioUnitario || 0).toLocaleString('es-CR') + ' · IVA ' + p.tarifa + '% · CABYS ' + (p.codigoCabys || '—') + '</div></div>' +
+      '<button class="plUsar" data-idx="' + i + '">Usar</button>' +
+      '<button class="plBorrar" data-idx="' + i + '" title="Borrar plantilla">🗑️</button>' +
+      '</div>';
+  }).join('');
+  lista.querySelectorAll('.plUsar').forEach(function (btn) {
+    btn.addEventListener('click', function () { usarPlantilla(plantillas[parseInt(btn.dataset.idx)]); });
+  });
+  lista.querySelectorAll('.plBorrar').forEach(function (btn) {
+    btn.addEventListener('click', async function () {
+      var idx = parseInt(btn.dataset.idx);
+      plantillasCache.splice(idx, 1);
+      await guardarPlantillasEnServidor(plantillasCache);
+      renderizarPlantillas();
+    });
+  });
+}
+
+function usarPlantilla(plantilla) {
+  agregarLineaFactura();
+  var tbody = document.getElementById('fe-lineas-body');
+  var tr = tbody.lastElementChild;
+  if (tr.querySelector('.feDesc')) tr.querySelector('.feDesc').value = plantilla.detalle || '';
+  if (tr.querySelector('.feCabys')) tr.querySelector('.feCabys').value = plantilla.codigoCabys || '';
+  if (tr.querySelector('.fePrice')) tr.querySelector('.fePrice').value = plantilla.precioUnitario || 0;
+  if (tr.querySelector('.feIva')) tr.querySelector('.feIva').value = plantilla.tarifa || 13;
+  recalcularFactura();
+  document.getElementById('plantillasOverlay').classList.remove('show');
+}
+
+// ── Exportar todo el historial en un CSV, para pasarle al contador o ──
+// como respaldo. No incluye el XML completo (sería un CSV enorme e
+// incómodo de abrir en Excel) — trae los datos clave de cada
+// comprobante. Si algún día hace falta el XML de una factura puntual,
+// ya existe el botón "Reenviar" en el historial para eso.
+document.getElementById('reportesBtnExportar').addEventListener('click', async function () {
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+  if (!historialHaciendaCache.length) {
+    await cargarHistorialHacienda();
+  }
+  if (!historialHaciendaCache.length) {
+    alert('No hay facturas en el historial para exportar.');
+    return;
+  }
+
+  function celdaCsv(valor) {
+    return '"' + String(valor === null || valor === undefined ? '' : valor).replace(/"/g, '""') + '"';
+  }
+
+  var encabezados = ['Fecha', 'Tipo', 'Consecutivo', 'Clave', 'Ambiente', 'Estado', 'Receptor', 'Cédula receptor', 'Total', 'Motivo rechazo', 'Nota de crédito de'];
+  var filas = [encabezados.map(celdaCsv).join(',')];
+
+  // Más reciente primero, igual que en el historial de la app.
+  var ordenado = historialHaciendaCache.slice().sort(function (a, b) { return new Date(b.fecha || 0) - new Date(a.fecha || 0); });
+
+  ordenado.forEach(function (h) {
+    var fechaLegible = '';
+    try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR'); } catch (e) { fechaLegible = h.fecha || ''; }
+    var tipo = h.tipoDocumento === 'notaCredito' ? 'Nota de crédito' : (h.esTiquete ? 'Tiquete' : 'Factura');
+    filas.push([
+      fechaLegible, tipo, h.numeroConsecutivo || '', h.clave || '', h.ambiente || '',
+      h.estado || '', h.receptorNombre || '', h.receptorCedula || '',
+      Number(h.total || 0), h.motivoRechazo || '', h.claveReferenciada || '',
+    ].map(celdaCsv).join(','));
+  });
+
+  var csv = filas.join('\\n');
+  var csvBase64 = utf8ToBase64(String.fromCharCode(65279) + csv); // BOM para que Excel muestre bien los acentos.
+  var fechaArchivo = new Date().toISOString().slice(0, 10);
+  guardarArchivoNativo('respaldo-facturas-' + fechaArchivo + '.csv', csvBase64, 'text/csv');
+  document.getElementById('saveStatus').textContent = 'Respaldo exportado';
+});
+
+function renderizarReportes() {
+  var lista = document.getElementById('reportesList');
+  var aceptados = historialHaciendaCache.filter(function (h) { return h.estado === 'aceptado'; });
+  if (!aceptados.length) {
+    lista.innerHTML = '<div id="feHistEmptyH">Todavía no hay facturas aceptadas para reportar.</div>';
+    return;
+  }
+
+  // Agrupa por "YYYY-MM" a partir de la fecha guardada en cada registro.
+  var meses = {};
+  aceptados.forEach(function (h) {
+    var fecha = new Date(h.fecha);
+    if (isNaN(fecha.getTime())) return;
+    var llave = fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0');
+    if (!meses[llave]) {
+      meses[llave] = { facturado: 0, cantFacturas: 0, notasCredito: 0, cantNotas: 0, fechaRef: fecha };
+    }
+    if (h.tipoDocumento === 'notaCredito') {
+      meses[llave].notasCredito += Number(h.total || 0);
+      meses[llave].cantNotas += 1;
+    } else {
+      meses[llave].facturado += Number(h.total || 0);
+      meses[llave].cantFacturas += 1;
+    }
+  });
+
+  var llaves = Object.keys(meses).sort().reverse(); // más reciente primero
+  var html = '';
+  llaves.forEach(function (llave) {
+    var m = meses[llave];
+    var neto = m.facturado - m.notasCredito;
+    var nombreMes = m.fechaRef.toLocaleDateString('es-CR', { month: 'long', year: 'numeric' });
+    html += '<div class="repMes">' +
+      '<div class="repMesTitulo">' + nombreMes + '</div>' +
+      '<div class="repMesFila"><span>Facturado (' + m.cantFacturas + ' comprobante' + (m.cantFacturas === 1 ? '' : 's') + ')</span><span>₡' + m.facturado.toLocaleString('es-CR') + '</span></div>' +
+      (m.cantNotas ? '<div class="repMesFila"><span>Notas de crédito (' + m.cantNotas + ')</span><span class="repNegativo">−₡' + m.notasCredito.toLocaleString('es-CR') + '</span></div>' : '') +
+      '<div class="repMesFila repNeto"><span>Neto</span><span>₡' + neto.toLocaleString('es-CR') + '</span></div>' +
+      '</div>';
+  });
+
+  var totalGeneral = llaves.reduce(function (suma, llave) { return suma + (meses[llave].facturado - meses[llave].notasCredito); }, 0);
+  html = '<div style="text-align:center;font-size:11px;color:#888;margin-bottom:10px;">Solo cuenta comprobantes ACEPTADOS por Hacienda. Los últimos 100 registros del historial.</div>' + html +
+    '<div class="repMes" style="background:#f7fbf0;"><div class="repMesFila repNeto"><span>Total general (neto)</span><span>₡' + totalGeneral.toLocaleString('es-CR') + '</span></div></div>';
+
+  lista.innerHTML = html;
+}
+
+// ── Validación de cédula del receptor contra el padrón de Hacienda ──
+// Se dispara al salir del campo (blur), no en cada tecla — es una
+// llamada de red, no hace falta pegarle en cada dígito escrito.
+document.getElementById('fe-receptor-cedula').addEventListener('blur', function () {
+  var cedula = this.value.replace(/[^0-9]/g, '');
+  var estadoEl = document.getElementById('fe-cedula-estado');
+  if (cedula.length < 9) { estadoEl.innerHTML = ''; return; }
+
+  estadoEl.style.color = '#888';
+  estadoEl.textContent = 'Verificando cédula en Hacienda...';
+
+  fetchViaXHR(VALIDAR_CEDULA_URL + '?cedula=' + encodeURIComponent(cedula), { method: 'GET' })
+    .then(function (r) { return r.json().then(function (datos) { return { ok: r.ok, datos: datos }; }); })
+    .then(function (resultado) {
+      // Si el usuario ya cambió la cédula mientras esperábamos, no pisar
+      // el estado con una respuesta que ya no corresponde.
+      if (document.getElementById('fe-receptor-cedula').value.replace(/[^0-9]/g, '') !== cedula) return;
+
+      if (!resultado.ok) {
+        estadoEl.style.color = '#888';
+        estadoEl.textContent = '';
+        return;
+      }
+      if (resultado.datos.encontrada === false) {
+        estadoEl.style.color = '#b02a2a';
+        estadoEl.textContent = '⚠️ ' + (resultado.datos.mensaje || 'Hacienda no tiene registrada esta cédula. Revisá que esté bien escrita.');
+        return;
+      }
+      if (resultado.datos.nombre) {
+        estadoEl.style.color = '#2d7a0c';
+        estadoEl.textContent = '✓ ' + resultado.datos.nombre;
+        var campoNombre = document.getElementById('fe-receptor-nombre');
+        if (!campoNombre.value) campoNombre.value = resultado.datos.nombre;
+      } else {
+        estadoEl.textContent = '';
+      }
+    })
+    .catch(function () {
+      // Si falla la consulta (sin internet, timeout, etc.) no bloqueamos
+      // nada — el usuario puede seguir facturando igual, sin la validación.
+      estadoEl.textContent = '';
+    });
+});
+
 // ── Historial de facturas ENVIADAS A HACIENDA (vive en el servidor, ──
 // por cliente — no se pierde si cambiás de celular, a diferencia de
 // los borradores de arriba que solo viven en este dispositivo).
@@ -4647,19 +4962,35 @@ function renderHistorialHacienda() {
     wrap.innerHTML = '<div id="feHistEmptyH">Todavía no enviaste ninguna factura real a Hacienda desde esta cuenta.</div>';
     return;
   }
+  // Para saber si una factura YA tiene una nota de crédito aplicada, se
+  // arma un set con las claves referenciadas por cualquier nota de
+  // crédito del historial — así se puede avisar en vez de dejar anular
+  // la misma factura dos veces por accidente.
+  var clavesYaAnuladas = {};
+  historialHaciendaCache.forEach(function (h) {
+    if (h.tipoDocumento === 'notaCredito' && h.claveReferenciada) clavesYaAnuladas[h.claveReferenciada] = true;
+  });
+
   var html = '';
   historialHaciendaCache.forEach(function (h, i) {
     var fechaLegible = '';
     try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { fechaLegible = h.fecha || ''; }
+    var esNotaCredito = h.tipoDocumento === 'notaCredito';
+    var yaAnulada = clavesYaAnuladas[h.clave];
+    var etiquetaTipo = esNotaCredito ? '🔴 Nota de crédito' : (h.esTiquete ? 'Tiquete' : 'Factura');
+    var puedeAnular = h.estado === 'aceptado' && !esNotaCredito && !yaAnulada;
+
     html += '<div class="feHistHItem">' +
       '<div class="fhhTop">' +
       '<div class="fhhInfo"><div class="fhhNum">' + (h.numeroConsecutivo || h.clave || '—') + '</div>' +
-      '<div class="fhhMeta">' + (h.receptorNombre || (h.esTiquete ? 'Tiquete (sin receptor)' : 'Sin receptor')) + ' · ₡' + (Number(h.total || 0).toLocaleString('es-CR')) + ' · ' + fechaLegible + '</div></div>' +
+      '<div class="fhhMeta">' + etiquetaTipo + ' · ' + (h.receptorNombre || (h.esTiquete ? 'Sin receptor' : 'Sin receptor')) + ' · ₡' + (Number(h.total || 0).toLocaleString('es-CR')) + ' · ' + fechaLegible + '</div></div>' +
       '<span class="fhhEstado ' + (h.estado || 'pendiente') + '">' + (h.estado === 'aceptado' ? 'Aceptada' : h.estado === 'rechazado' ? 'Rechazada' : 'Pendiente') + '</span>' +
       '</div>' +
+      (yaAnulada ? '<div style="font-size:10.5px;color:#b02a2a;margin-top:2px;">⚠️ Ya tiene una nota de crédito aplicada</div>' : '') +
       '<div class="fhhBtns">' +
       '<button data-idx="' + i + '" data-accion="cargar">📄 Cargar</button>' +
       (h.receptorEmail ? '<button data-idx="' + i + '" data-accion="correo" class="fhhBtnCorreo">✉️ Reenviar</button>' : '') +
+      (puedeAnular ? '<button data-idx="' + i + '" data-accion="anular" class="fhhBtnAnular">🗑️ Anular</button>' : '') +
       '</div></div>';
   });
   wrap.innerHTML = html;
@@ -4667,10 +4998,78 @@ function renderHistorialHacienda() {
     btn.addEventListener('click', function () {
       var registro = historialHaciendaCache[parseInt(btn.dataset.idx)];
       if (btn.dataset.accion === 'cargar') cargarRegistroHaciendaEnFormulario(registro);
-      else reenviarCorreoDesdeHistorial(registro);
+      else if (btn.dataset.accion === 'correo') reenviarCorreoDesdeHistorial(registro);
+      else anularFacturaConNotaCredito(registro);
     });
   });
 }
+
+// Emite una Nota de Crédito real que anula por completo la factura o
+// tiquete elegido. Usa los mismos datos guardados en el historial (no
+// hace falta retipear nada) — solo pide el motivo.
+async function anularFacturaConNotaCredito(registro) {
+  if (!registro) return;
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+
+  var motivo = prompt(
+    '¿Por qué se anula esta factura? (aparece en el comprobante ante Hacienda)',
+    'Anulación del comprobante de referencia'
+  );
+  if (motivo === null) return; // Canceló.
+
+  if (!confirm(
+    '¿Confirmás anular la factura ' + (registro.numeroConsecutivo || registro.clave) + ' por ₡' +
+    Number(registro.total || 0).toLocaleString('es-CR') + '?\\n\\nEsto emite una Nota de Crédito REAL ante Hacienda — no se puede deshacer.'
+  )) return;
+
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Emitiendo nota de crédito...';
+
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(NOTA_CREDITO_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: idToken,
+        claveOriginal: registro.clave,
+        fechaOriginal: registro.fecha,
+        motivo: motivo,
+        receptor: registro.receptorNombre ? {
+          nombre: registro.receptorNombre,
+          identificacion: { tipo: '01', numero: registro.receptorCedula || '' },
+          correoElectronico: registro.receptorEmail || undefined,
+        } : undefined,
+        lineas: registro.lineas || [],
+        condicionVenta: registro.condicionVenta || '01',
+        medioPago: registro.medioPago || ['01'],
+        esTiquete: !!registro.esTiquete,
+        emisorNombre: registro.emisorNombre,
+      }),
+    });
+    var datos = await respuesta.json();
+    if (!respuesta.ok) {
+      statusEl.textContent = '✗ Error al anular';
+      alert('No se pudo emitir la nota de crédito: ' + (datos.error || 'error desconocido'));
+      return;
+    }
+    if (datos.aceptado === true) {
+      statusEl.textContent = '✓ Nota de crédito aceptada';
+      alert('✅ Nota de crédito ACEPTADA por Hacienda.\\n\\nClave: ' + datos.clave + '\\nLa factura original queda anulada.');
+    } else if (datos.pendiente) {
+      statusEl.textContent = '⏳ Nota de crédito pendiente';
+      alert('⏳ ' + datos.mensajePendiente);
+    } else {
+      statusEl.textContent = '✗ Nota de crédito rechazada';
+      alert('❌ Hacienda rechazó la nota de crédito:\\n\\n' + (datos.motivoRechazo || 'motivo no especificado'));
+    }
+    cargarHistorialHacienda(); // refresca la lista para mostrar el resultado
+  } catch (err) {
+    statusEl.textContent = '✗ Error al anular';
+    alert('No se pudo contactar el servicio: ' + err.message);
+  }
+}
+
 
 // Carga un registro del historial de Hacienda en el formulario, igual
 // que un borrador — útil para ver el detalle o armar una factura
@@ -4893,6 +5292,10 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
 var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
 var CONSULTAR_ESTADO_URL = 'https://matriz-contable-app.vercel.app/api/consultar-estado';
 var ENVIAR_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-correo-factura';
+var NOTA_CREDITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-credito';
+var VALIDAR_CEDULA_URL = 'https://matriz-certificados.kacn1z.workers.dev/validar-cedula';
+var GUARDAR_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/guardar-plantillas';
+var OBTENER_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/obtener-plantillas';
 var LISTAR_HISTORIAL_URL = 'https://matriz-certificados.kacn1z.workers.dev/listar-historial';
 var BUSCAR_CABYS_URL = 'https://matriz-certificados.kacn1z.workers.dev/buscar-cabys';
 
