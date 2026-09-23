@@ -252,6 +252,53 @@ async function enviarYEsperarDirecto(opciones) {
   return { accepted: null, pending: true }
 }
 
+// ─── Verifica el idToken de Firebase del cliente y devuelve el uid ──
+// REAL de la sesión (o null si es inválido/expiró). Nunca se confía en
+// un uid que venga suelto en el body: sin esto, cualquiera podría
+// mandar el uid de otro cliente y firmar/consultar con SU certificado.
+async function verificarIdToken(idToken) {
+  if (!idToken || !process.env.FIREBASE_API_KEY) return null
+  try {
+    const respuesta = await fetch(
+      'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + process.env.FIREBASE_API_KEY,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      }
+    )
+    if (!respuesta.ok) return null
+    const datos = await respuesta.json()
+    const usuario = datos.users && datos.users[0]
+    return usuario ? usuario.localId : null
+  } catch {
+    return null
+  }
+}
+
+// ─── Guarda el registro de esta factura en el historial del cliente ──
+// Se llama SIEMPRE después de intentar el envío (aceptada, rechazada o
+// pendiente) — el historial sirve justamente para ver ese resultado
+// después, así que no tiene sentido guardarlo solo si salió bien.
+// Nunca deja que un fallo acá tumbe la respuesta al usuario: si el
+// guardado del historial falla, la factura ya se firmó y envió de
+// verdad, eso es lo importante.
+async function guardarHistorial(uid, registro) {
+  try {
+    await fetch(CERTIFICADOS_WORKER_URL + '/guardar-historial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        uid: uid,
+        secreto: process.env.FIRMA_SERVICE_SECRET,
+        registro: registro,
+      }),
+    })
+  } catch (err) {
+    console.error('No se pudo guardar el historial (la factura sí se procesó):', err.message)
+  }
+}
+
 // ─── Handler ───────────────────────────────────────────────────
 export default async function handler(req, res) {
   // CORS básico, igual que en sibo-chat.js
@@ -274,7 +321,7 @@ export default async function handler(req, res) {
 
   try {
     const {
-      uid, // uid de Firebase del usuario que factura
+      idToken, // token de sesión de Firebase del usuario que factura
       receptor, // { nombre, identificacion: { tipo, numero }, correoElectronico }
       lineas, // array de líneas (codigoCabys, cantidad, detalle, precioUnitario, impuesto)
       condicionVenta, // '01' contado, '02' crédito, etc. (default '01')
@@ -283,9 +330,14 @@ export default async function handler(req, res) {
       emisorNombre, // opcional: nombre / razón social del emisor
     } = req.body || {}
 
-    if (!uid || !Array.isArray(lineas) || !lineas.length) {
+    const uid = await verificarIdToken(idToken)
+    if (!uid) {
+      res.status(401).json({ error: 'Sesión inválida o expirada. Volvé a iniciar sesión e intentá de nuevo.' })
+      return
+    }
+    if (!Array.isArray(lineas) || !lineas.length) {
       res.status(400).json({
-        error: 'Faltan datos: uid y lineas (array) son obligatorios.',
+        error: 'Faltan datos: lineas (array) es obligatorio.',
       })
       return
     }
@@ -455,6 +507,27 @@ export default async function handler(req, res) {
       tipoIdEmisor: tipoIdEmisor,
       cedulaEmisor: cedulaLimpia,
       comprobanteXml: xmlFirmadoBase64,
+    })
+
+    // ── 8. Guardar el registro en el historial de este cliente ──
+    const estadoHistorial = resultado.accepted === true ? 'aceptado' : resultado.accepted === false ? 'rechazado' : 'pendiente'
+    await guardarHistorial(uid, {
+      clave: clave,
+      numeroConsecutivo: numeroConsecutivo,
+      ambiente: entorno,
+      estado: estadoHistorial,
+      motivoRechazo: estadoHistorial === 'rechazado' ? resultado.rejectionReason : null,
+      fecha: new Date().toISOString(),
+      esTiquete: !!esTiquete,
+      emisorNombre: emisorNombre || cedulaLimpia,
+      receptorNombre: receptor ? receptor.nombre : null,
+      receptorCedula: receptor && receptor.identificacion ? receptor.identificacion.numero : null,
+      receptorEmail: receptor ? receptor.correoElectronico : null,
+      total: resumen.totalComprobante,
+      lineas: lineas,
+      condicionVenta: condicionVenta || '01',
+      medioPago: medioPago || ['01'],
+      xmlFirmadoBase64: xmlFirmadoBase64,
     })
 
     res.status(200).json({
