@@ -82,6 +82,29 @@ async function obtenerAccessToken(entorno, usuario, password) {
   return datos.access_token
 }
 
+// Igual que en firmar-factura.js: nunca se confía en un uid suelto en
+// el body — se verifica el idToken contra Firebase y se usa el uid que
+// esa verificación devuelva.
+async function verificarIdToken(idToken) {
+  if (!idToken || !process.env.FIREBASE_API_KEY) return null
+  try {
+    const respuesta = await fetch(
+      'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + process.env.FIREBASE_API_KEY,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      }
+    )
+    if (!respuesta.ok) return null
+    const datos = await respuesta.json()
+    const usuario = datos.users && datos.users[0]
+    return usuario ? usuario.localId : null
+  } catch {
+    return null
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -101,10 +124,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { uid, clave } = req.body || {}
+    const { idToken, clave } = req.body || {}
 
-    if (!uid || !clave) {
-      res.status(400).json({ error: 'Faltan datos: uid y clave son obligatorios.' })
+    const uid = await verificarIdToken(idToken)
+    if (!uid) {
+      res.status(401).json({ error: 'Sesión inválida o expirada. Volvé a iniciar sesión e intentá de nuevo.' })
+      return
+    }
+    if (!clave) {
+      res.status(400).json({ error: 'Falta la clave a consultar.' })
       return
     }
     const claveLimpia = String(clave).replace(/[^0-9]/g, '')
