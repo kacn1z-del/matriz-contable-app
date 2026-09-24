@@ -20,7 +20,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#2d7a0c"
+        "backgroundColor": "#ffffff"
       },
       "package": "com.kcnstudio.matrizcontablecr",
       "versionCode": 1,
