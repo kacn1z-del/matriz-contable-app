@@ -20,6 +20,23 @@ const SHEET_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<script>
+  // Manejador de errores visible en pantalla, para poder diagnosticar
+  // sin necesidad de conectar el teléfono a una computadora. Si algo
+  // truena, aparece un banner rojo con el mensaje y la línea exacta.
+  window.addEventListener('error', function (ev) {
+    try {
+      var caja = document.getElementById('errorBox');
+      if (!caja) {
+        caja = document.createElement('div');
+        caja.id = 'errorBox';
+        caja.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#b91c1c;color:#fff;font:12px monospace;padding:10px;white-space:pre-wrap;max-height:60%;overflow:auto;';
+        document.body.appendChild(caja);
+      }
+      caja.textContent += 'ERROR: ' + ev.message + '\\n  en ' + (ev.filename || '') + ':' + ev.lineno + ':' + ev.colno + '\\n\\n';
+    } catch (e) {}
+  });
+</script>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; margin: 0; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; background: #f3f2f1; overflow: hidden; }
@@ -7014,267 +7031,200 @@ function loadTemplate(tipo) {
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
   sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
   activeSheet = name;
-  var d = sheetData[name], f = sheetFormats[name];
-  
-  // Helper para aplicar formatos: set(r, c, valor, estilos)
-  function set(r, c, v, styles) { 
-    d[cellId(r, c)] = v; 
-    if (styles) f[cellId(r, c)] = styles;
+  var d = sheetData[name], f = sheetFormats[name], m = sheetMerges[name];
+  function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
+  function styleCell(r, c, opts) { var id = cellId(r, c); f[id] = Object.assign({}, f[id], opts); }
+  function styleRange(r1, c1, r2, c2, opts) { for (var rr = r1; rr <= r2; rr++) for (var cc = c1; cc <= c2; cc++) styleCell(rr, cc, opts); }
+  function mergeRange(r1, c1, r2, c2) { m.push({ r1: r1, c1: c1, r2: r2, c2: c2 }); }
+  // Barra de título principal (fila 0), fondo de color y texto blanco, combinada a lo ancho de la tabla
+  function titleBar(row, colSpan, text, color) {
+    set(row, 0, text, true);
+    styleRange(row, 0, row, colSpan - 1, { bold: true, bgColor: color, fontColor: '#ffffff', fontSize: 14 });
+    if (colSpan > 1) mergeRange(row, 0, row, colSpan - 1);
   }
-  
-  // Estilos predefinidos reutilizables
-  var titleStyle = { bold: true, bgColor: '#1a5c38', fontColor: '#fff', fontSize: 13, border: true };
-  var headerStyle = { bold: true, bgColor: '#cce9ae', fontColor: '#14472b', border: true };
-  var dataBorder = { border: true };
-  var totalStyle = { bold: true, bgColor: '#1a5c38', fontColor: '#fff', border: true };
-  var sectionTitleStyle = { bold: true, bgColor: '#52b788', fontColor: '#fff', border: true };
-  var pasivoBgStyle = { bold: true, bgColor: '#dc2626', fontColor: '#fff', border: true };
-  var patrimonioStyle = { bold: true, bgColor: '#059669', fontColor: '#fff', border: true };
+  // Barra de sección (ej. "INGRESOS", "ACTIVO"), color más suave, combinada
+  function sectionBar(row, col, colSpan, text, color) {
+    set(row, col, text, true);
+    styleRange(row, col, row, col + colSpan - 1, { bold: true, bgColor: color, fontColor: '#ffffff' });
+    if (colSpan > 1) mergeRange(row, col, row, col + colSpan - 1);
+  }
+  // Fila de encabezados de columnas (ej. "Fecha", "Debe", "Haber")
+  function headerRow(row, cols, color) { styleRange(row, 0, row, cols - 1, { bold: true, bgColor: color, border: true }); }
+  // Cuadrícula con bordes para el bloque de datos
+  function gridBorder(r1, c1, r2, c2) { styleRange(r1, c1, r2, c2, { border: true }); }
+  // Fila de totales resaltada
+  function totalRow(row, c1, c2, color) { styleRange(row, c1, c2, { bold: true, bgColor: color, border: true }); }
 
   if (tipo === 'diario') {
-    set(0, 0, '📘 LIBRO DIARIO', titleStyle);
-    f[cellId(0, 0)].fontSize = 14;
-    
-    var headers = ['Fecha', 'N° Asiento', 'Código', 'Cuenta', 'Debe (₡)', 'Haber (₡)'];
-    headers.forEach(function (h, i) { set(1, i, h, headerStyle); });
-    
-    var rows = [[hoy, '001', '1.1.01', 'Caja y Bancos', '56500', ''],
-                [hoy, '001', '4.1.01', 'Ventas', '', '50000'],
-                [hoy, '001', '2.1.05', 'IVA por Pagar', '', '6500']];
-    rows.forEach(function (row, i) { 
-      row.forEach(function (v, j) { set(2 + i, j, v, dataBorder); }); 
-    });
-    
-    set(5, 3, 'TOTALES', totalStyle);
-    d[cellId(5, 4)] = '=SUMA(E3:E5)'; 
-    d[cellId(5, 5)] = '=SUMA(F3:F5)';
-    f[cellId(5, 4)] = totalStyle;
-    f[cellId(5, 5)] = totalStyle;
-    
+    titleBar(0, 6, '📘 LIBRO DIARIO', '#2563eb');
+    ['Fecha', 'N° Asiento', 'Código', 'Cuenta', 'Debe (₡)', 'Haber (₡)'].forEach(function (h, i) { set(1, i, h, true); });
+    headerRow(1, 6, '#dbeafe');
+    [[hoy, '001', '1.1.01', 'Caja y Bancos', '56500', ''],
+     [hoy, '001', '4.1.01', 'Ventas', '', '50000'],
+     [hoy, '001', '2.1.05', 'IVA por Pagar', '', '6500']]
+      .forEach(function (row, i) { row.forEach(function (v, j) { set(2 + i, j, v); }); });
+    gridBorder(2, 0, 4, 5);
+    set(5, 3, 'TOTALES', true);
+    d[cellId(5, 4)] = '=SUMA(E3:E5)'; d[cellId(5, 5)] = '=SUMA(F3:F5)';
+    totalRow(5, 3, 5, '#bfdbfe');
   } else if (tipo === 'mayor') {
-    set(0, 0, '📗 LIBRO MAYOR — Caja y Bancos (1.1.01)', titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    
-    var headers = ['Fecha', 'Descripción', 'Ref.', 'Debe (₡)', 'Haber (₡)', 'Saldo (₡)'];
-    headers.forEach(function (h, i) { set(1, i, h, headerStyle); });
-    
-    var rows = [[hoy, 'Saldo inicial', '', '', '', '0'],
-                [hoy, 'Venta F-001', 'F-001', '56500', '', '56500'],
-                [hoy, 'Pago proveedor', 'C-001', '', '15000', '41500']];
-    rows.forEach(function (row, i) { 
-      row.forEach(function (v, j) { set(2 + i, j, v, dataBorder); }); 
-    });
-    
-    set(5, 2, 'TOTALES', totalStyle);
-    d[cellId(5, 3)] = '=SUMA(D3:D5)'; 
-    d[cellId(5, 4)] = '=SUMA(E3:E5)';
-    f[cellId(5, 3)] = totalStyle;
-    f[cellId(5, 4)] = totalStyle;
-    f[cellId(5, 5)] = totalStyle;
-    
+    titleBar(0, 6, '📗 LIBRO MAYOR — Caja y Bancos (1.1.01)', '#16a34a');
+    ['Fecha', 'Descripción', 'Ref.', 'Debe (₡)', 'Haber (₡)', 'Saldo (₡)'].forEach(function (h, i) { set(1, i, h, true); });
+    headerRow(1, 6, '#dcfce7');
+    [[hoy, 'Saldo inicial', '', '', '', '0'],
+     [hoy, 'Venta F-001', 'F-001', '56500', '', '56500'],
+     [hoy, 'Pago proveedor', 'C-001', '', '15000', '41500']]
+      .forEach(function (row, i) { row.forEach(function (v, j) { set(2 + i, j, v); }); });
+    gridBorder(2, 0, 4, 5);
+    set(5, 2, 'TOTALES', true);
+    d[cellId(5, 3)] = '=SUMA(D3:D5)'; d[cellId(5, 4)] = '=SUMA(E3:E5)';
+    totalRow(5, 2, 4, '#bbf7d0');
   } else if (tipo === 'balance') {
-    set(0, 0, '📊 BALANCE DE COMPROBACIÓN', titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    
-    var headers = ['Código', 'Cuenta', 'Debe (₡)', 'Haber (₡)'];
-    headers.forEach(function (h, i) { set(1, i, h, headerStyle); });
-    
-    var rows = [['1.1.01', 'Caja y Bancos', '79700', '15000'],
-                ['2.1.01', 'Proveedores', '', '20000'],
-                ['4.1.01', 'Ventas', '', '70000']];
-    rows.forEach(function (row, i) { 
-      row.forEach(function (v, j) { set(2 + i, j, v, dataBorder); }); 
-    });
-    
-    set(5, 1, 'TOTALES', totalStyle);
-    d[cellId(5, 2)] = '=SUMA(C3:C5)'; 
-    d[cellId(5, 3)] = '=SUMA(D3:D5)';
-    f[cellId(5, 2)] = totalStyle;
-    f[cellId(5, 3)] = totalStyle;
-    
+    titleBar(0, 4, '📊 BALANCE DE COMPROBACIÓN', '#7c3aed');
+    ['Código', 'Cuenta', 'Debe (₡)', 'Haber (₡)'].forEach(function (h, i) { set(1, i, h, true); });
+    headerRow(1, 4, '#ede9fe');
+    [['1.1.01', 'Caja y Bancos', '79700', '15000'],
+     ['2.1.01', 'Proveedores', '', '20000'],
+     ['4.1.01', 'Ventas', '', '70000']]
+      .forEach(function (row, i) { row.forEach(function (v, j) { set(2 + i, j, v); }); });
+    gridBorder(2, 0, 4, 3);
+    set(5, 1, 'TOTALES', true);
+    d[cellId(5, 2)] = '=SUMA(C3:C5)'; d[cellId(5, 3)] = '=SUMA(D3:D5)';
+    totalRow(5, 1, 3, '#ddd6fe');
   } else if (tipo === 'conciliacion') {
-    set(0, 0, '🏦 CONCILIACIÓN BANCARIA', titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    
-    set(1, 0, 'SEGÚN BANCO', sectionTitleStyle);
-    var headers = ['Concepto', 'Monto (₡)'];
-    headers.forEach(function (h, i) { set(2, i, h, headerStyle); });
-    
-    var rows = [['Saldo estado de cuenta', '95000'], 
-                ['(+) Depósitos en tránsito', '20000'], 
-                ['(-) Cheques pendientes', '-5000']];
-    rows.forEach(function (row, i) { 
-      row.forEach(function (v, j) { set(3 + i, j, v, dataBorder); }); 
-    });
-    
-    set(6, 0, 'Saldo ajustado banco', totalStyle);
+    titleBar(0, 2, '🏦 CONCILIACIÓN BANCARIA', '#0891b2');
+    sectionBar(1, 0, 2, 'SEGÚN BANCO', '#67e8f9');
+    ['Concepto', 'Monto (₡)'].forEach(function (h, i) { set(2, i, h, true); });
+    headerRow(2, 2, '#cffafe');
+    [['Saldo estado de cuenta', '95000'], ['(+) Depósitos en tránsito', '20000'], ['(-) Cheques pendientes', '-5000']]
+      .forEach(function (row, i) { row.forEach(function (v, j) { set(3 + i, j, v); }); });
+    gridBorder(3, 0, 5, 1);
+    set(6, 0, 'Saldo ajustado banco', true);
     d[cellId(6, 1)] = '=SUMA(B4:B6)';
-    f[cellId(6, 1)] = totalStyle;
-    
+    totalRow(6, 0, 1, '#a5f3fc');
   } else if (tipo === 'd151') {
-    set(0, 0, '🛒 D-151 COMPRAS Y VENTAS', titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    
-    var headers = ['Fecha', 'Tipo', 'N° Doc.', 'Cédula', 'Nombre', 'Condición', 'Subtotal (₡)', 'IVA (₡)', 'Total (₡)'];
-    headers.forEach(function (h, i) { set(1, i, h, headerStyle); });
-    
-    var rows = [[hoy, 'FE', '001-001-000001', '3-101-000000', 'Cliente A S.A.', 'Contado', '50000', '6500', '56500'],
-                [hoy, 'FE', '001-001-000002', '1-234-567890', 'Juan Pérez', 'Crédito', '20000', '2600', '22600'],
-                [hoy, 'FC', '001-002-000001', '3-102-111222', 'Proveedor B S.A.', 'Contado', '35000', '4550', '39550']];
-    rows.forEach(function (row, i) { 
-      row.forEach(function (v, j) { set(2 + i, j, v, dataBorder); }); 
-    });
-    
-    set(5, 5, 'TOTALES', totalStyle);
-    d[cellId(5, 6)] = '=SUMA(G3:G5)'; 
-    d[cellId(5, 7)] = '=SUMA(H3:H5)'; 
-    d[cellId(5, 8)] = '=SUMA(I3:I5)';
-    f[cellId(5, 6)] = totalStyle;
-    f[cellId(5, 7)] = totalStyle;
-    f[cellId(5, 8)] = totalStyle;
-    
+    titleBar(0, 9, '🛒 D-151 COMPRAS Y VENTAS', '#ea580c');
+    ['Fecha', 'Tipo', 'N° Doc.', 'Cédula', 'Nombre', 'Condición', 'Subtotal (₡)', 'IVA (₡)', 'Total (₡)'].forEach(function (h, i) { set(1, i, h, true); });
+    headerRow(1, 9, '#ffedd5');
+    [[hoy, 'FE', '001-001-000001', '3-101-000000', 'Cliente A S.A.', 'Contado', '50000', '6500', '56500'],
+     [hoy, 'FE', '001-001-000002', '1-234-567890', 'Juan Pérez', 'Crédito', '20000', '2600', '22600'],
+     [hoy, 'FC', '001-002-000001', '3-102-111222', 'Proveedor B S.A.', 'Contado', '35000', '4550', '39550']]
+      .forEach(function (row, i) { row.forEach(function (v, j) { set(2 + i, j, v); }); });
+    gridBorder(2, 0, 4, 8);
+    set(5, 5, 'TOTALES', true);
+    d[cellId(5, 6)] = '=SUMA(G3:G5)'; d[cellId(5, 7)] = '=SUMA(H3:H5)'; d[cellId(5, 8)] = '=SUMA(I3:I5)';
+    totalRow(5, 5, 8, '#fed7aa');
   } else if (tipo === 'resultados') {
-    set(0, 0, '📈 ESTADO DE RESULTADOS', titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    set(1, 0, 'Período: ' + hoy, { italic: true });
-    
-    // SECCIÓN INGRESOS
-    set(3, 0, 'INGRESOS', sectionTitleStyle);
-    set(4, 0, 'Ventas', dataBorder); set(4, 1, '450000', dataBorder);
-    set(5, 0, 'Otros ingresos', dataBorder); set(5, 1, '15000', dataBorder);
-    set(6, 0, 'TOTAL INGRESOS', totalStyle);
+    titleBar(0, 2, '📈 ESTADO DE RESULTADOS', '#b45309');
+    set(1, 0, 'Período: ' + hoy);
+    sectionBar(3, 0, 2, 'INGRESOS', '#16a34a');
+    set(4, 0, 'Ventas'); set(4, 1, '450000');
+    set(5, 0, 'Otros ingresos'); set(5, 1, '15000');
+    set(6, 0, 'TOTAL INGRESOS', true);
     d[cellId(6, 1)] = '=SUMA(B5:B6)';
-    f[cellId(6, 1)] = totalStyle;
+    gridBorder(4, 0, 6, 1); totalRow(6, 0, 1, '#bbf7d0');
 
-    // SECCIÓN COSTO DE VENTAS
-    set(8, 0, 'COSTO DE VENTAS', sectionTitleStyle);
-    set(9, 0, 'Costo de mercadería vendida', dataBorder); set(9, 1, '210000', dataBorder);
-    set(10, 0, 'TOTAL COSTO DE VENTAS', totalStyle);
+    sectionBar(8, 0, 2, 'COSTO DE VENTAS', '#dc2626');
+    set(9, 0, 'Costo de mercadería vendida'); set(9, 1, '210000');
+    set(10, 0, 'TOTAL COSTO DE VENTAS', true);
     d[cellId(10, 1)] = '=B10';
-    f[cellId(10, 1)] = totalStyle;
+    gridBorder(9, 0, 10, 1); totalRow(10, 0, 1, '#fecaca');
 
-    // UTILIDAD BRUTA
-    set(12, 0, 'UTILIDAD BRUTA', { bold: true, bgColor: '#d7ecd9', fontColor: '#14472b', border: true });
+    sectionBar(12, 0, 2, 'UTILIDAD BRUTA', '#0891b2');
     d[cellId(12, 1)] = '=B7-B11';
-    f[cellId(12, 1)] = { bold: true, bgColor: '#d7ecd9', fontColor: '#14472b', border: true };
+    styleCell(12, 1, { bold: true, bgColor: '#a5f3fc' });
 
-    // SECCIÓN GASTOS
-    set(14, 0, 'GASTOS OPERATIVOS', sectionTitleStyle);
-    set(15, 0, 'Salarios', dataBorder); set(15, 1, '90000', dataBorder);
-    set(16, 0, 'Alquiler', dataBorder); set(16, 1, '35000', dataBorder);
-    set(17, 0, 'Servicios públicos', dataBorder); set(17, 1, '12000', dataBorder);
-    set(18, 0, 'Depreciación', dataBorder); set(18, 1, '8000', dataBorder);
-    set(19, 0, 'TOTAL GASTOS OPERATIVOS', totalStyle);
+    sectionBar(14, 0, 2, 'GASTOS OPERATIVOS', '#ea580c');
+    set(15, 0, 'Salarios'); set(15, 1, '90000');
+    set(16, 0, 'Alquiler'); set(16, 1, '35000');
+    set(17, 0, 'Servicios públicos'); set(17, 1, '12000');
+    set(18, 0, 'Depreciación'); set(18, 1, '8000');
+    set(19, 0, 'TOTAL GASTOS OPERATIVOS', true);
     d[cellId(19, 1)] = '=SUMA(B16:B19)';
-    f[cellId(19, 1)] = totalStyle;
+    gridBorder(15, 0, 19, 1); totalRow(19, 0, 1, '#fed7aa');
 
-    // UTILIDAD DE OPERACIÓN
-    set(21, 0, 'UTILIDAD DE OPERACIÓN', { bold: true, bgColor: '#d7ecd9', fontColor: '#14472b', border: true });
+    sectionBar(21, 0, 2, 'UTILIDAD DE OPERACIÓN', '#0891b2');
     d[cellId(21, 1)] = '=B13-B20';
-    f[cellId(21, 1)] = { bold: true, bgColor: '#d7ecd9', fontColor: '#14472b', border: true };
+    styleCell(21, 1, { bold: true, bgColor: '#a5f3fc' });
 
-    // IMPUESTO
-    set(23, 0, 'IMPUESTO DE RENTA (D-101)', { bold: true, bgColor: '#fca5a5', fontColor: '#7f1d1d', border: true });
+    set(23, 0, 'IMPUESTO DE RENTA (D-101)', true);
     d[cellId(23, 1)] = '=IMPUESTO.D101(B22;"PF")';
-    f[cellId(23, 1)] = { bold: true, bgColor: '#fca5a5', fontColor: '#7f1d1d', border: true };
 
-    // UTILIDAD NETA
-    set(25, 0, 'UTILIDAD NETA', totalStyle);
-    f[cellId(25, 0)].fontSize = 13;
+    sectionBar(25, 0, 2, 'UTILIDAD NETA', '#b45309');
     d[cellId(25, 1)] = '=B22-B24';
-    f[cellId(25, 1)] = totalStyle;
-    f[cellId(25, 1)].fontSize = 13;
-    
+    styleCell(25, 1, { bold: true, bgColor: '#fde68a', fontColor: '#ffffff' });
   } else if (tipo === 'balancegeneral') {
-    set(0, 0, '🏛️ BALANCE GENERAL', titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    set(1, 0, 'Al: ' + hoy, { italic: true });
+    titleBar(0, 2, '🏛️ BALANCE GENERAL', '#1e3a5f');
+    set(1, 0, 'Al: ' + hoy);
 
-    // SECCIÓN ACTIVO
-    set(3, 0, 'ACTIVO', sectionTitleStyle);
-    set(4, 0, 'Activo Circulante', { bold: true, bgColor: '#d7ecd9', fontColor: '#14472b', border: true });
-    set(5, 0, 'Caja y Bancos', dataBorder); set(5, 1, '85000', dataBorder);
-    set(6, 0, 'Cuentas por Cobrar', dataBorder); set(6, 1, '42000', dataBorder);
-    set(7, 0, 'Inventario', dataBorder); set(7, 1, '63000', dataBorder);
-    set(8, 0, 'Total Activo Circulante', totalStyle);
+    sectionBar(3, 0, 2, 'ACTIVO', '#2563eb');
+    set(4, 0, 'Activo Circulante', true);
+    set(5, 0, 'Caja y Bancos'); set(5, 1, '85000');
+    set(6, 0, 'Cuentas por Cobrar'); set(6, 1, '42000');
+    set(7, 0, 'Inventario'); set(7, 1, '63000');
+    set(8, 0, 'Total Activo Circulante', true);
     d[cellId(8, 1)] = '=SUMA(B6:B8)';
-    f[cellId(8, 1)] = totalStyle;
+    gridBorder(5, 0, 8, 1); totalRow(8, 0, 1, '#bfdbfe');
 
-    set(10, 0, 'Activo No Circulante', { bold: true, bgColor: '#d7ecd9', fontColor: '#14472b', border: true });
-    set(11, 0, 'Mobiliario y Equipo', dataBorder); set(11, 1, '120000', dataBorder);
-    set(12, 0, '(-) Depreciación Acumulada', dataBorder); set(12, 1, '-25000', dataBorder);
-    set(13, 0, 'Total Activo No Circulante', totalStyle);
+    set(10, 0, 'Activo No Circulante', true);
+    set(11, 0, 'Mobiliario y Equipo'); set(11, 1, '120000');
+    set(12, 0, '(-) Depreciación Acumulada'); set(12, 1, '-25000');
+    set(13, 0, 'Total Activo No Circulante', true);
     d[cellId(13, 1)] = '=SUMA(B12:B13)';
-    f[cellId(13, 1)] = totalStyle;
+    gridBorder(11, 0, 13, 1); totalRow(13, 0, 1, '#bfdbfe');
 
-    set(15, 0, 'TOTAL ACTIVO', { bold: true, bgColor: '#1a5c38', fontColor: '#fff', fontSize: 12, border: true });
+    set(15, 0, 'TOTAL ACTIVO', true);
     d[cellId(15, 1)] = '=B9+B14';
-    f[cellId(15, 1)] = { bold: true, bgColor: '#1a5c38', fontColor: '#fff', fontSize: 12, border: true };
+    styleCell(15, 1, { bold: true, bgColor: '#93c5fd', fontColor: '#ffffff' });
 
-    // SECCIÓN PASIVO
-    set(17, 0, 'PASIVO', pasivoBgStyle);
-    set(18, 0, 'Cuentas por Pagar', dataBorder); set(18, 1, '38000', dataBorder);
-    set(19, 0, 'Préstamos por Pagar', dataBorder); set(19, 1, '55000', dataBorder);
-    set(20, 0, 'TOTAL PASIVO', totalStyle);
+    sectionBar(17, 0, 2, 'PASIVO', '#dc2626');
+    set(18, 0, 'Cuentas por Pagar'); set(18, 1, '38000');
+    set(19, 0, 'Préstamos por Pagar'); set(19, 1, '55000');
+    set(20, 0, 'TOTAL PASIVO', true);
     d[cellId(20, 1)] = '=SUMA(B19:B20)';
-    f[cellId(20, 1)] = totalStyle;
+    gridBorder(18, 0, 20, 1); totalRow(20, 0, 1, '#fecaca');
 
-    // SECCIÓN PATRIMONIO
-    set(22, 0, 'PATRIMONIO', patrimonioStyle);
-    set(23, 0, 'Capital Social', dataBorder); set(23, 1, '150000', dataBorder);
-    set(24, 0, 'Utilidades Retenidas', dataBorder); set(24, 1, '42000', dataBorder);
-    set(25, 0, 'TOTAL PATRIMONIO', totalStyle);
+    sectionBar(22, 0, 2, 'PATRIMONIO', '#16a34a');
+    set(23, 0, 'Capital Social'); set(23, 1, '150000');
+    set(24, 0, 'Utilidades Retenidas'); set(24, 1, '42000');
+    set(25, 0, 'TOTAL PATRIMONIO', true);
     d[cellId(25, 1)] = '=SUMA(B24:B25)';
-    f[cellId(25, 1)] = totalStyle;
+    gridBorder(23, 0, 25, 1); totalRow(25, 0, 1, '#bbf7d0');
 
-    set(27, 0, 'TOTAL PASIVO + PATRIMONIO', { bold: true, bgColor: '#1a5c38', fontColor: '#fff', fontSize: 12, border: true });
+    set(27, 0, 'TOTAL PASIVO + PATRIMONIO', true);
     d[cellId(27, 1)] = '=B21+B26';
-    f[cellId(27, 1)] = { bold: true, bgColor: '#1a5c38', fontColor: '#fff', fontSize: 12, border: true };
-    
+    styleCell(27, 1, { bold: true, bgColor: '#1e3a5f', fontColor: '#ffffff' });
   } else if (tipo === 'planilla') {
-    set(0, 0, '👥 PLANILLA MENSUAL — ' + hoy, titleStyle);
-    f[cellId(0, 0)].fontSize = 13;
-    
+    titleBar(0, 7, '👥 PLANILLA MENSUAL — ' + hoy, '#4338ca');
     var hdrPlanilla = ['Empleado', 'Cédula', 'Salario Bruto', 'CCSS Trabajador', 'Renta', 'Otras Deducciones', 'Salario Neto'];
-    hdrPlanilla.forEach(function (h, i) { set(2, i, h, headerStyle); });
-    
+    hdrPlanilla.forEach(function (h, i) { set(2, i, h, true); });
+    headerRow(2, 7, '#e0e7ff');
     var filasPlanilla = [
       ['Empleado 1', '1-1111-1111', '450000'],
       ['Empleado 2', '2-2222-2222', '380000'],
     ];
     filasPlanilla.forEach(function (fila, i) {
       var r = 3 + i;
-      set(r, 0, fila[0], dataBorder); 
-      set(r, 1, fila[1], dataBorder); 
-      set(r, 2, fila[2], dataBorder);
+      set(r, 0, fila[0]); set(r, 1, fila[1]); set(r, 2, fila[2]);
       d[cellId(r, 3)] = '=PLANILLACCSS(' + cellId(r, 2) + ';0)';
       d[cellId(r, 4)] = '=RETENCIONFUENTE(' + cellId(r, 2) + ';"SALARIO")';
-      set(r, 5, '0', dataBorder);
+      set(r, 5, '0');
       d[cellId(r, 6)] = '=' + cellId(r, 2) + '-' + cellId(r, 3) + '-' + cellId(r, 4) + '-' + cellId(r, 5);
-      for (var jj = 3; jj <= 6; jj++) {
-        if (!f[cellId(r, jj)]) f[cellId(r, jj)] = {};
-        f[cellId(r, jj)].border = true;
-      }
     });
-    
+    gridBorder(3, 0, 2 + filasPlanilla.length, 6);
     var rTotalPlanilla = 3 + filasPlanilla.length + 1;
-    set(rTotalPlanilla, 0, 'TOTALES', totalStyle);
+    set(rTotalPlanilla, 0, 'TOTALES', true);
     d[cellId(rTotalPlanilla, 2)] = '=SUMA(C4:C' + (rTotalPlanilla) + ')';
     d[cellId(rTotalPlanilla, 3)] = '=SUMA(D4:D' + (rTotalPlanilla) + ')';
     d[cellId(rTotalPlanilla, 4)] = '=SUMA(E4:E' + (rTotalPlanilla) + ')';
     d[cellId(rTotalPlanilla, 5)] = '=SUMA(F4:F' + (rTotalPlanilla) + ')';
     d[cellId(rTotalPlanilla, 6)] = '=SUMA(G4:G' + (rTotalPlanilla) + ')';
-    for (var jj = 2; jj <= 6; jj++) f[cellId(rTotalPlanilla, jj)] = totalStyle;
-    
-    set(rTotalPlanilla + 2, 0, '👑 CCSS Patrono (~26.67%, informativo)', sectionTitleStyle);
+    totalRow(rTotalPlanilla, 0, 6, '#c7d2fe');
+    set(rTotalPlanilla + 2, 0, '👑 CCSS Patrono (~26.67%, informativo)', true);
     d[cellId(rTotalPlanilla + 2, 2)] = '=PLANILLACCSS(' + cellId(rTotalPlanilla, 2) + ';1)';
-    f[cellId(rTotalPlanilla + 2, 2)] = dataBorder;
-    
-    set(rTotalPlanilla + 3, 0, 'Aguinaldo estimado (dic.)', sectionTitleStyle);
+    set(rTotalPlanilla + 3, 0, 'Aguinaldo estimado (dic.)', true);
     d[cellId(rTotalPlanilla + 3, 2)] = '=AGUINALDO(' + cellId(rTotalPlanilla, 2) + ')';
-    f[cellId(rTotalPlanilla + 3, 2)] = dataBorder;
   }
-  
   buildTable(); autoSave();
 }
 
