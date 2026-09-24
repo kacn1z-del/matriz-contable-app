@@ -83,6 +83,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   .cell.has-attachment::before { content: '📎'; font-size: 8px; position: absolute; top: 1px; left: 2px; }
   .cell.italic { font-style: italic; }
   .cell.bordered { outline: 1.5px solid #217346 !important; outline-offset: -1.5px; }
+  .cell.wrap-text { white-space: normal; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 26px; padding: 3px 5px; vertical-align: top; }
   .frozen-col { position: sticky; z-index: 2; background: #fff; }
   th.frozen-col { z-index: 5; background: #f3f2f1; }
   .frozen-row-td { position: sticky; z-index: 2; background: #fff; }
@@ -438,6 +439,9 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnCondFormat">🎨 Cond.</button>
     <button id="btnValidacion">✅ Validación</button>
     <button id="btnMerge">⛶ Combinar</button>
+    <button id="btnOrdenar">⇅ Ordenar</button>
+    <button id="btnFillColor" style="background:#c8960c;">🎨 Relleno</button>
+    <button id="btnFontColor" style="background:#333;">A Color</button>
     <button id="btnFreeze">❄ Congelar</button>
     <button id="btnNote">📝 Nota</button>
     <button id="btnChart">📊 Gráfico</button>
@@ -497,6 +501,9 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="raPercent">% Porcentaje</button>
     <button id="raFormat">🔢 Formato</button>
     <button id="raMerge">⛶ Combinar</button>
+    <button id="raOrdenar">⇅ Ordenar</button>
+    <button id="raFillColor" style="background:#c8960c;">🎨 Relleno</button>
+    <button id="raFontColor" style="background:#333;">A Color</button>
     <button id="raCopy">⧉ Copiar</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
   </div>
@@ -603,10 +610,15 @@ const SHEET_HTML = `<!DOCTYPE html>
     </select>
     <span class="field-label">Color de fondo</span>
     <input id="fmtBgColor" type="color" value="#ffffff" />
+    <span class="field-label">Color de fuente</span>
+    <input id="fmtFontColor" type="color" value="#000000" />
     <span class="field-label">Tamaño de fuente</span>
     <input id="fmtFontSize" type="number" min="9" max="28" value="12" />
     <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
       <input id="fmtBorder" type="checkbox" style="width:auto;margin:0;" /> Borde marcado
+    </label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
+      <input id="fmtWrap" type="checkbox" style="width:auto;margin:0;" /> Ajustar texto (varias líneas)
     </label>
     <div class="row">
       <button class="cancel" id="fmtCancel">Cancelar</button>
@@ -1006,7 +1018,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 <div id="siboOverlay">
   <div id="siboModal">
     <div id="siboHead">
-      <div class="shTitle"><span class="dot"></span><h3>✦ Sibö — Asistente contable</h3></div>
+      <div class="shTitle"><span class="dot"></span><h3>✦ Sibö — Asistente financiero</h3></div>
       <div class="shBtns">
         <button id="siboClearBtn" title="Limpiar chat">🗑</button>
         <button id="siboCloseBtn">✕</button>
@@ -1020,6 +1032,8 @@ const SHEET_HTML = `<!DOCTYPE html>
     </div>
   </div>
 </div>
+
+<input type="color" id="quickColorInput" style="position:fixed;top:-100px;left:-100px;width:1px;height:1px;opacity:0;" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -4293,6 +4307,121 @@ function mergeToggle(bounds) {
 }
 document.getElementById('btnMerge').addEventListener('click', function () { mergeToggle(currentRangeBounds()); });
 document.getElementById('raMerge').addEventListener('click', function () { mergeToggle(currentRangeBounds()); });
+
+// ── Ordenar un rango por una columna ──────────────────────────────
+// OJO con fórmulas: si una fila tiene una fórmula (=SUMA(...), etc.)
+// que depende de la POSICIÓN de la fila, moverla de lugar sin ajustar
+// sus referencias daría un resultado incorrecto — un riesgo serio en
+// una app de contabilidad. Por seguridad, cualquier celda con fórmula
+// dentro del rango a ordenar se "congela" a su valor actual calculado
+// antes de moverla (deja de ser una fórmula viva). Se avisa siempre
+// que esto pasa, para que no sea una sorpresa.
+function ordenarRango() {
+  var bounds = currentRangeBounds();
+  if (!bounds || bounds.minR === bounds.maxR) {
+    alert('Primero seleccioná un rango de al menos 2 filas (arrastrá sobre las celdas) y volvé a tocar Ordenar.');
+    return;
+  }
+
+  var colDefault = colLetter(bounds.minC);
+  var colTexto = prompt('¿Por cuál columna ordenar? (Enter para usar ' + colDefault + ', la primera del rango)', colDefault);
+  if (colTexto === null) return;
+  colTexto = colTexto.trim().toUpperCase() || colDefault;
+  var colIdx = colIndex(colTexto);
+  if (isNaN(colIdx) || colIdx < bounds.minC || colIdx > bounds.maxC) {
+    alert('"' + colTexto + '" no es una columna válida dentro del rango seleccionado.');
+    return;
+  }
+
+  var descendente = !confirm('Ordenar columna ' + colTexto + ':\\n\\nAceptar = Ascendente (A→Z, menor→mayor)\\nCancelar = Descendente (Z→A, mayor→menor)');
+
+  snapshot();
+  var huboFormulas = false;
+  var filas = [];
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    var fila = { valores: {}, formatos: {} };
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var id = cellId(r, c);
+      var crudo = getRaw(id);
+      if (typeof crudo === 'string' && crudo.charAt(0) === '=') {
+        // Fórmula: se congela al valor ya calculado, no se mueve "viva".
+        huboFormulas = true;
+        fila.valores[c] = computeValue(id);
+      } else {
+        fila.valores[c] = crudo;
+      }
+      fila.formatos[c] = (sheetFormats[activeSheet] && sheetFormats[activeSheet][id])
+        ? JSON.parse(JSON.stringify(sheetFormats[activeSheet][id])) : null;
+    }
+    fila.clave = computeValue(cellId(r, colIdx));
+    filas.push(fila);
+  }
+
+  filas.sort(function (a, b) {
+    var va = a.clave, vb = b.clave;
+    var na = parseFloat(String(va).replace(/[₡,\\s]/g, '')), nb = parseFloat(String(vb).replace(/[₡,\\s]/g, ''));
+    var vacíaA = String(va).trim() === '', vacíaB = String(vb).trim() === '';
+    var cmp;
+    if (vacíaA && !vacíaB) cmp = 1;
+    else if (!vacíaA && vacíaB) cmp = -1;
+    else if (vacíaA && vacíaB) cmp = 0;
+    else if (!isNaN(na) && !isNaN(nb)) cmp = na - nb;
+    else cmp = String(va).localeCompare(String(vb), 'es', { numeric: true, sensitivity: 'base' });
+    return descendente ? -cmp : cmp;
+  });
+
+  if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+  for (var i = 0; i < filas.length; i++) {
+    var rDest = bounds.minR + i;
+    for (var c2 = bounds.minC; c2 <= bounds.maxC; c2++) {
+      var idDest = cellId(rDest, c2);
+      var val = filas[i].valores[c2];
+      if (val === '' || val === undefined || val === null) delete sheetData[activeSheet][idDest];
+      else sheetData[activeSheet][idDest] = val;
+      if (filas[i].formatos[c2]) sheetFormats[activeSheet][idDest] = filas[i].formatos[c2];
+      else delete sheetFormats[activeSheet][idDest];
+    }
+  }
+
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = huboFormulas ? 'Ordenado (fórmulas congeladas a su valor)' : 'Rango ordenado';
+  if (huboFormulas) {
+    alert('Ordené el rango. Algunas celdas tenían fórmulas (=...) — quedaron convertidas a su valor calculado, ya no son fórmulas vivas, para evitar que el orden cambiado les diera un resultado incorrecto.');
+  }
+}
+document.getElementById('btnOrdenar').addEventListener('click', ordenarRango);
+document.getElementById('raOrdenar').addEventListener('click', ordenarRango);
+
+// ── Accesos rápidos de color (relleno / fuente) sin abrir el modal ──
+// completo de Formato. Usan el mismo <input type="color"> nativo del
+// celular (se abre el selector de color del sistema), y aplican el
+// resultado directo a la celda actual o a todo el rango seleccionado.
+function abrirSelectorColorRapido(propiedad) {
+  var bounds = currentRangeBounds();
+  var ids = (bounds && bounds.isMulti) ? rangeCellIds() : [document.getElementById('cellRef').textContent];
+  var input = document.getElementById('quickColorInput');
+  // Arranca con el color actual de la primera celda del grupo, si tiene.
+  var actual = (sheetFormats[activeSheet] && sheetFormats[activeSheet][ids[0]] && sheetFormats[activeSheet][ids[0]][propiedad]) || (propiedad === 'fontColor' ? '#000000' : '#ffffff');
+  input.value = actual;
+  input.onchange = function () {
+    snapshot();
+    if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+    var valor = input.value;
+    var esDefault = (propiedad === 'fontColor' && valor === '#000000') || (propiedad === 'bgColor' && valor === '#ffffff');
+    ids.forEach(function (id) {
+      if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
+      sheetFormats[activeSheet][id][propiedad] = esDefault ? '' : valor;
+    });
+    renderAllCells(); autoSave();
+    document.getElementById('saveStatus').textContent = propiedad === 'fontColor' ? 'Color de fuente aplicado' : 'Color de relleno aplicado';
+  };
+  input.click();
+}
+document.getElementById('btnFillColor').addEventListener('click', function () { abrirSelectorColorRapido('bgColor'); });
+document.getElementById('btnFontColor').addEventListener('click', function () { abrirSelectorColorRapido('fontColor'); });
+document.getElementById('raFillColor').addEventListener('click', function () { abrirSelectorColorRapido('bgColor'); });
+document.getElementById('raFontColor').addEventListener('click', function () { abrirSelectorColorRapido('fontColor'); });
+
 function applyZoom() {
   var table = document.getElementById('sheetTable');
   table.style.transform = 'scale(' + (zoomLevel / 100) + ')';
@@ -4359,8 +4488,10 @@ function renderAllCells() {
     el.classList.toggle('bold', !!fmt.bold);
     el.classList.toggle('italic', !!fmt.italic);
     el.classList.toggle('bordered', !!fmt.border);
+    el.classList.toggle('wrap-text', !!fmt.wrap);
     el.style.textAlign = fmt.align || '';
     el.style.backgroundColor = fmt.bgColor || '';
+    el.style.color = fmt.fontColor || '';
     el.style.fontSize = fmt.fontSize ? (fmt.fontSize + 'px') : '';
   });
   Object.keys(notes).forEach(function (id) {
@@ -4393,7 +4524,7 @@ function renderAllCells() {
       var el = document.getElementById('cell_' + id);
       if (!el || document.activeElement === el) return;
       el.style.backgroundColor = (formats[id] && formats[id].bgColor) || '';
-      el.style.color = '';
+      el.style.color = (formats[id] && formats[id].fontColor) || '';
     });
     condRules.forEach(function (rule) {
       condRangeToIds(rule.range).forEach(function (id) {
@@ -5494,6 +5625,13 @@ document.getElementById('feBtnHacienda').addEventListener('click', async functio
       } else if (resultado.datos.pendiente) {
         statusEl.textContent = '⏳ Pendiente de confirmar';
         alert('⏳ Hacienda no confirmó a tiempo\\n\\n' + resultado.datos.mensajePendiente + '\\n\\nClave: ' + resultado.datos.clave + '\\nConsecutivo: ' + resultado.datos.numeroConsecutivo);
+        if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            tipo: 'programarRecordatorioPendiente',
+            clave: resultado.datos.clave,
+            numeroConsecutivo: resultado.datos.numeroConsecutivo,
+          }));
+        }
       } else {
         statusEl.textContent = '✗ Rechazada por Hacienda';
         alert('Hacienda RECHAZÓ la factura. Motivo:\\n\\n' + (resultado.datos.motivoRechazo || 'no especificado'));
@@ -5939,7 +6077,7 @@ function siboRenderHistorial() {
   wrap.innerHTML = '';
   var hist = siboGetHistorial();
   if (!hist.length) {
-    siboRenderMensaje('¡Hola! Soy <b>Sibö ✦</b>, tu asistente contable de Matriz Contable CR. Preguntame sobre IVA, facturas, libros contables, CCSS, y más — o tocá uno de los chips de arriba.', false);
+    siboRenderMensaje('¡Hola! Soy <b>Sibö ✦</b>, tu asistente financiero. Llevo el nombre en honor a Sibö, el dios creador en la cosmovisión bribri y cabécar, quien con su palabra y su sabiduría le dio origen a la vida. Así como él, estoy acá para ayudarte a ponerle orden y claridad a las cuentas de tu negocio: preguntame sobre IVA, facturas, libros contables, CCSS, y más — o tocá uno de los chips de arriba.', false);
     return;
   }
   hist.forEach(function (h) { siboRenderMensaje(h.texto, h.user); });
@@ -7441,8 +7579,10 @@ function openFormatModal(isRangeTarget) {
   document.getElementById('fmtThousands').value = existing.thousands === false ? 'no' : 'yes';
   document.getElementById('fmtAlign').value = cellFmt.align || '';
   document.getElementById('fmtBgColor').value = cellFmt.bgColor || '#ffffff';
+  document.getElementById('fmtFontColor').value = cellFmt.fontColor || '#000000';
   document.getElementById('fmtFontSize').value = cellFmt.fontSize || 12;
   document.getElementById('fmtBorder').checked = !!cellFmt.border;
+  document.getElementById('fmtWrap').checked = !!cellFmt.wrap;
   document.getElementById('formatOverlay').classList.add('show');
 }
 document.getElementById('fmtCancel').addEventListener('click', function () { document.getElementById('formatOverlay').classList.remove('show'); });
@@ -7456,8 +7596,10 @@ document.getElementById('fmtApply').addEventListener('click', function () {
   var ids = formatTargetIsRange ? rangeCellIds() : [document.getElementById('cellRef').textContent];
   var align = document.getElementById('fmtAlign').value;
   var bgColor = document.getElementById('fmtBgColor').value;
+  var fontColor = document.getElementById('fmtFontColor').value;
   var fontSize = parseInt(document.getElementById('fmtFontSize').value) || 12;
   var border = document.getElementById('fmtBorder').checked;
+  var wrap = document.getElementById('fmtWrap').checked;
   if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
   ids.forEach(function (id) {
     if (!sheetFormats[activeSheet][id]) sheetFormats[activeSheet][id] = {};
@@ -7466,8 +7608,10 @@ document.getElementById('fmtApply').addEventListener('click', function () {
     sheetFormats[activeSheet][id].percent = false;
     sheetFormats[activeSheet][id].align = align;
     sheetFormats[activeSheet][id].bgColor = bgColor !== '#ffffff' ? bgColor : '';
+    sheetFormats[activeSheet][id].fontColor = fontColor !== '#000000' ? fontColor : '';
     sheetFormats[activeSheet][id].fontSize = fontSize !== 12 ? fontSize : null;
     sheetFormats[activeSheet][id].border = border;
+    sheetFormats[activeSheet][id].wrap = wrap;
   });
   document.getElementById('formatOverlay').classList.remove('show');
   renderAllCells(); autoSave();
@@ -8600,7 +8744,7 @@ try {
 var onboardingSlides = [
   { emoji: '🌿', titulo: '¡Bienvenido/a a Matriz Contable CR!', texto: 'Tu hoja de cálculo contable con fórmulas de Costa Rica, reportes automáticos y un asistente de IA. Te mostramos lo esencial en unos segundos.' },
   { emoji: '📊', titulo: 'Reportes con un toque', texto: 'Usá los botones de Balance Auto, Flujo Efectivo y Dashboard para generar reportes completos (con gráficos) a partir de tus movimientos, sin fórmulas manuales.' },
-  { emoji: '✦', titulo: 'Sibö, tu asistente contable', texto: 'Preguntale a Sibö sobre IVA, CCSS, fórmulas o tus propios datos — puede leer tu hoja activa y hasta sugerirte fórmulas para insertar directo en la celda.' },
+  { emoji: '✦', titulo: 'Sibö, tu asistente financiero', texto: 'Lleva el nombre del dios creador de la cosmovisión bribri y cabécar. Preguntale sobre IVA, CCSS, fórmulas o tus propios datos — puede leer tu hoja activa y hasta sugerirte fórmulas para insertar directo en la celda.' },
   { emoji: '📖', titulo: 'Diccionario Indígena colaborativo', texto: 'Explorá y aportá palabras en Bribri, Cabécar, Maléku, Boruca, Ngäbere y Térraba — se guarda para toda la comunidad de usuarios.' },
   { emoji: '🚀', titulo: '¡Listo para empezar!', texto: 'Tocá "🎨 +Tabla" para insertar tu primera tabla de movimientos, o abrí "📁 Plantilla..." para usar una plantilla lista. Podés reabrir este tutorial con el botón ❔.' },
 ];
@@ -8754,6 +8898,27 @@ async function programarNotificacionesVencimientos() {
   }
 }
 
+// Programa un recordatorio local para revisar el estado de una factura
+// que quedó "pendiente" (Hacienda no confirmó dentro de los 55s). Sin
+// esto, el usuario tendría que acordarse solo de volver a consultarla.
+async function manejarRecordatorioPendiente(clave, numeroConsecutivo) {
+  try {
+    var disparo = new Date(Date.now() + 20 * 60 * 1000) // 20 minutos después
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '⏳ Revisá esa factura pendiente',
+        body: 'La factura ' + (numeroConsecutivo || '') + ' quedó pendiente de confirmar con Hacienda. Tocá para consultar su estado.',
+        data: { clave: clave },
+      },
+      trigger: disparo,
+    })
+  } catch (err) {
+    // No es crítico — si falla (sin permiso de notificaciones, etc.) la
+    // factura ya quedó enviada igual, solo no habrá recordatorio.
+    console.log('No se pudo programar el recordatorio:', err.message)
+  }
+}
+
 async function manejarImpresionDesdeWebView(base64, filename) {
   try {
     const path = FileSystem.cacheDirectory + filename
@@ -8849,6 +9014,9 @@ export default function SheetEditor({ userId, sheetId }) {
             }
             if (msg && msg.tipo === 'imprimirArchivo') {
               manejarImpresionDesdeWebView(msg.base64, msg.filename)
+            }
+            if (msg && msg.tipo === 'programarRecordatorioPendiente') {
+              manejarRecordatorioPendiente(msg.clave, msg.numeroConsecutivo)
             }
             if (msg && msg.tipo === 'llamarNativo') {
               manejarLlamadaNativa(msg.id, msg.url, msg.opciones)
