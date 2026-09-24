@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  ActivityIndicator, Alert, ScrollView,
+  ActivityIndicator, Alert, ScrollView, Share,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as DocumentPicker from 'expo-document-picker'
@@ -33,6 +33,11 @@ export default function CertificadoScreen({ navigation }) {
   const [revisando, setRevisando] = useState(true)
   const [tieneCertificado, setTieneCertificado] = useState(false)
 
+  // ─── Multi-usuario por negocio ──────────────────────────
+  const [negocioInfo, setNegocioInfo] = useState(null) // { negocioId, esPropio }
+  const [codigoParaUnirse, setCodigoParaUnirse] = useState('')
+  const [uniendose, setUniendose] = useState(false)
+
   const uid = auth.currentUser?.uid
 
   // ─── Placeholder de usuario que cambia según el ambiente elegido ─
@@ -62,9 +67,108 @@ export default function CertificadoScreen({ navigation }) {
     }
   }, [uid])
 
+  // ─── Averigua si el usuario tiene su propio negocio o se unió a otro ─
+  const revisarNegocio = useCallback(async () => {
+    if (!uid) return
+    try {
+      const idToken = await auth.currentUser.getIdToken()
+      const respuesta = await fetch(`${WORKER_URL}/mi-negocio`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
+      const datos = await respuesta.json()
+      if (respuesta.ok) setNegocioInfo(datos)
+    } catch (error) {
+      console.log('Error revisando negocio:', error.message)
+    }
+  }, [uid])
+
   useEffect(() => {
     revisarEstado()
-  }, [revisarEstado])
+    revisarNegocio()
+  }, [revisarEstado, revisarNegocio])
+
+  // ─── Compartir el código de negocio con un compañero ────
+  async function compartirCodigo() {
+    if (!negocioInfo) return
+    try {
+      await Share.share({
+        message: 'Unite a mi negocio en Matriz Contable CR para facturar desde la misma cuenta de Hacienda. Código: ' + negocioInfo.negocioId,
+      })
+    } catch (error) {
+      // Si el usuario cancela el share, no hace falta avisar nada.
+    }
+  }
+
+  // ─── Unirse al negocio de otra persona ──────────────────
+  async function unirseANegocio() {
+    const codigo = codigoParaUnirse.trim()
+    if (!codigo) {
+      Alert.alert('Falta el código', 'Pegá el código de negocio que te compartió tu compañero.')
+      return
+    }
+    Alert.alert(
+      '¿Unirte a este negocio?',
+      'Vas a compartir el certificado, la numeración de facturas y el historial con esa cuenta. Si ya tenías tu propio certificado configurado, queda guardado aparte — lo recuperás si más adelante salís de este negocio.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Unirme',
+          onPress: async () => {
+            setUniendose(true)
+            try {
+              const idToken = await auth.currentUser.getIdToken()
+              const respuesta = await fetch(`${WORKER_URL}/unirme-a-negocio`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken, codigoNegocio: codigo }),
+              })
+              const datos = await respuesta.json()
+              if (!respuesta.ok) throw new Error(datos.error || 'Error desconocido')
+              setCodigoParaUnirse('')
+              await revisarNegocio()
+              await revisarEstado()
+              Alert.alert('Listo', 'Te uniste al negocio. Ya compartís certificado, numeración de facturas e historial con esa cuenta.')
+            } catch (error) {
+              Alert.alert('No se pudo unir', error.message)
+            } finally {
+              setUniendose(false)
+            }
+          },
+        },
+      ]
+    )
+  }
+
+  // ─── Salir del negocio compartido, volver al propio ─────
+  async function salirDeNegocio() {
+    Alert.alert(
+      '¿Salir de este negocio?',
+      'Vas a dejar de ver el certificado, las facturas y el historial compartidos. Si tenías tu propio certificado configurado antes de unirte, lo vas a recuperar.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Salir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const idToken = await auth.currentUser.getIdToken()
+              await fetch(`${WORKER_URL}/salir-de-negocio`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken }),
+              })
+              await revisarNegocio()
+              await revisarEstado()
+            } catch (error) {
+              Alert.alert('Error', 'No se pudo salir del negocio: ' + error.message)
+            }
+          },
+        },
+      ]
+    )
+  }
 
   // ─── Elegir el archivo .p12 desde el celular ────────────
   async function elegirArchivo() {
@@ -209,6 +313,58 @@ export default function CertificadoScreen({ navigation }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.contenido}>
+        {/* ─── Negocio compartido / multi-usuario ─────────── */}
+        {!revisando && negocioInfo && (
+          <View style={styles.equipoCard}>
+            <Text style={styles.equipoTitulo}>
+              {negocioInfo.esPropio ? '👥 Compartir con un compañero' : '👥 Negocio compartido'}
+            </Text>
+
+            {negocioInfo.esPropio ? (
+              <>
+                <Text style={styles.textoSecundarioIzq}>
+                  Si alguien más de tu negocio necesita facturar (con el mismo certificado y la misma numeración
+                  ante Hacienda), compartile este código desde acá:
+                </Text>
+                <View style={styles.codigoBox}>
+                  <Text style={styles.codigoTexto} selectable numberOfLines={1}>{negocioInfo.negocioId}</Text>
+                </View>
+                <TouchableOpacity style={styles.botonSecundarioVerde} onPress={compartirCodigo}>
+                  <Text style={styles.botonSecundarioTextoVerde}>Compartir código</Text>
+                </TouchableOpacity>
+
+                <Text style={[styles.label, { marginTop: 16 }]}>¿Te compartieron un código a vos?</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Pegá el código de negocio acá"
+                  placeholderTextColor="#9db98a"
+                  value={codigoParaUnirse}
+                  onChangeText={setCodigoParaUnirse}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                <TouchableOpacity
+                  style={[styles.botonPrincipal, uniendose && styles.botonDisabled]}
+                  onPress={unirseANegocio}
+                  disabled={uniendose}
+                >
+                  {uniendose ? <ActivityIndicator color="#fff" /> : <Text style={styles.botonPrincipalTexto}>Unirme a ese negocio</Text>}
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <Text style={styles.textoSecundarioIzq}>
+                  Estás usando el certificado, la numeración de facturas y el historial de otra cuenta
+                  ({negocioInfo.negocioId.slice(0, 8)}…).
+                </Text>
+                <TouchableOpacity style={styles.botonSecundario} onPress={salirDeNegocio}>
+                  <Text style={styles.botonSecundarioTexto}>Salir de este negocio</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        )}
+
         {revisando ? (
           <View style={styles.cargando}>
             <ActivityIndicator color="#2d7a0c" />
@@ -233,7 +389,8 @@ export default function CertificadoScreen({ navigation }) {
             <Text style={styles.textoSecundario}>
               Necesitás el archivo .p12 o .pfx que te entregó el Ministerio de Hacienda (ATV), junto con su contraseña,
               y tus credenciales de acceso a la API de Hacienda. Estos datos son personales de tu negocio: cada cliente
-              sube su propia llave y credenciales, nunca se comparten entre cuentas.
+              sube su propia llave y credenciales, nunca se comparten entre cuentas — salvo que uses "Unirme a ese
+              negocio" arriba, para compartir la de un compañero.
             </Text>
 
             <Text style={styles.separador}>Ambiente</Text>
@@ -449,6 +606,22 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff', borderRadius: 16, padding: 20,
   },
+  equipoCard: {
+    backgroundColor: '#fff', borderRadius: 16, padding: 18, marginBottom: 14,
+    borderWidth: 1.5, borderColor: '#d8c9f0',
+  },
+  equipoTitulo: { fontSize: 14.5, fontWeight: '800', color: '#5b3e96', marginBottom: 8 },
+  textoSecundarioIzq: { fontSize: 12.5, color: '#6b8f48', textAlign: 'left', marginBottom: 12, lineHeight: 18 },
+  codigoBox: {
+    backgroundColor: '#f7fbf0', borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
+    paddingHorizontal: 12, paddingVertical: 10, marginBottom: 10,
+  },
+  codigoTexto: { fontSize: 12, fontFamily: 'monospace', color: '#2d3b1f' },
+  botonSecundarioVerde: {
+    borderWidth: 1.5, borderColor: '#2d7a0c', borderRadius: 10,
+    paddingVertical: 11, alignItems: 'center',
+  },
+  botonSecundarioTextoVerde: { color: '#2d7a0c', fontWeight: '700', fontSize: 13 },
   emoji: { fontSize: 36, textAlign: 'center', marginBottom: 8 },
   tituloCard: { fontSize: 17, fontWeight: '800', color: '#2d3b1f', marginBottom: 6, textAlign: 'center' },
   textoSecundario: { fontSize: 13, color: '#6b8f48', textAlign: 'center', marginBottom: 18, lineHeight: 19 },
