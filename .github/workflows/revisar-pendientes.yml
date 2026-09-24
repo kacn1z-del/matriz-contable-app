@@ -1,0 +1,21 @@
+name: Revisar facturas pendientes
+
+on:
+  schedule:
+    # Cada 15 minutos. GitHub Actions no garantiza el minuto exacto (a
+    # veces se atrasa unos minutos si hay mucha carga en GitHub), pero
+    # corre las 24 horas sin el límite de "una vez al día" de Vercel.
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {} # también se puede disparar a mano desde la pestaña Actions
+
+jobs:
+  revisar:
+    name: Revisar pendientes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar a api/revisar-pendientes
+        run: |
+          curl -s -X POST "https://matriz-contable-app.vercel.app/api/revisar-pendientes" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --fail-with-body
