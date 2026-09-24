@@ -112,6 +112,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   .frozen-row-td { position: sticky; z-index: 2; background: #fff; }
   .frozen-col.frozen-row-td { z-index: 4; }
   td.rowhead.frozen-row-head { position: sticky; z-index: 3; background: #f3f2f1; }
+  th.header-activo, td.rowhead.header-activo { background: #d7ecd9 !important; color: #14472b !important; font-weight: 800; }
   #sheetTable { transform-origin: top left; }
   #zoomRange { width: 70px; }
   #fnAutocomplete { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
@@ -449,19 +450,9 @@ const SHEET_HTML = `<!DOCTYPE html>
     </select>
     <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
     <button id="btnAccount" style="background:#1e5c99;">👤 Cuenta</button>
-    <select id="templateSelect">
-      <option value="">📁 Plantilla...</option>
-      <option value="diario">📘 Libro Diario</option>
-      <option value="mayor">📗 Libro Mayor</option>
-      <option value="balance">📊 Balance Comprobación</option>
-      <option value="conciliacion">🏦 Conciliación Bancaria</option>
-      <option value="d151">🛒 D-151 Compras/Ventas</option>
-      <option value="resultados">📈 Estado de Resultados</option>
-      <option value="balancegeneral">🏛️ Balance General</option>
-      <option value="planilla">👥 Planilla Mensual (CCSS)</option>
-      <option value="blank">🗋 Hoja en blanco</option>
-    </select>
+    <button id="btnTemplateGallery">📁 Plantilla...</button>
     <button id="btnUndo" disabled>↶ Deshacer</button>
+    <button id="btnCut">✂️ Cortar</button>
     <button id="btnCopy">⧉ Copiar</button>
     <button id="btnPaste">📋 Pegar</button>
     <button id="btnBold">N</button>
@@ -539,6 +530,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="raOrdenar">⇅ Ordenar</button>
     <button id="raFillColor" style="background:#c8960c;">🎨 Relleno</button>
     <button id="raFontColor" style="background:#333;">A Color</button>
+    <button id="raCut">✂️ Cortar</button>
     <button id="raCopy">⧉ Copiar</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
   </div>
@@ -4287,7 +4279,7 @@ function buildTable() {
     var rFrozen = r < freeze.row;
     var rowheadCls = 'rowhead' + (rFrozen ? ' frozen-row-head' : '');
     var rowheadStyle = rFrozen ? (' style="top:' + (HEADER_H + r * ROW_H) + 'px;"') : '';
-    html += '<tr><td class="' + rowheadCls + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
+    html += '<tr><td class="' + rowheadCls + '" data-row="' + r + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
     for (var c2 = 0; c2 < COLS; c2++) {
       if (skip[r + '_' + c2]) continue;
       var id = cellId(r, c2);
@@ -6690,6 +6682,21 @@ function rangeCellIds() {
   return out;
 }
 
+// Resalta el encabezado de columna (letra) y de fila (número) de la
+// celda activa — igual que la "mira" que marca en Excel en qué fila y
+// columna estás parado, sin tener que contar a ojo.
+function marcarEncabezadoActivo(id) {
+  document.querySelectorAll('.header-activo').forEach(function (e) { e.classList.remove('header-activo'); });
+  var m = id.match(/^([A-Za-z]+)(\d+)$/);
+  if (!m) return;
+  var col = colIndex(m[1]);
+  var row = parseInt(m[2], 10) - 1;
+  var th = document.querySelector('th[data-col="' + col + '"]');
+  var td = document.querySelector('td.rowhead[data-row="' + row + '"]');
+  if (th) th.classList.add('header-activo');
+  if (td) td.classList.add('header-activo');
+}
+
 function attachCellEvents() {
   document.querySelectorAll('.cell').forEach(function (el) {
     el.addEventListener('focus', function () {
@@ -6700,6 +6707,7 @@ function attachCellEvents() {
       document.getElementById('formulaInput').value = getRaw(id);
       el.textContent = getRaw(id);
       showValidPicker(id);
+      marcarEncabezadoActivo(id);
     });
     el.addEventListener('blur', function () {
       setTimeout(function () {
@@ -6842,6 +6850,16 @@ function updateFormulaAutocomplete() {
 
 document.getElementById('btnUndo').addEventListener('click', undo);
 
+document.getElementById('btnCut').addEventListener('click', function () {
+  snapshot();
+  var id = document.getElementById('cellRef').textContent;
+  clipboard = { value: getRaw(id), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || null };
+  delete sheetData[activeSheet][id];
+  if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
+  document.getElementById('formulaInput').value = '';
+  renderAllCells(); autoSave();
+  document.getElementById('saveStatus').textContent = 'Cortado ' + id;
+});
 document.getElementById('btnCopy').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
   clipboard = { value: getRaw(id), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || null };
@@ -7582,6 +7600,24 @@ document.getElementById('raClear').addEventListener('click', function () {
     if (sheetNotes[activeSheet]) delete sheetNotes[activeSheet][id];
   });
   renderAllCells(); autoSave();
+});
+document.getElementById('raCut').addEventListener('click', function () {
+  snapshot();
+  var ids = rangeCellIds();
+  var b = currentRangeBounds();
+  var rows = [];
+  for (var r = b.minR; r <= b.maxR; r++) {
+    var row = [];
+    for (var c = b.minC; c <= b.maxC; c++) row.push(getRaw(cellId(r, c)));
+    rows.push(row);
+  }
+  clipboard = { rangeRows: rows, value: getRaw(ids[0]), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][ids[0]]) || null };
+  ids.forEach(function (id) {
+    delete sheetData[activeSheet][id];
+    if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
+  });
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = 'Cortado rango (' + ids.length + ')';
 });
 document.getElementById('raCopy').addEventListener('click', function () {
   var ids = rangeCellIds();
