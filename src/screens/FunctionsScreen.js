@@ -9,12 +9,15 @@ import {
   SafeAreaView,
 } from 'react-native'
 import fnData from '../i18n/fndata.json'
+import { useResponsive } from '../hooks/useResponsive'
 
 const ALL_CATEGORIES = 'Todas'
 
 export default function FunctionsScreen({ navigation }) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState(ALL_CATEGORIES)
+  const { isTablet, isDesktop } = useResponsive()
+  const numColumns = isDesktop ? 3 : isTablet ? 2 : 1
 
   const categories = useMemo(() => {
     const set = new Set(fnData.map((f) => f.categoria))
@@ -76,11 +79,14 @@ export default function FunctionsScreen({ navigation }) {
       />
 
       <FlatList
+        key={numColumns}
         data={filtered}
         keyExtractor={(item) => String(item.id)}
+        numColumns={numColumns}
+        columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <View style={[styles.card, numColumns > 1 && { flex: 1 / numColumns, marginHorizontal: 5 }]}>
             <View style={styles.cardHeader}>
               <Text style={styles.fnName}>{item.nombre}</Text>
               {item.alias ? <Text style={styles.fnAlias}>{item.alias}</Text> : null}
@@ -165,8 +171,11 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   list: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 11,
     paddingBottom: 24,
+  },
+  row: {
+    justifyContent: 'flex-start',
   },
   card: {
     backgroundColor: '#ffffff',
