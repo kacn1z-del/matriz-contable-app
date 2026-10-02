@@ -8,6 +8,7 @@ import * as DocumentPicker from 'expo-document-picker'
 import * as FileSystem from 'expo-file-system'
 import { auth } from '../services/firebase'
 import { useLang } from '../context/LangContext'
+import { useResponsive } from '../hooks/useResponsive'
 
 // ─── URL del Worker de Cloudflare que guarda el certificado cifrado ─
 const WORKER_URL = 'https://matriz-certificados.kacn1z.workers.dev'
@@ -15,6 +16,7 @@ const WORKER_URL = 'https://matriz-certificados.kacn1z.workers.dev'
 export default function CertificadoScreen({ navigation }) {
   const { t } = useLang()
   const insets = useSafeAreaInsets()
+  const { isPhone } = useResponsive()
 
   const [archivo, setArchivo] = useState(null) // { nombre, base64 }
   const [modoCarga, setModoCarga] = useState('archivo') // 'archivo' | 'base64'
@@ -312,7 +314,8 @@ export default function CertificadoScreen({ navigation }) {
         <Text style={styles.toolbarTitle}>🧾 Factura Electrónica 4.4</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.contenido}>
+      <ScrollView contentContainerStyle={[styles.contenido, !isPhone && styles.contenidoAncho]}>
+        <View style={[styles.colAncha, !isPhone && styles.colAnchaLimite]}>
         {/* ─── Negocio compartido / multi-usuario ─────────── */}
         {!revisando && negocioInfo && (
           <View style={styles.equipoCard}>
@@ -579,6 +582,7 @@ export default function CertificadoScreen({ navigation }) {
             </Text>
           </View>
         )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -593,6 +597,9 @@ const styles = StyleSheet.create({
   backBtn: { fontSize: 13, fontWeight: '700', color: '#2d7a0c' },
   toolbarTitle: { fontSize: 13, fontWeight: '700', color: '#3d6020' },
   contenido: { padding: 20, flexGrow: 1 },
+  contenidoAncho: { alignItems: 'center' },
+  colAncha: { width: '100%' },
+  colAnchaLimite: { maxWidth: 520 },
   modoRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
   modoBtn: {
     flex: 1, borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
