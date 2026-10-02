@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import {
-  Modal, View, Text, TouchableOpacity, StyleSheet, Dimensions,
+  Modal, View, Text, TouchableOpacity, StyleSheet, useWindowDimensions,
 } from 'react-native'
-
-const { width } = Dimensions.get('window')
 
 export const ONBOARDING_SLIDES = [
   {
@@ -34,6 +32,7 @@ export const ONBOARDING_SLIDES = [
 ]
 
 export default function OnboardingModal({ visible, onClose, slides }) {
+  const { width } = useWindowDimensions()
   const [idx, setIdx] = useState(0)
   const data = slides || ONBOARDING_SLIDES
   const slide = data[idx]
@@ -52,7 +51,7 @@ export default function OnboardingModal({ visible, onClose, slides }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={cerrar}>
       <View style={styles.overlay}>
-        <View style={styles.card}>
+        <View style={[styles.card, { width: Math.min(width - 48, 420) }]}>
           <Text style={styles.emoji}>{slide.emoji}</Text>
           <Text style={styles.titulo}>{slide.titulo}</Text>
           <Text style={styles.texto}>{slide.texto}</Text>
@@ -86,7 +85,6 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   card: {
-    width: Math.min(width - 48, 380),
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 22,
