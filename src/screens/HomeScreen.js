@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLang } from '../context/LangContext'
 import OnboardingModal from '../components/OnboardingModal'
 import { auth } from '../services/firebase'
+import { useResponsive } from '../hooks/useResponsive'
 
 const ONBOARDING_KEY = 'kcn_onboarding_visto'
 
@@ -58,6 +59,10 @@ const MENU_ITEMS = [
 export default function HomeScreen({ navigation }) {
   const { t } = useLang()
   const [onboardingVisible, setOnboardingVisible] = useState(false)
+  const { columns, maxContentWidth, isDesktop } = useResponsive()
+  // Deja un poco de aire entre tarjetas (gap efectivo ~3.5%) sin importar
+  // cuántas columnas haya, para que siempre quede "space-between" parejo.
+  const cardWidth = `${100 / columns - 3.5}%`
 
   const usuario = auth.currentUser
   const nombreMostrado = (usuario?.displayName || (usuario?.email ? usuario.email.split('@')[0] : '') || '').trim()
@@ -103,43 +108,45 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.grid}>
-        {nombreCapitalizado ? (
-          <View style={styles.welcomeBanner}>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-              {usuario?.photoURL ? (
-                <Image source={{ uri: usuario.photoURL }} style={styles.avatarImg} />
-              ) : (
-                <View style={styles.avatarCircle}>
-                  <Text style={styles.avatarText}>{inicial}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.welcomeTitle}>Hola, {nombreCapitalizado}</Text>
-              <Text style={styles.welcomeText}>
-                Bienvenido/a a Matriz Contable CR. Accedé rápido a tus herramientas desde aquí abajo.
-              </Text>
+      <ScrollView contentContainerStyle={isDesktop ? styles.scrollDesktop : styles.scrollPhone}>
+        <View style={[styles.grid, { maxWidth: maxContentWidth }]}>
+          {nombreCapitalizado ? (
+            <View style={styles.welcomeBanner}>
+              <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                {usuario?.photoURL ? (
+                  <Image source={{ uri: usuario.photoURL }} style={styles.avatarImg} />
+                ) : (
+                  <View style={styles.avatarCircle}>
+                    <Text style={styles.avatarText}>{inicial}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.welcomeTitle}>Hola, {nombreCapitalizado}</Text>
+                <Text style={styles.welcomeText}>
+                  Bienvenido/a a Matriz Contable CR. Accedé rápido a tus herramientas desde aquí abajo.
+                </Text>
+              </View>
             </View>
-          </View>
-        ) : null}
+          ) : null}
 
-        {MENU_ITEMS.map((item) => (
-          <TouchableOpacity
-            key={item.key}
-            style={styles.card}
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate(item.route, item.params)}
-          >
-            <Text style={styles.cardIcon}>{item.icon}</Text>
-            <Text style={styles.cardTitle}>
-              {translate(item.titleKey, item.fallback)}
-            </Text>
-            <Text style={styles.cardSubtitle}>
-              {translate(item.subtitleKey, item.subtitleFallback)}
-            </Text>
-          </TouchableOpacity>
-        ))}
+          {MENU_ITEMS.map((item) => (
+            <TouchableOpacity
+              key={item.key}
+              style={[styles.card, { width: cardWidth }]}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate(item.route, item.params)}
+            >
+              <Text style={styles.cardIcon}>{item.icon}</Text>
+              <Text style={styles.cardTitle}>
+                {translate(item.titleKey, item.fallback)}
+              </Text>
+              <Text style={styles.cardSubtitle}>
+                {translate(item.subtitleKey, item.subtitleFallback)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
 
       <OnboardingModal visible={onboardingVisible} onClose={cerrarOnboarding} />
@@ -189,11 +196,19 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
   },
+  scrollPhone: {
+    flexGrow: 1,
+  },
+  scrollDesktop: {
+    flexGrow: 1,
+    alignItems: 'center',
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 16,
+    width: '100%',
   },
   welcomeBanner: {
     width: '100%',
@@ -238,7 +253,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   card: {
-    width: '48%',
     backgroundColor: '#ffffff',
     borderRadius: 14,
     padding: 16,
