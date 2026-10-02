@@ -147,6 +147,40 @@ const SHEET_HTML = `<!DOCTYPE html>
   #validPicker.show { display: block; }
   #validPicker div { padding: 8px 10px; font-size: 12.5px; color: #245f09; border-bottom: 1px solid #f2f9ea; }
   .cell.has-validation::after { content: '▾'; color: #245f09; font-size: 9px; position: absolute; bottom: 0; right: 2px; }
+  /* ── Manija de relleno (estilo Excel/Sheets): arrastrar desde la
+     esquina inferior derecha de la celda/rango seleccionado para
+     copiar fórmulas (con sus referencias ajustadas) o continuar una
+     serie (números, fechas, meses, días de semana, texto con número). ── */
+  #sheetTable td { position: relative; }
+  .fillHandle {
+    position: absolute; width: 9px; height: 9px; right: -5px; bottom: -5px;
+    background: #217346; border: 1.5px solid #fff; border-radius: 2px;
+    z-index: 6; cursor: crosshair; touch-action: none;
+  }
+  .fillHandle::before { content: ''; position: absolute; inset: -10px; }
+  .cell.fill-preview { background: #fff6dd !important; outline: 1.5px dashed #c8960c; outline-offset: -1.5px; }
+  /* ── Fórmulas matriciales: celdas "derramadas" desde FILTRAR/ÚNICOS/
+     SECUENCIA/ORDENAR — son solo de lectura visual, se recalculan solas. ── */
+  .cell.spill-cell { background: #f5fbe9; color: #3d6020; }
+  .cell.has-control { display: flex; align-items: center; justify-content: center; }
+  .controlFormulario { width: 17px; height: 17px; margin: 0; }
+  .cell.has-native-select { padding: 0; }
+  .nativeSelectCell { width: 100%; height: 100%; border: none; background: transparent; font-size: 12px; font-family: inherit; color: inherit; padding: 0 4px; }
+  .sparklineSvg { position: absolute; right: 2px; bottom: 1px; pointer-events: none; line-height: 0; }
+  .sparklineSvg svg { display: block; }
+  /* ── Cursores en vivo: dónde está parado cada otro usuario conectado
+     a esta misma matriz en este momento (estilo Google Sheets). ── */
+  .cell.cursor-remoto-0 { outline: 2px solid #e67e22; outline-offset: -2px; }
+  .cell.cursor-remoto-1 { outline: 2px solid #8e44ad; outline-offset: -2px; }
+  .cell.cursor-remoto-2 { outline: 2px solid #2980b9; outline-offset: -2px; }
+  .cell.cursor-remoto-3 { outline: 2px solid #c0392b; outline-offset: -2px; }
+  .cell.cursor-remoto-4 { outline: 2px solid #16a085; outline-offset: -2px; }
+  .cell.cursor-remoto-5 { outline: 2px solid #d35400; outline-offset: -2px; }
+  .cursorRemotoTag {
+    position: absolute; top: -16px; left: -2px; font-size: 9px; color: #fff;
+    padding: 1px 5px; border-radius: 3px 3px 3px 0; white-space: nowrap;
+    z-index: 7; pointer-events: none; max-width: 110px; overflow: hidden; text-overflow: ellipsis;
+  }
   #fnAutocomplete.show { display: block; }
   #fnAutocomplete div { padding: 7px 10px; font-size: 12px; color: #245f09; border-bottom: 1px solid #f2f9ea; }
   #fnAutocomplete div b { color: #2d7a0c; }
@@ -176,14 +210,14 @@ const SHEET_HTML = `<!DOCTYPE html>
   .tab.active { background: #fff; color: #217346; box-shadow: 0 -1.5px 0 #217346 inset; }
   #addTabBtn { padding: 6px 10px; border-radius: 4px; font-size: 14px; font-weight: 700; background: #217346; color: #fff; flex-shrink: 0; }
 
-  #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay {
+  #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9000;
     display: none; align-items: center; justify-content: center; padding: 12px;
   }
-  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show, #formatOverlay.show, #authOverlay.show, #matricesOverlay.show, #shareOverlay.show, #condOverlay.show, #validOverlay.show { display: flex; }
-  #chartModal, #tabMenuModal, #noteModal, #formatModal, #authModal, #shareModal, #condModal, #validModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
-  #chartModal h3, #tabMenuModal h3, #noteModal h3, #formatModal h3, #authModal h3, #shareModal h3, #condModal h3, #validModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
-  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea, #formatModal select, #formatModal input, #authModal input, #shareModal input, #condModal select, #condModal input, #validModal select, #validModal input, #validModal textarea { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
+  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show, #formatOverlay.show, #authOverlay.show, #matricesOverlay.show, #shareOverlay.show, #condOverlay.show, #validOverlay.show, #condAvanzadoOverlay.show { display: flex; }
+  #chartModal, #tabMenuModal, #noteModal, #formatModal, #authModal, #shareModal, #condModal, #validModal, #condAvanzadoModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
+  #chartModal h3, #tabMenuModal h3, #noteModal h3, #formatModal h3, #authModal h3, #shareModal h3, #condModal h3, #validModal h3, #condAvanzadoModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
+  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea, #formatModal select, #formatModal input, #authModal input, #shareModal input, #condModal select, #condModal input, #validModal select, #validModal input, #validModal textarea, #condAvanzadoModal select, #condAvanzadoModal input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
   #noteModal textarea { min-height: 80px; resize: vertical; }
   .condRuleItem, .validRuleItem { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #f2f9ea; border-radius: 6px; margin-bottom: 6px; font-size: 11.5px; }
   .condRuleItem span, .validRuleItem span { flex: 1; padding-right: 6px; }
@@ -321,6 +355,60 @@ const SHEET_HTML = `<!DOCTYPE html>
   #auditOverlay.show { display: flex; }
   #backupOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #backupOverlay.show { display: flex; }
+  #rangosOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #rangosOverlay.show { display: flex; }
+  #pasteEspecialOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #pasteEspecialOverlay.show { display: flex; }
+  #pasteEspecialModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; }
+  #pasteEspecialHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; }
+  #pasteEspecialHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #pasteEspecialHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #macrosOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #macrosOverlay.show { display: flex; }
+  #macrosModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden; }
+  #macrosHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #macrosHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #macrosHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #macrosList { overflow-y: auto; padding: 6px 10px; }
+  #segmentadoresOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #segmentadoresOverlay.show { display: flex; }
+  #segmentadoresModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden; }
+  #segmentadoresHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #segmentadoresHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #segmentadoresHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #segmentadoresList { overflow-y: auto; padding: 6px 10px; }
+  .slicerBox { border: 1.5px solid #dbeecb; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+  .slicerTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .slicerTop b { font-size: 12.5px; color: #1e5208; }
+  .slicerChips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .slicerChip { padding: 5px 10px; border-radius: 14px; font-size: 11px; font-weight: 700; border: 1.5px solid #2d7a0c; background: #2d7a0c; color: #fff; }
+  .slicerChip.excluido { background: #fff; color: #999; border-color: #ddd; text-decoration: line-through; }
+  .slicerDelBtn { background: #dc2626; color: #fff; border: none; border-radius: 6px; padding: 5px 9px; font-size: 11px; }
+  #tipoCambioOverlay, #haciendaOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #tipoCambioOverlay.show, #haciendaOverlay.show { display: flex; }
+  #tipoCambioModal, #haciendaModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; }
+  #tipoCambioHead, #haciendaHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; }
+  #tipoCambioHead h3, #haciendaHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #tipoCambioHead button, #haciendaHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #tipoCambioModal code, #haciendaModal code { background: #f2f9ea; padding: 1px 4px; border-radius: 4px; }
+  #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #buscarObjetivoOverlay.show, #tablaDatosOverlay.show, #escenariosOverlay.show { display: flex; }
+  #buscarObjetivoModal, #tablaDatosModal, #escenariosModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto; }
+  #buscarObjetivoHead, #tablaDatosHead, #escenariosHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #buscarObjetivoHead h3, #tablaDatosHead h3, #escenariosHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #buscarObjetivoHead button, #tablaDatosHead button, #escenariosHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #buscarObjetivoModal > div:last-child, #tablaDatosModal > div:last-child { padding-bottom: 14px; }
+  #escenariosList { overflow-y: auto; padding: 6px 10px; }
+  #macroGrabandoBar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999; display: none;
+    align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 14px; background: #c0392b; color: #fff; font-size: 12.5px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  #macroGrabandoBar.show { display: flex; }
+  #macroGrabandoBar::before { content: '●'; animation: macroParpadeo 1s infinite; }
+  @keyframes macroParpadeo { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+  #macroGrabandoBar button { background: #fff; color: #c0392b; border: none; border-radius: 6px; padding: 6px 11px; font-size: 11.5px; font-weight: 700; flex-shrink: 0; }
   #reciboOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #reciboOverlay.show { display: flex; }
   #reportesOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
@@ -355,11 +443,11 @@ const SHEET_HTML = `<!DOCTYPE html>
   .repMesFila { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; color: #333; }
   .repMesFila.repNeto { font-weight: 800; border-top: 1px solid #eee; margin-top: 4px; padding-top: 5px; color: #1e5208; }
   .repMesFila .repNegativo { color: #b02a2a; }
-  #feHistModal, #matricesModal, #auditModal, #backupModal, #reciboModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
-  #feHistHead, #matricesHead, #auditHead, #backupHead, #reciboHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
-  #feHistHead h3, #matricesHead h3, #auditHead h3, #backupHead h3, #reciboHead h3 { color: #fff; margin: 0; font-size: 13px; }
-  #feHistHead button, #matricesHead button, #auditHead button, #backupHead button, #reciboHead button { background: none; border: none; color: #fff; font-size: 18px; }
-  #feHistList, #auditList, #backupList, #feHistHaciendaList { overflow-y: auto; padding: 6px 10px; }
+  #feHistModal, #matricesModal, #auditModal, #backupModal, #reciboModal, #rangosModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
+  #feHistHead, #matricesHead, #auditHead, #backupHead, #reciboHead, #rangosHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #feHistHead h3, #matricesHead h3, #auditHead h3, #backupHead h3, #reciboHead h3, #rangosHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #feHistHead button, #matricesHead button, #auditHead button, #backupHead button, #reciboHead button, #rangosHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #feHistList, #auditList, #backupList, #feHistHaciendaList, #rangosList { overflow-y: auto; padding: 6px 10px; }
   #feHistTabs { display: flex; gap: 6px; padding: 8px 10px 0; flex-shrink: 0; }
   #feHistTabs button { flex: 1; border: 1.5px solid #cce9ae; background: #fff; color: #2d7a0c; font-size: 11.5px; font-weight: 700; padding: 7px 4px; border-radius: 8px 8px 0 0; }
   #feHistTabs button.feHistTabActiva { background: #2d7a0c; color: #fff; border-color: #2d7a0c; }
@@ -447,7 +535,9 @@ const SHEET_HTML = `<!DOCTYPE html>
     #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay, #pivoteOverlay,
     #auditOverlay, #backupOverlay, #reciboOverlay, #fnOverlay, #feOverlay, #feHistOverlay,
     #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
-    #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay { display: none !important; }
+    #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay,
+    #macrosOverlay, #segmentadoresOverlay, #tipoCambioOverlay, #haciendaOverlay,
+    #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay { display: none !important; }
     #gridWrap { overflow: visible !important; height: auto !important; }
     body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
     .cell.has-note::after, .cell.has-attachment::before, .cell.has-validation::after { display: none; }
@@ -519,15 +609,18 @@ const SHEET_HTML = `<!DOCTYPE html>
       </div>
   <div id="toolbar">
     <button id="btnUndo" disabled>↶ Deshacer</button>
+    <button id="btnRedo" disabled>↷ Rehacer</button>
     <button id="btnCut">✂️ Cortar</button>
     <button id="btnCopy">⧉ Copiar</button>
     <button id="btnPaste">📋 Pegar</button>
+    <button id="btnPasteEspecial">📋▾ Especial</button>
     <button id="btnBold">N</button>
     <button id="btnItalic">I</button>
     <button id="btnCurrency">₡</button>
     <button id="btnPercent">%</button>
     <button id="btnFormat">🔢 Formato</button>
     <button id="btnCondFormat">🎨 Cond.</button>
+    <button id="btnCondAvanzado">🌈 Cond. Avanzado</button>
     <button id="btnValidacion">✅ Validación</button>
     <button id="btnMerge">⛶ Combinar</button>
     <button id="btnOrdenar">⇅ Ordenar</button>
@@ -545,6 +638,15 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnDarkMode">🌙</button>
     <button id="btnAuditoria">🕐 Auditoría</button>
     <button id="btnBackup">☁️ Backups</button>
+    <button id="btnRangos">📛 Rangos</button>
+    <button id="btnMacros">▶ Macros</button>
+    <button id="btnSegmentadores">🔘 Segmentadores</button>
+    <button id="btnTipoCambio">💱 Tipo Cambio</button>
+    <button id="btnPadronHacienda">🏛 Padrón Hacienda</button>
+    <button id="btnBuscarObjetivo">🎯 Buscar Objetivo</button>
+    <button id="btnTablaDatos">📊 Tabla de Datos</button>
+    <button id="btnEscenarios">🧪 Escenarios</button>
+    <button id="btnMostrarOcultos" style="display:none;">👁 Mostrar todo</button>
     <button id="btnRecibo">📷 Recibo</button>
     <button id="btnBuscarGlobal">🔍 Buscar en todo</button>
     <input type="file" id="reciboFileInput" accept="image/*" capture="environment" style="display:none" />
@@ -592,6 +694,11 @@ const SHEET_HTML = `<!DOCTYPE html>
     <span id="saveStatus">Listo</span>
   </div>
 
+  <div id="macroGrabandoBar">
+    <span>⏺ Grabando macro: <b id="macroGrabandoNombre"></b></span>
+    <button id="macroGrabandoDetenerBtn">■ Detener</button>
+  </div>
+
   <div id="rangeActionsBar">
     <span id="rangeLabel">A1:A1</span>
     <button id="raBold">N Negrita</button>
@@ -605,6 +712,14 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="raFontColor" style="background:#333;">A Color</button>
     <button id="raCut">✂️ Cortar</button>
     <button id="raCopy">⧉ Copiar</button>
+    <button id="raPasteEspecial">📋▾ Pegado especial</button>
+    <button id="raNombrar">📛 Nombrar rango</button>
+    <button id="raOcultarFilas">🙈 Ocultar fila(s)</button>
+    <button id="raOcultarCols">🙈 Ocultar columna(s)</button>
+    <button id="raSparkline">📈 Sparkline</button>
+    <button id="raSegmentador">🔘 Segmentador</button>
+    <button id="raCheckbox">☑️ Casilla</button>
+    <button id="raRadio">⚪ Radio</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
   </div>
 
@@ -758,6 +873,39 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="condAvanzadoOverlay">
+  <div id="condAvanzadoModal">
+    <h3>🌈 Formato condicional avanzado</h3>
+    <span class="field-label">Rango (ej: B2:B20)</span>
+    <input id="caRange" type="text" placeholder="Ej: B2:B20" />
+    <span class="field-label">Tipo</span>
+    <select id="caTipo">
+      <option value="databar">Barra de datos</option>
+      <option value="colorscale">Escala de color</option>
+    </select>
+    <div id="caDatabarCampos">
+      <span class="field-label">Color de la barra</span>
+      <input id="caColorBarra" type="color" value="#5a9bd5" />
+    </div>
+    <div id="caColorscaleCampos" style="display:none;">
+      <span class="field-label">Color — valor más bajo</span>
+      <input id="caColorMin" type="color" value="#f8696b" />
+      <span class="field-label">Color — valor medio (opcional)</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input id="caUsarMedio" type="checkbox" style="width:auto;margin:0;" />
+        <input id="caColorMedio" type="color" value="#ffeb84" style="flex:1;" disabled />
+      </div>
+      <span class="field-label">Color — valor más alto</span>
+      <input id="caColorMax" type="color" value="#63be7b" />
+    </div>
+    <div class="row" style="justify-content:space-between;">
+      <button class="cancel" id="caCancel">Cerrar</button>
+      <button class="ok" id="caAddBtn">+ Agregar regla</button>
+    </div>
+    <div id="caRulesList" style="margin-top:10px;"></div>
+  </div>
+</div>
+
 <div id="validOverlay">
   <div id="validModal">
     <h3>✅ Validación de datos</h3>
@@ -765,6 +913,9 @@ const SHEET_HTML = `<!DOCTYPE html>
     <input id="validRange" type="text" placeholder="Ej: C2:C20" />
     <span class="field-label">Lista de valores permitidos (uno por línea o separados por coma)</span>
     <textarea id="validList" rows="4" placeholder="Sí&#10;No&#10;Pendiente" style="width:100%;padding:8px;border:1px solid #cce9ae;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical;"></textarea>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
+      <input id="validNativa" type="checkbox" style="width:auto;margin:0;" /> Mostrar como lista desplegable nativa sobre la celda
+    </label>
     <div class="row" style="justify-content:space-between;">
       <button class="cancel" id="validCancel">Cerrar</button>
       <button class="ok" id="validAddBtn">+ Agregar validación</button>
@@ -1018,6 +1169,145 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="rangosOverlay">
+  <div id="rangosModal">
+    <div id="rangosHead">
+      <h3>📛 Rangos con nombre</h3>
+      <button id="rangosClose">✕</button>
+    </div>
+    <div style="padding:8px 10px;font-size:11.5px;color:#6b8f48;">Seleccioná un rango en la hoja (arrastrando celdas) y usá "📛 Nombrar rango" en la barra que aparece, o escribí uno acá:</div>
+    <div style="padding:0 10px 10px;display:flex;gap:6px;">
+      <input id="rangosNombreInput" type="text" placeholder="ej: Ventas_Enero" style="flex:1;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;" />
+      <button id="rangosCrearBtn" style="padding:8px 12px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;white-space:nowrap;">+ Crear</button>
+    </div>
+    <div id="rangosList"></div>
+  </div>
+</div>
+
+<div id="macrosOverlay">
+  <div id="macrosModal">
+    <div id="macrosHead">
+      <h3>▶ Macros</h3>
+      <button id="macrosClose">✕</button>
+    </div>
+    <div style="padding:8px 10px;font-size:11.5px;color:#6b8f48;">Grabá una secuencia de acciones (escribir, pegar, rellenar, dar formato, ordenar) una sola vez, y después ejecutala con un toque cuantas veces necesités. Nota: una macro repite los mismos cambios en las mismas celdas donde se grabó — si movés la hoja de lugar antes de grabar, grabala de nuevo desde ahí.</div>
+    <div style="padding:0 10px 10px;">
+      <button id="macrosGrabarBtn" style="width:100%;padding:10px;border-radius:8px;background:#c0392b;color:#fff;border:none;font-weight:700;">⏺ Grabar nueva macro</button>
+    </div>
+    <div id="macrosList"></div>
+  </div>
+</div>
+
+<div id="segmentadoresOverlay">
+  <div id="segmentadoresModal">
+    <div id="segmentadoresHead">
+      <h3>🔘 Segmentadores</h3>
+      <button id="segmentadoresClose">✕</button>
+    </div>
+    <div style="padding:8px 10px;font-size:11.5px;color:#6b8f48;">Filtro visual con botones (como en Excel): seleccioná una columna de datos en la hoja y usá "🔘 Segmentador" en la barra de rango para crear uno nuevo. Tocá un valor para ocultarlo/mostrarlo.</div>
+    <div id="segmentadoresList"></div>
+  </div>
+</div>
+
+<div id="tipoCambioOverlay">
+  <div id="tipoCambioModal">
+    <div id="tipoCambioHead">
+      <h3>💱 Tipo de Cambio</h3>
+      <button id="tipoCambioClose">✕</button>
+    </div>
+    <div style="padding:10px 12px;font-size:11.5px;color:#6b8f48;">Dólar/colón oficial, publicado por Hacienda con el dato que reporta el BCCR. Se consulta por internet — necesitás conexión.</div>
+    <div id="tcEstado" style="padding:0 12px 10px;font-size:13px;color:#2d3b1f;">Todavía no se consultó. Tocá "Actualizar".</div>
+    <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px;">
+      <button id="tcActualizarBtn" style="padding:10px;border-radius:8px;background:#217346;color:#fff;border:none;font-weight:700;">🔄 Actualizar</button>
+      <div style="display:flex;gap:8px;">
+        <button id="tcInsertarCompraBtn" style="flex:1;padding:9px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;font-size:12px;">📥 Insertar compra en la celda actual</button>
+        <button id="tcInsertarVentaBtn" style="flex:1;padding:9px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;font-size:12px;">📥 Insertar venta en la celda actual</button>
+      </div>
+      <div style="font-size:11px;color:#888;">También podés escribir <code>=TIPOCAMBIO("compra")</code> o <code>=TIPOCAMBIO("venta")</code> en cualquier celda — se actualiza sola cada vez que tocás "Actualizar".</div>
+    </div>
+  </div>
+</div>
+
+<div id="haciendaOverlay">
+  <div id="haciendaModal">
+    <div id="haciendaHead">
+      <h3>🏛 Padrón de Hacienda</h3>
+      <button id="haciendaClose">✕</button>
+    </div>
+    <div style="padding:10px 12px;font-size:11.5px;color:#6b8f48;">Consultá el nombre y la situación tributaria de una cédula física o jurídica en el padrón del Ministerio de Hacienda. Necesitás conexión a internet.</div>
+    <div style="padding:0 12px;display:flex;gap:6px;">
+      <input id="haciendaCedulaInput" type="text" inputmode="numeric" placeholder="Ej: 3101042624" style="flex:1;border:1.5px solid #cce9ae;border-radius:8px;padding:9px 10px;font-size:13px;" />
+      <button id="haciendaConsultarBtn" style="padding:9px 14px;border-radius:8px;background:#217346;color:#fff;border:none;white-space:nowrap;">🔎 Consultar</button>
+    </div>
+    <div id="haciendaResultado" style="padding:10px 12px;font-size:13px;color:#2d3b1f;"></div>
+    <div style="padding:0 12px 12px;">
+      <button id="haciendaInsertarBtn" style="width:100%;padding:9px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;font-size:12px;">📥 Insertar nombre en la celda actual</button>
+      <div style="font-size:11px;color:#888;margin-top:8px;">También podés escribir <code>=PADRON(celda_con_cedula; "nombre")</code> en una fórmula — funciona para cualquier cédula que ya hayas consultado acá (el campo puede ser "nombre", "regimen", "situacion" o "moroso").</div>
+    </div>
+  </div>
+</div>
+
+<div id="buscarObjetivoOverlay">
+  <div id="buscarObjetivoModal">
+    <div id="buscarObjetivoHead">
+      <h3>🎯 Buscar Objetivo</h3>
+      <button id="buscarObjetivoClose">✕</button>
+    </div>
+    <div style="padding:10px 12px;font-size:11.5px;color:#6b8f48;">Encontrá qué valor necesita una celda de entrada para que otra celda con fórmula llegue a un resultado específico — ej: "¿a qué tipo de cambio mi ganancia llega a ₡500.000?".</div>
+    <div style="padding:0 12px;display:flex;flex-direction:column;gap:8px;">
+      <div><label class="field-label">Celda con la fórmula (el resultado que querés lograr)</label><input id="boCeldaFormula" type="text" placeholder="ej: D10" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <div><label class="field-label">Al valor</label><input id="boValorObjetivo" type="number" placeholder="ej: 500000" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <div><label class="field-label">Cambiando la celda (la celda de entrada a ajustar)</label><input id="boCeldaVariable" type="text" placeholder="ej: B2" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <button id="boResolverBtn" style="padding:10px;border-radius:8px;background:#217346;color:#fff;border:none;font-weight:700;">🎯 Resolver</button>
+      <div id="boResultado" style="font-size:12.5px;padding:4px 0;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="tablaDatosOverlay">
+  <div id="tablaDatosModal">
+    <div id="tablaDatosHead">
+      <h3>📊 Tabla de Datos</h3>
+      <button id="tablaDatosClose">✕</button>
+    </div>
+    <div style="padding:10px 12px;font-size:11.5px;color:#6b8f48;">Probá una lista de valores alternativos en una celda de entrada, y escribí el resultado de una fórmula para cada uno — ej: el margen de ganancia probando distintos precios. Los resultados quedan como valores fijos (no se recalculan solos).</div>
+    <div style="padding:0 12px;display:flex;flex-direction:column;gap:8px;">
+      <div><label class="field-label">Celda de entrada (la que se va a variar)</label><input id="tdCeldaVariable" type="text" placeholder="ej: B2" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <div><label class="field-label">Celda con la fórmula a observar</label><input id="tdCeldaFormula" type="text" placeholder="ej: D10" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <div><label class="field-label">Rango con los valores a probar (ya escritos en la hoja)</label><input id="tdRangoValores" type="text" placeholder="ej: F2:F8" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <div><label class="field-label">Celda donde empezar a escribir los resultados</label><input id="tdCeldaResultados" type="text" placeholder="ej: G2" style="width:100%;border:1.5px solid #cce9ae;border-radius:8px;padding:8px 10px;font-size:13px;box-sizing:border-box;" /></div>
+      <button id="tdCalcularBtn" style="padding:10px;border-radius:8px;background:#217346;color:#fff;border:none;font-weight:700;">📊 Calcular</button>
+      <div id="tdResultado" style="font-size:12.5px;padding:4px 0;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="escenariosOverlay">
+  <div id="escenariosModal">
+    <div id="escenariosHead">
+      <h3>🧪 Escenarios</h3>
+      <button id="escenariosClose">✕</button>
+    </div>
+    <div style="padding:8px 10px;font-size:11.5px;color:#6b8f48;">Guardá distintos juegos de valores de entrada (ej: "Optimista", "Pesimista") y después aplicalos con un toque. Dejá las celdas con los valores que querés recordar, seleccionalas (arrastrando), y tocá "+ Agregar escenario".</div>
+    <div style="padding:0 10px 10px;"><button id="escAgregarBtn" style="width:100%;padding:10px;border-radius:8px;background:#245f09;color:#fff;border:none;font-weight:700;">+ Agregar escenario desde la selección actual</button></div>
+    <div id="escenariosList"></div>
+  </div>
+</div>
+
+<div id="pasteEspecialOverlay">
+  <div id="pasteEspecialModal">
+    <div id="pasteEspecialHead">
+      <h3>📋 Pegado especial</h3>
+      <button id="pasteEspecialClose">✕</button>
+    </div>
+    <div style="padding:10px;display:flex;flex-direction:column;gap:8px;">
+      <button id="peNormal" style="padding:11px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;text-align:left;">📋 Normal — fórmulas y valores, igual que copiar/pegar de siempre</button>
+      <button id="peValores" style="padding:11px;border-radius:8px;background:#245f09;color:#fff;border:none;text-align:left;">🔢 Solo valores — pega el resultado, sin la fórmula</button>
+      <button id="peTransponer" style="padding:11px;border-radius:8px;background:#1e5208;color:#fff;border:none;text-align:left;">⇄ Transponer — intercambia filas por columnas (como valores)</button>
+    </div>
+  </div>
+</div>
+
 <div id="reciboOverlay">
   <div id="reciboModal">
     <div id="reciboHead">
@@ -1157,11 +1447,72 @@ var sheetMerges = { Hoja1: [], Hoja2: [], Hoja3: [] };
 var sheetFreeze = { Hoja1: { row: 0, col: 0 }, Hoja2: { row: 0, col: 0 }, Hoja3: { row: 0, col: 0 } };
 var sheetCondFormats = { Hoja1: [], Hoja2: [], Hoja3: [] };
 var sheetValidations = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+// Rangos con nombre (igual que en Excel): NOMBRE -> { hoja, from, to }.
+// Son de toda la matriz, no de una hoja en particular — igual que en Excel,
+// un rango con nombre se puede usar desde cualquier hoja.
+var rangosNombrados = {};
+// Filas/columnas ocultas por hoja (agrupar/ocultar, como en Excel):
+// listas de índices (0-based) que no se dibujan en la grilla.
+var sheetHiddenRows = { Hoja1: [], Hoja2: [], Hoja3: [] };
+var sheetHiddenCols = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// Macros (grabadora de acciones, como la de Excel): NOMBRE -> lista de
+// "pasos". Cada paso es el conjunto de celdas/formatos que cambiaron entre
+// dos llamadas snapshot()/autoSave() consecutivas mientras se grababa —
+// así se reutiliza el mismo mecanismo de deshacer que ya usa toda la app,
+// sin tener que "enganchar" cada función una por una.
+var macros = {};
+var grabandoMacro = null; // nombre de la macro en grabación, o null si no hay ninguna
+var pasosGrabados = [];
+var _macroEstadoAntes = null;
+// Sparklines (mini-gráficos dentro de una celda, como en Excel): se guardan
+// por hoja, celda -> { rango, tipo }. "rango" es de dónde sacan los datos
+// (ej. B2:B13), "tipo" es 'linea' | 'barras' | 'ganancia_perdida'. Se
+// dibujan en cada renderAllCells(), igual que el formato condicional: el
+// valor normal de la celda (si tiene) convive con el gráfico.
+var sheetSparklines = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+// Segmentadores/slicers (filtro visual con botones, como en Excel): por
+// hoja, una lista de { id, nombre, columna, filaInicio, filaFin, excluidos }.
+// "excluidos" son los valores destildados — las filas cuyo valor en esa
+// columna está en "excluidos" se ocultan, por ENCIMA (nunca en lugar) de
+// las filas que el usuario ocultó a mano con "Ocultar fila(s)".
+var sheetSlicers = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// ── "Power Query" casero: conexión a datos públicos por internet ──
+// No se guardan en sheetData (son datos externos, no algo que el usuario
+// escribió), sino en estas dos variables + un pequeño caché en
+// localStorage, independiente de la matriz (igual que el modo oscuro):
+// el último tipo de cambio consultado, y las consultas al padrón de
+// Hacienda por cédula (para que =PADRON(...) las pueda usar sin tener
+// que volver a pedirlas por internet cada vez que se recalcula la hoja).
+var ultimoTipoCambio = null; // { compra, venta, fecha }
+var consultasHaciendaCache = {}; // cedula -> respuesta de la API de Hacienda
+// Administrador de escenarios (What-If, como en Excel): por hoja, una
+// lista de { id, nombre, celdas: { id_de_celda: valor_crudo } } — una
+// "foto" de los valores que tenían ciertas celdas al momento de guardar
+// el escenario, para poder volver a aplicarlos con un toque.
+var sheetEscenarios = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// Formato condicional avanzado (barras de datos / escalas de color, como
+// en Excel): por hoja, lista de { range, type: 'databar'|'colorscale',
+// color (barra), colorMin/colorMedio/colorMax (escala) }. Se calculan en
+// cada render según el mínimo/máximo ACTUAL de los valores del rango —
+// nunca se guardan como color fijo.
+var sheetCondFormatsAvanzado = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// Controles de formulario (casillas de verificación y botones de radio,
+// como en Excel): por hoja, celda -> { tipo: 'checkbox'|'radio', grupo
+// (solo radio) }. Reemplazan el texto de la celda por un control real;
+// marcar/desmarcar escribe VERDADERO/FALSO en la celda. Los botones de
+// radio del mismo "grupo" en una misma hoja son mutuamente excluyentes.
+var sheetControles = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
+// Qué rangos de validación (de los ya existentes en sheetValidations) se
+// dibujan como un <select> nativo del teléfono en vez del popup propio
+// de la app — por hoja, { "B2:B10": true }.
+var sheetValidacionNativa = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var zoomLevel = 100;
 var undoStack = [];
+var redoStack = [];
 var tabMenuTarget = null;
 var clipboard = null;
 var selRangeStart = null, selRangeEnd = null, isSelecting = false;
+var isFilling = false, fillOrigenBounds = null, fillEjeBloqueado = null, fillDestinoBounds = null;
 
 // ── Puente al servidor (SERVICIOWEB / XMLFILTRO) ──────────
 // Reemplazá esta URL por la que te dé Firebase al desplegar la función
@@ -1244,25 +1595,148 @@ function colLetter(i) { return String.fromCharCode(65 + i); }
 function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i < s.length; i++) n = n * 26 + s.charCodeAt(i) - 64; return n - 1; }
 function cellId(r, c) { return colLetter(c) + (r + 1); }
 
+function estadoActualComoJSON() {
+  return JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS });
+}
 function snapshot() {
-  undoStack.push(JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS }));
+  var json = estadoActualComoJSON();
+  // Si se está grabando una macro, este es el "antes" contra el que se va
+  // a comparar el estado una vez que termine la acción (ver autoSave()).
+  if (grabandoMacro) _macroEstadoAntes = json;
+  undoStack.push(json);
   if (undoStack.length > 25) undoStack.shift();
+  // Un cambio nuevo invalida el "rehacer" pendiente, igual que en Excel/Sheets:
+  // si deshacés y después editás algo distinto, ya no se puede "rehacer" lo anterior.
+  redoStack.length = 0;
   document.getElementById('btnUndo').disabled = false;
+  document.getElementById('btnRedo').disabled = true;
 }
 function undo() {
   if (!undoStack.length) return;
+  redoStack.push(estadoActualComoJSON());
+  if (redoStack.length > 25) redoStack.shift();
   var prev = JSON.parse(undoStack.pop());
   sheets = prev.sheets; sheetData = prev.sheetData; sheetFormats = prev.sheetFormats;
   sheetNotes = prev.sheetNotes || {}; colWidths = prev.colWidths || {}; activeSheet = prev.activeSheet; ROWS = prev.ROWS || ROWS; COLS = prev.COLS || COLS;
   sheetCondFormats = prev.sheetCondFormats || sheetCondFormats; sheetValidations = prev.sheetValidations || sheetValidations;
+  rangosNombrados = prev.rangosNombrados || rangosNombrados;
+  sheetHiddenRows = prev.sheetHiddenRows || sheetHiddenRows; sheetHiddenCols = prev.sheetHiddenCols || sheetHiddenCols;
+  macros = prev.macros || macros;
+  sheetSparklines = prev.sheetSparklines || sheetSparklines; sheetSlicers = prev.sheetSlicers || sheetSlicers;
+  sheetEscenarios = prev.sheetEscenarios || sheetEscenarios;
+  sheetCondFormatsAvanzado = prev.sheetCondFormatsAvanzado || sheetCondFormatsAvanzado;
+  sheetControles = prev.sheetControles || sheetControles;
+  sheetValidacionNativa = prev.sheetValidacionNativa || sheetValidacionNativa;
   buildTable(); autoSave();
   if (!undoStack.length) document.getElementById('btnUndo').disabled = true;
+  document.getElementById('btnRedo').disabled = false;
+}
+function redo() {
+  if (!redoStack.length) return;
+  undoStack.push(estadoActualComoJSON());
+  if (undoStack.length > 25) undoStack.shift();
+  var next = JSON.parse(redoStack.pop());
+  sheets = next.sheets; sheetData = next.sheetData; sheetFormats = next.sheetFormats;
+  sheetNotes = next.sheetNotes || {}; colWidths = next.colWidths || {}; activeSheet = next.activeSheet; ROWS = next.ROWS || ROWS; COLS = next.COLS || COLS;
+  sheetCondFormats = next.sheetCondFormats || sheetCondFormats; sheetValidations = next.sheetValidations || sheetValidations;
+  rangosNombrados = next.rangosNombrados || rangosNombrados;
+  sheetHiddenRows = next.sheetHiddenRows || sheetHiddenRows; sheetHiddenCols = next.sheetHiddenCols || sheetHiddenCols;
+  macros = next.macros || macros;
+  sheetSparklines = next.sheetSparklines || sheetSparklines; sheetSlicers = next.sheetSlicers || sheetSlicers;
+  sheetEscenarios = next.sheetEscenarios || sheetEscenarios;
+  sheetCondFormatsAvanzado = next.sheetCondFormatsAvanzado || sheetCondFormatsAvanzado;
+  sheetControles = next.sheetControles || sheetControles;
+  sheetValidacionNativa = next.sheetValidacionNativa || sheetValidacionNativa;
+  buildTable(); autoSave();
+  document.getElementById('btnUndo').disabled = false;
+  if (!redoStack.length) document.getElementById('btnRedo').disabled = true;
 }
 
 // ══════════════════════════════════════════════
 // MOTOR DE FÓRMULAS
 // ══════════════════════════════════════════════
-function getRaw(id) { return (sheetData[activeSheet] && sheetData[activeSheet][id] !== undefined) ? sheetData[activeSheet][id] : ''; }
+// ── Fórmulas entre hojas (Hoja2!A1) ──
+// Mientras se evalúa una fórmula, "hojaFormulaActual" puede apuntar
+// temporalmente a OTRA hoja distinta de la que está abierta en pantalla
+// (activeSheet) — eso es lo que permite que una fórmula en "Hoja1" lea
+// celdas de "Hoja2". Se restaura siempre con try/finally, así que
+// ningún código fuera de una evaluación de fórmula (el resto de la app:
+// commitCell, la manija de relleno, etc.) se ve afectado — ahí
+// "hojaFormulaActual" siempre vale null y getRaw usa activeSheet como
+// siempre lo hizo.
+var hojaFormulaActual = null;
+function computeValueEnHoja(hoja, id) {
+  var anterior = hojaFormulaActual;
+  hojaFormulaActual = hoja;
+  try { return computeValue(id); } finally { hojaFormulaActual = anterior; }
+}
+// Reconoce "Hoja2!A1" o "'Mi Hoja'!A1" (comillas simples para nombres
+// con espacios, igual que Excel) y devuelve { hoja, celda } solo si
+// "Hoja2" es una hoja que de verdad existe en esta matriz.
+function parseRefConHoja(token) {
+  var m = (token || '').trim().match(/^(?:'([^']+)'|([^'!]+))!([A-Za-z]+\\d+)$/);
+  if (!m) return null;
+  var hoja = m[1] || m[2];
+  if (sheets.indexOf(hoja) === -1) return null;
+  return { hoja: hoja, celda: m[3].toUpperCase() };
+}
+// Separa el prefijo de hoja (si lo hay) de un rango, para que
+// rangeNums/rangeVals/isRange sepan de qué hoja sacar los valores.
+function partirRango(a) {
+  a = (a || '').trim();
+  var m = a.match(/^(?:'([^']+)'|([^'!]+))!(.+)$/);
+  var hoja = activeSheet, resto = a;
+  if (m && sheets.indexOf(m[1] || m[2]) !== -1) { hoja = m[1] || m[2]; resto = m[3]; }
+  var p = resto.split(':');
+  return { hoja: hoja, from: p[0], to: p[1] };
+}
+var pilaEvaluacionFormulas = [];
+// ── Rangos con nombre (igual que en Excel) ──
+// Un rango con nombre se guarda como { hoja, from, to } (to es igual a
+// from si es una sola celda). Para usarlo en una fórmula no hace falta
+// ninguna sintaxis especial: basta con escribir el nombre, por ejemplo
+// =SUMA(Ventas_Enero). Antes de evaluar cualquier fórmula, se reemplaza
+// cada nombre reconocido por su equivalente "Hoja!A1" o "Hoja!A1:A10" —
+// así todo el resto del motor (que ya sabe leer "Hoja!A1" gracias a las
+// fórmulas entre hojas) lo entiende sin cambios adicionales.
+function resolverNombreRango(token) {
+  var r = rangosNombrados[String(token || '').trim().toUpperCase()];
+  if (!r) return null;
+  var hojaRef = r.hoja.indexOf(' ') !== -1 ? ("'" + r.hoja + "'") : r.hoja;
+  return (r.to && r.to !== r.from) ? (hojaRef + '!' + r.from + ':' + r.to) : (hojaRef + '!' + r.from);
+}
+function sustituirRangosNombrados(expr) {
+  if (!Object.keys(rangosNombrados).length) return expr;
+  var out = '', i = 0, inStr = false, strChar = '';
+  var reToken = /^[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_]*/;
+  while (i < expr.length) {
+    var ch = expr.charAt(i);
+    if (!inStr && (ch === '"' || ch === "'")) { inStr = true; strChar = ch; out += ch; i++; continue; }
+    if (inStr) { out += ch; if (ch === strChar) inStr = false; i++; continue; }
+    if (/[A-Za-zÁÉÍÓÚÑáéíóúñ_]/.test(ch)) {
+      var m = reToken.exec(expr.slice(i));
+      var token = m[0];
+      var resuelto = resolverNombreRango(token);
+      out += resuelto || token;
+      i += token.length;
+      continue;
+    }
+    out += ch; i++;
+  }
+  return out;
+}
+// Nombres que un rango con nombre NUNCA puede usar, para que no choque
+// con una referencia de celda normal ni con el nombre de una función.
+function nombreRangoEsValido(nombre) {
+  nombre = String(nombre || '').trim();
+  if (!nombre) return false;
+  if (!/^[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_]*$/.test(nombre)) return false;
+  if (/^[A-Za-z]+\\d+$/.test(nombre)) return false; // se vería igual que una celda (ej. "A1")
+  if (getAllFnNames().indexOf(nombre.toUpperCase()) !== -1) return false; // ya es el nombre de una función
+  if (['VERDADERO', 'FALSO', 'TRUE', 'FALSE'].indexOf(nombre.toUpperCase()) !== -1) return false;
+  return true;
+}
+function getRaw(id) { var h = hojaFormulaActual || activeSheet; return (sheetData[h] && sheetData[h][id] !== undefined) ? sheetData[h][id] : ''; }
 function toNum(v) { if (v === '' || v === null || v === undefined) return 0; var n = parseFloat(String(v).replace(/[₡,%\\s()]/g, '')); return isNaN(n) ? 0 : n; }
 function fmtNum(n) { if (n === null || n === undefined || isNaN(n)) return '#VALOR!'; return Number(n).toLocaleString('es-CR', { maximumFractionDigits: 10 }); }
 function splitArgs(s) {
@@ -1279,7 +1753,7 @@ function splitArgs(s) {
   if (cur.trim()) args.push(cur.trim());
   return args;
 }
-function isRange(a) { return /^[A-Za-z]+\\d+:[A-Za-z]+\\d+$/.test((a || '').trim()); }
+function isRange(a) { return /^(?:(?:'[^']+'|[^'!:]+)!)?[A-Za-z]+\\d+:[A-Za-z]+\\d+$/.test((a || '').trim()); }
 function getCells(from, to) {
   var fc = colIndex((from.match(/[A-Za-z]+/) || ['A'])[0]);
   var fr = parseInt((from.match(/\\d+/) || [1])[0]) - 1;
@@ -1290,11 +1764,13 @@ function getCells(from, to) {
     for (var c = Math.min(fc, tc); c <= Math.max(fc, tc); c++) out.push(cellId(r, c));
   return out;
 }
-function rangeNums(a) { var p = a.trim().split(':'); return getCells(p[0], p[1]).map(function (c) { return toNum(computeValue(c)); }); }
-function rangeVals(a) { var p = a.trim().split(':'); return getCells(p[0], p[1]).map(function (c) { return computeValue(c); }); }
+function rangeNums(a) { var info = partirRango(a); return getCells(info.from, info.to).map(function (c) { return toNum(computeValueEnHoja(info.hoja, c)); }); }
+function rangeVals(a) { var info = partirRango(a); return getCells(info.from, info.to).map(function (c) { return computeValueEnHoja(info.hoja, c); }); }
 function resolveArg(a) {
   a = (a || '').trim();
   if ((a.startsWith('"') && a.endsWith('"')) || (a.startsWith("'") && a.endsWith("'"))) return a.slice(1, -1);
+  var refHoja = parseRefConHoja(a);
+  if (refHoja) return computeValueEnHoja(refHoja.hoja, refHoja.celda);
   if (/^[A-Za-z]+\\d+$/.test(a)) return computeValue(a.toUpperCase());
   if (a.startsWith('=')) return computeExpr(a.substring(1));
   if (!isNaN(a) && a !== '') return parseFloat(a);
@@ -1344,6 +1820,7 @@ function evalCond(c) {
 }
 
 function computeExpr(expr) {
+  expr = sustituirRangosNombrados(expr);
   var exprUp = expr.toUpperCase().trim();
   try {
     function matchFn(names) {
@@ -1359,6 +1836,31 @@ function computeExpr(expr) {
       return expr.substring(open + 1, end);
     }
     var inner, args;
+
+    // ── "Power Query" casero: datos conectados por internet ──
+    // No hacen la consulta ellas mismas (la fórmula se evalúa de forma
+    // síncrona, y pedir datos por internet es async) — leen el último
+    // dato ya consultado desde el panel "💱 Tipo Cambio" / "🏛 Padrón
+    // Hacienda", y se recalculan solas la próxima vez que se refresque
+    // esa consulta.
+    if ((inner = matchFn('TIPOCAMBIO')) !== null) {
+      args = splitArgs(inner);
+      var tipoTC = (args[0] ? String(resolveArg(args[0])) : 'compra').toLowerCase();
+      if (!ultimoTipoCambio) return '#SIN_DATOS!';
+      return fmtNum(tipoTC.indexOf('vent') === 0 ? ultimoTipoCambio.venta : ultimoTipoCambio.compra);
+    }
+    if ((inner = matchFn('PADRON')) !== null) {
+      args = splitArgs(inner);
+      var cedulaArg = String(resolveArg(args[0] || '')).replace(/[^0-9]/g, '');
+      var campoArg = (args[1] ? String(resolveArg(args[1])) : 'nombre').toLowerCase();
+      var datosPadron = consultasHaciendaCache[cedulaArg];
+      if (!datosPadron) return '#CONSULTAR!';
+      if (campoArg === 'nombre') return datosPadron.nombre || '';
+      if (campoArg === 'regimen') return (datosPadron.regimen && datosPadron.regimen.descripcion) || '';
+      if (campoArg === 'situacion' || campoArg === 'estado') return (datosPadron.situacion && datosPadron.situacion.estado) || '';
+      if (campoArg === 'moroso') return (datosPadron.situacion && datosPadron.situacion.moroso) || '';
+      return '#VALOR!';
+    }
 
     if ((inner = matchFn('SUMA|SUM')) !== null) {
       args = splitArgs(inner); var s = 0;
@@ -4266,12 +4768,23 @@ if((inner=matchFn('BUSCAR\\.NESIMO'))!==null){
     }
 
     if (isRange(expr)) {
-      var p2 = expr.split(':'); var total = 0;
-      getCells(p2[0], p2[1]).forEach(function (c) { total += toNum(computeValue(c)); });
+      var infoR = partirRango(expr); var total = 0;
+      getCells(infoR.from, infoR.to).forEach(function (c) { total += toNum(computeValueEnHoja(infoR.hoja, c)); });
       return fmtNum(total);
     }
+    var refSuelta = parseRefConHoja(expr);
+    if (refSuelta) return String(computeValueEnHoja(refSuelta.hoja, refSuelta.celda));
     if (/^[A-Za-z]+\\d+$/.test(expr)) return String(computeValue(expr.toUpperCase()));
-    var safe = expr.replace(/([A-Za-z]+\\d+)/g, function (m) { return toNum(computeValue(m.toUpperCase())) || 0; });
+    // Ojo: este replace también reconoce "Hoja2!A1" (no solo "A1" suelto),
+    // para que una cuenta como =Hoja2!A1+5 funcione igual que =A1+5.
+    var safe = expr.replace(/((?:'[^']+'|[^'!()+\\-*/,\\s]+)!)?([A-Za-z]+\\d+)/g, function (m, hojaPrefix, celda) {
+      if (hojaPrefix) {
+        var hojaRef = hojaPrefix.slice(0, -1);
+        if (hojaRef.charAt(0) === "'") hojaRef = hojaRef.slice(1, -1);
+        return sheets.indexOf(hojaRef) !== -1 ? (toNum(computeValueEnHoja(hojaRef, celda.toUpperCase())) || 0) : 0;
+      }
+      return toNum(computeValue(celda.toUpperCase())) || 0;
+    });
     if (/^[0-9+\\-*/.() ]+$/.test(safe)) {
       var result = Function('"use strict";return (' + safe + ')')();
       return isNaN(result) ? '#ERR' : fmtNum(result);
@@ -4281,9 +4794,164 @@ if((inner=matchFn('BUSCAR\\.NESIMO'))!==null){
 }
 
 function computeValue(id) {
+  var hojaDeEstaCelda = hojaFormulaActual || activeSheet;
+  var clave = hojaDeEstaCelda + '!' + id;
+  if (pilaEvaluacionFormulas.indexOf(clave) !== -1) return '#REF_CIRCULAR!';
   var raw = getRaw(id);
-  if (typeof raw === 'string' && raw.charAt(0) === '=') return computeExpr(raw.substring(1));
+  if (typeof raw === 'string' && raw.charAt(0) === '=') {
+    // ── Fórmulas matriciales / derrame (FILTRAR, ÚNICOS, SECUENCIA, ORDENAR) ──
+    // Si la fórmula ES (completa, no anidada en otra cosa) una de estas
+    // cuatro funciones, la celda muestra solo su primer resultado — el
+    // resto del resultado se "derrama" sobre las celdas vecinas (ver
+    // calcularSpills(), llamada desde renderAllCells()).
+    var infoArray = formulaArrayInfo(raw);
+    if (infoArray) {
+      pilaEvaluacionFormulas.push(clave);
+      try {
+        var ev = evaluarFormulaArrayEnCelda(hojaDeEstaCelda, id, raw);
+        if (!ev) return '#ERROR!';
+        if (ev.bloqueado) return '#DERRAME!';
+        return ev.resultado[0][0];
+      } finally { pilaEvaluacionFormulas.pop(); }
+    }
+    pilaEvaluacionFormulas.push(clave);
+    try { return computeExpr(raw.substring(1)); } finally { pilaEvaluacionFormulas.pop(); }
+  }
   return raw;
+}
+
+// ══════════════════════════════════════════════
+// FÓRMULAS MATRICIALES / "DERRAME" (estilo Excel 365: FILTER, UNIQUE,
+// SEQUENCE, SORT) — FILTRAR, ÚNICOS, SECUENCIA, ORDENAR.
+// Solo funcionan si son TODA la fórmula de la celda (no se pueden anidar
+// dentro de otra función, ej. =SUMA(FILTRAR(...)) no se reconoce como
+// array — esa es la limitación que se avisa al usuario). El resultado no
+// se guarda en sheetData de las celdas vecinas: se recalcula en cada
+// renderAllCells() y se "pinta" encima, igual que el formato condicional,
+// así siempre queda vivo y nunca se guarda como texto suelto.
+// ══════════════════════════════════════════════
+function formulaArrayInfo(crudo) {
+  if (typeof crudo !== 'string' || crudo.charAt(0) !== '=') return null;
+  var m = crudo.match(/^=\\s*(FILTRAR|UNICOS|SECUENCIA|ORDENAR)\\s*\\(/i);
+  if (!m) return null;
+  var nombre = m[1].toUpperCase();
+  var inicio = m[0].length;
+  var prof = 1, i = inicio;
+  while (i < crudo.length && prof > 0) {
+    if (crudo.charAt(i) === '(') prof++;
+    else if (crudo.charAt(i) === ')') prof--;
+    i++;
+  }
+  if (prof !== 0) return null;
+  var argsTexto = crudo.slice(inicio, i - 1);
+  var resto = crudo.slice(i).trim();
+  if (resto !== '') return null; // hay algo más después del paréntesis de cierre: no es una fórmula de array pura
+  return { nombre: nombre, argsTexto: argsTexto };
+}
+function calcularFormulaArray(hoja, nombre, argsTexto) {
+  var args = splitArgs(argsTexto);
+  if (nombre === 'SECUENCIA') {
+    var filasS = Math.max(1, Math.round(resolveNum(args[0] || '1')));
+    var columnasS = args[1] !== undefined && args[1] !== '' ? Math.max(1, Math.round(resolveNum(args[1]))) : 1;
+    var inicioS = args[2] !== undefined && args[2] !== '' ? resolveNum(args[2]) : 1;
+    var pasoS = args[3] !== undefined && args[3] !== '' ? resolveNum(args[3]) : 1;
+    var outS = [], n = inicioS;
+    for (var rS = 0; rS < filasS; rS++) {
+      var filaS = [];
+      for (var cS = 0; cS < columnasS; cS++) { filaS.push(fmtNum(n)); n += pasoS; }
+      outS.push(filaS);
+    }
+    return outS;
+  }
+  if (nombre === 'UNICOS') {
+    if (!args[0] || !isRange(args[0])) return [['#VALOR!']];
+    var valsU = rangeVals(args[0]);
+    var vistosU = {}, unicosU = [];
+    valsU.forEach(function (v) { var k = String(v); if (!vistosU[k]) { vistosU[k] = true; unicosU.push(v); } });
+    if (!unicosU.length) return [['(sin datos)']];
+    return unicosU.map(function (v) { return [v]; });
+  }
+  if (nombre === 'FILTRAR') {
+    if (!args[0] || !isRange(args[0])) return [['#VALOR!']];
+    var infoD = partirRango(args[0]);
+    var rFrom = Math.min(filaDe(infoD.from), filaDe(infoD.to)), rTo = Math.max(filaDe(infoD.from), filaDe(infoD.to));
+    var cFrom = Math.min(colDe(infoD.from), colDe(infoD.to)), cTo = Math.max(colDe(infoD.from), colDe(infoD.to));
+    var critRango = args[1], criterio = args[2];
+    var critVals = (critRango && isRange(critRango)) ? rangeVals(critRango) : null;
+    var filasOut = [];
+    for (var rr = rFrom; rr <= rTo; rr++) {
+      var incluir = true;
+      if (critVals) incluir = matchCrit(critVals[rr - rFrom], criterio);
+      if (incluir) {
+        var filaVals = [];
+        for (var cc = cFrom; cc <= cTo; cc++) filaVals.push(computeValueEnHoja(infoD.hoja, cellId(rr, cc)));
+        filasOut.push(filaVals);
+      }
+    }
+    if (!filasOut.length) return [['(sin resultados)']];
+    return filasOut;
+  }
+  if (nombre === 'ORDENAR') {
+    if (!args[0] || !isRange(args[0])) return [['#VALOR!']];
+    var infoO = partirRango(args[0]);
+    var rF = Math.min(filaDe(infoO.from), filaDe(infoO.to)), rT = Math.max(filaDe(infoO.from), filaDe(infoO.to));
+    var cFi = Math.min(colDe(infoO.from), colDe(infoO.to)), cTi = Math.max(colDe(infoO.from), colDe(infoO.to));
+    var colOrden = args[1] !== undefined && args[1] !== '' ? Math.max(1, Math.round(resolveNum(args[1]))) : 1;
+    var orden = args[2] !== undefined && args[2] !== '' ? resolveNum(args[2]) : 1;
+    var filasO = [];
+    for (var ro = rF; ro <= rT; ro++) {
+      var filaV = [];
+      for (var co = cFi; co <= cTi; co++) filaV.push(computeValueEnHoja(infoO.hoja, cellId(ro, co)));
+      filasO.push(filaV);
+    }
+    var idxOrdenCol = Math.min(colOrden - 1, filasO[0] ? filasO[0].length - 1 : 0);
+    filasO.sort(function (a, b) {
+      var va = a[idxOrdenCol], vb = b[idxOrdenCol];
+      var na = parseFloat(String(va).replace(/[₡,\\s]/g, '')), nb = parseFloat(String(vb).replace(/[₡,\\s]/g, ''));
+      var cmp = (!isNaN(na) && !isNaN(nb)) ? (na - nb) : String(va).localeCompare(String(vb), 'es');
+      return orden < 0 ? -cmp : cmp;
+    });
+    return filasO;
+  }
+  return [['#NOMBRE?']];
+}
+function filaDe(ref) { return parseInt((ref.match(/\\d+/) || [1])[0], 10) - 1; }
+function colDe(ref) { return colIndex((ref.match(/[A-Za-z]+/) || ['A'])[0]); }
+function evaluarFormulaArrayEnCelda(hoja, id, crudo) {
+  var info = formulaArrayInfo(crudo);
+  if (!info) return null;
+  var datos = sheetData[hoja] || {};
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
+  var colOrigen = colIndex(m[1]), rowOrigen = parseInt(m[2], 10) - 1;
+  var resultado;
+  try { resultado = calcularFormulaArray(hoja, info.nombre, info.argsTexto); } catch (e) { resultado = [['#ERROR!']]; }
+  if (!resultado || !resultado.length || !resultado[0] || !resultado[0].length) resultado = [['']];
+  var filas = resultado.length, columnas = resultado[0].length;
+  var bloqueado = false;
+  for (var rr = 0; rr < filas && !bloqueado; rr++) {
+    for (var cc = 0; cc < columnas; cc++) {
+      if (rr === 0 && cc === 0) continue;
+      var idDestino = cellId(rowOrigen + rr, colOrigen + cc);
+      if (datos[idDestino] !== undefined && datos[idDestino] !== '') { bloqueado = true; break; }
+    }
+  }
+  return { resultado: resultado, filas: filas, columnas: columnas, bloqueado: bloqueado, rowOrigen: rowOrigen, colOrigen: colOrigen };
+}
+function calcularSpills(hoja) {
+  var datos = sheetData[hoja] || {};
+  var valoresSpill = {};
+  Object.keys(datos).forEach(function (id) {
+    var crudo = datos[id];
+    var ev = evaluarFormulaArrayEnCelda(hoja, id, crudo);
+    if (!ev || ev.bloqueado) return;
+    for (var r2 = 0; r2 < ev.filas; r2++) {
+      for (var c2 = 0; c2 < ev.columnas; c2++) {
+        if (r2 === 0 && c2 === 0) continue;
+        valoresSpill[cellId(ev.rowOrigen + r2, ev.colOrigen + c2)] = ev.resultado[r2][c2];
+      }
+    }
+  });
+  return valoresSpill;
 }
 
 // ══════════════════════════════════════════════
@@ -4316,6 +4984,24 @@ function getColWidth(c) {
   return w || 78;
 }
 
+// ── Segmentadores (slicers): qué filas tapan los chips destildados ──
+// Se recalcula en cada buildTable(), nunca se guarda como "oculto a mano"
+// — así tildar/destildar un chip solo cambia esto, sin tocar
+// sheetHiddenRows (que es exclusivamente lo que el usuario ocultó con
+// "Ocultar fila(s)").
+function filasOcultasPorSlicer(hoja) {
+  var slicers = sheetSlicers[hoja] || [];
+  if (!slicers.length) return [];
+  var ocultas = {};
+  slicers.forEach(function (sl) {
+    if (!sl.excluidos || !sl.excluidos.length) return;
+    for (var r = sl.filaInicio; r <= sl.filaFin; r++) {
+      var v = String(computeValueEnHoja(hoja, cellId(r, sl.columna)));
+      if (sl.excluidos.indexOf(v) !== -1) ocultas[r] = true;
+    }
+  });
+  return Object.keys(ocultas).map(function (k) { return parseInt(k, 10); });
+}
 function buildTable() {
   var btnProteger = document.getElementById('btnProtegerHoja');
   if (btnProteger) {
@@ -4339,20 +5025,27 @@ function buildTable() {
   });
   var colLeft = []; var acc = 34;
   for (var cg2 = 0; cg2 < COLS; cg2++) { colLeft.push(acc); acc += getColWidth(cg2); }
+  var filasOcultas = (sheetHiddenRows[activeSheet] || []).concat(filasOcultasPorSlicer(activeSheet));
+  var colsOcultas = sheetHiddenCols[activeSheet] || [];
   var html = '<colgroup><col style="width:34px">';
-  for (var cg = 0; cg < COLS; cg++) html += '<col style="width:' + getColWidth(cg) + 'px">';
+  for (var cg = 0; cg < COLS; cg++) html += '<col style="width:' + getColWidth(cg) + 'px' + (colsOcultas.indexOf(cg) !== -1 ? ';display:none' : '') + '">';
   html += '</colgroup>';
   html += '<thead><tr><th class="corner"></th>';
   for (var c = 0; c < COLS; c++) {
     var thFrozen = c < freeze.col;
-    html += '<th' + (thFrozen ? ' class="frozen-col" style="left:' + colLeft[c] + 'px;"' : '') + ' data-col="' + c + '">' + colLetter(c) + '<div class="colResizer" data-col="' + c + '"></div></th>';
+    var thStyleParts = [];
+    if (thFrozen) thStyleParts.push('left:' + colLeft[c] + 'px;');
+    if (colsOcultas.indexOf(c) !== -1) thStyleParts.push('display:none;');
+    var thStyleAttr = thStyleParts.length ? (' style="' + thStyleParts.join('') + '"') : '';
+    html += '<th' + (thFrozen ? ' class="frozen-col"' : '') + thStyleAttr + ' data-col="' + c + '">' + colLetter(c) + '<div class="colResizer" data-col="' + c + '"></div></th>';
   }
   html += '</tr></thead><tbody>';
   for (var r = 0; r < ROWS; r++) {
     var rFrozen = r < freeze.row;
     var rowheadCls = 'rowhead' + (rFrozen ? ' frozen-row-head' : '');
     var rowheadStyle = rFrozen ? (' style="top:' + (HEADER_H + r * ROW_H) + 'px;"') : '';
-    html += '<tr><td class="' + rowheadCls + '" data-row="' + r + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
+    var trStyleAttr = filasOcultas.indexOf(r) !== -1 ? ' style="display:none;"' : '';
+    html += '<tr' + trStyleAttr + '><td class="' + rowheadCls + '" data-row="' + r + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
     for (var c2 = 0; c2 < COLS; c2++) {
       if (skip[r + '_' + c2]) continue;
       var id = cellId(r, c2);
@@ -4363,6 +5056,7 @@ function buildTable() {
       var tdStyleParts = [];
       if (cFrozen) { tdCls.push('frozen-col'); tdStyleParts.push('left:' + colLeft[c2] + 'px;'); }
       if (rFrozen) { tdCls.push('frozen-row-td'); tdStyleParts.push('top:' + (HEADER_H + r * ROW_H) + 'px;'); }
+      if (colsOcultas.indexOf(c2) !== -1) tdStyleParts.push('display:none;');
       var tdClsAttr = tdCls.length ? (' class="' + tdCls.join(' ') + '"') : '';
       var tdStyleAttr = tdStyleParts.length ? (' style="' + tdStyleParts.join('') + '"') : '';
       html += '<td' + spanAttr + tdClsAttr + tdStyleAttr + '><div class="cell" id="cell_' + id + '" data-id="' + id + '" contenteditable="true"></div></td>';
@@ -4373,8 +5067,42 @@ function buildTable() {
   table.innerHTML = html;
   attachCellEvents();
   attachColResizeEvents();
+  attachHeaderSelectEvents();
   renderAllCells();
   renderTabs();
+  renderizarCursoresRemotos();
+  var btnMO = document.getElementById('btnMostrarOcultos');
+  if (btnMO) {
+    // El contador es solo de lo oculto A MANO (no cuenta lo que un
+    // segmentador esté filtrando — eso se "muestra todo" desde su propio
+    // panel, tocando sus chips, no con este botón).
+    var totalOcultos = (sheetHiddenRows[activeSheet] || []).length + colsOcultas.length;
+    btnMO.style.display = totalOcultos ? '' : 'none';
+    btnMO.textContent = '👁 Mostrar todo (' + totalOcultos + ' oculta' + (totalOcultos === 1 ? '' : 's') + ')';
+  }
+}
+// Tocar el encabezado de una fila o columna selecciona esa fila/columna
+// entera — así "Ocultar fila(s)"/"Ocultar columna(s)" en la barra de
+// rango saben exactamente qué ocultar, igual que hacer clic derecho
+// sobre el encabezado en Excel.
+function attachHeaderSelectEvents() {
+  document.querySelectorAll('#sheetTable thead th[data-col]').forEach(function (th) {
+    th.addEventListener('click', function (e) {
+      if (e.target.classList.contains('colResizer')) return;
+      var c = parseInt(th.dataset.col, 10);
+      selRangeStart = cellId(0, c); selRangeEnd = cellId(ROWS - 1, c);
+      isSelecting = false;
+      highlightRange(selRangeStart, selRangeEnd);
+    });
+  });
+  document.querySelectorAll('#sheetTable tbody td.rowhead').forEach(function (td) {
+    td.addEventListener('click', function () {
+      var r = parseInt(td.dataset.row, 10);
+      selRangeStart = cellId(r, 0); selRangeEnd = cellId(r, COLS - 1);
+      isSelecting = false;
+      highlightRange(selRangeStart, selRangeEnd);
+    });
+  });
 }
 function mergeToggle(bounds) {
   if (!bounds) { alert('Seleccioná un rango de celdas para combinar (arrastrá sobre la grilla o escribí un rango en "Rango:").'); return; }
@@ -4615,6 +5343,111 @@ function renderAllCells() {
     });
   });
 
+  // ── Fórmulas matriciales / derrame: pintar el resultado sobre las
+  // celdas vecinas vacías (no se guarda en sheetData, se recalcula cada vez) ──
+  document.querySelectorAll('.cell.spill-cell').forEach(function (el) { el.classList.remove('spill-cell'); });
+  var spills = calcularSpills(activeSheet);
+  Object.keys(spills).forEach(function (id) {
+    var el = document.getElementById('cell_' + id);
+    if (!el || document.activeElement === el) return;
+    el.textContent = spills[id];
+    el.classList.add('spill-cell');
+  });
+
+  // ── Sparklines: se vuelven a dibujar en cada render porque no se guardan
+  // como texto — dependen de datos vivos. Se limpian los anteriores primero
+  // porque esta función se llama muchas veces sin pasar por buildTable()
+  // (que sí recrea las celdas desde cero). ──
+  document.querySelectorAll('.sparklineSvg').forEach(function (el) { el.remove(); });
+  var sparklinesHoja = sheetSparklines[activeSheet] || {};
+  Object.keys(sparklinesHoja).forEach(function (destino) {
+    var el = document.getElementById('cell_' + destino);
+    if (!el || document.activeElement === el) return;
+    var sp = sparklinesHoja[destino];
+    var svgHtml = sparklineSVG(rangeVals(sp.rango), sp.tipo);
+    if (!svgHtml) return;
+    var wrap = document.createElement('span');
+    wrap.className = 'sparklineSvg';
+    wrap.innerHTML = svgHtml;
+    el.appendChild(wrap);
+  });
+
+  // ── Controles de formulario: casillas de verificación y botones de
+  // radio — reemplazan el contenido de la celda por un control real. ──
+  var controlesHoja = sheetControles[activeSheet] || {};
+  Object.keys(controlesHoja).forEach(function (idCtrl) {
+    var el = document.getElementById('cell_' + idCtrl);
+    if (!el || document.activeElement === el) return;
+    var ctrl = controlesHoja[idCtrl];
+    el.contentEditable = 'false';
+    el.classList.add('has-control');
+    el.innerHTML = '';
+    var valCtrl = String(computeValue(idCtrl)).toUpperCase();
+    var marcado = valCtrl === 'VERDADERO' || valCtrl === 'TRUE' || valCtrl === '1';
+    var input = document.createElement('input');
+    input.type = ctrl.tipo === 'radio' ? 'radio' : 'checkbox';
+    if (ctrl.tipo === 'radio' && ctrl.grupo) input.name = 'radiogrupo_' + ctrl.grupo;
+    input.checked = marcado;
+    input.className = 'controlFormulario';
+    ['pointerdown', 'pointerup', 'mousedown', 'click'].forEach(function (evt) {
+      input.addEventListener(evt, function (e) { e.stopPropagation(); });
+    });
+    input.addEventListener('change', function () {
+      snapshot();
+      if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+      if (ctrl.tipo === 'radio' && ctrl.grupo) {
+        Object.keys(controlesHoja).forEach(function (otroId) {
+          var otro = controlesHoja[otroId];
+          if (otro.tipo === 'radio' && otro.grupo === ctrl.grupo && otroId !== idCtrl) {
+            sheetData[activeSheet][otroId] = 'FALSO';
+            marcarCeldaSucia(activeSheet, otroId);
+          }
+        });
+        sheetData[activeSheet][idCtrl] = 'VERDADERO';
+      } else {
+        sheetData[activeSheet][idCtrl] = input.checked ? 'VERDADERO' : 'FALSO';
+      }
+      marcarCeldaSucia(activeSheet, idCtrl);
+      renderAllCells(); autoSave();
+    });
+    el.appendChild(input);
+  });
+
+  // ── Validación con <select> nativo (en vez del popup propio) ──
+  document.querySelectorAll('.cell.has-native-select').forEach(function (el) {
+    if (!el.dataset.id || !document.getElementById('nativeSelect_' + el.dataset.id)) { el.classList.remove('has-native-select'); }
+  });
+  var nativasHoja = sheetValidacionNativa[activeSheet] || {};
+  Object.keys(nativasHoja).forEach(function (rangoNat) {
+    if (!nativasHoja[rangoNat]) return;
+    var opciones = (sheetValidations[activeSheet] && sheetValidations[activeSheet][rangoNat]) || [];
+    condRangeToIds(rangoNat).forEach(function (idNat) {
+      var el = document.getElementById('cell_' + idNat);
+      if (!el || document.activeElement === el || controlesHoja[idNat]) return;
+      el.contentEditable = 'false';
+      el.classList.add('has-native-select');
+      el.innerHTML = '';
+      var sel = document.createElement('select');
+      sel.className = 'nativeSelectCell';
+      sel.id = 'nativeSelect_' + idNat;
+      var valorActual = String(computeValue(idNat));
+      sel.innerHTML = '<option value=""></option>' + opciones.map(function (op) {
+        return '<option value="' + escHtml(op) + '"' + (op === valorActual ? ' selected' : '') + '>' + escHtml(op) + '</option>';
+      }).join('');
+      ['pointerdown', 'pointerup', 'mousedown', 'click'].forEach(function (evt) {
+        sel.addEventListener(evt, function (e) { e.stopPropagation(); });
+      });
+      sel.addEventListener('change', function () {
+        snapshot();
+        if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+        if (sel.value === '') delete sheetData[activeSheet][idNat]; else sheetData[activeSheet][idNat] = sel.value;
+        marcarCeldaSucia(activeSheet, idNat);
+        renderAllCells(); autoSave();
+      });
+      el.appendChild(sel);
+    });
+  });
+
   // ── Formato condicional: recalcular y aplicar estilos por regla ──
   var condRules = sheetCondFormats[activeSheet] || [];
   if (condRules.length) {
@@ -4637,6 +5470,53 @@ function renderAllCells() {
       });
     });
   }
+
+  // ── Formato condicional avanzado: barras de datos y escalas de color ──
+  // Se recalculan siempre según el mínimo/máximo ACTUAL de los valores
+  // del rango (nunca quedan guardadas como un color fijo), por eso se
+  // limpian todas las barras antes de volver a aplicarlas.
+  document.querySelectorAll('.cell').forEach(function (el) { el.style.backgroundImage = ''; });
+  var reglasAvanzadas = sheetCondFormatsAvanzado[activeSheet] || [];
+  reglasAvanzadas.forEach(function (regla) {
+    var ids = condRangeToIds(regla.range);
+    var valores = ids.map(function (id) {
+      var n = parseFloat(String(computeValue(id)).replace(/[₡,%\\s]/g, ''));
+      return isNaN(n) ? null : n;
+    });
+    var validos = valores.filter(function (v) { return v !== null; });
+    if (!validos.length) return;
+    var min = Math.min.apply(null, validos), max = Math.max.apply(null, validos);
+    ids.forEach(function (id, i) {
+      var el = document.getElementById('cell_' + id);
+      if (!el || document.activeElement === el) return;
+      var v = valores[i];
+      if (v === null) return;
+      var pct = max === min ? 100 : ((v - min) / (max - min)) * 100;
+      if (regla.type === 'databar') {
+        var p = Math.max(2, pct);
+        el.style.backgroundImage = 'linear-gradient(to right, ' + (regla.color || '#5a9bd5') + ' ' + p + '%, transparent ' + p + '%)';
+      } else if (regla.type === 'colorscale') {
+        el.style.backgroundColor = interpolarColorEscala(pct, regla.colorMin, regla.colorMedio, regla.colorMax);
+      }
+    });
+  });
+}
+function hexARgb(hex) {
+  hex = String(hex || '#ffffff').replace('#', '');
+  return [parseInt(hex.substr(0, 2), 16), parseInt(hex.substr(2, 2), 16), parseInt(hex.substr(4, 2), 16)];
+}
+function mezclarColor(c1, c2, t) {
+  return [Math.round(c1[0] + (c2[0] - c1[0]) * t), Math.round(c1[1] + (c2[1] - c1[1]) * t), Math.round(c1[2] + (c2[2] - c1[2]) * t)];
+}
+function interpolarColorEscala(pct, hexMin, hexMedio, hexMax) {
+  var cMin = hexARgb(hexMin || '#f8696b'), cMax = hexARgb(hexMax || '#63be7b'), rgb;
+  if (hexMedio) {
+    var cMed = hexARgb(hexMedio);
+    rgb = pct <= 50 ? mezclarColor(cMin, cMed, pct / 50) : mezclarColor(cMed, cMax, (pct - 50) / 50);
+  } else {
+    rgb = mezclarColor(cMin, cMax, pct / 100);
+  }
+  return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
 }
 
 function renderTabs() {
@@ -4665,7 +5545,7 @@ function renderTabs() {
     snapshot();
     var n = sheets.length + 1; var name = 'Hoja' + n;
     while (sheets.indexOf(name) >= 0) { n++; name = 'Hoja' + n; }
-    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
+    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {};
     activeSheet = name; buildTable(); autoSave();
   });
 }
@@ -4689,6 +5569,14 @@ document.getElementById('btnRenameConfirm').addEventListener('click', function (
   colWidths[newName] = colWidths[tabMenuTarget] || {}; delete colWidths[tabMenuTarget];
   sheetCondFormats[newName] = sheetCondFormats[tabMenuTarget] || []; delete sheetCondFormats[tabMenuTarget];
   sheetValidations[newName] = sheetValidations[tabMenuTarget] || {}; delete sheetValidations[tabMenuTarget];
+  sheetHiddenRows[newName] = sheetHiddenRows[tabMenuTarget] || []; delete sheetHiddenRows[tabMenuTarget];
+  sheetHiddenCols[newName] = sheetHiddenCols[tabMenuTarget] || []; delete sheetHiddenCols[tabMenuTarget];
+  sheetSparklines[newName] = sheetSparklines[tabMenuTarget] || {}; delete sheetSparklines[tabMenuTarget];
+  sheetSlicers[newName] = sheetSlicers[tabMenuTarget] || []; delete sheetSlicers[tabMenuTarget];
+  sheetEscenarios[newName] = sheetEscenarios[tabMenuTarget] || []; delete sheetEscenarios[tabMenuTarget];
+  sheetCondFormatsAvanzado[newName] = sheetCondFormatsAvanzado[tabMenuTarget] || []; delete sheetCondFormatsAvanzado[tabMenuTarget];
+  sheetControles[newName] = sheetControles[tabMenuTarget] || {}; delete sheetControles[tabMenuTarget];
+  sheetValidacionNativa[newName] = sheetValidacionNativa[tabMenuTarget] || {}; delete sheetValidacionNativa[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -4706,6 +5594,14 @@ document.getElementById('btnDuplicate').addEventListener('click', function () {
   sheetFreeze[newName] = JSON.parse(JSON.stringify(sheetFreeze[tabMenuTarget] || { row: 0, col: 0 }));
   sheetCondFormats[newName] = JSON.parse(JSON.stringify(sheetCondFormats[tabMenuTarget] || []));
   sheetValidations[newName] = JSON.parse(JSON.stringify(sheetValidations[tabMenuTarget] || {}));
+  sheetHiddenRows[newName] = JSON.parse(JSON.stringify(sheetHiddenRows[tabMenuTarget] || []));
+  sheetHiddenCols[newName] = JSON.parse(JSON.stringify(sheetHiddenCols[tabMenuTarget] || []));
+  sheetSparklines[newName] = JSON.parse(JSON.stringify(sheetSparklines[tabMenuTarget] || {}));
+  sheetSlicers[newName] = JSON.parse(JSON.stringify(sheetSlicers[tabMenuTarget] || []));
+  sheetEscenarios[newName] = JSON.parse(JSON.stringify(sheetEscenarios[tabMenuTarget] || []));
+  sheetCondFormatsAvanzado[newName] = JSON.parse(JSON.stringify(sheetCondFormatsAvanzado[tabMenuTarget] || []));
+  sheetControles[newName] = JSON.parse(JSON.stringify(sheetControles[tabMenuTarget] || {}));
+  sheetValidacionNativa[newName] = JSON.parse(JSON.stringify(sheetValidacionNativa[tabMenuTarget] || {}));
   activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -4719,6 +5615,11 @@ document.getElementById('btnDeleteSheet').addEventListener('click', function () 
   delete sheetData[tabMenuTarget]; delete sheetFormats[tabMenuTarget]; delete sheetNotes[tabMenuTarget]; delete colWidths[tabMenuTarget];
   delete sheetMerges[tabMenuTarget]; delete sheetFreeze[tabMenuTarget];
   delete sheetCondFormats[tabMenuTarget]; delete sheetValidations[tabMenuTarget];
+  delete sheetHiddenRows[tabMenuTarget]; delete sheetHiddenCols[tabMenuTarget];
+  delete sheetSparklines[tabMenuTarget]; delete sheetSlicers[tabMenuTarget];
+  delete sheetEscenarios[tabMenuTarget];
+  delete sheetCondFormatsAvanzado[tabMenuTarget];
+  delete sheetControles[tabMenuTarget]; delete sheetValidacionNativa[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = sheets[0];
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -6028,7 +6929,7 @@ document.getElementById('feBtnImprimir').addEventListener('click', function () {
 // ══════════════════════════════════════════════
 var TRANSLATIONS = {
   es: {
-    undo: '↶ Deshacer', copy: '⧉ Copiar', paste: '📋 Pegar', bold: 'N',
+    undo: '↶ Deshacer', redo: '↷ Rehacer', copy: '⧉ Copiar', paste: '📋 Pegar', bold: 'N',
     currency: '₡', percent: '%', format: '🔢 Formato', note: '📝 Nota',
     chart: '📊 Gráfico', totals: 'Σ Totales', csv: '⬇ CSV', addrow: '+Fila',
     delrow: '-Fila', addcol: '+Col', clear: 'Borrar', account: '👤 Cuenta', misMatrices: '📁 Mis Matrices',
@@ -6039,7 +6940,7 @@ var TRANSLATIONS = {
     close: '✕'
   },
   en: {
-    undo: '↶ Undo', copy: '⧉ Copy', paste: '📋 Paste', bold: 'B',
+    undo: '↶ Undo', redo: '↷ Redo', copy: '⧉ Copy', paste: '📋 Paste', bold: 'B',
     currency: '$', percent: '%', format: '🔢 Format', note: '📝 Note',
     chart: '📊 Chart', totals: 'Σ Totals', csv: '⬇ CSV', addrow: '+Row',
     delrow: '-Row', addcol: '+Col', clear: 'Clear', account: '👤 Account', misMatrices: '📁 My Sheets',
@@ -6057,7 +6958,7 @@ var TRANSLATIONS = {
   terraba: { close: '✕ bong sas' }
 };
 var LANG_ELEMENTS = [
-  { id: 'btnUndo', key: 'undo' }, { id: 'btnCopy', key: 'copy' }, { id: 'btnPaste', key: 'paste' },
+  { id: 'btnUndo', key: 'undo' }, { id: 'btnRedo', key: 'redo' }, { id: 'btnCopy', key: 'copy' }, { id: 'btnPaste', key: 'paste' },
   { id: 'btnCurrency', key: 'currency' }, { id: 'btnPercent', key: 'percent' },
   { id: 'btnFormat', key: 'format' }, { id: 'btnNote', key: 'note' }, { id: 'btnChart', key: 'chart' },
   { id: 'btnTotales', key: 'totals' }, { id: 'btnCSV', key: 'csv' }, { id: 'btnAddRow', key: 'addrow' },
@@ -6746,6 +7647,7 @@ function highlightRange(idA, idB) {
   } else {
     rab.classList.remove('show');
   }
+  posicionarManijaRelleno();
 }
 function rangeCellIds() {
   var b = currentRangeBounds();
@@ -6753,6 +7655,235 @@ function rangeCellIds() {
   var out = [];
   for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) out.push(cellId(r, c));
   return out;
+}
+
+// ══════════════════════════════════════════════
+// MANIJA DE RELLENO (estilo Excel/Sheets): arrastrar desde la esquina
+// inferior derecha de la celda/rango seleccionado hacia abajo o hacia
+// la derecha para copiar fórmulas (ajustando sus referencias, igual
+// que Excel) o continuar una serie — números, fechas dd/mm/aaaa,
+// meses, días de la semana, o texto con un número al final.
+// ══════════════════════════════════════════════
+var MESES_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+var DIAS_ES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+function posicionarManijaRelleno() {
+  var anterior = document.getElementById('fillHandle');
+  if (anterior) anterior.remove();
+  if (sheetProtegida[activeSheet]) return;
+  var bounds = currentRangeBounds();
+  if (!bounds) return;
+  var celdaEsquina = document.getElementById('cell_' + cellId(bounds.maxR, bounds.maxC));
+  if (!celdaEsquina || !celdaEsquina.parentElement) return;
+  var handle = document.createElement('div');
+  handle.className = 'fillHandle';
+  handle.id = 'fillHandle';
+  celdaEsquina.parentElement.appendChild(handle);
+  handle.addEventListener('pointerdown', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    isSelecting = false;
+    isFilling = true;
+    fillOrigenBounds = currentRangeBounds();
+    fillDestinoBounds = null;
+    fillEjeBloqueado = null;
+  });
+}
+
+function limpiarPreviewRelleno() {
+  document.querySelectorAll('.cell.fill-preview').forEach(function (e) { e.classList.remove('fill-preview'); });
+}
+
+function actualizarPreviewRelleno(idHover) {
+  if (!fillOrigenBounds) return;
+  var m = idHover.match(/([A-Za-z]+)(\\d+)/);
+  if (!m) return;
+  var cHover = colIndex(m[1]), rHover = parseInt(m[2], 10) - 1;
+  var o = fillOrigenBounds;
+  if (!fillEjeBloqueado) {
+    var dR0 = Math.abs(rHover - o.maxR), dC0 = Math.abs(cHover - o.maxC);
+    if (dR0 === 0 && dC0 === 0) return;
+    // Igual que Excel: el arrastre se "ancla" al eje dominante del primer
+    // movimiento (vertical u horizontal), no se puede rellenar en diagonal.
+    fillEjeBloqueado = dR0 >= dC0 ? 'v' : 'h';
+  }
+  var destino;
+  if (fillEjeBloqueado === 'v') {
+    destino = { minR: o.minR, maxR: Math.max(o.maxR, rHover), minC: o.minC, maxC: o.maxC };
+  } else {
+    destino = { minR: o.minR, maxR: o.maxR, minC: o.minC, maxC: Math.max(o.maxC, cHover) };
+  }
+  fillDestinoBounds = destino;
+  limpiarPreviewRelleno();
+  for (var r = destino.minR; r <= destino.maxR; r++) {
+    for (var c = destino.minC; c <= destino.maxC; c++) {
+      if (r >= o.minR && r <= o.maxR && c >= o.minC && c <= o.maxC) continue;
+      var el = document.getElementById('cell_' + cellId(r, c));
+      if (el) el.classList.add('fill-preview');
+    }
+  }
+}
+
+// Copia una fórmula ajustando sus referencias de celda según el
+// desplazamiento (dR filas, dC columnas) — igual que Excel cuando no
+// hay signos $ (esta app no usa referencias absolutas). Cuida de no
+// tocar texto entre comillas ni nombres de función que terminan en
+// número (LOG10, ATAN2, DIAS360...), exigiendo que la referencia esté
+// "sola" (no pegada a más letras/números antes o después).
+function ajustarFormulaRelativa(formula, dR, dC) {
+  if (dR === 0 && dC === 0) return formula;
+  var out = '', i = 0, inStr = false, strChar = '';
+  while (i < formula.length) {
+    var ch = formula.charAt(i);
+    if (!inStr && (ch === '"' || ch === "'")) { inStr = true; strChar = ch; out += ch; i++; continue; }
+    if (inStr) { out += ch; if (ch === strChar) inStr = false; i++; continue; }
+    if (/[A-Za-z]/.test(ch) && (i === 0 || !/[A-Za-z0-9_.]/.test(formula.charAt(i - 1)))) {
+      var m = /^[A-Za-z]{1,2}\\d{1,3}/.exec(formula.slice(i));
+      if (m) {
+        var fin = i + m[0].length;
+        var limiteDespues = fin >= formula.length || !/[A-Za-z0-9_.]/.test(formula.charAt(fin));
+        if (limiteDespues) {
+          var mm = m[0].match(/^([A-Za-z]{1,2})(\\d{1,3})$/);
+          var col = colIndex(mm[1]), row = parseInt(mm[2], 10) - 1;
+          var nc = col + dC, nr = row + dR;
+          out += (nc >= 0 && nc < COLS && nr >= 0 && nr < ROWS) ? cellId(nr, nc) : '#REF!';
+          i = fin; continue;
+        }
+      }
+    }
+    out += ch; i++;
+  }
+  return out;
+}
+
+function parsearFechaCR(v) {
+  var m = String(v || '').trim().match(/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/);
+  if (!m) return null;
+  var d = new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10));
+  return isNaN(d.getTime()) ? null : d;
+}
+function formatearFechaCR(d) {
+  var dd = String(d.getDate()).padStart(2, '0'), mm = String(d.getMonth() + 1).padStart(2, '0');
+  return dd + '/' + mm + '/' + d.getFullYear();
+}
+function buscarEnLista(texto, lista) {
+  var idx = lista.indexOf(String(texto || '').trim().toLowerCase());
+  return idx === -1 ? null : idx;
+}
+function aplicarFormatoTexto(original, nuevoTextoMin) {
+  if (original === original.toUpperCase()) return nuevoTextoMin.toUpperCase();
+  if (original.charAt(0) === original.charAt(0).toUpperCase()) return nuevoTextoMin.charAt(0).toUpperCase() + nuevoTextoMin.slice(1);
+  return nuevoTextoMin;
+}
+function partirTextoNumero(v) {
+  var m = String(v || '').match(/^(.*?)(\\d+)$/);
+  return m ? { prefijo: m[1], numero: parseInt(m[2], 10), digitos: m[2].length } : null;
+}
+
+// Qué poner en una celda nueva cuando el origen es UNA sola celda
+// (sin patrón numérico detectable a partir de solo 1 valor). "distancia"
+// es 1, 2, 3... según qué tan lejos está la celda destino del origen.
+function generarValorUnico(v, distancia) {
+  if (v === '' || v === null || v === undefined) return '';
+  var texto = String(v).trim();
+  if (/^-?\\d+([.,]\\d+)?$/.test(texto)) return v; // número solo: Excel copia el mismo valor, no lo incrementa
+  var mes = buscarEnLista(texto, MESES_ES);
+  if (mes !== null) return aplicarFormatoTexto(texto, MESES_ES[(((mes + distancia) % 12) + 12) % 12]);
+  var dia = buscarEnLista(texto, DIAS_ES);
+  if (dia !== null) return aplicarFormatoTexto(texto, DIAS_ES[(((dia + distancia) % 7) + 7) % 7]);
+  var fecha = parsearFechaCR(texto);
+  if (fecha) return formatearFechaCR(new Date(fecha.getTime() + distancia * 86400000));
+  var tn = partirTextoNumero(texto);
+  if (tn) {
+    var nuevoStr = String(tn.numero + distancia);
+    while (nuevoStr.length < tn.digitos) nuevoStr = '0' + nuevoStr;
+    return tn.prefijo + nuevoStr;
+  }
+  return v;
+}
+
+// Qué poner en una celda nueva cuando el origen tiene VARIAS celdas:
+// intenta detectar un paso numérico o de fechas constante y continuarlo;
+// si no hay patrón claro, repite el ciclo de valores tal cual.
+function generarValorSerie(valoresOrigen, posicion) {
+  var n = valoresOrigen.length;
+  if (n === 1) return generarValorUnico(valoresOrigen[0], posicion + 1);
+
+  var nums = valoresOrigen.map(function (v) { return parseFloat(String(v).replace(',', '.')); });
+  var esNumerica = valoresOrigen.every(function (v, idx) { return !isNaN(nums[idx]) && /^-?\\d+([.,]\\d+)?$/.test(String(v).trim()); });
+  if (esNumerica) {
+    var pasos = [];
+    for (var i = 1; i < n; i++) pasos.push(nums[i] - nums[i - 1]);
+    if (pasos.every(function (p) { return Math.abs(p - pasos[0]) < 1e-9; })) {
+      var decimales = 0;
+      valoresOrigen.forEach(function (v) { var p = String(v).split(/[.,]/); if (p[1]) decimales = Math.max(decimales, p[1].length); });
+      var siguiente = nums[n - 1] + pasos[0] * (posicion + 1);
+      return Number(siguiente.toFixed(decimales)).toString();
+    }
+  }
+
+  var fechas = valoresOrigen.map(parsearFechaCR);
+  if (fechas.every(function (f) { return f; })) {
+    var pasosDias = [];
+    for (var j = 1; j < n; j++) pasosDias.push(Math.round((fechas[j] - fechas[j - 1]) / 86400000));
+    if (pasosDias.every(function (p) { return p === pasosDias[0]; })) {
+      var base = fechas[n - 1].getTime() + pasosDias[0] * 86400000 * (posicion + 1);
+      return formatearFechaCR(new Date(base));
+    }
+  }
+
+  return valoresOrigen[posicion % n];
+}
+
+// Ejecuta el relleno de verdad: por cada columna (relleno vertical) o
+// fila (relleno horizontal) del origen, copia fórmulas con sus
+// referencias ajustadas, o continúa la serie de valores detectada.
+function ejecutarRelleno(origen, destino) {
+  if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida. Desbloqueala (🔒 Proteger Hoja) antes de usar la manija de relleno.'); return; }
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  var data = sheetData[activeSheet];
+  var huboVertical = destino.maxR > origen.maxR;
+  var huboHorizontal = destino.maxC > origen.maxC;
+  if (!huboVertical && !huboHorizontal) return;
+  snapshot();
+
+  if (huboVertical) {
+    for (var c = origen.minC; c <= origen.maxC; c++) {
+      var valoresCol = [];
+      for (var r0 = origen.minR; r0 <= origen.maxR; r0++) valoresCol.push(data[cellId(r0, c)] || '');
+      var n = valoresCol.length;
+      for (var r = origen.maxR + 1; r <= destino.maxR; r++) {
+        var k = r - origen.maxR;
+        var filaOrigenUsada = origen.minR + ((k - 1) % n);
+        var raw = data[cellId(filaOrigenUsada, c)] || '';
+        var idNuevo = cellId(r, c);
+        var nuevoVal;
+        if (String(raw).charAt(0) === '=') nuevoVal = ajustarFormulaRelativa(raw, r - filaOrigenUsada, 0);
+        else nuevoVal = generarValorSerie(valoresCol, k - 1);
+        if (nuevoVal === '') delete data[idNuevo]; else data[idNuevo] = nuevoVal;
+      }
+    }
+  } else {
+    for (var r2 = origen.minR; r2 <= origen.maxR; r2++) {
+      var valoresFila = [];
+      for (var c0 = origen.minC; c0 <= origen.maxC; c0++) valoresFila.push(data[cellId(r2, c0)] || '');
+      var n2 = valoresFila.length;
+      for (var c2 = origen.maxC + 1; c2 <= destino.maxC; c2++) {
+        var k2 = c2 - origen.maxC;
+        var colOrigenUsada = origen.minC + ((k2 - 1) % n2);
+        var raw2 = data[cellId(r2, colOrigenUsada)] || '';
+        var idNuevo2 = cellId(r2, c2);
+        var nuevoVal2;
+        if (String(raw2).charAt(0) === '=') nuevoVal2 = ajustarFormulaRelativa(raw2, 0, c2 - colOrigenUsada);
+        else nuevoVal2 = generarValorSerie(valoresFila, k2 - 1);
+        if (nuevoVal2 === '') delete data[idNuevo2]; else data[idNuevo2] = nuevoVal2;
+      }
+    }
+  }
+
+  var rangoOrigenStr = cellId(origen.minR, origen.minC) + ':' + cellId(origen.maxR, origen.maxC);
+  var rangoDestinoStr = cellId(destino.minR, destino.minC) + ':' + cellId(destino.maxR, destino.maxC);
+  registrarCambioAuditoria('Relleno ' + rangoOrigenStr + '→' + rangoDestinoStr, '', 'Relleno automático');
+  buildTable(); autoSave();
 }
 
 // Resalta el encabezado de columna (letra) y de fila (número) de la
@@ -6781,6 +7912,7 @@ function attachCellEvents() {
       el.textContent = getRaw(id);
       showValidPicker(id);
       marcarEncabezadoActivo(id);
+      actualizarPresencia(id);
     });
     el.addEventListener('blur', function () {
       setTimeout(function () {
@@ -6802,9 +7934,18 @@ function attachCellEvents() {
     });
     el.addEventListener('pointerenter', function () {
       if (isSelecting) { selRangeEnd = el.dataset.id; highlightRange(selRangeStart, selRangeEnd); }
+      else if (isFilling) { actualizarPreviewRelleno(el.dataset.id); }
     });
   });
-  document.addEventListener('pointerup', function () { isSelecting = false; });
+  document.addEventListener('pointerup', function () {
+    isSelecting = false;
+    if (isFilling) {
+      isFilling = false;
+      limpiarPreviewRelleno();
+      if (fillOrigenBounds && fillDestinoBounds) ejecutarRelleno(fillOrigenBounds, fillDestinoBounds);
+      fillOrigenBounds = null; fillDestinoBounds = null; fillEjeBloqueado = null;
+    }
+  });
 }
 
 // ── Gesto de deshacer: toque simultáneo con 2 dedos sobre la grilla ──
@@ -6814,6 +7955,7 @@ function attachCellEvents() {
   gridWrap.addEventListener('touchstart', function (e) {
     if (e.touches.length >= 2) {
       isSelecting = false;
+      if (isFilling) { isFilling = false; limpiarPreviewRelleno(); fillOrigenBounds = null; fillDestinoBounds = null; fillEjeBloqueado = null; }
       clearRangeHighlight();
       document.getElementById('rangeActionsBar').classList.remove('show');
       if (!gestureFired) {
@@ -6851,6 +7993,7 @@ function commitCell(el) {
   var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
+  if (val !== anterior) marcarCeldaSucia(activeSheet, id);
   registrarCambioAuditoria(id, anterior, val);
   checkValidationOnCommit(id, val);
   renderAllCells(); el.classList.remove('selected'); autoSave();
@@ -6922,11 +8065,90 @@ function updateFormulaAutocomplete() {
 }
 
 document.getElementById('btnUndo').addEventListener('click', undo);
+document.getElementById('btnRedo').addEventListener('click', redo);
 
+// ── Copiar/Cortar/Pegar (y Pegado especial) ──
+// El portapapeles ahora siempre guarda una cuadrícula (rangeRows/rangeValues),
+// aunque sea de 1x1 — así una sola función de pegado sirve tanto para una
+// celda como para un rango completo, con fórmulas (referencias ajustadas,
+// igual que al arrastrar la manija de relleno), solo valores, o transpuesto.
+function boundsDeId(id) {
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
+  var c = colIndex(m[1]), r = parseInt(m[2], 10) - 1;
+  return { minR: r, maxR: r, minC: c, maxC: c };
+}
+function copiarAClipboard(bounds) {
+  var filasRaw = [], filasVal = [];
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    var filaR = [], filaV = [];
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var id = cellId(r, c);
+      filaR.push(getRaw(id));
+      filaV.push(String(computeValue(id)));
+    }
+    filasRaw.push(filaR); filasVal.push(filaV);
+  }
+  var id0 = cellId(bounds.minR, bounds.minC);
+  clipboard = {
+    origenMinR: bounds.minR, origenMinC: bounds.minC,
+    rangeRows: filasRaw, rangeValues: filasVal,
+    format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id0]) || null,
+  };
+}
+function transponerMatriz(filas) {
+  var out = [];
+  for (var c = 0; c < (filas[0] ? filas[0].length : 0); c++) {
+    var fila = [];
+    for (var r = 0; r < filas.length; r++) fila.push(filas[r][c]);
+    out.push(fila);
+  }
+  return out;
+}
+function ejecutarPegado(modo) {
+  if (!clipboard) { alert('Nada para pegar. Usá Copiar o Cortar primero.'); return; }
+  if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida. Desbloqueala (🔒 Proteger Hoja) antes de pegar.'); return; }
+  snapshot();
+  var destinoId = document.getElementById('cellRef').textContent;
+  var b0 = boundsDeId(destinoId);
+  var destR = b0.minR, destC = b0.minC;
+  var dR = destR - clipboard.origenMinR, dC = destC - clipboard.origenMinC;
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  var filasRaw = clipboard.rangeRows, filasVal = clipboard.rangeValues;
+  if (modo === 'transponer') { filasRaw = transponerMatriz(filasRaw); filasVal = transponerMatriz(filasVal); }
+  filasRaw.forEach(function (fila, drFila) {
+    fila.forEach(function (rawVal, dcCol) {
+      var r = destR + drFila, c = destC + dcCol;
+      if (r >= ROWS || c >= COLS) return;
+      var id = cellId(r, c);
+      var esFormula = typeof rawVal === 'string' && rawVal.charAt(0) === '=';
+      var nuevoVal;
+      if (modo === 'transponer' || modo === 'valores') nuevoVal = filasVal[drFila][dcCol];
+      else if (esFormula) nuevoVal = ajustarFormulaRelativa(rawVal, dR, dC);
+      else nuevoVal = rawVal;
+      if (nuevoVal === '' || nuevoVal === undefined || nuevoVal === null) delete sheetData[activeSheet][id];
+      else sheetData[activeSheet][id] = nuevoVal;
+    });
+  });
+  if (clipboard.format && modo !== 'valores') {
+    var filasRef = modo === 'transponer' ? transponerMatriz(clipboard.rangeRows) : clipboard.rangeRows;
+    filasRef.forEach(function (fila, drFila) {
+      fila.forEach(function (_, dcCol) {
+        var r = destR + drFila, c = destC + dcCol;
+        if (r >= ROWS || c >= COLS) return;
+        if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+        sheetFormats[activeSheet][cellId(r, c)] = JSON.parse(JSON.stringify(clipboard.format));
+      });
+    });
+  }
+  document.getElementById('formulaInput').value = getRaw(destinoId);
+  buildTable(); autoSave();
+  var etiquetaModo = modo === 'valores' ? 'solo valores' : modo === 'transponer' ? 'transpuesto' : 'normal';
+  document.getElementById('saveStatus').textContent = '✓ Pegado (' + etiquetaModo + ')';
+}
 document.getElementById('btnCut').addEventListener('click', function () {
   snapshot();
   var id = document.getElementById('cellRef').textContent;
-  clipboard = { value: getRaw(id), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || null };
+  copiarAClipboard(boundsDeId(id));
   delete sheetData[activeSheet][id];
   if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
   document.getElementById('formulaInput').value = '';
@@ -6935,18 +8157,24 @@ document.getElementById('btnCut').addEventListener('click', function () {
 });
 document.getElementById('btnCopy').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
-  clipboard = { value: getRaw(id), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || null };
+  copiarAClipboard(boundsDeId(id));
   document.getElementById('saveStatus').textContent = 'Copiado ' + id;
 });
-document.getElementById('btnPaste').addEventListener('click', function () {
-  if (!clipboard) { alert('Nada para pegar. Usá Copiar primero.'); return; }
-  snapshot();
-  var id = document.getElementById('cellRef').textContent;
-  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
-  if (clipboard.value === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = clipboard.value;
-  if (clipboard.format) { if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {}; sheetFormats[activeSheet][id] = JSON.parse(JSON.stringify(clipboard.format)); }
-  document.getElementById('formulaInput').value = clipboard.value;
-  renderAllCells(); autoSave();
+document.getElementById('btnPaste').addEventListener('click', function () { ejecutarPegado('normal'); });
+document.getElementById('btnPasteEspecial').addEventListener('click', function () {
+  document.getElementById('pasteEspecialOverlay').classList.add('show');
+});
+document.getElementById('raPasteEspecial').addEventListener('click', function () {
+  document.getElementById('pasteEspecialOverlay').classList.add('show');
+});
+document.getElementById('pasteEspecialClose').addEventListener('click', function () {
+  document.getElementById('pasteEspecialOverlay').classList.remove('show');
+});
+['peNormal', 'peValores', 'peTransponer'].forEach(function (btnId, idx) {
+  document.getElementById(btnId).addEventListener('click', function () {
+    document.getElementById('pasteEspecialOverlay').classList.remove('show');
+    ejecutarPegado(['normal', 'valores', 'transponer'][idx]);
+  });
 });
 
 document.getElementById('btnBold').addEventListener('click', function () {
@@ -7122,7 +8350,7 @@ function loadTemplate(tipo) {
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {};
   activeSheet = name;
   var d = sheetData[name], f = sheetFormats[name], m = sheetMerges[name];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
@@ -7380,7 +8608,7 @@ function crearHojaDestino(baseName) {
   var n = sheets.length + 1;
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {};
   return name;
 }
 
@@ -7755,20 +8983,14 @@ document.getElementById('raClear').addEventListener('click', function () {
     delete sheetData[activeSheet][id];
     if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
     if (sheetNotes[activeSheet]) delete sheetNotes[activeSheet][id];
+    if (sheetControles[activeSheet]) delete sheetControles[activeSheet][id];
   });
-  renderAllCells(); autoSave();
+  buildTable(); autoSave();
 });
 document.getElementById('raCut').addEventListener('click', function () {
   snapshot();
   var ids = rangeCellIds();
-  var b = currentRangeBounds();
-  var rows = [];
-  for (var r = b.minR; r <= b.maxR; r++) {
-    var row = [];
-    for (var c = b.minC; c <= b.maxC; c++) row.push(getRaw(cellId(r, c)));
-    rows.push(row);
-  }
-  clipboard = { rangeRows: rows, value: getRaw(ids[0]), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][ids[0]]) || null };
+  copiarAClipboard(currentRangeBounds());
   ids.forEach(function (id) {
     delete sheetData[activeSheet][id];
     if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
@@ -7777,16 +8999,8 @@ document.getElementById('raCut').addEventListener('click', function () {
   document.getElementById('saveStatus').textContent = 'Cortado rango (' + ids.length + ')';
 });
 document.getElementById('raCopy').addEventListener('click', function () {
-  var ids = rangeCellIds();
-  var b = currentRangeBounds();
-  var rows = [];
-  for (var r = b.minR; r <= b.maxR; r++) {
-    var row = [];
-    for (var c = b.minC; c <= b.maxC; c++) row.push(getRaw(cellId(r, c)));
-    rows.push(row);
-  }
-  clipboard = { rangeRows: rows, value: getRaw(ids[0]), format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][ids[0]]) || null };
-  document.getElementById('saveStatus').textContent = 'Copiado rango (' + ids.length + ')';
+  copiarAClipboard(currentRangeBounds());
+  document.getElementById('saveStatus').textContent = 'Copiado rango (' + rangeCellIds().length + ')';
 });
 document.getElementById('raFormat').addEventListener('click', function () {
   openFormatModal(true);
@@ -7919,6 +9133,60 @@ document.getElementById('condAddBtn').addEventListener('click', function () {
   renderCondRulesList(); renderAllCells(); autoSave();
 });
 
+// ── Formato condicional avanzado: barras de datos / escalas de color ──
+function renderCARulesList() {
+  var wrap = document.getElementById('caRulesList');
+  var rules = sheetCondFormatsAvanzado[activeSheet] || [];
+  if (!rules.length) { wrap.innerHTML = '<div style="font-size:11.5px;color:#888;">Sin reglas en esta hoja todavía.</div>'; return; }
+  wrap.innerHTML = rules.map(function (r, i) {
+    var desc = r.type === 'databar' ? ('Barra de datos') : ('Escala de color');
+    var swatch = r.type === 'databar' ? r.color : r.colorMax;
+    return '<div class="condRuleItem"><span><span class="condSwatch" style="background:' + swatch + '"></span>' + escHtml(r.range) + ' — ' + desc + '</span><button class="caRuleDel" data-idx="' + i + '">🗑</button></div>';
+  }).join('');
+  wrap.querySelectorAll('.caRuleDel').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      snapshot();
+      sheetCondFormatsAvanzado[activeSheet].splice(parseInt(btn.dataset.idx, 10), 1);
+      renderCARulesList(); renderAllCells(); autoSave();
+    });
+  });
+}
+document.getElementById('btnCondAvanzado').addEventListener('click', function () {
+  var qr = document.getElementById('quickRange').value.trim();
+  document.getElementById('caRange').value = isRange(qr) ? qr : document.getElementById('cellRef').textContent;
+  if (!sheetCondFormatsAvanzado[activeSheet]) sheetCondFormatsAvanzado[activeSheet] = [];
+  renderCARulesList();
+  document.getElementById('condAvanzadoOverlay').classList.add('show');
+});
+document.getElementById('caCancel').addEventListener('click', function () { document.getElementById('condAvanzadoOverlay').classList.remove('show'); });
+document.getElementById('caTipo').addEventListener('change', function () {
+  var esBarra = this.value === 'databar';
+  document.getElementById('caDatabarCampos').style.display = esBarra ? '' : 'none';
+  document.getElementById('caColorscaleCampos').style.display = esBarra ? 'none' : '';
+});
+document.getElementById('caUsarMedio').addEventListener('change', function () {
+  document.getElementById('caColorMedio').disabled = !this.checked;
+});
+document.getElementById('caAddBtn').addEventListener('click', function () {
+  var range = document.getElementById('caRange').value.trim().toUpperCase();
+  if (!condRangeToIds(range).length) { alert('Rango inválido. Ej: B2:B20.'); return; }
+  var tipo = document.getElementById('caTipo').value;
+  snapshot();
+  if (!sheetCondFormatsAvanzado[activeSheet]) sheetCondFormatsAvanzado[activeSheet] = [];
+  if (tipo === 'databar') {
+    sheetCondFormatsAvanzado[activeSheet].push({ range: range, type: 'databar', color: document.getElementById('caColorBarra').value });
+  } else {
+    var usaMedio = document.getElementById('caUsarMedio').checked;
+    sheetCondFormatsAvanzado[activeSheet].push({
+      range: range, type: 'colorscale',
+      colorMin: document.getElementById('caColorMin').value,
+      colorMedio: usaMedio ? document.getElementById('caColorMedio').value : null,
+      colorMax: document.getElementById('caColorMax').value,
+    });
+  }
+  renderCARulesList(); renderAllCells(); autoSave();
+});
+
 // ══════════════════════════════════════════════
 // VALIDACIÓN DE DATOS (listas desplegables)
 // ══════════════════════════════════════════════
@@ -7934,7 +9202,8 @@ function renderValidRulesList() {
     btn.addEventListener('click', function () {
       snapshot();
       delete sheetValidations[activeSheet][btn.dataset.range];
-      renderValidRulesList(); renderAllCells(); autoSave();
+      if (sheetValidacionNativa[activeSheet]) delete sheetValidacionNativa[activeSheet][btn.dataset.range];
+      renderValidRulesList(); buildTable(); autoSave();
     });
   });
 }
@@ -7942,6 +9211,7 @@ document.getElementById('btnValidacion').addEventListener('click', function () {
   var qr = document.getElementById('quickRange').value.trim();
   document.getElementById('validRange').value = isRange(qr) ? qr : document.getElementById('cellRef').textContent;
   document.getElementById('validList').value = '';
+  document.getElementById('validNativa').checked = false;
   if (!sheetValidations[activeSheet]) sheetValidations[activeSheet] = {};
   renderValidRulesList();
   document.getElementById('validOverlay').classList.add('show');
@@ -7956,8 +9226,11 @@ document.getElementById('validAddBtn').addEventListener('click', function () {
   snapshot();
   if (!sheetValidations[activeSheet]) sheetValidations[activeSheet] = {};
   sheetValidations[activeSheet][range] = list;
+  if (!sheetValidacionNativa[activeSheet]) sheetValidacionNativa[activeSheet] = {};
+  if (document.getElementById('validNativa').checked) sheetValidacionNativa[activeSheet][range] = true;
+  else delete sheetValidacionNativa[activeSheet][range];
   document.getElementById('validList').value = '';
-  renderValidRulesList(); renderAllCells(); autoSave();
+  renderValidRulesList(); buildTable(); autoSave();
 });
 function getValidationListForCell(id) {
   var vals = sheetValidations[activeSheet] || {};
@@ -8607,7 +9880,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, zoomLevel: zoomLevel };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, zoomLevel: zoomLevel };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -8622,6 +9895,16 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetFreeze = obj.sheetFreeze || {};
   sheetCondFormats = obj.sheetCondFormats || {};
   sheetValidations = obj.sheetValidations || {};
+  rangosNombrados = obj.rangosNombrados || {};
+  sheetHiddenRows = obj.sheetHiddenRows || {};
+  sheetHiddenCols = obj.sheetHiddenCols || {};
+  macros = obj.macros || {};
+  sheetSparklines = obj.sheetSparklines || {};
+  sheetSlicers = obj.sheetSlicers || {};
+  sheetEscenarios = obj.sheetEscenarios || {};
+  sheetCondFormatsAvanzado = obj.sheetCondFormatsAvanzado || {};
+  sheetControles = obj.sheetControles || {};
+  sheetValidacionNativa = obj.sheetValidacionNativa || {};
   zoomLevel = obj.zoomLevel || 100;
   activeSheet = sheets[0];
   buildTable();
@@ -8682,6 +9965,8 @@ document.getElementById('crearMatrizBtn').addEventListener('click', function () 
   var nombre = document.getElementById('nuevaMatrizNombre').value.trim();
   if (!nombre) { alert('Ponele un nombre a la matriz.'); return; }
   if (matrizListenerUnsub) { matrizListenerUnsub(); matrizListenerUnsub = null; }
+  limpiarPresenciaPropia();
+  celdasPendientesSync = {};
   var payload = estadoActualComoObjeto();
   payload.name = nombre; payload.ownerId = currentUser.uid; payload.ownerEmail = currentUser.email;
   payload.sharedWith = []; payload.updatedAt = Date.now();
@@ -8691,6 +9976,7 @@ document.getElementById('crearMatrizBtn').addEventListener('click', function () 
     document.getElementById('nuevaMatrizNombre').value = '';
     document.getElementById('matricesOverlay').classList.remove('show');
     setSyncStatus('online', currentUser.email + ' · ' + nombre);
+    escucharCursoresRemotos();
     matrizListenerUnsub = firestoreDB.collection('matrices').doc(doc.id).onSnapshot(function (docSnap) {
       if (!docSnap.exists || docSnap.metadata.hasPendingWrites) return;
       var data = docSnap.data();
@@ -8704,6 +9990,8 @@ var matrizListenerUnsub = null;
 var ultimoUpdatedAtEnviado = 0;
 function abrirMatriz(id, name) {
   if (matrizListenerUnsub) { matrizListenerUnsub(); matrizListenerUnsub = null; }
+  limpiarPresenciaPropia();
+  celdasPendientesSync = {};
   firestoreDB.collection('matrices').doc(id).get().then(function (doc) {
     if (!doc.exists) { alert('Esa matriz ya no existe.'); return; }
     snapshot();
@@ -8711,6 +9999,7 @@ function abrirMatriz(id, name) {
     currentMatrizId = id; currentMatrizName = name;
     document.getElementById('matricesOverlay').classList.remove('show');
     setSyncStatus('online', currentUser.email + ' · ' + name);
+    escucharCursoresRemotos();
     matrizListenerUnsub = firestoreDB.collection('matrices').doc(id).onSnapshot(function (docSnap) {
       if (!docSnap.exists || docSnap.metadata.hasPendingWrites) return;
       var data = docSnap.data();
@@ -8751,13 +10040,122 @@ document.getElementById('shareConfirmBtn').addEventListener('click', function ()
   });
 });
 
+// ══════════════════════════════════════════════
+// SINCRONIZACIÓN MULTIUSUARIO: cursores en vivo + guardado granular
+// ══════════════════════════════════════════════
+// Antes, CUALQUIER cambio mandaba el documento ENTERO de la matriz a
+// Firestore, así que si dos personas editaban celdas distintas casi al
+// mismo tiempo, la última en guardar borraba sin querer el cambio de la
+// otra ("el último que guarda gana"). Ahora, una edición normal de celda
+// (escribir y confirmar) manda SOLO esa celda como un campo puntual de
+// Firestore (sheetData.Hoja1.A1, por ejemplo), así que dos personas
+// editando celdas distintas ya no se chocan entre sí. Operaciones
+// masivas (pegar, rellenar, borrar fila/columna, importar CSV, cargar
+// plantilla) siguen mandando el documento completo, como antes —
+// hacerlo celda por celda ahí sería mucho más riesgoso de implementar
+// bien, así que esas sí pueden chocar si dos personas las hacen en el
+// mismo instante exacto (poco común en la práctica).
+var celdasPendientesSync = {};
+var matrizCursoresUnsub = null;
+var ultimaCeldaPresenciaEnviada = null;
+var presenciaDebounceTimer = null;
+var COLORES_CURSOR = ['#e67e22', '#8e44ad', '#2980b9', '#c0392b', '#16a085', '#d35400'];
+function hashTexto(s) {
+  var h = 0;
+  for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 999999937;
+  return Math.abs(h);
+}
+function marcarCeldaSucia(hoja, celda) {
+  celdasPendientesSync[hoja + '|' + celda] = true;
+}
+// Avisa a los demás en qué celda estás parado ahora mismo (con un
+// pequeño retraso para no escribir en Firestore en cada tecla).
+function actualizarPresencia(celda) {
+  if (!currentUser || !currentMatrizId || !firestoreDB) return;
+  if (celda === ultimaCeldaPresenciaEnviada) return;
+  ultimaCeldaPresenciaEnviada = celda;
+  clearTimeout(presenciaDebounceTimer);
+  presenciaDebounceTimer = setTimeout(function () {
+    firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').doc(currentUser.uid).set({
+      email: currentUser.email || '',
+      nombre: ((currentUser.displayName || currentUser.email || 'Usuario').split(' ')[0]),
+      celda: celda, hoja: activeSheet, ts: Date.now(),
+    }).catch(function () {});
+  }, 350);
+}
+function limpiarPresenciaPropia() {
+  if (!currentUser || !currentMatrizId || !firestoreDB) return;
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').doc(currentUser.uid).delete().catch(function () {});
+}
+var ultimosCursoresRemotos = [];
+function renderizarCursoresRemotos() {
+  document.querySelectorAll('.cursorRemotoTag').forEach(function (e) { e.remove(); });
+  document.querySelectorAll('[class*="cursor-remoto-"]').forEach(function (e) {
+    e.className = e.className.replace(/cursor-remoto-\\d/g, '').trim();
+  });
+  var ahora = Date.now();
+  ultimosCursoresRemotos.forEach(function (c) {
+    if (c.hoja !== activeSheet) return;
+    if (ahora - (c.ts || 0) > 60000) return; // presencia vieja (sin actividad > 1 min): probablemente se desconectó
+    var el = document.getElementById('cell_' + c.celda);
+    if (!el) return;
+    el.classList.add('cursor-remoto-' + c.colorIdx);
+    var tag = document.createElement('div');
+    tag.className = 'cursorRemotoTag';
+    tag.textContent = c.nombre;
+    tag.style.background = COLORES_CURSOR[c.colorIdx];
+    if (el.parentElement) el.parentElement.appendChild(tag);
+  });
+}
+function escucharCursoresRemotos() {
+  if (matrizCursoresUnsub) { matrizCursoresUnsub(); matrizCursoresUnsub = null; }
+  ultimosCursoresRemotos = [];
+  if (!currentMatrizId || !firestoreDB || !currentUser) return;
+  matrizCursoresUnsub = firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').onSnapshot(function (snap) {
+    var lista = [];
+    snap.forEach(function (doc) {
+      if (doc.id === currentUser.uid) return;
+      var d = doc.data();
+      if (!d) return;
+      lista.push({ celda: d.celda, hoja: d.hoja, ts: d.ts, nombre: d.nombre || d.email || 'Usuario', colorIdx: hashTexto(doc.id) % COLORES_CURSOR.length });
+    });
+    ultimosCursoresRemotos = lista;
+    renderizarCursoresRemotos();
+  });
+}
+
 function guardarMatrizEnNube() {
   if (!currentUser || !currentMatrizId || applyingRemote) return;
+  if (!navigator.onLine) { setSyncStatus('error', 'Sin conexión — se guardó solo en este dispositivo'); return; }
+  setSyncStatus('syncing', 'Guardando...');
+  var celdasSucias = Object.keys(celdasPendientesSync);
+  var algunNombreConPunto = celdasSucias.some(function (clave) {
+    var partes = clave.split('|');
+    return partes[0].indexOf('.') !== -1 || partes[1].indexOf('.') !== -1;
+  });
+  if (celdasSucias.length && celdasSucias.length <= 60 && !algunNombreConPunto) {
+    var updateObj = {};
+    celdasSucias.forEach(function (clave) {
+      var partes = clave.split('|'), hoja = partes[0], celda = partes[1];
+      var valor = (sheetData[hoja] && sheetData[hoja][celda] !== undefined) ? sheetData[hoja][celda] : null;
+      updateObj['sheetData.' + hoja + '.' + celda] = (valor === null ? firebase.firestore.FieldValue.delete() : valor);
+    });
+    updateObj.updatedAt = Date.now();
+    ultimoUpdatedAtEnviado = updateObj.updatedAt;
+    celdasPendientesSync = {};
+    firestoreDB.collection('matrices').doc(currentMatrizId).update(updateObj).then(function () {
+      setSyncStatus('online', currentUser.email + ' · ' + currentMatrizName);
+    }).catch(function (err) {
+      var msg = 'Error al guardar';
+      if (err && err.code === 'permission-denied') msg = 'Sin permiso para editar esta matriz';
+      setSyncStatus('error', msg);
+    });
+    return;
+  }
+  celdasPendientesSync = {};
   var payload = estadoActualComoObjeto();
   payload.updatedAt = Date.now();
   ultimoUpdatedAtEnviado = payload.updatedAt;
-  if (!navigator.onLine) { setSyncStatus('error', 'Sin conexión — se guardó solo en este dispositivo'); return; }
-  setSyncStatus('syncing', 'Guardando...');
   firestoreDB.collection('matrices').doc(currentMatrizId).update(payload).then(function () {
     setSyncStatus('online', currentUser.email + ' · ' + currentMatrizName);
   }).catch(function (err) {
@@ -8772,6 +10170,11 @@ function guardarMatrizEnNube() {
 // PERSISTENCIA
 // ══════════════════════════════════════════════
 function autoSave() {
+  // Si se estaba grabando una macro y hubo un snapshot() pendiente de cerrar,
+  // este es el momento en que la acción del usuario ya terminó: se compara
+  // el estado "antes" (guardado en snapshot()) contra el estado actual y se
+  // guarda la diferencia como un paso más de la macro en grabación.
+  if (grabandoMacro && _macroEstadoAntes) { registrarPasoMacro(); _macroEstadoAntes = null; }
   try {
     localStorage.setItem('mcr_sheets_v6', JSON.stringify(sheets));
     localStorage.setItem('mcr_data_v6', JSON.stringify(sheetData));
@@ -8784,6 +10187,16 @@ function autoSave() {
     localStorage.setItem('mcr_freeze_v6', JSON.stringify(sheetFreeze));
     localStorage.setItem('mcr_condformats_v6', JSON.stringify(sheetCondFormats));
     localStorage.setItem('mcr_validations_v6', JSON.stringify(sheetValidations));
+    localStorage.setItem('mcr_rangos_v6', JSON.stringify(rangosNombrados));
+    localStorage.setItem('mcr_hiddenrows_v6', JSON.stringify(sheetHiddenRows));
+    localStorage.setItem('mcr_hiddencols_v6', JSON.stringify(sheetHiddenCols));
+    localStorage.setItem('mcr_macros_v6', JSON.stringify(macros));
+    localStorage.setItem('mcr_sparklines_v6', JSON.stringify(sheetSparklines));
+    localStorage.setItem('mcr_slicers_v6', JSON.stringify(sheetSlicers));
+    localStorage.setItem('mcr_escenarios_v6', JSON.stringify(sheetEscenarios));
+    localStorage.setItem('mcr_condavanzado_v6', JSON.stringify(sheetCondFormatsAvanzado));
+    localStorage.setItem('mcr_controles_v6', JSON.stringify(sheetControles));
+    localStorage.setItem('mcr_validacionnativa_v6', JSON.stringify(sheetValidacionNativa));
     localStorage.setItem('mcr_zoom_v6', String(zoomLevel));
     localStorage.setItem('mcr_active_v6', activeSheet);
     if (!currentMatrizId) document.getElementById('saveStatus').textContent = '💾 ' + new Date().toLocaleTimeString('es-CR');
@@ -8806,6 +10219,16 @@ function restore() {
     var fz = localStorage.getItem('mcr_freeze_v6');
     var cf = localStorage.getItem('mcr_condformats_v6');
     var va = localStorage.getItem('mcr_validations_v6');
+    var rn = localStorage.getItem('mcr_rangos_v6');
+    var hr = localStorage.getItem('mcr_hiddenrows_v6');
+    var hc = localStorage.getItem('mcr_hiddencols_v6');
+    var mc = localStorage.getItem('mcr_macros_v6');
+    var sp = localStorage.getItem('mcr_sparklines_v6');
+    var sl = localStorage.getItem('mcr_slicers_v6');
+    var es = localStorage.getItem('mcr_escenarios_v6');
+    var ca = localStorage.getItem('mcr_condavanzado_v6');
+    var ct = localStorage.getItem('mcr_controles_v6');
+    var vn = localStorage.getItem('mcr_validacionnativa_v6');
     var zm = localStorage.getItem('mcr_zoom_v6');
     var a = localStorage.getItem('mcr_active_v6');
     if (s) sheets = JSON.parse(s);
@@ -8819,6 +10242,16 @@ function restore() {
     if (fz) sheetFreeze = JSON.parse(fz);
     if (cf) sheetCondFormats = JSON.parse(cf);
     if (va) sheetValidations = JSON.parse(va);
+    if (rn) rangosNombrados = JSON.parse(rn);
+    if (hr) sheetHiddenRows = JSON.parse(hr);
+    if (hc) sheetHiddenCols = JSON.parse(hc);
+    if (mc) macros = JSON.parse(mc);
+    if (sp) sheetSparklines = JSON.parse(sp);
+    if (sl) sheetSlicers = JSON.parse(sl);
+    if (es) sheetEscenarios = JSON.parse(es);
+    if (ca) sheetCondFormatsAvanzado = JSON.parse(ca);
+    if (ct) sheetControles = JSON.parse(ct);
+    if (vn) sheetValidacionNativa = JSON.parse(vn);
     if (zm) zoomLevel = parseInt(zm) || 100;
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
   } catch (e) {}
@@ -8859,6 +10292,10 @@ function actualizarEstadoConexion() {
 window.addEventListener('online', actualizarEstadoConexion);
 window.addEventListener('offline', actualizarEstadoConexion);
 actualizarEstadoConexion();
+// Al cerrar o salir, borramos nuestro propio "cursor en vivo" para que
+// los demás no sigan viendo una marca nuestra parada en una celda vieja.
+window.addEventListener('beforeunload', limpiarPresenciaPropia);
+window.addEventListener('pagehide', limpiarPresenciaPropia);
 
 // ── Auditoría ──
 document.getElementById('btnAuditoria').addEventListener('click', function () {
@@ -8889,6 +10326,40 @@ document.getElementById('auditClose').addEventListener('click', function () {
 });
 
 // ── Copias de respaldo ──
+function escHtml(s) {
+  return String(s === null || s === undefined ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function unificarListas(a, b) {
+  var vistos = {}, out = [];
+  (a || []).concat(b || []).forEach(function (x) { if (!vistos[x]) { vistos[x] = true; out.push(x); } });
+  return out;
+}
+// Compara dos estados guardados (backups, o un backup contra el estado
+// actual) y devuelve qué celdas cambiaron de valor, y qué hojas se
+// agregaron o eliminaron entre uno y otro — la base del "historial
+// navegable con diff" que no tenía el sistema de respaldos.
+function diffEstados(objA, objB) {
+  var dataA = (objA && objA.sheetData) || {};
+  var dataB = (objB && objB.sheetData) || {};
+  var hojasA = (objA && objA.sheets) || [];
+  var hojasB = (objB && objB.sheets) || [];
+  var todasHojas = unificarListas(unificarListas(hojasA, hojasB), unificarListas(Object.keys(dataA), Object.keys(dataB)));
+  var cambios = [];
+  todasHojas.forEach(function (hoja) {
+    var celdasA = dataA[hoja] || {};
+    var celdasB = dataB[hoja] || {};
+    unificarListas(Object.keys(celdasA), Object.keys(celdasB)).forEach(function (celda) {
+      var va = celdasA[celda] !== undefined ? celdasA[celda] : '';
+      var vb = celdasB[celda] !== undefined ? celdasB[celda] : '';
+      if (va !== vb) cambios.push({ hoja: hoja, celda: celda, anterior: va, nuevo: vb });
+    });
+  });
+  return {
+    cambios: cambios,
+    hojasNuevas: hojasB.filter(function (h) { return hojasA.indexOf(h) === -1; }),
+    hojasEliminadas: hojasA.filter(function (h) { return hojasB.indexOf(h) === -1; }),
+  };
+}
 function crearBackup(silencioso, nota) {
   if (!currentMatrizId || !currentUser || !firestoreDB) {
     if (!silencioso) alert('Guardá esta matriz primero (📁 Mis Matrices) para poder respaldarla.');
@@ -8917,26 +10388,73 @@ function renderBackupList() {
   wrap.innerHTML = '<div style="padding:10px;">Cargando...</div>';
   firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').limit(30).get().then(function (snap) {
     if (snap.empty) { wrap.innerHTML = '<div style="padding:10px;">Sin backups todavía. Creá el primero arriba.</div>'; return; }
+    var docs = snap.docs;
+    var estadoActual = estadoActualComoObjeto();
+    // Cada backup se compara contra el que le sigue cronológicamente: el más
+    // reciente contra lo que tenés abierto AHORA, y cada uno de los demás
+    // contra el backup inmediatamente más nuevo que él — así el "resumen"
+    // de cada fila dice qué cambió DESPUÉS de ese backup, como una línea de
+    // tiempo navegable en vez de copias ciegas sin contexto.
     var html = '';
-    snap.forEach(function (doc) {
+    docs.forEach(function (doc, i) {
       var d = doc.data();
+      var referencia = (i === 0) ? estadoActual : docs[i - 1].data();
+      var diff = diffEstados(d, referencia);
+      var n = diff.cambios.length;
       var fechaFmt = d.fecha ? new Date(d.fecha).toLocaleString('es-CR') : '';
-      html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;">' +
-        '<div>' + fechaFmt + '<div style="color:#888;font-size:11px;">' + (d.creadoPor || '') + (d.nota ? ' · ' + d.nota : '') + '</div></div>' +
-        '<button class="backupRestaurarBtn" data-id="' + doc.id + '" style="padding:6px 10px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">Restaurar</button></div>';
+      var resumen = n ? ('✏️ ' + n + ' celda' + (n === 1 ? '' : 's') + ' cambiada' + (n === 1 ? '' : 's') + ' después de este backup')
+        : '— Sin cambios después de este backup';
+      html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+        '<div>' + fechaFmt + '<div style="color:#888;font-size:11px;">' + escHtml(d.creadoPor || '') + (d.nota ? ' · ' + escHtml(d.nota) : '') + '</div></div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+        '<button class="backupVerCambiosBtn" data-idx="' + i + '" style="padding:6px 8px;border-radius:6px;background:#eef6e3;color:#245f09;border:1px solid #cce9ae;white-space:nowrap;">👁 Cambios</button>' +
+        '<button class="backupRestaurarBtn" data-idx="' + i + '" style="padding:6px 8px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;white-space:nowrap;">Restaurar</button>' +
+        '</div></div>' +
+        '<div style="color:#6b8f48;margin-top:4px;">' + resumen + '</div>' +
+        '<div class="backupDiffBox" data-idx="' + i + '" style="display:none;margin-top:6px;background:#f7fbf0;border-radius:8px;padding:8px;max-height:160px;overflow-y:auto;"></div>' +
+        '</div>';
     });
     wrap.innerHTML = html;
+
+    wrap.querySelectorAll('.backupVerCambiosBtn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var idx = parseInt(btn.dataset.idx, 10);
+        var box = wrap.querySelector('.backupDiffBox[data-idx="' + idx + '"]');
+        if (box.style.display !== 'none') { box.style.display = 'none'; return; }
+        var d = docs[idx].data();
+        var referencia = (idx === 0) ? estadoActual : docs[idx - 1].data();
+        var diff = diffEstados(d, referencia);
+        if (!diff.cambios.length && !diff.hojasNuevas.length && !diff.hojasEliminadas.length) {
+          box.innerHTML = '<i>Sin cambios registrados después de este backup.</i>';
+        } else {
+          var filas = diff.cambios.slice(0, 80).map(function (c) {
+            return '<div style="padding:3px 0;border-bottom:1px solid #e6efd8;"><b>' + escHtml(c.celda) + '</b> (' + escHtml(c.hoja) + '): "' +
+              (c.anterior ? escHtml(c.anterior) : '<i>vacío</i>') + '" → "' + (c.nuevo ? escHtml(c.nuevo) : '<i>vacío</i>') + '"</div>';
+          }).join('');
+          if (diff.cambios.length > 80) filas += '<div style="padding:4px 0;color:#888;">...y ' + (diff.cambios.length - 80) + ' cambios más.</div>';
+          if (diff.hojasNuevas.length) filas += '<div style="padding:3px 0;color:#2d7a0c;">+ Hoja agregada: ' + escHtml(diff.hojasNuevas.join(', ')) + '</div>';
+          if (diff.hojasEliminadas.length) filas += '<div style="padding:3px 0;color:#c0392b;">- Hoja eliminada: ' + escHtml(diff.hojasEliminadas.join(', ')) + '</div>';
+          box.innerHTML = filas;
+        }
+        box.style.display = 'block';
+      });
+    });
+
     wrap.querySelectorAll('.backupRestaurarBtn').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        if (!confirm('¿Restaurar este backup? Se reemplazará el contenido actual de la matriz (podés deshacer con ↶ después).')) return;
-        firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').doc(btn.dataset.id).get().then(function (doc) {
-          if (!doc.exists) return;
-          snapshot();
-          cargarEstadoDesdeObjeto(doc.data());
-          autoSave();
-          document.getElementById('backupOverlay').classList.remove('show');
-          document.getElementById('saveStatus').textContent = '✓ Backup restaurado';
-        });
+        var idx = parseInt(btn.dataset.idx, 10);
+        var dataObj = docs[idx].data();
+        var diffVsActual = diffEstados(estadoActual, dataObj);
+        var mensaje = '¿Restaurar este backup?';
+        if (diffVsActual.cambios.length) mensaje += ' Vas a reemplazar ' + diffVsActual.cambios.length + ' celda' + (diffVsActual.cambios.length === 1 ? '' : 's') + ' respecto a lo que tenés ahora.';
+        mensaje += ' (podés deshacer con ↶ después)';
+        if (!confirm(mensaje)) return;
+        snapshot();
+        cargarEstadoDesdeObjeto(dataObj);
+        autoSave();
+        document.getElementById('backupOverlay').classList.remove('show');
+        document.getElementById('saveStatus').textContent = '✓ Backup restaurado';
       });
     });
   }).catch(function () {
@@ -8953,6 +10471,740 @@ document.getElementById('backupClose').addEventListener('click', function () {
 document.getElementById('backupCrearAhoraBtn').addEventListener('click', function () {
   var nota = prompt('Ponele una nota a este backup (opcional, ej. "Antes de cierre de mes"):', '') || '';
   crearBackup(false, nota);
+});
+
+// ── Rangos con nombre ──
+function crearRangoNombrado(nombreCrudo, bounds) {
+  var nombre = String(nombreCrudo || '').trim();
+  if (!nombre) { alert('Ponele un nombre al rango.'); return false; }
+  if (!nombreRangoEsValido(nombre)) {
+    alert('Ese nombre no sirve: no puede tener espacios ni símbolos (usá _ en vez de espacio), no puede verse como una celda (ej. "A1"), y no puede ser el nombre de una función (ej. "SUMA").');
+    return false;
+  }
+  if (!bounds) { alert('Seleccioná primero un rango en la hoja (arrastrando celdas).'); return false; }
+  var clave = nombre.toUpperCase();
+  if (rangosNombrados[clave] && !confirm('Ya existe un rango con ese nombre. ¿Reemplazarlo?')) return false;
+  snapshot();
+  rangosNombrados[clave] = {
+    hoja: activeSheet,
+    from: cellId(bounds.minR, bounds.minC),
+    to: cellId(bounds.maxR, bounds.maxC),
+  };
+  autoSave();
+  return true;
+}
+function renderRangosList() {
+  var wrap = document.getElementById('rangosList');
+  var nombres = Object.keys(rangosNombrados).sort();
+  if (!nombres.length) { wrap.innerHTML = '<div style="padding:10px;color:#888;">Todavía no creaste ningún rango con nombre.</div>'; return; }
+  var html = '';
+  nombres.forEach(function (clave) {
+    var r = rangosNombrados[clave];
+    var rangoStr = (r.to && r.to !== r.from) ? (r.from + ':' + r.to) : r.from;
+    html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;">' +
+      '<div><b>' + escHtml(clave) + '</b><div style="color:#888;font-size:11px;">' + escHtml(r.hoja) + '!' + escHtml(rangoStr) + '</div></div>' +
+      '<button class="rangoEliminarBtn" data-clave="' + escHtml(clave) + '" style="padding:6px 10px;border-radius:6px;background:#dc2626;color:#fff;border:none;">🗑</button></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.rangoEliminarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (!confirm('¿Eliminar el rango "' + btn.dataset.clave + '"? Las fórmulas que lo usen van a dar error hasta que lo corrijas.')) return;
+      snapshot();
+      delete rangosNombrados[btn.dataset.clave];
+      autoSave();
+      renderRangosList();
+    });
+  });
+}
+document.getElementById('btnRangos').addEventListener('click', function () {
+  document.getElementById('rangosOverlay').classList.add('show');
+  renderRangosList();
+});
+document.getElementById('rangosClose').addEventListener('click', function () {
+  document.getElementById('rangosOverlay').classList.remove('show');
+});
+document.getElementById('rangosCrearBtn').addEventListener('click', function () {
+  var input = document.getElementById('rangosNombreInput');
+  if (crearRangoNombrado(input.value, currentRangeBounds())) { input.value = ''; renderRangosList(); }
+});
+document.getElementById('raNombrar').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero un rango en la hoja (arrastrando celdas).'); return; }
+  var rangoStr = cellId(bounds.minR, bounds.minC) + (bounds.isMulti ? (':' + cellId(bounds.maxR, bounds.maxC)) : '');
+  var nombre = prompt('Nombre para el rango ' + rangoStr + ' (sin espacios, ej: Ventas_Enero):', '');
+  if (nombre === null) return;
+  if (crearRangoNombrado(nombre, bounds)) {
+    document.getElementById('rangeActionsBar').classList.remove('show');
+    document.getElementById('saveStatus').textContent = '✓ Rango "' + nombre.trim() + '" creado';
+  }
+});
+
+// ── Macros (grabadora de acciones, estilo Excel) ──
+// Compara el estado "antes" (tomado en el último snapshot() mientras se
+// grababa) contra el estado actual, celda por celda y formato por formato,
+// y guarda solo lo que realmente cambió como un "paso" de la macro. Como
+// snapshot() se llama al INICIO de cualquier acción que modifica la hoja y
+// autoSave() se llama al FINAL de esa misma acción, este par es un punto de
+// enganche único que ya cubre escribir, pegar, pegado especial, rellenar,
+// dar formato, ordenar, insertar/eliminar filas o columnas, etc. — sin
+// tener que modificar cada una de esas funciones por separado.
+function registrarPasoMacro() {
+  try {
+    var antes = JSON.parse(_macroEstadoAntes);
+    var celdas = [], formatos = [];
+    var hojasVistas = {};
+    Object.keys(antes.sheetData || {}).forEach(function (h) { hojasVistas[h] = true; });
+    Object.keys(sheetData || {}).forEach(function (h) { hojasVistas[h] = true; });
+    Object.keys(hojasVistas).forEach(function (hoja) {
+      var dAntes = (antes.sheetData && antes.sheetData[hoja]) || {};
+      var dDespues = sheetData[hoja] || {};
+      var idsDatos = {};
+      Object.keys(dAntes).forEach(function (id) { idsDatos[id] = true; });
+      Object.keys(dDespues).forEach(function (id) { idsDatos[id] = true; });
+      Object.keys(idsDatos).forEach(function (id) {
+        var a = dAntes[id] !== undefined ? dAntes[id] : null;
+        var d = dDespues[id] !== undefined ? dDespues[id] : null;
+        if (a !== d) celdas.push({ hoja: hoja, id: id, despues: d });
+      });
+      var fAntes = (antes.sheetFormats && antes.sheetFormats[hoja]) || {};
+      var fDespues = sheetFormats[hoja] || {};
+      var idsFmt = {};
+      Object.keys(fAntes).forEach(function (id) { idsFmt[id] = true; });
+      Object.keys(fDespues).forEach(function (id) { idsFmt[id] = true; });
+      Object.keys(idsFmt).forEach(function (id) {
+        var a = fAntes[id] !== undefined ? fAntes[id] : null;
+        var d = fDespues[id] !== undefined ? fDespues[id] : null;
+        if (JSON.stringify(a) !== JSON.stringify(d)) formatos.push({ hoja: hoja, id: id, despues: d });
+      });
+    });
+    if (celdas.length || formatos.length) pasosGrabados.push({ celdas: celdas, formatos: formatos });
+  } catch (e) {}
+}
+function iniciarGrabacionMacro(nombre) {
+  if (macros[nombre] && !confirm('Ya existe una macro llamada "' + nombre + '". Si seguís grabando, al terminar se va a reemplazar. ¿Continuar?')) return;
+  grabandoMacro = nombre;
+  pasosGrabados = [];
+  _macroEstadoAntes = null;
+  document.getElementById('macroGrabandoNombre').textContent = nombre;
+  document.getElementById('macroGrabandoBar').classList.add('show');
+  document.getElementById('macrosOverlay').classList.remove('show');
+}
+function detenerGrabacionMacro() {
+  if (!grabandoMacro) return;
+  var nombre = grabandoMacro;
+  macros[nombre] = pasosGrabados;
+  grabandoMacro = null; pasosGrabados = []; _macroEstadoAntes = null;
+  document.getElementById('macroGrabandoBar').classList.remove('show');
+  autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Macro "' + nombre + '" guardada (' + macros[nombre].length + ' paso(s))';
+}
+function ejecutarMacro(nombre) {
+  var pasos = macros[nombre];
+  if (!pasos || !pasos.length) { alert('Esa macro no tiene ningún paso grabado.'); return; }
+  snapshot();
+  var hojasProtegidas = {};
+  pasos.forEach(function (paso) {
+    paso.celdas.forEach(function (c) {
+      if (sheetProtegida[c.hoja]) { hojasProtegidas[c.hoja] = true; return; }
+      if (!sheetData[c.hoja]) sheetData[c.hoja] = {};
+      if (c.despues === null) delete sheetData[c.hoja][c.id]; else sheetData[c.hoja][c.id] = c.despues;
+    });
+    paso.formatos.forEach(function (f) {
+      if (sheetProtegida[f.hoja]) { hojasProtegidas[f.hoja] = true; return; }
+      if (!sheetFormats[f.hoja]) sheetFormats[f.hoja] = {};
+      if (f.despues === null) delete sheetFormats[f.hoja][f.id]; else sheetFormats[f.hoja][f.id] = f.despues;
+    });
+  });
+  buildTable(); autoSave();
+  var aviso = Object.keys(hojasProtegidas).length ? (' (algunas hojas estaban protegidas y no se modificaron: ' + Object.keys(hojasProtegidas).join(', ') + ')') : '';
+  document.getElementById('saveStatus').textContent = '✓ Macro "' + nombre + '" ejecutada' + aviso;
+}
+function renderMacrosList() {
+  var wrap = document.getElementById('macrosList');
+  var nombres = Object.keys(macros).sort();
+  if (!nombres.length) { wrap.innerHTML = '<div style="padding:10px;color:#888;">Todavía no grabaste ninguna macro.</div>'; return; }
+  var html = '';
+  nombres.forEach(function (nombre) {
+    var pasos = macros[nombre] || [];
+    var nCambios = 0;
+    pasos.forEach(function (p) { nCambios += p.celdas.length + p.formatos.length; });
+    html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;gap:6px;">' +
+      '<div style="flex:1;min-width:0;overflow:hidden;"><b>' + escHtml(nombre) + '</b><div style="color:#888;font-size:11px;">' + pasos.length + ' paso(s) · ' + nCambios + ' cambio(s)</div></div>' +
+      '<div style="display:flex;gap:4px;flex-shrink:0;">' +
+      '<button class="macroEjecutarBtn" data-nombre="' + escHtml(nombre) + '" style="padding:6px 9px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">▶</button>' +
+      '<button class="macroRenombrarBtn" data-nombre="' + escHtml(nombre) + '" style="padding:6px 9px;border-radius:6px;background:#245f09;color:#fff;border:none;">✏️</button>' +
+      '<button class="macroEliminarBtn" data-nombre="' + escHtml(nombre) + '" style="padding:6px 9px;border-radius:6px;background:#dc2626;color:#fff;border:none;">🗑</button>' +
+      '</div></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.macroEjecutarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.getElementById('macrosOverlay').classList.remove('show');
+      ejecutarMacro(btn.dataset.nombre);
+    });
+  });
+  wrap.querySelectorAll('.macroRenombrarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var nuevo = prompt('Nuevo nombre para la macro:', btn.dataset.nombre);
+      if (nuevo === null) return;
+      nuevo = nuevo.trim();
+      if (!nuevo) { alert('Ponele un nombre.'); return; }
+      if (nuevo !== btn.dataset.nombre && macros[nuevo] && !confirm('Ya existe otra macro con ese nombre. ¿Reemplazarla?')) return;
+      macros[nuevo] = macros[btn.dataset.nombre];
+      if (nuevo !== btn.dataset.nombre) delete macros[btn.dataset.nombre];
+      autoSave();
+      renderMacrosList();
+    });
+  });
+  wrap.querySelectorAll('.macroEliminarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (!confirm('¿Eliminar la macro "' + btn.dataset.nombre + '"?')) return;
+      delete macros[btn.dataset.nombre];
+      autoSave();
+      renderMacrosList();
+    });
+  });
+}
+document.getElementById('btnMacros').addEventListener('click', function () {
+  document.getElementById('macrosOverlay').classList.add('show');
+  renderMacrosList();
+});
+document.getElementById('macrosClose').addEventListener('click', function () {
+  document.getElementById('macrosOverlay').classList.remove('show');
+});
+document.getElementById('macrosGrabarBtn').addEventListener('click', function () {
+  var nombre = prompt('Nombre para la nueva macro (ej: Cierre_Mensual):', '');
+  if (nombre === null) return;
+  nombre = nombre.trim();
+  if (!nombre) { alert('Ponele un nombre a la macro.'); return; }
+  iniciarGrabacionMacro(nombre);
+});
+document.getElementById('macroGrabandoDetenerBtn').addEventListener('click', detenerGrabacionMacro);
+
+// ── Sparklines (mini-gráficos dentro de una celda, como en Excel) ──
+// No se guardan como texto: se vuelven a calcular y "dibujar" en cada
+// renderAllCells() a partir del rango de datos que tienen asociado, así
+// siempre están al día. Conviene dejar la celda del sparkline vacía (sin
+// escribirle nada), aunque si tiene un valor propio, ambos conviven.
+function crearSparkline(bounds) {
+  if (!bounds) { alert('Seleccioná primero el rango de datos para el sparkline (arrastrá sobre las celdas con los números).'); return; }
+  if (bounds.minR === bounds.maxR && bounds.minC === bounds.maxC) {
+    var idUnico = cellId(bounds.minR, bounds.minC);
+    if (sheetSparklines[activeSheet] && sheetSparklines[activeSheet][idUnico]) {
+      if (confirm('¿Quitar el sparkline de ' + idUnico + '?')) {
+        snapshot();
+        delete sheetSparklines[activeSheet][idUnico];
+        document.getElementById('rangeActionsBar').classList.remove('show');
+        buildTable(); autoSave();
+      }
+      return;
+    }
+    alert('Seleccioná un rango de varias celdas con los datos (arrastrando), no solo una. Si tocaste una celda que YA tiene un sparkline, esto lo quita.');
+    return;
+  }
+  var rangoTexto = cellId(bounds.minR, bounds.minC) + ':' + cellId(bounds.maxR, bounds.maxC);
+  var destinoSugerido = cellId(bounds.minR, bounds.maxC + 1);
+  var destino = prompt('¿En qué celda poner el sparkline de ' + rangoTexto + '?', destinoSugerido);
+  if (destino === null) return;
+  destino = destino.trim().toUpperCase();
+  if (!/^[A-Z]+\\d+$/.test(destino)) { alert('Esa celda no es válida.'); return; }
+  var tipo = confirm('Tipo de sparkline:\\n\\nAceptar = Línea\\nCancelar = Barras') ? 'linea' : 'barras';
+  snapshot();
+  if (!sheetSparklines[activeSheet]) sheetSparklines[activeSheet] = {};
+  sheetSparklines[activeSheet][destino] = { rango: rangoTexto, tipo: tipo };
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Sparkline creado en ' + destino;
+}
+function sparklineSVG(valores, tipo) {
+  var W = 70, H = 20;
+  if (!valores || !valores.length) return '';
+  var nums = valores.map(function (v) {
+    var n = parseFloat(String(v).replace(/[₡,\\s]/g, ''));
+    return isNaN(n) ? 0 : n;
+  });
+  var max = Math.max.apply(null, nums), min = Math.min.apply(null, nums);
+  if (max === min) { max += 1; min -= 1; }
+  var svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">';
+  if (tipo === 'barras') {
+    var bw = W / nums.length;
+    nums.forEach(function (n, i) {
+      var alturaBarra = Math.max(1, ((n - min) / (max - min || 1)) * (H - 2));
+      var x = i * bw + 1;
+      var color = n < 0 ? '#c0392b' : '#2d7a0c';
+      svg += '<rect x="' + x.toFixed(1) + '" y="' + (H - alturaBarra).toFixed(1) + '" width="' + Math.max(1, bw - 2).toFixed(1) + '" height="' + alturaBarra.toFixed(1) + '" fill="' + color + '"></rect>';
+    });
+  } else {
+    var pts = nums.map(function (n, i) {
+      var x = (i / (nums.length - 1 || 1)) * (W - 2) + 1;
+      var y = H - ((n - min) / (max - min || 1)) * (H - 2) - 1;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+    svg += '<polyline points="' + pts + '" fill="none" stroke="#217346" stroke-width="1.5"></polyline>';
+  }
+  svg += '</svg>';
+  return svg;
+}
+document.getElementById('raSparkline').addEventListener('click', function () {
+  crearSparkline(currentRangeBounds());
+});
+
+// ── Segmentadores / slicers (filtro visual con botones, como en Excel) ──
+function obtenerSegmentador(hoja, id) {
+  var lista = sheetSlicers[hoja] || [];
+  for (var i = 0; i < lista.length; i++) if (lista[i].id === id) return lista[i];
+  return null;
+}
+function crearSegmentador(bounds) {
+  if (!bounds || bounds.minC !== bounds.maxC || bounds.minR === bounds.maxR) {
+    alert('Seleccioná una sola columna con varias filas de datos (arrastrá hacia abajo sobre una columna) y volvé a tocar "🔘 Segmentador".');
+    return;
+  }
+  var nombreSugerido = String(computeValue(cellId(Math.max(0, bounds.minR - 1), bounds.minC)) || '').trim() || 'Segmentador';
+  var nombre = prompt('Nombre para este segmentador:', nombreSugerido);
+  if (nombre === null) return;
+  nombre = nombre.trim() || nombreSugerido;
+  snapshot();
+  if (!sheetSlicers[activeSheet]) sheetSlicers[activeSheet] = [];
+  sheetSlicers[activeSheet].push({
+    id: 'slc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    nombre: nombre, columna: bounds.minC, filaInicio: bounds.minR, filaFin: bounds.maxR, excluidos: [],
+  });
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Segmentador "' + nombre + '" creado';
+}
+function valoresDistintosDeSegmentador(sl) {
+  var vistos = {}, out = [];
+  for (var r = sl.filaInicio; r <= sl.filaFin; r++) {
+    var v = String(computeValue(cellId(r, sl.columna)));
+    if (v === '') continue;
+    if (!vistos[v]) { vistos[v] = true; out.push(v); }
+  }
+  return out;
+}
+function renderSegmentadoresList() {
+  var wrap = document.getElementById('segmentadoresList');
+  var slicers = sheetSlicers[activeSheet] || [];
+  if (!slicers.length) { wrap.innerHTML = '<div style="padding:10px;color:#888;">Esta hoja todavía no tiene segmentadores. Seleccioná una columna de datos y usá "🔘 Segmentador" en la barra de rango.</div>'; return; }
+  var html = '';
+  slicers.forEach(function (sl) {
+    var valores = valoresDistintosDeSegmentador(sl);
+    html += '<div class="slicerBox"><div class="slicerTop"><b>' + escHtml(sl.nombre) + '</b> <button class="slicerDelBtn" data-id="' + sl.id + '">🗑</button></div><div class="slicerChips">' +
+      valores.map(function (v) {
+        var excluido = sl.excluidos.indexOf(v) !== -1;
+        return '<button class="slicerChip' + (excluido ? ' excluido' : '') + '" data-id="' + sl.id + '" data-valor="' + escHtml(v) + '">' + escHtml(v) + '</button>';
+      }).join('') + '</div></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.slicerChip').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var sl = obtenerSegmentador(activeSheet, btn.dataset.id);
+      if (!sl) return;
+      var v = btn.dataset.valor;
+      var idx = sl.excluidos.indexOf(v);
+      if (idx === -1) sl.excluidos.push(v); else sl.excluidos.splice(idx, 1);
+      buildTable(); autoSave();
+      renderSegmentadoresList();
+    });
+  });
+  wrap.querySelectorAll('.slicerDelBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (!confirm('¿Eliminar este segmentador? Las filas que estaba filtrando van a volver a mostrarse.')) return;
+      snapshot();
+      sheetSlicers[activeSheet] = (sheetSlicers[activeSheet] || []).filter(function (s) { return s.id !== btn.dataset.id; });
+      buildTable(); autoSave();
+      renderSegmentadoresList();
+    });
+  });
+}
+document.getElementById('btnSegmentadores').addEventListener('click', function () {
+  document.getElementById('segmentadoresOverlay').classList.add('show');
+  renderSegmentadoresList();
+});
+document.getElementById('segmentadoresClose').addEventListener('click', function () {
+  document.getElementById('segmentadoresOverlay').classList.remove('show');
+});
+document.getElementById('raSegmentador').addEventListener('click', function () {
+  crearSegmentador(currentRangeBounds());
+});
+
+// ── Controles de formulario: casillas de verificación y botones de radio ──
+// Reemplazan el contenido de la celda por un control real (ver el render
+// en renderAllCells()); marcar/desmarcar escribe VERDADERO/FALSO. Tocar
+// el mismo botón de nuevo sobre celdas que YA son casillas las vuelve a
+// convertir en celdas normales (ver también "🗑 Borrar rango", que
+// también quita cualquier control al borrar contenido).
+document.getElementById('raCheckbox').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero las celdas (arrastrando).'); return; }
+  snapshot();
+  if (!sheetControles[activeSheet]) sheetControles[activeSheet] = {};
+  var todasYaSon = true;
+  for (var r = bounds.minR; r <= bounds.maxR && todasYaSon; r++) {
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var idChk = cellId(r, c);
+      if (!sheetControles[activeSheet][idChk] || sheetControles[activeSheet][idChk].tipo !== 'checkbox') { todasYaSon = false; break; }
+    }
+  }
+  for (var r2 = bounds.minR; r2 <= bounds.maxR; r2++) {
+    for (var c2 = bounds.minC; c2 <= bounds.maxC; c2++) {
+      var id2 = cellId(r2, c2);
+      if (todasYaSon) delete sheetControles[activeSheet][id2]; else sheetControles[activeSheet][id2] = { tipo: 'checkbox' };
+    }
+  }
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+});
+document.getElementById('raRadio').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero las celdas (arrastrando) donde van los botones de radio.'); return; }
+  var grupo = prompt('Nombre del grupo (las celdas de este rango van a ser mutuamente excluyentes entre sí). Dejalo vacío para quitar el control de radio:', 'Grupo1');
+  if (grupo === null) return;
+  grupo = grupo.trim();
+  snapshot();
+  if (!sheetControles[activeSheet]) sheetControles[activeSheet] = {};
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var id = cellId(r, c);
+      if (!grupo) delete sheetControles[activeSheet][id]; else sheetControles[activeSheet][id] = { tipo: 'radio', grupo: grupo };
+    }
+  }
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+});
+
+// ── "Power Query" casero: Tipo de Cambio (Hacienda/BCCR) ──
+// api.hacienda.go.cr es la misma API pública que usan muchos sitios y
+// apps de Costa Rica para el dólar oficial — publica el mismo dato que
+// reporta el BCCR, sin necesitar ningún registro ni credencial.
+function renderTipoCambio() {
+  var estado = document.getElementById('tcEstado');
+  if (!ultimoTipoCambio) { estado.textContent = 'Todavía no se consultó. Tocá "Actualizar".'; return; }
+  estado.innerHTML = '💵 Compra: <b>₡' + Number(ultimoTipoCambio.compra).toLocaleString('es-CR', { minimumFractionDigits: 2 }) +
+    '</b> · Venta: <b>₡' + Number(ultimoTipoCambio.venta).toLocaleString('es-CR', { minimumFractionDigits: 2 }) + '</b>' +
+    '<div style="font-size:11px;color:#888;margin-top:3px;">Fecha del dato: ' + escHtml(String(ultimoTipoCambio.fecha || '')) + '</div>';
+}
+function actualizarTipoCambio() {
+  var estado = document.getElementById('tcEstado');
+  estado.textContent = '⏳ Consultando...';
+  fetch('https://api.hacienda.go.cr/indicadores/tc/dolar')
+    .then(function (r) { if (!r.ok) throw new Error('código ' + r.status); return r.json(); })
+    .then(function (data) {
+      ultimoTipoCambio = {
+        compra: data.compra && data.compra.valor,
+        venta: data.venta && data.venta.valor,
+        fecha: (data.compra && data.compra.fecha) || (data.venta && data.venta.fecha) || '',
+      };
+      try { localStorage.setItem('mcr_tipocambio_v6', JSON.stringify(ultimoTipoCambio)); } catch (e) {}
+      renderTipoCambio();
+      buildTable(); // recalcula cualquier =TIPOCAMBIO(...) que haya en la hoja
+    })
+    .catch(function (err) {
+      estado.textContent = '⚠️ No se pudo consultar (' + err.message + '). Revisá tu conexión a internet e intentá de nuevo.';
+    });
+}
+function insertarEnCeldaActual(valor) {
+  var id = document.getElementById('cellRef').textContent;
+  snapshot();
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  sheetData[activeSheet][id] = String(valor);
+  marcarCeldaSucia(activeSheet, id);
+  buildTable(); autoSave();
+}
+document.getElementById('btnTipoCambio').addEventListener('click', function () {
+  document.getElementById('tipoCambioOverlay').classList.add('show');
+  renderTipoCambio();
+});
+document.getElementById('tipoCambioClose').addEventListener('click', function () {
+  document.getElementById('tipoCambioOverlay').classList.remove('show');
+});
+document.getElementById('tcActualizarBtn').addEventListener('click', actualizarTipoCambio);
+document.getElementById('tcInsertarCompraBtn').addEventListener('click', function () {
+  if (!ultimoTipoCambio) { alert('Primero tocá "Actualizar".'); return; }
+  insertarEnCeldaActual(ultimoTipoCambio.compra);
+  document.getElementById('tipoCambioOverlay').classList.remove('show');
+});
+document.getElementById('tcInsertarVentaBtn').addEventListener('click', function () {
+  if (!ultimoTipoCambio) { alert('Primero tocá "Actualizar".'); return; }
+  insertarEnCeldaActual(ultimoTipoCambio.venta);
+  document.getElementById('tipoCambioOverlay').classList.remove('show');
+});
+try {
+  var _tcGuardado = localStorage.getItem('mcr_tipocambio_v6');
+  if (_tcGuardado) ultimoTipoCambio = JSON.parse(_tcGuardado);
+} catch (e) {}
+
+// ── "Power Query" casero: Padrón de Hacienda (consulta por cédula) ──
+// api.hacienda.go.cr/fe/ae es la misma API pública que usan los sistemas
+// de facturación electrónica para validar un cliente/proveedor antes de
+// facturarle: nombre, régimen y si está al día con Hacienda.
+function consultarHacienda(cedulaCruda) {
+  var cedula = String(cedulaCruda || '').replace(/[^0-9]/g, '');
+  var resultado = document.getElementById('haciendaResultado');
+  if (!cedula) { resultado.textContent = 'Ingresá un número de cédula/identificación.'; return; }
+  resultado.textContent = '⏳ Consultando...';
+  fetch('https://api.hacienda.go.cr/fe/ae?identificacion=' + cedula)
+    .then(function (r) {
+      if (!r.ok) throw new Error(r.status === 404 ? 'esa cédula no aparece en el padrón' : ('código ' + r.status));
+      return r.json();
+    })
+    .then(function (data) {
+      consultasHaciendaCache[cedula] = data;
+      try { localStorage.setItem('mcr_haciendacache_v6', JSON.stringify(consultasHaciendaCache)); } catch (e) {}
+      var alDia = data.situacion && data.situacion.moroso === 'NO' && data.situacion.omiso === 'NO';
+      resultado.innerHTML = '<b>' + escHtml(data.nombre || '(sin nombre)') + '</b>' +
+        '<div style="font-size:11.5px;color:#555;margin-top:3px;">Régimen: ' + escHtml((data.regimen && data.regimen.descripcion) || '—') + '</div>' +
+        '<div style="font-size:11.5px;margin-top:2px;">' + (alDia ? '✅ Al día (no moroso, no omiso)' : '⚠️ Revisar: ' + escHtml((data.situacion && (data.situacion.estado + (data.situacion.mensaje ? ' — ' + data.situacion.mensaje : ''))) || 'estado irregular')) + '</div>';
+      buildTable(); // recalcula cualquier =PADRON(...) que esté esperando este dato
+    })
+    .catch(function (err) {
+      resultado.textContent = '⚠️ No se pudo consultar (' + err.message + ').';
+    });
+}
+document.getElementById('btnPadronHacienda').addEventListener('click', function () {
+  document.getElementById('haciendaOverlay').classList.add('show');
+});
+document.getElementById('haciendaClose').addEventListener('click', function () {
+  document.getElementById('haciendaOverlay').classList.remove('show');
+});
+document.getElementById('haciendaConsultarBtn').addEventListener('click', function () {
+  consultarHacienda(document.getElementById('haciendaCedulaInput').value);
+});
+document.getElementById('haciendaInsertarBtn').addEventListener('click', function () {
+  var cedulaActual = String(document.getElementById('haciendaCedulaInput').value || '').replace(/[^0-9]/g, '');
+  var datos = consultasHaciendaCache[cedulaActual];
+  if (!datos) { alert('Primero consultá una cédula.'); return; }
+  insertarEnCeldaActual(datos.nombre || '');
+  document.getElementById('haciendaOverlay').classList.remove('show');
+});
+try {
+  var _haciendaCacheGuardado = localStorage.getItem('mcr_haciendacache_v6');
+  if (_haciendaCacheGuardado) consultasHaciendaCache = JSON.parse(_haciendaCacheGuardado);
+} catch (e) {}
+
+// ── What-If: Buscar Objetivo (Goal Seek) ──
+// El motor de fórmulas no es simbólico (no se puede "despejar" una
+// fórmula), así que se resuelve probando valores: un método numérico
+// (secante, el mismo espíritu que usa Excel por debajo) que va ajustando
+// la celda variable hasta que la celda con la fórmula se acerca lo
+// suficiente al objetivo.
+function resolverBuscarObjetivo(celdaFormula, valorObjetivo, celdaVariable) {
+  celdaFormula = celdaFormula.trim().toUpperCase();
+  celdaVariable = celdaVariable.trim().toUpperCase();
+  if (!/^[A-Za-z]+\\d+$/.test(celdaFormula) || !/^[A-Za-z]+\\d+$/.test(celdaVariable)) {
+    return { error: 'Las celdas deben ser referencias válidas, ej: B5.' };
+  }
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  var x0 = parseFloat(String(getRaw(celdaVariable)).replace(/[₡,\\s]/g, '')); if (isNaN(x0)) x0 = 0;
+  var x1 = x0 === 0 ? 1 : x0 * 1.1;
+  function f(x) {
+    sheetData[activeSheet][celdaVariable] = String(x);
+    var v = parseFloat(String(computeValue(celdaFormula)).replace(/[₡,\\s]/g, ''));
+    return (isNaN(v) ? 0 : v) - valorObjetivo;
+  }
+  var fx0 = f(x0), fx1 = f(x1), x2, iter = 0;
+  while (Math.abs(fx1) > 0.0005 && iter < 100) {
+    if (fx1 === fx0) { x1 += 0.5; fx1 = f(x1); iter++; continue; }
+    x2 = x1 - fx1 * (x1 - x0) / (fx1 - fx0);
+    x0 = x1; fx0 = fx1; x1 = x2; fx1 = f(x1); iter++;
+  }
+  return {
+    error: null, exito: Math.abs(fx1) < 0.5, valorFinal: x1, resultado: fx1 + valorObjetivo,
+    celdaVariable: celdaVariable, celdaFormula: celdaFormula,
+  };
+}
+document.getElementById('btnBuscarObjetivo').addEventListener('click', function () {
+  document.getElementById('buscarObjetivoOverlay').classList.add('show');
+  document.getElementById('boResultado').innerHTML = '';
+});
+document.getElementById('buscarObjetivoClose').addEventListener('click', function () {
+  document.getElementById('buscarObjetivoOverlay').classList.remove('show');
+});
+document.getElementById('boResolverBtn').addEventListener('click', function () {
+  var celdaF = document.getElementById('boCeldaFormula').value;
+  var objetivo = parseFloat(document.getElementById('boValorObjetivo').value);
+  var celdaV = document.getElementById('boCeldaVariable').value;
+  var resEl = document.getElementById('boResultado');
+  if (!celdaF.trim() || !celdaV.trim() || isNaN(objetivo)) { resEl.innerHTML = '⚠️ Completá los 3 campos.'; return; }
+  snapshot();
+  var r = resolverBuscarObjetivo(celdaF, objetivo, celdaV);
+  if (r.error) { resEl.innerHTML = '⚠️ ' + escHtml(r.error); undo(); return; }
+  if (!r.exito) {
+    resEl.innerHTML = '⚠️ No se encontró una solución exacta (puede que no exista un valor que logre ese resultado, o que la fórmula no sea sensible a esa celda). Se restauró el valor original.';
+    undo();
+    return;
+  }
+  marcarCeldaSucia(activeSheet, r.celdaVariable);
+  buildTable();
+  resEl.innerHTML = '✅ ' + escHtml(r.celdaVariable) + ' = <b>' + Number(r.valorFinal).toLocaleString('es-CR', { maximumFractionDigits: 4 }) + '</b> hace que ' + escHtml(r.celdaFormula) + ' llegue a ' + Number(r.resultado).toLocaleString('es-CR', { maximumFractionDigits: 2 }) +
+    '<div style="margin-top:8px;display:flex;gap:8px;"><button id="boAceptarBtn" style="flex:1;padding:8px;border-radius:7px;background:#2d7a0c;color:#fff;border:none;">Aceptar</button><button id="boCancelarBtn" style="flex:1;padding:8px;border-radius:7px;background:#eee;color:#555;border:none;">Deshacer</button></div>';
+  document.getElementById('boAceptarBtn').addEventListener('click', function () {
+    autoSave();
+    document.getElementById('buscarObjetivoOverlay').classList.remove('show');
+  });
+  document.getElementById('boCancelarBtn').addEventListener('click', function () {
+    undo();
+    document.getElementById('buscarObjetivoOverlay').classList.remove('show');
+  });
+});
+
+// ── What-If: Tabla de Datos (una variable) ──
+// Prueba cada valor de un rango ya escrito en la hoja como si fuera la
+// celda de entrada, y anota el resultado de la fórmula observada en la
+// celda de al lado. Los resultados quedan como valores fijos (una "foto"
+// de ese momento), no como una fórmula viva — si cambiás los datos hay
+// que volver a tocar "Calcular".
+function calcularTablaDatos(celdaVariable, celdaFormula, rangoValores, celdaInicioResultados) {
+  celdaVariable = celdaVariable.trim().toUpperCase();
+  celdaFormula = celdaFormula.trim().toUpperCase();
+  if (!/^[A-Za-z]+\\d+$/.test(celdaVariable) || !/^[A-Za-z]+\\d+$/.test(celdaFormula)) return { error: 'La celda de entrada y la celda con la fórmula deben ser referencias válidas, ej: B2.' };
+  if (!isRange(rangoValores)) return { error: 'El rango con los valores a probar no es válido (ej: F2:F8).' };
+  var info = partirRango(rangoValores);
+  var idsValores = getCells(info.from, info.to);
+  var m = celdaInicioResultados.trim().toUpperCase().match(/([A-Za-z]+)(\\d+)/);
+  if (!m) return { error: 'La celda donde empezar a escribir los resultados no es válida.' };
+  var colR = colIndex(m[1]), rowR = parseInt(m[2], 10) - 1;
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  var original = getRaw(celdaVariable);
+  var resultados = [];
+  idsValores.forEach(function (idV, i) {
+    var val = computeValue(idV);
+    sheetData[activeSheet][celdaVariable] = String(val);
+    var res = computeValue(celdaFormula);
+    var idDestino = cellId(rowR + i, colR);
+    sheetData[activeSheet][idDestino] = String(res);
+    marcarCeldaSucia(activeSheet, idDestino);
+    resultados.push({ entrada: val, resultado: res, celda: idDestino });
+  });
+  if (original === '') delete sheetData[activeSheet][celdaVariable]; else sheetData[activeSheet][celdaVariable] = original;
+  marcarCeldaSucia(activeSheet, celdaVariable);
+  return { error: null, resultados: resultados };
+}
+document.getElementById('btnTablaDatos').addEventListener('click', function () {
+  document.getElementById('tablaDatosOverlay').classList.add('show');
+  document.getElementById('tdResultado').innerHTML = '';
+});
+document.getElementById('tablaDatosClose').addEventListener('click', function () {
+  document.getElementById('tablaDatosOverlay').classList.remove('show');
+});
+document.getElementById('tdCalcularBtn').addEventListener('click', function () {
+  var celdaV = document.getElementById('tdCeldaVariable').value;
+  var celdaF = document.getElementById('tdCeldaFormula').value;
+  var rango = document.getElementById('tdRangoValores').value;
+  var celdaR = document.getElementById('tdCeldaResultados').value;
+  var resEl = document.getElementById('tdResultado');
+  if (!celdaV.trim() || !celdaF.trim() || !rango.trim() || !celdaR.trim()) { resEl.innerHTML = '⚠️ Completá los 4 campos.'; return; }
+  snapshot();
+  var r = calcularTablaDatos(celdaV, celdaF, rango, celdaR);
+  if (r.error) { resEl.innerHTML = '⚠️ ' + escHtml(r.error); undoStack.pop(); return; }
+  buildTable(); autoSave();
+  resEl.innerHTML = '✅ Se calcularon ' + r.resultados.length + ' resultado(s), de ' + escHtml(r.resultados[0].celda) + ' a ' + escHtml(r.resultados[r.resultados.length - 1].celda) + '.';
+});
+
+// ── What-If: Administrador de Escenarios ──
+function crearEscenario(bounds) {
+  if (!bounds) { alert('Seleccioná primero las celdas que querés que el escenario recuerde (arrastrando), con los valores ya puestos como quieras guardarlos.'); return; }
+  var nombre = prompt('Nombre para este escenario (ej: Optimista, Pesimista):', '');
+  if (nombre === null) return;
+  nombre = nombre.trim();
+  if (!nombre) { alert('Ponele un nombre.'); return; }
+  var celdas = {};
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    for (var c = bounds.minC; c <= bounds.maxC; c++) { var id = cellId(r, c); celdas[id] = getRaw(id); }
+  }
+  snapshot();
+  if (!sheetEscenarios[activeSheet]) sheetEscenarios[activeSheet] = [];
+  sheetEscenarios[activeSheet].push({
+    id: 'esc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    nombre: nombre, celdas: celdas,
+  });
+  autoSave();
+  renderEscenariosList();
+  document.getElementById('saveStatus').textContent = '✓ Escenario "' + nombre + '" guardado';
+}
+function aplicarEscenario(idEsc) {
+  var lista = sheetEscenarios[activeSheet] || [];
+  var esc = null;
+  for (var i = 0; i < lista.length; i++) if (lista[i].id === idEsc) esc = lista[i];
+  if (!esc) return;
+  snapshot();
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  Object.keys(esc.celdas).forEach(function (id) {
+    var v = esc.celdas[id];
+    if (v === '' || v === undefined) delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = v;
+    marcarCeldaSucia(activeSheet, id);
+  });
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Escenario "' + esc.nombre + '" aplicado';
+}
+function renderEscenariosList() {
+  var wrap = document.getElementById('escenariosList');
+  var lista = sheetEscenarios[activeSheet] || [];
+  if (!lista.length) { wrap.innerHTML = '<div style="padding:10px;color:#888;">Esta hoja todavía no tiene escenarios.</div>'; return; }
+  var html = '';
+  lista.forEach(function (esc) {
+    var celdasTexto = Object.keys(esc.celdas).sort().join(', ');
+    html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;"><b>' + escHtml(esc.nombre) + '</b>' +
+      '<div style="display:flex;gap:4px;"><button class="escAplicarBtn" data-id="' + esc.id + '" style="padding:6px 9px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">▶</button>' +
+      '<button class="escEliminarBtn" data-id="' + esc.id + '" style="padding:6px 9px;border-radius:6px;background:#dc2626;color:#fff;border:none;">🗑</button></div></div>' +
+      '<div style="color:#888;font-size:11px;">' + escHtml(celdasTexto) + '</div></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.escAplicarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () { aplicarEscenario(btn.dataset.id); });
+  });
+  wrap.querySelectorAll('.escEliminarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (!confirm('¿Eliminar este escenario?')) return;
+      snapshot();
+      sheetEscenarios[activeSheet] = (sheetEscenarios[activeSheet] || []).filter(function (e) { return e.id !== btn.dataset.id; });
+      autoSave();
+      renderEscenariosList();
+    });
+  });
+}
+document.getElementById('btnEscenarios').addEventListener('click', function () {
+  document.getElementById('escenariosOverlay').classList.add('show');
+  renderEscenariosList();
+});
+document.getElementById('escenariosClose').addEventListener('click', function () {
+  document.getElementById('escenariosOverlay').classList.remove('show');
+});
+document.getElementById('escAgregarBtn').addEventListener('click', function () {
+  crearEscenario(currentRangeBounds());
+});
+
+// ── Agrupar/ocultar filas y columnas ──
+document.getElementById('raOcultarFilas').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero las filas a ocultar (tocá el número de fila, o arrastrá sobre varias).'); return; }
+  snapshot();
+  if (!sheetHiddenRows[activeSheet]) sheetHiddenRows[activeSheet] = [];
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    if (sheetHiddenRows[activeSheet].indexOf(r) === -1) sheetHiddenRows[activeSheet].push(r);
+  }
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+});
+document.getElementById('raOcultarCols').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero las columnas a ocultar (tocá la letra de columna, o arrastrá sobre varias).'); return; }
+  snapshot();
+  if (!sheetHiddenCols[activeSheet]) sheetHiddenCols[activeSheet] = [];
+  for (var c = bounds.minC; c <= bounds.maxC; c++) {
+    if (sheetHiddenCols[activeSheet].indexOf(c) === -1) sheetHiddenCols[activeSheet].push(c);
+  }
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+});
+document.getElementById('btnMostrarOcultos').addEventListener('click', function () {
+  snapshot();
+  sheetHiddenRows[activeSheet] = [];
+  sheetHiddenCols[activeSheet] = [];
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Todas las filas y columnas están visibles';
 });
 
 // ── Foto de recibo adjunta a celda ──
@@ -9082,6 +11334,12 @@ document.addEventListener('keydown', function (e) {
     if (overlayAbierto) return;
     e.preventDefault();
     undo();
+    return;
+  }
+  if (key === 'y' || (key === 'z' && e.shiftKey)) {
+    if (overlayAbierto) return;
+    e.preventDefault();
+    redo();
     return;
   }
   if (overlayAbierto) return;
