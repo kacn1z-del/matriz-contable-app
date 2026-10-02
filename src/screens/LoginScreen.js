@@ -10,6 +10,7 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import { auth } from '../services/firebase'
+import { useResponsive } from '../hooks/useResponsive'
 
 // ─── Traduce los códigos de error de Firebase a mensajes claros ─
 function traducirError(codigo) {
@@ -27,6 +28,7 @@ function traducirError(codigo) {
 }
 
 export default function LoginScreen() {
+  const { isPhone } = useResponsive()
   const [modo, setModo] = useState('login') // 'login' | 'registro'
   const [nombre, setNombre] = useState('')
   const [email, setEmail] = useState('')
@@ -84,7 +86,7 @@ export default function LoginScreen() {
             {esRegistro ? 'Creá tu cuenta para empezar' : 'Iniciá sesión para continuar'}
           </Text>
 
-          <View style={styles.card}>
+          <View style={[styles.card, !isPhone && styles.cardAncho]}>
             {esRegistro && (
               <>
                 <Text style={styles.label}>Tu nombre</Text>
@@ -183,7 +185,10 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff', borderRadius: 16,
-    padding: 20, gap: 4,
+    padding: 20, gap: 4, width: '100%',
+  },
+  cardAncho: {
+    maxWidth: 420, alignSelf: 'center',
   },
   label: {
     fontSize: 12, fontWeight: '700', color: '#3d6020',
