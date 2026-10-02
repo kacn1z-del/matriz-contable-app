@@ -62,11 +62,21 @@ const SHEET_HTML = `<!DOCTYPE html>
 
   #ribbonTrigger {
     display: flex; align-items: center; padding: 6px 8px; background: #217346; flex-shrink: 0;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    box-shadow: 0 1px 3px rgba(0,0,0,.15); gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
+  #ribbonTrigger::-webkit-scrollbar { display: none; }
   #ribbonToggle {
     background: #1a5c38; color: #fff; border: none; border-radius: 5px;
-    padding: 7px 12px; font-size: 12.5px; font-weight: 700;
+    padding: 7px 12px; font-size: 12.5px; font-weight: 700; flex-shrink: 0;
+  }
+  #ribbonTrigger button {
+    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
+    padding: 7px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
+  }
+  #ribbonTrigger button:active { background: #103b23; }
+  #ribbonTrigger select {
+    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
+    padding: 7px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0;
   }
   #ribbonOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9700;
@@ -317,6 +327,19 @@ const SHEET_HTML = `<!DOCTYPE html>
   #reportesOverlay.show { display: flex; }
   #plantillasOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #plantillasOverlay.show { display: flex; }
+  #templateGalleryOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #templateGalleryOverlay.show { display: flex; }
+  #templateGalleryModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 520px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+  #templateGalleryHead { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #217346; flex-shrink: 0; }
+  #templateGalleryHead h3 { margin: 0; color: #fff; font-size: 15px; }
+  #templateGalleryHead button { background: none; border: none; color: #fff; font-size: 16px; padding: 4px 8px; }
+  #templateGalleryGrid { overflow-y: auto; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f3f2f1; }
+  .templateCard { background: #fff; border-radius: 10px; overflow: hidden; text-align: left; border: 1px solid #e1e1e1; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .templateCard:active { transform: scale(.97); }
+  .templateCardTop { height: 54px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .templateCardBody { padding: 8px 10px 10px; }
+  .templateCardTitle { font-size: 12px; font-weight: 700; color: #2d3b1f; line-height: 1.3; }
+  .templateCardDesc { font-size: 10.5px; color: #767676; margin-top: 3px; line-height: 1.3; }
   #plantillasModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
   #plantillasList { overflow-y: auto; padding: 6px 10px; }
   .plItem { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 4px; border-bottom: 1px solid #eee; }
@@ -429,6 +452,29 @@ const SHEET_HTML = `<!DOCTYPE html>
     body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
     .cell.has-note::after, .cell.has-attachment::before, .cell.has-validation::after { display: none; }
   }
+
+  /* ── Responsivo: tablets y pantallas grandes (escritorio/laptop) ──
+     Todos los paneles (Inicio, Factura, Sibö, Backups, etc.) usan el
+     patrón "hoja que sube desde abajo" en celular. A partir de tablet
+     se ven mejor como un diálogo centrado, con las 4 esquinas
+     redondeadas en vez de solo las de arriba. */
+  @media (min-width: 700px) {
+    [id$="Overlay"] { align-items: center !important; padding: 24px; }
+    [id$="Modal"] { border-radius: 16px !important; max-width: 600px; }
+    body { font-size: 15px; }
+    .cell { min-width: 92px; }
+  }
+  @media (min-width: 1100px) {
+    [id$="Modal"] { max-width: 680px; }
+    #gridWrap { padding-right: 2px; }
+    .cell { min-width: 108px; }
+  }
+  /* En celular acostado (landscape, poca altura) los paneles altos
+     (88-92vh) quedan casi pegados arriba y abajo — les damos algo de
+     aire y evitamos que tapen toda la pantalla. */
+  @media (max-height: 420px) {
+    [id$="Modal"] { max-height: 92vh !important; }
+  }
 </style>
 </head>
 <body>
@@ -446,15 +492,6 @@ const SHEET_HTML = `<!DOCTYPE html>
 <div id="app">
   <div id="ribbonTrigger">
     <button id="ribbonToggle">☰ Inicio ▾</button>
-  </div>
-
-  <div id="ribbonOverlay">
-    <div id="ribbonModal">
-      <div id="ribbonHead">
-        <h3>Inicio</h3>
-        <button id="ribbonClose">✕</button>
-      </div>
-  <div id="toolbar">
     <select id="langSelector">
       <option value="es">🇨🇷 Español</option>
       <option value="en">🇬🇧 English</option>
@@ -468,6 +505,19 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
     <button id="btnAccount" style="background:#1e5c99;">👤 Cuenta</button>
     <button id="btnTemplateGallery">📁 Plantilla...</button>
+    <button id="btnFactura">🧾 Factura</button>
+    <button id="btnMisMatrices">📁 Mis Matrices</button>
+    <button id="btnContactos">👥 Clientes/Prov.</button>
+    <button id="btnImprimir">🖨 Imprimir</button>
+  </div>
+
+  <div id="ribbonOverlay">
+    <div id="ribbonModal">
+      <div id="ribbonHead">
+        <h3>Inicio</h3>
+        <button id="ribbonClose">✕</button>
+      </div>
+  <div id="toolbar">
     <button id="btnUndo" disabled>↶ Deshacer</button>
     <button id="btnCut">✂️ Cortar</button>
     <button id="btnCopy">⧉ Copiar</button>
@@ -490,16 +540,13 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnTotales">Σ Totales</button>
     <button id="btnSibo">✦ Sibö</button>
     <button id="btnBuscarReemplazar">🔎 Buscar</button>
-    <button id="btnFactura">🧾 Factura</button>
     <button id="btnFxLib">fx Funciones</button>
     <button id="btnDiccionario">📖 Diccionario</button>
     <button id="btnDarkMode">🌙</button>
     <button id="btnAuditoria">🕐 Auditoría</button>
     <button id="btnBackup">☁️ Backups</button>
     <button id="btnRecibo">📷 Recibo</button>
-    <button id="btnContactos">👥 Clientes/Prov.</button>
     <button id="btnBuscarGlobal">🔍 Buscar en todo</button>
-    <button id="btnImprimir">🖨 Imprimir</button>
     <input type="file" id="reciboFileInput" accept="image/*" capture="environment" style="display:none" />
     <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
     <button id="btnBalanceAuto">📊 Balance Auto</button>
@@ -521,8 +568,17 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnDelRow">-Fila</button>
     <button id="btnAddCol">+Col</button>
     <button id="btnClear">Borrar</button>
-    <button id="btnMisMatrices">📁 Mis Matrices</button>
   </div>
+    </div>
+  </div>
+
+  <div id="templateGalleryOverlay">
+    <div id="templateGalleryModal">
+      <div id="templateGalleryHead">
+        <h3>📁 Plantillas contables</h3>
+        <button id="templateGalleryClose">✕</button>
+      </div>
+      <div id="templateGalleryGrid"></div>
     </div>
   </div>
 
@@ -7019,8 +7075,45 @@ document.getElementById('btnTotales').addEventListener('click', function () {
   document.getElementById('saveStatus').textContent = 'Totales (' + added + ' col.)';
 });
 
-document.getElementById('templateSelect').addEventListener('change', function () {
-  var v = this.value; if (!v) return; snapshot(); loadTemplate(v); this.value = '';
+// ── Galería de plantillas contables (estilo "Nuevo" de Excel) ──
+var TEMPLATES_GALERIA = [
+  { tipo: 'diario', icono: '📘', color: '#2563eb', titulo: 'Libro Diario', desc: 'Registro cronológico por partida doble' },
+  { tipo: 'mayor', icono: '📗', color: '#16a34a', titulo: 'Libro Mayor', desc: 'Movimientos por cuenta contable' },
+  { tipo: 'balance', icono: '📊', color: '#7c3aed', titulo: 'Balance de Comprobación', desc: 'Sumas y saldos de todas las cuentas' },
+  { tipo: 'conciliacion', icono: '🏦', color: '#0891b2', titulo: 'Conciliación Bancaria', desc: 'Compará el banco contra tus libros' },
+  { tipo: 'd151', icono: '🛒', color: '#ea580c', titulo: 'D-151 Compras y Ventas', desc: 'Detalle de terceros para Hacienda' },
+  { tipo: 'resultados', icono: '📈', color: '#b45309', titulo: 'Estado de Resultados', desc: 'Ingresos, gastos y utilidad del periodo' },
+  { tipo: 'balancegeneral', icono: '🏛️', color: '#1e3a5f', titulo: 'Balance General', desc: 'Activo, pasivo y patrimonio' },
+  { tipo: 'planilla', icono: '👥', color: '#4338ca', titulo: 'Planilla Mensual', desc: 'Salarios, CCSS y renta por empleado' },
+];
+
+function renderizarTemplateGaleria() {
+  var grid = document.getElementById('templateGalleryGrid');
+  grid.innerHTML = TEMPLATES_GALERIA.map(function (t) {
+    return '<button class="templateCard" data-tipo="' + t.tipo + '">' +
+      '<div class="templateCardTop" style="background:' + t.color + ';">' + t.icono + '</div>' +
+      '<div class="templateCardBody">' +
+        '<div class="templateCardTitle">' + t.titulo + '</div>' +
+        '<div class="templateCardDesc">' + t.desc + '</div>' +
+      '</div>' +
+    '</button>';
+  }).join('');
+  grid.querySelectorAll('.templateCard').forEach(function (card) {
+    card.addEventListener('click', function () {
+      var tipo = card.dataset.tipo;
+      document.getElementById('templateGalleryOverlay').classList.remove('show');
+      document.getElementById('ribbonOverlay').classList.remove('show');
+      snapshot();
+      loadTemplate(tipo);
+    });
+  });
+}
+document.getElementById('btnTemplateGallery').addEventListener('click', function () {
+  renderizarTemplateGaleria();
+  document.getElementById('templateGalleryOverlay').classList.add('show');
+});
+document.getElementById('templateGalleryClose').addEventListener('click', function () {
+  document.getElementById('templateGalleryOverlay').classList.remove('show');
 });
 
 function loadTemplate(tipo) {
@@ -8746,6 +8839,16 @@ document.getElementById('ribbonToggle').addEventListener('click', function () {
 });
 document.getElementById('ribbonClose').addEventListener('click', function () {
   document.getElementById('ribbonOverlay').classList.remove('show');
+});
+// Al elegir cualquier opción del panel "Inicio" (Factura, Sibö, Backups, etc.)
+// el panel se cierra solo, para que la ventana/opción elegida quede visible
+// y no atrapada debajo. Se ignoran los selects (ej. selector de idioma) para
+// no cerrar el panel al abrir su lista de opciones.
+document.getElementById('ribbonModal').addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('button') : null;
+  if (btn) {
+    document.getElementById('ribbonOverlay').classList.remove('show');
+  }
 });
 
 // ── Detección de conexión ──
