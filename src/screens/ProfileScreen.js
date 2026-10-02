@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { updateProfile, signOut } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { useLang } from '../context/LangContext'
+import { useResponsive } from '../hooks/useResponsive'
 
 // Mismo Cloudinary que ya usa Los Pirchas para fotos, con un preset
 // nuevo dedicado solo a avatares de Matriz Contable (creado como
@@ -18,6 +19,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'matriz_avatares'
 export default function ProfileScreen({ navigation }) {
   const { t } = useLang()
   const insets = useSafeAreaInsets()
+  const { isPhone } = useResponsive()
   const usuario = auth.currentUser
 
   const [nombre, setNombre] = useState(usuario?.displayName || '')
@@ -106,8 +108,8 @@ export default function ProfileScreen({ navigation }) {
         <Text style={styles.toolbarTitle}>👤 Mi perfil</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.contenido}>
-        <View style={styles.card}>
+      <ScrollView contentContainerStyle={[styles.contenido, !isPhone && styles.contenidoAncho]}>
+        <View style={[styles.card, !isPhone && styles.cardAncho]}>
           <TouchableOpacity style={styles.avatarWrap} onPress={elegirFoto} disabled={subiendoFoto}>
             {fotoLocal ? (
               <Image source={{ uri: fotoLocal }} style={styles.avatarImg} />
@@ -168,9 +170,11 @@ const styles = StyleSheet.create({
   backBtn: { fontSize: 13, fontWeight: '700', color: '#2d7a0c' },
   toolbarTitle: { fontSize: 13, fontWeight: '700', color: '#3d6020' },
   contenido: { padding: 20, flexGrow: 1 },
+  contenidoAncho: { alignItems: 'center' },
   card: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 20, alignItems: 'center',
+    backgroundColor: '#fff', borderRadius: 16, padding: 20, alignItems: 'center', width: '100%',
   },
+  cardAncho: { maxWidth: 440 },
   avatarWrap: { width: 96, height: 96, marginBottom: 8 },
   avatarImg: { width: 96, height: 96, borderRadius: 48 },
   avatarCircle: {
