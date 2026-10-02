@@ -146,6 +146,19 @@ export default function HomeScreen({ navigation }) {
               </Text>
             </TouchableOpacity>
           ))}
+
+          <View style={styles.footer}>
+            <View style={styles.footerDividerRow}>
+              <View style={styles.footerLine} />
+              <Text style={styles.footerLabel}>Diseñado por</Text>
+              <View style={styles.footerLine} />
+            </View>
+            <View style={styles.footerBrandRow}>
+              <Text style={styles.footerKCN}>KCN</Text>
+              <View style={styles.footerDivider} />
+              <Text style={styles.footerName}>Keny Chinchilla{'\n'}Navarro</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
 
@@ -279,5 +292,49 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#6b8f48',
     lineHeight: 15,
+  },
+  footer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 24,
+  },
+  footerDividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '70%',
+    marginBottom: 14,
+  },
+  footerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#b9d49a',
+  },
+  footerLabel: {
+    fontSize: 11,
+    color: '#6b8f48',
+    marginHorizontal: 10,
+  },
+  footerBrandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  footerKCN: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#2d7a0c',
+    letterSpacing: 0.5,
+  },
+  footerDivider: {
+    width: 1.5,
+    height: 30,
+    backgroundColor: '#b9d49a',
+    marginHorizontal: 12,
+  },
+  footerName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#2d3b1f',
+    lineHeight: 18,
   },
 })
