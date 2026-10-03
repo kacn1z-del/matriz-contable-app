@@ -7,9 +7,11 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Modal,
+  FlatList,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useLang } from '../context/LangContext'
+import { useLang, IDIOMAS_DISPONIBLES, NOMBRES_IDIOMAS } from '../context/LangContext'
 import OnboardingModal from '../components/OnboardingModal'
 import { auth } from '../services/firebase'
 import { useResponsive } from '../hooks/useResponsive'
@@ -20,9 +22,9 @@ const MENU_ITEMS = [
   {
     key: 'nueva',
     icon: '📊',
-    titleKey: 'menu.nuevaHoja',
+    titleKey: 'app.nuevaHoja',
     fallback: 'Nueva Hoja',
-    subtitleKey: 'menu.nuevaHojaDesc',
+    subtitleKey: 'app.nuevaHojaDesc',
     subtitleFallback: 'Crear una matriz contable en blanco',
     route: 'Sheet',
     params: { template: 'default' },
@@ -30,35 +32,36 @@ const MENU_ITEMS = [
   {
     key: 'factura',
     icon: '🧾',
-    titleKey: 'menu.factura',
+    titleKey: 'app.factura',
     fallback: 'Factura Electrónica 4.3',
-    subtitleKey: 'menu.facturaDesc',
+    subtitleKey: 'app.facturaDesc',
     subtitleFallback: 'Generar comprobantes electrónicos CR',
     route: 'Factura',
   },
   {
     key: 'funciones',
     icon: 'fx',
-    titleKey: 'menu.funciones',
+    titleKey: 'app.funciones',
     fallback: 'Biblioteca de Funciones',
-    subtitleKey: 'menu.funcionesDesc',
+    subtitleKey: 'app.funcionesDesc',
     subtitleFallback: '452 funciones contables y fiscales CR',
     route: 'Funciones',
   },
   {
     key: 'sibo',
     icon: '✦',
-    titleKey: 'menu.sibo',
+    titleKey: 'app.sibo',
     fallback: 'Sibö Asistente IA',
-    subtitleKey: 'menu.siboDesc',
+    subtitleKey: 'app.siboDesc',
     subtitleFallback: 'Consultas contables con inteligencia artificial',
     route: 'Sibo',
   },
 ]
 
 export default function HomeScreen({ navigation }) {
-  const { t } = useLang()
+  const { t, lang, setLang } = useLang()
   const [onboardingVisible, setOnboardingVisible] = useState(false)
+  const [idiomaVisible, setIdiomaVisible] = useState(false)
   const { columns, maxContentWidth, isDesktop } = useResponsive()
   // Deja un poco de aire entre tarjetas (gap efectivo ~3.5%) sin importar
   // cuántas columnas haya, para que siempre quede "space-between" parejo.
@@ -99,6 +102,12 @@ export default function HomeScreen({ navigation }) {
               {translate('menu.inicio', 'Inicio')}
             </Text>
           </View>
+          <TouchableOpacity
+            style={styles.langBtn}
+            onPress={() => setIdiomaVisible(true)}
+          >
+            <Text style={styles.langBtnText}>{(NOMBRES_IDIOMAS[lang] || '🌐').split(' ')[0]}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.helpBtn}
             onPress={() => setOnboardingVisible(true)}
@@ -163,6 +172,30 @@ export default function HomeScreen({ navigation }) {
       </ScrollView>
 
       <OnboardingModal visible={onboardingVisible} onClose={cerrarOnboarding} />
+
+      <Modal visible={idiomaVisible} transparent animationType="fade" onRequestClose={() => setIdiomaVisible(false)}>
+        <TouchableOpacity style={styles.idiomaOverlay} activeOpacity={1} onPress={() => setIdiomaVisible(false)}>
+          <View style={styles.idiomaBox} onStartShouldSetResponder={() => true}>
+            <Text style={styles.idiomaTitulo}>{translate('app.idioma', 'Idioma')}</Text>
+            <Text style={styles.idiomaSubtitulo}>{translate('app.elegirIdioma', 'Elegí el idioma de la app')}</Text>
+            <FlatList
+              data={IDIOMAS_DISPONIBLES}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[styles.idiomaItem, item === lang && styles.idiomaItemActivo]}
+                  onPress={() => { setLang(item); setIdiomaVisible(false) }}
+                >
+                  <Text style={[styles.idiomaItemTexto, item === lang && styles.idiomaItemTextoActivo]}>
+                    {NOMBRES_IDIOMAS[item] || item}
+                  </Text>
+                  {item === lang ? <Text style={styles.idiomaCheck}>✓</Text> : null}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -208,6 +241,72 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '700',
     fontSize: 14,
+  },
+  langBtn: {
+    height: 32,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    marginRight: 8,
+  },
+  langBtnText: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  idiomaOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(10,30,5,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  idiomaBox: {
+    width: '100%',
+    maxWidth: 340,
+    maxHeight: '70%',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+  },
+  idiomaTitulo: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#2d3b1f',
+  },
+  idiomaSubtitulo: {
+    fontSize: 12,
+    color: '#6b8f48',
+    marginTop: 2,
+    marginBottom: 10,
+  },
+  idiomaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 11,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+  idiomaItemActivo: {
+    backgroundColor: '#eaf7d8',
+  },
+  idiomaItemTexto: {
+    fontSize: 14,
+    color: '#3d6020',
+    fontWeight: '600',
+  },
+  idiomaItemTextoActivo: {
+    color: '#2d7a0c',
+    fontWeight: '800',
+  },
+  idiomaCheck: {
+    color: '#2d7a0c',
+    fontWeight: '800',
+    fontSize: 15,
   },
   scrollPhone: {
     flexGrow: 1,
