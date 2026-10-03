@@ -15,7 +15,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.kcnstudio.matrizcontablecr",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Usamos Face ID para proteger el acceso a tus datos contables dentro de la app."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +27,10 @@
       },
       "package": "com.kcnstudio.matrizcontablecr",
       "versionCode": 1,
-      "permissions": []
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
