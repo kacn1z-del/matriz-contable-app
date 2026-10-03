@@ -94,7 +94,7 @@ export default function SiboScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.navigate('Home')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <Text style={styles.backBtn}>← {t ? t('menu.inicio') : 'Inicio'}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>✦ Sibö Asistente IA</Text>
+        <Text style={styles.headerTitle}>✦ {t ? t('app.siboTitulo') : 'Sibö · Asistente IA'}</Text>
       </View>
 
       <KeyboardAvoidingView
@@ -125,7 +125,7 @@ export default function SiboScreen({ navigation }) {
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
-            placeholder="Preguntale algo a Sibö..."
+            placeholder={t ? t('app.siboPlaceholder') : 'Preguntale algo a Sibö...'}
             placeholderTextColor="#9db98a"
             value={texto}
             onChangeText={setTexto}
