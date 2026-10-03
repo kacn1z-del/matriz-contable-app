@@ -103,6 +103,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   }
   #toolbar button:active { background: #14472b; }
   #toolbar button:disabled { opacity: .4; }
+  #toolbar button.active { background: #2176d2; box-shadow: inset 0 0 0 2px #fff; }
   #toolbar select {
     background: #217346; color: #fff; border: none; border-radius: 5px;
     padding: 8px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0;
@@ -113,8 +114,37 @@ const SHEET_HTML = `<!DOCTYPE html>
     background: #fff; border-bottom: 1px solid #d4d4d4; flex-shrink: 0;
   }
   #cellRef { font-size: 12px; font-weight: 700; color: #217346; min-width: 34px; }
-  #formulaInput { flex: 1; padding: 6px 8px; border: 1px solid #d4d4d4; border-radius: 4px; font-size: 13px; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
+  /* Saltar al borde de los datos (equivalente táctil de Ctrl+flecha de
+     Excel): como en celular no hay teclado físico la mayoría de las veces,
+     estos 4 botones hacen lo mismo con un toque. */
+  #navBordeGroup { display: flex; gap: 2px; flex-shrink: 0; }
+  #navBordeGroup button {
+    width: 24px; height: 24px; padding: 0; font-size: 13px; line-height: 1;
+    border: 1px solid #cce9ae; border-radius: 4px; background: #f7fbf0; color: #245f09;
+  }
+  #formulaInput {
+    position: relative; z-index: 2; display: block; width: 100%; box-sizing: border-box;
+    padding: 6px 8px; border: 1px solid #d4d4d4; border-radius: 4px; font-size: 13px;
+    font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif;
+    line-height: 1.4; resize: none; overflow-y: auto; max-height: 150px; min-height: 30px;
+    white-space: pre-wrap; word-break: break-word;
+    background: transparent; color: transparent; caret-color: #0b3d1f;
+  }
   #formulaInput:focus { border-color: #217346; }
+  /* La capa de abajo, coloreada, es la que en verdad se ve — el textarea
+     de encima solo aporta el cursor y la selección de texto (por eso su
+     propio texto es transparente). */
+  #formulaHighlight {
+    position: absolute; z-index: 1; left: 0; top: 0; right: 0; bottom: 0;
+    box-sizing: border-box; padding: 6px 8px; border: 1px solid transparent; border-radius: 4px;
+    font-size: 13px; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif;
+    line-height: 1.4; white-space: pre-wrap; word-break: break-word; overflow: hidden;
+    color: #222; pointer-events: none; max-height: 150px;
+  }
+  #formulaHighlight .fh-fn { color: #7a3e9d; font-weight: 700; }
+  #formulaHighlight .fh-str { color: #b5541a; }
+  #formulaHighlight .fh-num { color: #1a6fb5; }
+  #formulaHighlight .fh-ref { color: #0b7a3d; font-weight: 700; }
   #saveStatus { font-size: 10px; color: #767676; min-width: 60px; text-align: right; white-space: nowrap; }
 
   #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; user-select: none; background: #fff; }
@@ -125,12 +155,30 @@ const SHEET_HTML = `<!DOCTYPE html>
   th .colResizer { position: absolute; right: 0; top: 0; width: 8px; height: 100%; cursor: col-resize; touch-action: none; }
   th .colResizer::after { content: ''; position: absolute; right: 3px; top: 20%; width: 2px; height: 60%; background: #999; opacity: .5; }
   td.rowhead { background: #f3f2f1; color: #333333; font-weight: 600; width: 34px; position: sticky; left: 0; z-index: 2; border-right: 1.5px solid #c8c8c8; }
+  /* ── Franja de agrupar filas/columnas (esquema estilo Excel) ── */
+  th.outlineCorner { background: #dcdcdc; }
+  .outlineGutterRow, th.outlineGutterCol {
+    background: #f6f6f6; min-width: 16px; width: 16px; padding: 0; position: sticky; left: 0; z-index: 2;
+    border-right: 1px solid #d8d8d8;
+  }
+  th.outlineGutterCol { position: static; top: auto; min-width: 0; }
+  .outlineToggle {
+    width: 15px; height: 15px; line-height: 13px; padding: 0; margin: 0 auto; display: block;
+    background: #fff; border: 1.3px solid #7a7a7a; border-radius: 3px; color: #333;
+    font-size: 12px; font-weight: 800; text-align: center;
+  }
+  tr.outlineHeaderRow th { height: 16px; padding: 0; }
   .cell { min-width: 78px; height: 26px; line-height: 26px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
   .cell.selected { background: #fff; outline: 2px solid #217346; outline-offset: -2px; z-index: 1; box-shadow: 0 1px 4px rgba(33,115,70,.25); }
   .cell.in-range { background: #e6f2ea; }
+  .cell.in-range-extra { background: #dcebfa; outline: 1px dashed #2176d2; outline-offset: -1px; }
   .cell.bold { font-weight: 800; color: #1a5c38; }
   .cell.has-note::after { content: '●'; color: #d97706; font-size: 8px; position: absolute; top: 1px; right: 2px; }
   .cell.has-attachment::before { content: '📎'; font-size: 8px; position: absolute; top: 1px; left: 2px; }
+  /* Celda editable dentro de una hoja protegida (el equivalente a
+     "Permitir editar rango" de Excel): borde punteado verde para
+     distinguirla a simple vista de las celdas bloqueadas de alrededor. */
+  .cell.celda-desbloqueada { box-shadow: inset 0 0 0 1px #2d7a0c; background-image: repeating-linear-gradient(45deg, rgba(45,122,12,.06) 0 4px, transparent 4px 8px); }
   .cell.italic { font-style: italic; }
   .cell.bordered { outline: 1.5px solid #217346 !important; outline-offset: -1.5px; }
   .cell.wrap-text { white-space: normal; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 26px; padding: 3px 5px; vertical-align: top; }
@@ -147,6 +195,15 @@ const SHEET_HTML = `<!DOCTYPE html>
   #validPicker.show { display: block; }
   #validPicker div { padding: 8px 10px; font-size: 12.5px; color: #245f09; border-bottom: 1px solid #f2f9ea; }
   .cell.has-validation::after { content: '▾'; color: #245f09; font-size: 9px; position: absolute; bottom: 0; right: 2px; }
+  /* ── Indicador de error (como el triangulito rojo de Excel): se agrega
+     como un elemento real (no ::after) para poder tocarlo y que explique
+     el error, en vez de depender de un hover que en celular no existe. ── */
+  .cell.has-error { box-shadow: inset 0 0 0 1px #dc2626; }
+  .errorFlag { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 9px 9px 0; border-color: transparent #dc2626 transparent transparent; cursor: pointer; z-index: 4; }
+  /* ── Autofiltro: la flechita que va EN la fila de encabezados de una
+     tabla (no en la letra de columna A/B/C), igual que en Excel. ── */
+  .filtroArrowBtn { position: absolute; right: 1px; bottom: 1px; width: 15px; height: 15px; line-height: 13px; font-size: 9px; border: 1px solid #a9c98a; background: #fff; color: #245f09; border-radius: 3px; cursor: pointer; padding: 0; z-index: 4; }
+  .filtroArrowBtn.activo { background: #245f09; color: #fff; border-color: #245f09; }
   /* ── Manija de relleno (estilo Excel/Sheets): arrastrar desde la
      esquina inferior derecha de la celda/rango seleccionado para
      copiar fórmulas (con sus referencias ajustadas) o continuar una
@@ -204,21 +261,45 @@ const SHEET_HTML = `<!DOCTYPE html>
   }
   #rangeActionsBar button.danger { background: #d13438; }
 
+  #cellContextMenu {
+    display: none; position: fixed; z-index: 900; background: #fff; border-radius: 9px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.28); padding: 6px; min-width: 190px;
+    flex-direction: column; gap: 1px; max-height: 80vh; overflow-y: auto;
+  }
+  #cellContextMenu.show { display: flex; }
+  #cellContextMenu button {
+    background: none; border: none; text-align: left; padding: 9px 10px; font-size: 13px;
+    font-weight: 600; color: #222; border-radius: 6px; white-space: nowrap;
+  }
+  #cellContextMenu button:active { background: #e6f2ea; }
+  #cellContextMenu button.danger { color: #d13438; }
+  #cellContextMenu .cmSep { height: 1px; background: #ececec; margin: 4px 2px; flex-shrink: 0; }
+
   #tabsRow { display: flex; align-items: center; background: #ebebeb; padding: 4px 6px 0; gap: 2px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; border-top: 1px solid #d4d4d4; }
   .tab { padding: 7px 14px; border-radius: 4px 4px 0 0; font-size: 12px; font-weight: 600; color: #555; background: #e1e1e1; white-space: nowrap; position: relative; }
   .tabMenuBtn { margin-left: 6px; opacity: .6; }
   .tab.active { background: #fff; color: #217346; box-shadow: 0 -1.5px 0 #217346 inset; }
   #addTabBtn { padding: 6px 10px; border-radius: 4px; font-size: 14px; font-weight: 700; background: #217346; color: #fff; flex-shrink: 0; }
 
-  #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay {
+  #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay, #pdfExportOverlay, #autofiltroOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9000;
     display: none; align-items: center; justify-content: center; padding: 12px;
   }
-  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show, #formatOverlay.show, #authOverlay.show, #matricesOverlay.show, #shareOverlay.show, #condOverlay.show, #validOverlay.show, #condAvanzadoOverlay.show { display: flex; }
-  #chartModal, #tabMenuModal, #noteModal, #formatModal, #authModal, #shareModal, #condModal, #validModal, #condAvanzadoModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
-  #chartModal h3, #tabMenuModal h3, #noteModal h3, #formatModal h3, #authModal h3, #shareModal h3, #condModal h3, #validModal h3, #condAvanzadoModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
-  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea, #formatModal select, #formatModal input, #authModal input, #shareModal input, #condModal select, #condModal input, #validModal select, #validModal input, #validModal textarea, #condAvanzadoModal select, #condAvanzadoModal input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
-  #noteModal textarea { min-height: 80px; resize: vertical; }
+  #chartOverlay.show, #tabMenuOverlay.show, #noteOverlay.show, #formatOverlay.show, #authOverlay.show, #matricesOverlay.show, #shareOverlay.show, #condOverlay.show, #validOverlay.show, #condAvanzadoOverlay.show, #pdfExportOverlay.show, #autofiltroOverlay.show { display: flex; }
+  #chartModal, #tabMenuModal, #noteModal, #formatModal, #authModal, #shareModal, #condModal, #validModal, #condAvanzadoModal, #pdfExportModal, #autofiltroModal { background: #fff; border-radius: 14px; width: 100%; max-width: 340px; max-height: 90vh; overflow-y: auto; padding: 14px; }
+  #chartModal h3, #tabMenuModal h3, #noteModal h3, #formatModal h3, #authModal h3, #shareModal h3, #condModal h3, #validModal h3, #condAvanzadoModal h3, #pdfExportModal h3, #autofiltroModal h3 { margin: 0 0 10px; font-size: 15px; color: #245f09; }
+  #chartModal select, #chartModal input, #tabMenuModal input, #noteModal textarea, #formatModal select, #formatModal input, #authModal input, #shareModal input, #condModal select, #condModal input, #validModal select, #validModal input, #validModal textarea, #condAvanzadoModal select, #condAvanzadoModal input, #pdfExportModal select, #pdfExportModal input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cce9ae; border-radius: 6px; font-size: 13px; font-family: inherit; }
+  #autofiltroLista { max-height: 230px; overflow-y: auto; border: 1px solid #e0edc8; border-radius: 8px; padding: 6px 8px; margin-bottom: 10px; }
+  #autofiltroLista label { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 3px 0; word-break: break-word; }
+  #autofiltroLista label input { width: auto; margin: 0; }
+  #noteModal textarea { min-height: 60px; resize: vertical; }
+  #noteHilo { max-height: 180px; overflow-y: auto; margin-bottom: 8px; }
+  #noteHilo .noteItem { background: #f5f9ee; border: 1px solid #e0edc8; border-radius: 8px; padding: 6px 8px; margin-bottom: 6px; font-size: 12.5px; position: relative; }
+  #noteHilo .noteItem .noteAutor { font-weight: 700; color: #245f09; }
+  #noteHilo .noteItem .noteFecha { color: #789; font-size: 10.5px; display: block; margin-bottom: 2px; }
+  #noteHilo .noteItem .noteTexto { white-space: pre-wrap; word-break: break-word; }
+  #noteHilo .noteItem .noteBorrarUno { position: absolute; top: 4px; right: 6px; border: none; background: none; color: #b91c1c; font-size: 13px; cursor: pointer; padding: 2px 4px; }
+  #noteHilo .noteVacio { color: #889; font-size: 12.5px; padding: 4px 0; }
   .condRuleItem, .validRuleItem { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: #f2f9ea; border-radius: 6px; margin-bottom: 6px; font-size: 11.5px; }
   .condRuleItem span, .validRuleItem span { flex: 1; padding-right: 6px; }
   .condRuleDel, .validRuleDel { background: #dc2626; color: #fff; border: none; border-radius: 5px; padding: 4px 8px; font-size: 11px; flex-shrink: 0; }
@@ -391,14 +472,18 @@ const SHEET_HTML = `<!DOCTYPE html>
   #tipoCambioHead h3, #haciendaHead h3 { color: #fff; margin: 0; font-size: 13px; }
   #tipoCambioHead button, #haciendaHead button { background: none; border: none; color: #fff; font-size: 18px; }
   #tipoCambioModal code, #haciendaModal code { background: #f2f9ea; padding: 1px 4px; border-radius: 4px; }
-  #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
-  #buscarObjetivoOverlay.show, #tablaDatosOverlay.show, #escenariosOverlay.show { display: flex; }
-  #buscarObjetivoModal, #tablaDatosModal, #escenariosModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto; }
-  #buscarObjetivoHead, #tablaDatosHead, #escenariosHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
-  #buscarObjetivoHead h3, #tablaDatosHead h3, #escenariosHead h3 { color: #fff; margin: 0; font-size: 13px; }
-  #buscarObjetivoHead button, #tablaDatosHead button, #escenariosHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay, #vistasOverlay, #atajosOverlay, #notaDebitoOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #buscarObjetivoOverlay.show, #tablaDatosOverlay.show, #escenariosOverlay.show, #vistasOverlay.show, #atajosOverlay.show, #notaDebitoOverlay.show { display: flex; }
+  #buscarObjetivoModal, #tablaDatosModal, #escenariosModal, #vistasModal, #atajosModal, #notaDebitoModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto; }
+  #buscarObjetivoHead, #tablaDatosHead, #escenariosHead, #vistasHead, #atajosHead, #notaDebitoHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #buscarObjetivoHead h3, #tablaDatosHead h3, #escenariosHead h3, #vistasHead h3, #atajosHead h3, #notaDebitoHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #buscarObjetivoHead button, #tablaDatosHead button, #escenariosHead button, #vistasHead button, #atajosHead button, #notaDebitoHead button { background: none; border: none; color: #fff; font-size: 18px; }
   #buscarObjetivoModal > div:last-child, #tablaDatosModal > div:last-child { padding-bottom: 14px; }
-  #escenariosList { overflow-y: auto; padding: 6px 10px; }
+  #escenariosList, #vistasList { overflow-y: auto; padding: 6px 10px; }
+  #atajosList { padding: 4px 14px 16px; }
+  #atajosList .atajoFila { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #eee; font-size: 12.5px; gap: 10px; }
+  #atajosList .atajoTecla { background: #eaf7d8; color: #245f09; border-radius: 6px; padding: 3px 8px; font-weight: 700; font-family: monospace; white-space: nowrap; }
+  #atajosList .atajoGrupo { margin-top: 10px; margin-bottom: 2px; font-size: 11px; font-weight: 700; color: #6b8f48; text-transform: uppercase; letter-spacing: .03em; }
   #macroGrabandoBar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 9999; display: none;
     align-items: center; justify-content: space-between; gap: 10px;
@@ -463,6 +548,7 @@ const SHEET_HTML = `<!DOCTYPE html>
   .feHistHItem .fhhBtns { display: flex; gap: 6px; margin-top: 6px; }
   .feHistHItem .fhhBtns button { flex: 1; background: #2d7a0c; color: #fff; border: none; border-radius: 6px; padding: 6px 4px; font-size: 10.5px; font-weight: 700; }
   .feHistHItem .fhhBtns button.fhhBtnCorreo { background: #1e5c99; }
+  .feHistHItem .fhhBtns button.fhhBtnDebitar { background: #c8780c; }
   .feHistHItem .fhhBtns button.fhhBtnAnular { background: #b02a2a; }
   #feHistEmptyH { padding: 20px 10px; text-align: center; color: #888; font-size: 12px; }
   #buscarGlobalOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
@@ -535,12 +621,16 @@ const SHEET_HTML = `<!DOCTYPE html>
     #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay, #pivoteOverlay,
     #auditOverlay, #backupOverlay, #reciboOverlay, #fnOverlay, #feOverlay, #feHistOverlay,
     #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
-    #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay,
+    #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay, #pdfExportOverlay, #autofiltroOverlay,
     #macrosOverlay, #segmentadoresOverlay, #tipoCambioOverlay, #haciendaOverlay,
-    #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay { display: none !important; }
+    #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay, #vistasOverlay, #atajosOverlay, #notaDebitoOverlay { display: none !important; }
     #gridWrap { overflow: visible !important; height: auto !important; }
     body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
     .cell.has-note::after, .cell.has-attachment::before, .cell.has-validation::after { display: none; }
+    .cell.celda-desbloqueada { box-shadow: none; background-image: none; }
+    .errorFlag { display: none; }
+    .filtroArrowBtn { display: none; }
+    .cell.has-error { box-shadow: none; }
   }
 
   /* ── Responsivo: tablets y pantallas grandes (escritorio/laptop) ──
@@ -593,6 +683,7 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="maleku">Maleku</option>
     </select>
     <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
+    <button id="btnAtajos" style="background:#5b7a94;">⌨️ Atajos</button>
     <button id="btnAccount" style="background:#1e5c99;">👤 Cuenta</button>
     <button id="btnTemplateGallery">📁 Plantilla...</button>
     <button id="btnFactura">🧾 Factura</button>
@@ -627,6 +718,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnFillColor" style="background:#c8960c;">🎨 Relleno</button>
     <button id="btnFontColor" style="background:#333;">A Color</button>
     <button id="btnFreeze">❄ Congelar</button>
+    <button id="btnMultiSel" title="Activá esto y luego tocá varias celdas o rangos salteados para seleccionarlos todos a la vez (como Ctrl+click en Excel)">🧷 Multi</button>
     <button id="btnNote">📝 Nota</button>
     <button id="btnChart">📊 Gráfico</button>
     <button id="btnInsertarTabla">🎨 +Tabla</button>
@@ -646,6 +738,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnBuscarObjetivo">🎯 Buscar Objetivo</button>
     <button id="btnTablaDatos">📊 Tabla de Datos</button>
     <button id="btnEscenarios">🧪 Escenarios</button>
+    <button id="btnVistas">📌 Vistas</button>
     <button id="btnMostrarOcultos" style="display:none;">👁 Mostrar todo</button>
     <button id="btnRecibo">📷 Recibo</button>
     <button id="btnBuscarGlobal">🔍 Buscar en todo</button>
@@ -657,6 +750,9 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnComparativoMensual">📈 Comparativo Mensual</button>
     <button id="btnProtegerHoja">🔓 Proteger Hoja</button>
     <button id="btnTablaDinamica">📐 Tabla Dinámica</button>
+    <button id="btnCamposDinamica" style="display:none;">🧩 Campos Dinámica</button>
+    <button id="btnActualizarDinamica" style="display:none;">🔄 Actualizar Dinámica</button>
+    <button id="btnAutofiltro">🔽 Autofiltro</button>
     <button id="btnVencimientos">🗓 Vencimientos</button>
     <button id="btnD101">🇨🇷 D-101</button>
     <button id="btnCSV">⬇ CSV</button>
@@ -686,8 +782,21 @@ const SHEET_HTML = `<!DOCTYPE html>
 
   <div id="formulaBarRow" style="position:relative;">
     <span id="cellRef">A1</span>
+    <div id="navBordeGroup">
+      <button id="navBordeArriba" title="Saltar al borde de datos hacia arriba (Ctrl+↑)">⤒</button>
+      <button id="navBordeAbajo" title="Saltar al borde de datos hacia abajo (Ctrl+↓)">⤓</button>
+      <button id="navBordeIzq" title="Saltar al borde de datos hacia la izquierda (Ctrl+←)">⇤</button>
+      <button id="navBordeDer" title="Saltar al borde de datos hacia la derecha (Ctrl+→)">⇥</button>
+    </div>
     <div style="flex:1;position:relative;">
-      <input id="formulaInput" type="text" placeholder="Valor o fórmula: =SUMA(A1:A5)" style="width:100%;" />
+      <!-- "formulaHighlight" muestra el mismo texto pero coloreado (función,
+           texto, número, referencia de celda) y vive JUSTO DEBAJO del
+           textarea real, que queda con el texto transparente — por eso
+           tienen que tener el mismo padding/tipografía/ancho para que el
+           color de cada palabra quede exactamente debajo de la palabra
+           real que se sigue editando con el teclado. -->
+      <div id="formulaHighlight" aria-hidden="true"></div>
+      <textarea id="formulaInput" rows="1" placeholder="Valor o fórmula: =SUMA(A1:A5)" style="width:100%;" spellcheck="false"></textarea>
       <div id="fnAutocomplete"></div>
       <div id="validPicker"></div>
     </div>
@@ -713,14 +822,39 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="raCut">✂️ Cortar</button>
     <button id="raCopy">⧉ Copiar</button>
     <button id="raPasteEspecial">📋▾ Pegado especial</button>
+    <button id="raExportarImagen">🖼 Exportar como imagen</button>
     <button id="raNombrar">📛 Nombrar rango</button>
+    <button id="raDesbloquearCeldas">🔓 Permitir editar</button>
     <button id="raOcultarFilas">🙈 Ocultar fila(s)</button>
     <button id="raOcultarCols">🙈 Ocultar columna(s)</button>
+    <button id="raAutofit">📐 Autoajustar ancho</button>
+    <button id="raAgruparFilas">📑 Agrupar filas</button>
+    <button id="raAgruparCols">📑 Agrupar columnas</button>
+    <button id="raDesagrupar">✖ Desagrupar</button>
     <button id="raSparkline">📈 Sparkline</button>
     <button id="raSegmentador">🔘 Segmentador</button>
     <button id="raCheckbox">☑️ Casilla</button>
     <button id="raRadio">⚪ Radio</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
+  </div>
+
+  <!-- Menú contextual: clic derecho (teclado/mouse) o mantener presionada
+       una celda (táctil) para abrir accesos directos a las acciones más
+       comunes, sin tener que ir a buscarlas en la barra de herramientas. -->
+  <div id="cellContextMenu">
+    <button id="cmCortar">✂️ Cortar</button>
+    <button id="cmCopiar">⧉ Copiar</button>
+    <button id="cmPegar">📋 Pegar</button>
+    <button id="cmPegadoEspecial">📋▾ Pegado especial</button>
+    <div class="cmSep"></div>
+    <button id="cmFormatoNum">🔢 Formato de número</button>
+    <button id="cmCombinar">⛶ Combinar/separar celdas</button>
+    <button id="cmNota">📝 Nota</button>
+    <div class="cmSep"></div>
+    <button id="cmEliminarFila">❌ Eliminar fila</button>
+    <button id="cmEliminarCol">❌ Eliminar columna</button>
+    <div class="cmSep"></div>
+    <button id="cmBorrar" class="danger">🗑 Borrar contenido</button>
   </div>
 
   <div id="gridWrap">
@@ -788,12 +922,13 @@ const SHEET_HTML = `<!DOCTYPE html>
 
 <div id="noteOverlay">
   <div id="noteModal">
-    <h3>📝 Nota en <span id="noteCellRef">A1</span></h3>
-    <textarea id="noteText" placeholder="Escribí una nota para esta celda..."></textarea>
+    <h3>📝 Notas en <span id="noteCellRef">A1</span></h3>
+    <div id="noteHilo"></div>
+    <textarea id="noteText" placeholder="Escribí un comentario nuevo para esta celda..."></textarea>
     <div class="row">
-      <button class="cancel" id="noteCancel">Cancelar</button>
-      <button class="danger" id="noteDelete">Eliminar nota</button>
-      <button class="ok" id="noteSave">Guardar</button>
+      <button class="cancel" id="noteCancel">Cerrar</button>
+      <button class="danger" id="noteDelete">Borrar todo el hilo</button>
+      <button class="ok" id="noteSave">Agregar comentario</button>
     </div>
   </div>
 </div>
@@ -806,16 +941,31 @@ const SHEET_HTML = `<!DOCTYPE html>
       <option value="general">General</option>
       <option value="number">Número</option>
       <option value="currency">Moneda (₡)</option>
+      <option value="currency_usd">Moneda ($)</option>
+      <option value="currency_eur">Moneda (€)</option>
       <option value="percent">Porcentaje</option>
       <option value="accounting">Contable (paréntesis en negativos)</option>
+      <option value="custom">Personalizado (código tipo Excel)</option>
     </select>
-    <span class="field-label">Decimales</span>
-    <input id="fmtDecimals" type="number" min="0" max="10" value="2" />
-    <span class="field-label">Separador de miles</span>
-    <select id="fmtThousands">
-      <option value="yes">Sí (1,000.00)</option>
-      <option value="no">No (1000.00)</option>
-    </select>
+    <div id="fmtCustomBox" style="display:none;">
+      <span class="field-label">Código de formato</span>
+      <input id="fmtCustomCodigo" type="text" placeholder="#,##0.00;[Rojo](#,##0.00)" spellcheck="false" />
+      <p style="font-size:11px;color:#6b8f48;margin:4px 0 0;">
+        Hasta 3 secciones separadas por "<b>;</b>": positivos;negativos;ceros. "<b>0</b>" = dígito obligatorio,
+        "<b>#</b>" = dígito opcional, "<b>,</b>" = separador de miles, "<b>%</b>" = porcentaje, texto entre
+        "comillas" se muestra tal cual, y <b>[Rojo]</b>, <b>[Azul]</b>, <b>[Verde]</b> al principio de una
+        sección le ponen ese color. Ejemplo: <code>#,##0.00;[Rojo](#,##0.00)</code>
+      </p>
+    </div>
+    <div id="fmtNormalBox">
+      <span class="field-label">Decimales</span>
+      <input id="fmtDecimals" type="number" min="0" max="10" value="2" />
+      <span class="field-label">Separador de miles</span>
+      <select id="fmtThousands">
+        <option value="yes">Sí (1,000.00)</option>
+        <option value="no">No (1000.00)</option>
+      </select>
+    </div>
     <span class="field-label">Alineación</span>
     <select id="fmtAlign">
       <option value="">General</option>
@@ -829,9 +979,39 @@ const SHEET_HTML = `<!DOCTYPE html>
     <input id="fmtFontColor" type="color" value="#000000" />
     <span class="field-label">Tamaño de fuente</span>
     <input id="fmtFontSize" type="number" min="9" max="28" value="12" />
-    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
-      <input id="fmtBorder" type="checkbox" style="width:auto;margin:0;" /> Borde marcado
-    </label>
+    <span class="field-label">Bordes (por lado)</span>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#245f09;">
+        <input id="fmtBorderTop" type="checkbox" style="width:auto;margin:0;" /> Arriba
+      </label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#245f09;">
+        <input id="fmtBorderBottom" type="checkbox" style="width:auto;margin:0;" /> Abajo
+      </label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#245f09;">
+        <input id="fmtBorderLeft" type="checkbox" style="width:auto;margin:0;" /> Izquierda
+      </label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#245f09;">
+        <input id="fmtBorderRight" type="checkbox" style="width:auto;margin:0;" /> Derecha
+      </label>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:8px;">
+      <div style="flex:1;">
+        <span class="field-label">Grosor</span>
+        <select id="fmtBorderWidth">
+          <option value="1">Fino (1px)</option>
+          <option value="2">Medio (2px)</option>
+          <option value="3">Grueso (3px)</option>
+        </select>
+      </div>
+      <div style="flex:1;">
+        <span class="field-label">Color del borde</span>
+        <input id="fmtBorderColor" type="color" value="#217346" />
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <button type="button" id="fmtBorderTodos" style="flex:1;background:#217346;color:#fff;border:none;border-radius:6px;padding:7px;font-size:11px;font-weight:700;">▦ Marcar las 4</button>
+      <button type="button" id="fmtBorderNinguno" style="flex:1;background:#8a8a8a;color:#fff;border:none;border-radius:6px;padding:7px;font-size:11px;font-weight:700;">✕ Quitar bordes</button>
+    </div>
     <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
       <input id="fmtWrap" type="checkbox" style="width:auto;margin:0;" /> Ajustar texto (varias líneas)
     </label>
@@ -1294,6 +1474,43 @@ const SHEET_HTML = `<!DOCTYPE html>
   </div>
 </div>
 
+<div id="vistasOverlay">
+  <div id="vistasModal">
+    <div id="vistasHead">
+      <h3>📌 Vistas guardadas</h3>
+      <button id="vistasClose">✕</button>
+    </div>
+    <div style="padding:8px 10px;font-size:11.5px;color:#6b8f48;">Guardá el filtro, el zoom y la selección actuales como una "vista" con nombre, para volver a ella con un toque — sin tener que rearmar el autofiltro cada vez.</div>
+    <div style="padding:0 10px 10px;"><button id="vistaGuardarBtn" style="width:100%;padding:10px;border-radius:8px;background:#245f09;color:#fff;border:none;font-weight:700;">+ Guardar la vista actual</button></div>
+    <div id="vistasList"></div>
+  </div>
+</div>
+
+<div id="atajosOverlay">
+  <div id="atajosModal">
+    <div id="atajosHead">
+      <h3>⌨️ Atajos de teclado</h3>
+      <button id="atajosClose">✕</button>
+    </div>
+    <div style="padding:8px 14px 0;font-size:11.5px;color:#6b8f48;">Funcionan si conectás un teclado al celular (Bluetooth o con cable) o si usás la app desde una computadora.</div>
+    <div id="atajosList">
+      <div class="atajoGrupo">General</div>
+      <div class="atajoFila"><span>Guardar</span><span class="atajoTecla">Ctrl + S</span></div>
+      <div class="atajoFila"><span>Deshacer</span><span class="atajoTecla">Ctrl + Z</span></div>
+      <div class="atajoFila"><span>Rehacer</span><span class="atajoTecla">Ctrl + Y</span></div>
+      <div class="atajoFila"><span>Buscar y reemplazar</span><span class="atajoTecla">Ctrl + F</span></div>
+      <div class="atajoGrupo">Formato</div>
+      <div class="atajoFila"><span>Negrita</span><span class="atajoTecla">Ctrl + B</span></div>
+      <div class="atajoFila"><span>Cursiva</span><span class="atajoTecla">Ctrl + I</span></div>
+      <div class="atajoGrupo">Moverse por la hoja</div>
+      <div class="atajoFila"><span>Confirmar y bajar una fila</span><span class="atajoTecla">Enter</span></div>
+      <div class="atajoFila"><span>Confirmar y pasar a la derecha</span><span class="atajoTecla">Tab</span></div>
+      <div class="atajoFila"><span>Moverse entre celdas</span><span class="atajoTecla">↑ ↓ ← →</span></div>
+      <div class="atajoFila"><span>Saltar al borde del bloque de datos</span><span class="atajoTecla">Ctrl + ↑ ↓ ← →</span></div>
+    </div>
+  </div>
+</div>
+
 <div id="pasteEspecialOverlay">
   <div id="pasteEspecialModal">
     <div id="pasteEspecialHead">
@@ -1303,7 +1520,34 @@ const SHEET_HTML = `<!DOCTYPE html>
     <div style="padding:10px;display:flex;flex-direction:column;gap:8px;">
       <button id="peNormal" style="padding:11px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;text-align:left;">📋 Normal — fórmulas y valores, igual que copiar/pegar de siempre</button>
       <button id="peValores" style="padding:11px;border-radius:8px;background:#245f09;color:#fff;border:none;text-align:left;">🔢 Solo valores — pega el resultado, sin la fórmula</button>
+      <button id="peFormato" style="padding:11px;border-radius:8px;background:#c8960c;color:#fff;border:none;text-align:left;">🎨 Solo formato — pega colores/bordes/negrita, sin tocar el contenido</button>
       <button id="peTransponer" style="padding:11px;border-radius:8px;background:#1e5208;color:#fff;border:none;text-align:left;">⇄ Transponer — intercambia filas por columnas (como valores)</button>
+    </div>
+  </div>
+</div>
+
+<div id="notaDebitoOverlay">
+  <div id="notaDebitoModal">
+    <div id="notaDebitoHead">
+      <h3>💰 Nota de débito</h3>
+      <button id="notaDebitoClose">✕</button>
+    </div>
+    <div style="padding:8px 14px 0;font-size:11.5px;color:#6b8f48;">
+      Carga un monto adicional sobre <b id="ndReferenciaTexto">—</b> (un cobro que faltó, un reajuste, intereses, etc.) sin anular la factura original.
+    </div>
+    <div id="notaDebitoBody" style="padding:10px 14px;">
+      <span class="field-label">Motivo</span>
+      <textarea id="ndMotivo" placeholder="Ej: Ajuste de precio no incluido en la factura original" style="width:100%;min-height:46px;padding:8px;border:1px solid #cce9ae;border-radius:8px;font-size:12.5px;box-sizing:border-box;font-family:inherit;"></textarea>
+      <span class="field-label" style="margin-top:10px;display:block;">Líneas del cargo adicional</span>
+      <div id="ndLineasBody"></div>
+      <button id="ndAddLinea" style="margin-top:2px;padding:8px;border-radius:8px;background:#eaf7d8;color:#245f09;border:none;font-size:12.5px;font-weight:700;width:100%;">+ Agregar línea</button>
+      <div style="margin-top:10px;font-size:13.5px;font-weight:700;display:flex;justify-content:space-between;">
+        <span>Total del cargo</span><span id="ndTotalTexto">₡0,00</span>
+      </div>
+    </div>
+    <div class="row" style="padding:0 14px 14px;">
+      <button class="cancel" id="ndCancelar">Cancelar</button>
+      <button class="ok" id="ndEmitir">Emitir nota de débito</button>
     </div>
   </div>
 </div>
@@ -1364,7 +1608,7 @@ const SHEET_HTML = `<!DOCTYPE html>
 <div id="pivoteOverlay">
   <div id="pivoteModal">
     <div id="pivoteHead">
-      <h3>📐 Tabla Dinámica</h3>
+      <h3 id="pivoteTitulo">📐 Tabla Dinámica</h3>
       <button id="pivoteClose">✕</button>
     </div>
     <div id="pivoteBody">
@@ -1385,6 +1629,50 @@ const SHEET_HTML = `<!DOCTYPE html>
       </select>
       <button id="pivoteGenerarBtn">Generar Tabla Dinámica</button>
       <div id="pivoteStatus"></div>
+    </div>
+  </div>
+</div>
+
+<div id="pdfExportOverlay">
+  <div id="pdfExportModal">
+    <h3>⬇ Exportar PDF Reporte</h3>
+    <span class="field-label">Qué incluir</span>
+    <select id="pdfRango">
+      <option value="hoja">Toda la hoja</option>
+      <option value="seleccion">Solo el rango seleccionado</option>
+    </select>
+    <span class="field-label">Orientación</span>
+    <select id="pdfOrientacion">
+      <option value="portrait">Vertical</option>
+      <option value="landscape">Horizontal (para hojas anchas)</option>
+    </select>
+    <p style="font-size:11px;color:#6b8f48;margin:2px 0 10px;">
+      El PDF ahora respeta los colores, negrita, bordes y formato de número que tenga cada celda — se ve igual que la hoja.
+    </p>
+    <span class="field-label">Logo en el encabezado (opcional)</span>
+    <div id="pdfLogoPreviewWrap" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <img id="pdfLogoPreview" style="display:none;max-height:36px;max-width:100px;border:1px solid #cce9ae;border-radius:4px;background:#fff;" />
+      <span id="pdfLogoVacio" style="font-size:11.5px;color:#889;">Sin logo — se usa el texto "MATRIZ CONTABLE CR"</span>
+    </div>
+    <input type="file" id="pdfLogoInput" accept="image/png,image/jpeg" style="margin-bottom:8px;" />
+    <button id="pdfLogoQuitar" type="button" style="background:#eee;color:#333;margin-bottom:10px;display:none;">Quitar logo</button>
+    <button id="pdfExportGenerar">Generar PDF</button>
+    <button id="pdfExportCancel" style="background:#eee;color:#333;margin-top:6px;">Cancelar</button>
+  </div>
+</div>
+
+<div id="autofiltroOverlay">
+  <div id="autofiltroModal">
+    <h3>🔽 Filtrar columna <span id="autofiltroColRef">A</span></h3>
+    <div class="row" style="gap:6px;margin-bottom:6px;">
+      <button type="button" id="autofiltroTodo" style="font-size:11.5px;padding:5px 8px;">Marcar todo</button>
+      <button type="button" id="autofiltroNinguno" style="font-size:11.5px;padding:5px 8px;">Desmarcar todo</button>
+    </div>
+    <div id="autofiltroLista"></div>
+    <div class="row">
+      <button class="cancel" id="autofiltroCancelar">Cancelar</button>
+      <button class="danger" id="autofiltroQuitarCol">Quitar filtro</button>
+      <button class="ok" id="autofiltroAceptar">Aceptar</button>
     </div>
   </div>
 </div>
@@ -1435,6 +1723,11 @@ const SHEET_HTML = `<!DOCTYPE html>
 // ESTADO
 // ══════════════════════════════════════════════
 var ROWS = 60, COLS = 18;
+// Logo opcional para el encabezado del reporte en PDF (compartido por todo
+// el libro, no por hoja — como el logo de una empresa no cambia de una hoja
+// a otra). Se guarda como data URL (imagen ya codificada en base64) para
+// poder persistirlo igual que el resto del estado.
+var logoPdfDataUrl = null;
 var sheets = ['Hoja1', 'Hoja2', 'Hoja3'];
 var activeSheet = 'Hoja1';
 var sheetData = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
@@ -1442,6 +1735,25 @@ var sheetFormats = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetNotes = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetAttachments = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetProtegida = { Hoja1: false, Hoja2: false, Hoja3: false };
+// Contraseña de cada hoja protegida (opcional): guarda un hash simple, nunca
+// el texto en claro. Si una hoja está protegida pero no tiene hash (null),
+// es una protección "sin contraseña" como la de antes: cualquiera la desactiva
+// con el mismo botón.
+var sheetProtegidaHash = { Hoja1: null, Hoja2: null, Hoja3: null };
+// Celdas que se pueden seguir editando aunque la hoja esté protegida (igual
+// que "Permitir editar rango" en Excel): una lista de ids por hoja. Cuando
+// la hoja NO está protegida esto no hace nada visible — solo importa en el
+// momento en que alguien activa la protección.
+var sheetCeldasDesbloqueadas = { Hoja1: [], Hoja2: [], Hoja3: [] };
+function celdaDesbloqueada(hoja, id) {
+  return (sheetCeldasDesbloqueadas[hoja] || []).indexOf(id) !== -1;
+}
+// Vistas guardadas: una "foto" con nombre de a qué hoja estabas viendo, con
+// qué autofiltro, qué zoom y qué celda/rango seleccionado — para volver a
+// ese mismo punto con un toque en vez de rearmar todo a mano. No son por
+// hoja (una vista puede apuntar a cualquier hoja del libro), así que viven
+// en una sola lista para todo el libro.
+var vistasGuardadas = [];
 var colWidths = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetMerges = { Hoja1: [], Hoja2: [], Hoja3: [] };
 var sheetFreeze = { Hoja1: { row: 0, col: 0 }, Hoja2: { row: 0, col: 0 }, Hoja3: { row: 0, col: 0 } };
@@ -1455,6 +1767,18 @@ var rangosNombrados = {};
 // listas de índices (0-based) que no se dibujan en la grilla.
 var sheetHiddenRows = { Hoja1: [], Hoja2: [], Hoja3: [] };
 var sheetHiddenCols = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// Agrupar filas/columnas (el "esquema" de Excel, con los botones −/+ para
+// colapsar/expandir): cada grupo es { from, to, collapsed }. Al colapsar,
+// se ocultan las filas/columnas from+1..to — la primera (from) se deja
+// siempre visible, como "cabecera" del grupo, con el botón.
+var sheetGroupsRow = { Hoja1: [], Hoja2: [], Hoja3: [] };
+var sheetGroupsCol = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// Configuración "viva" de una Tabla Dinámica: cuando una hoja fue generada por
+// el asistente de Tabla Dinámica, acá queda guardado con qué hoja de origen y
+// qué campos (filas/columnas/valores/función) se armó, para poder volver a
+// abrir el asistente con esos mismos campos (y cambiarlos) o simplemente
+// recalcularla con los datos de hoy, sin tener que repetir todo de cero.
+var sheetPivoteConfig = {};
 // Macros (grabadora de acciones, como la de Excel): NOMBRE -> lista de
 // "pasos". Cada paso es el conjunto de celdas/formatos que cambiaron entre
 // dos llamadas snapshot()/autoSave() consecutivas mientras se grababa —
@@ -1476,6 +1800,17 @@ var sheetSparklines = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 // columna está en "excluidos" se ocultan, por ENCIMA (nunca en lugar) de
 // las filas que el usuario ocultó a mano con "Ocultar fila(s)".
 var sheetSlicers = { Hoja1: [], Hoja2: [], Hoja3: [] };
+// Autofiltro por columna (como las flechitas de Excel en la fila de
+// encabezados): a diferencia del segmentador (que es un chip aparte, fuera
+// de la tabla) y de "Ocultar fila(s)" (manual, celda por celda), el
+// autofiltro vive EN la propia fila de encabezados de una tabla y filtra
+// según los valores que aparecen en cada columna.
+// sheetAutoFiltro[hoja] = null (sin autofiltro) o:
+//   { fila: <fila de encabezados, 0-based>, colIni: <col>, colFin: <col>,
+//     filtros: { "<col>": ["valor excluido 1", "valor excluido 2", ...] } }
+// Las filas que terminan ocultas por esto se calculan en cada buildTable()
+// (ver filasOcultasPorAutoFiltro), nunca se guardan como "oculto a mano".
+var sheetAutoFiltro = { Hoja1: null, Hoja2: null, Hoja3: null };
 // ── "Power Query" casero: conexión a datos públicos por internet ──
 // No se guardan en sheetData (son datos externos, no algo que el usuario
 // escribió), sino en estas dos variables + un pequeño caché en
@@ -1512,6 +1847,12 @@ var redoStack = [];
 var tabMenuTarget = null;
 var clipboard = null;
 var selRangeStart = null, selRangeEnd = null, isSelecting = false;
+// Selección múltiple no contigua (estilo Ctrl+click de Excel): rangos
+// "salteados" adicionales al rango activo (selRangeStart/selRangeEnd).
+// multiSelMode permite lograrlo también en pantallas táctiles sin
+// teclado, tocando el botón 🧷 Multi antes de ir marcando celdas/rangos.
+var multiSelRanges = [];
+var multiSelMode = false;
 var isFilling = false, fillOrigenBounds = null, fillEjeBloqueado = null, fillDestinoBounds = null;
 
 // ── Puente al servidor (SERVICIOWEB / XMLFILTRO) ──────────
@@ -1591,12 +1932,48 @@ var fnCurrentCat = null;
 var fnSelectedItem = null;
 var currentUser = null, firebaseApp = null, firestoreDB = null, currentMatrizId = null, currentMatrizName = null, applyingRemote = false, saveDebounceTimer = null, pushTokenPendiente = null;
 
+// Hash simple (no criptográfico) para la contraseña de hoja protegida: alcanza
+// para que no quede guardada en texto plano y para frenar un desbloqueo casual,
+// sin depender de APIs de criptografía del navegador.
+function hashSimple(texto) {
+  var cadena = String(texto || '');
+  var h1 = 0x811c9dc5, h2 = 0x1000193;
+  for (var i = 0; i < cadena.length; i++) {
+    var c = cadena.charCodeAt(i);
+    h1 = (h1 ^ c) >>> 0;
+    h1 = (h1 * 0x01000193) >>> 0;
+    h2 = ((h2 + c) * 31) >>> 0;
+  }
+  return h1.toString(36) + '_' + h2.toString(36) + '_' + cadena.length;
+}
+// Detecta si el valor calculado de una celda es un código de error de fórmula
+// (#REF!, #DIV/0!, etc.) para poder marcarlo con el triangulito rojo.
+// Exige que empiece con "#" seguido de una LETRA (así nunca confunde un
+// color hexadecimal u otro texto que arranque con "#" con un error real).
+function esValorError(val) {
+  return typeof val === 'string' && /^#[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ0-9/!?]*$/.test(val);
+}
+var MENSAJES_ERROR_CELDA = {
+  '#DIV/0!': 'División entre cero: alguna celda de la fórmula vale 0 (o está vacía) en una división.',
+  '#REF!': 'Referencia inválida: la fórmula apunta a una celda, fila o columna que ya no existe (se borró).',
+  '#VALOR!': 'Tipo de valor incorrecto: la fórmula esperaba un número (o un texto) distinto al que encontró.',
+  '#NOMBRE?': 'Nombre no reconocido: la fórmula usa una función o un rango con nombre que no existe.',
+  '#NUM!': 'Número inválido: el resultado no es un número válido (por ejemplo, la raíz de un negativo).',
+  '#N/A': 'Valor no disponible: una búsqueda (BUSCARV, BUSCARH, etc.) no encontró lo que buscaba.',
+  '#NULL!': 'Intersección vacía: se referenciaron dos rangos que no se cruzan en ningún punto.',
+  '#CALC!': 'Error de cálculo dentro de una fórmula matricial.',
+  '#DERRAME!': 'El resultado no entra porque otra celda ocupa el espacio donde se debía "derramar".',
+  '#CONSULTAR!': 'Hubo un problema al consultar los datos pedidos.'
+};
+function explicarErrorCelda(val) {
+  return MENSAJES_ERROR_CELDA[val] || 'La fórmula de esta celda no se pudo calcular correctamente.';
+}
 function colLetter(i) { return String.fromCharCode(65 + i); }
 function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i < s.length; i++) n = n * 26 + s.charCodeAt(i) - 64; return n - 1; }
 function cellId(r, c) { return colLetter(c) + (r + 1); }
 
 function estadoActualComoJSON() {
-  return JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS });
+  return JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS });
 }
 function snapshot() {
   var json = estadoActualComoJSON();
@@ -1621,12 +1998,16 @@ function undo() {
   sheetCondFormats = prev.sheetCondFormats || sheetCondFormats; sheetValidations = prev.sheetValidations || sheetValidations;
   rangosNombrados = prev.rangosNombrados || rangosNombrados;
   sheetHiddenRows = prev.sheetHiddenRows || sheetHiddenRows; sheetHiddenCols = prev.sheetHiddenCols || sheetHiddenCols;
+  sheetGroupsRow = prev.sheetGroupsRow || sheetGroupsRow; sheetGroupsCol = prev.sheetGroupsCol || sheetGroupsCol;
   macros = prev.macros || macros;
   sheetSparklines = prev.sheetSparklines || sheetSparklines; sheetSlicers = prev.sheetSlicers || sheetSlicers;
   sheetEscenarios = prev.sheetEscenarios || sheetEscenarios;
   sheetCondFormatsAvanzado = prev.sheetCondFormatsAvanzado || sheetCondFormatsAvanzado;
   sheetControles = prev.sheetControles || sheetControles;
   sheetValidacionNativa = prev.sheetValidacionNativa || sheetValidacionNativa;
+  sheetAutoFiltro = prev.sheetAutoFiltro || sheetAutoFiltro;
+  sheetCeldasDesbloqueadas = prev.sheetCeldasDesbloqueadas || sheetCeldasDesbloqueadas;
+  vistasGuardadas = prev.vistasGuardadas || vistasGuardadas;
   buildTable(); autoSave();
   if (!undoStack.length) document.getElementById('btnUndo').disabled = true;
   document.getElementById('btnRedo').disabled = false;
@@ -1641,12 +2022,16 @@ function redo() {
   sheetCondFormats = next.sheetCondFormats || sheetCondFormats; sheetValidations = next.sheetValidations || sheetValidations;
   rangosNombrados = next.rangosNombrados || rangosNombrados;
   sheetHiddenRows = next.sheetHiddenRows || sheetHiddenRows; sheetHiddenCols = next.sheetHiddenCols || sheetHiddenCols;
+  sheetGroupsRow = next.sheetGroupsRow || sheetGroupsRow; sheetGroupsCol = next.sheetGroupsCol || sheetGroupsCol;
   macros = next.macros || macros;
   sheetSparklines = next.sheetSparklines || sheetSparklines; sheetSlicers = next.sheetSlicers || sheetSlicers;
   sheetEscenarios = next.sheetEscenarios || sheetEscenarios;
   sheetCondFormatsAvanzado = next.sheetCondFormatsAvanzado || sheetCondFormatsAvanzado;
   sheetControles = next.sheetControles || sheetControles;
   sheetValidacionNativa = next.sheetValidacionNativa || sheetValidacionNativa;
+  sheetAutoFiltro = next.sheetAutoFiltro || sheetAutoFiltro;
+  sheetCeldasDesbloqueadas = next.sheetCeldasDesbloqueadas || sheetCeldasDesbloqueadas;
+  vistasGuardadas = next.vistasGuardadas || vistasGuardadas;
   buildTable(); autoSave();
   document.getElementById('btnUndo').disabled = false;
   if (!redoStack.length) document.getElementById('btnRedo').disabled = true;
@@ -1689,6 +2074,29 @@ function partirRango(a) {
   if (m && sheets.indexOf(m[1] || m[2]) !== -1) { hoja = m[1] || m[2]; resto = m[3]; }
   var p = resto.split(':');
   return { hoja: hoja, from: p[0], to: p[1] };
+}
+// Referencia 3D (consolidar varias hojas en una sola fórmula), como en
+// Excel: "Hoja1:Hoja3!A1" o "Hoja1:Hoja3!A1:A10" — suma/promedia/cuenta esa
+// misma celda o rango en TODAS las hojas entre "Hoja1" y "Hoja3" (según el
+// orden real de las pestañas, igual que hace Excel, no por orden alfabético).
+// Se distingue de un rango normal ("Hoja2!A1:B10") en que el ":" está ANTES
+// del "!" (separando dos nombres de hoja) en vez de después (separando dos
+// celdas).
+function parseRef3D(token) {
+  var t = (token || '').trim();
+  var idxSigno = t.indexOf('!');
+  if (idxSigno === -1) return null;
+  var ladoHojas = t.slice(0, idxSigno);
+  var ladoCelda = t.slice(idxSigno + 1);
+  var m = ladoHojas.match(/^(?:'([^']+)'|([^':]+)):(?:'([^']+)'|([^':]+))$/);
+  if (!m) return null;
+  var hojaA = m[1] || m[2], hojaB = m[3] || m[4];
+  var idxA = sheets.indexOf(hojaA), idxB = sheets.indexOf(hojaB);
+  if (idxA === -1 || idxB === -1) return null;
+  var hojasEntre = sheets.slice(Math.min(idxA, idxB), Math.max(idxA, idxB) + 1);
+  var partesCelda = ladoCelda.split(':');
+  if (!/^[A-Za-z]+\\d+$/.test(partesCelda[0])) return null;
+  return { hojas: hojasEntre, from: partesCelda[0], to: partesCelda[1] || partesCelda[0] };
 }
 var pilaEvaluacionFormulas = [];
 // ── Rangos con nombre (igual que en Excel) ──
@@ -1753,7 +2161,7 @@ function splitArgs(s) {
   if (cur.trim()) args.push(cur.trim());
   return args;
 }
-function isRange(a) { return /^(?:(?:'[^']+'|[^'!:]+)!)?[A-Za-z]+\\d+:[A-Za-z]+\\d+$/.test((a || '').trim()); }
+function isRange(a) { return /^(?:(?:'[^']+'|[^'!:]+)!)?[A-Za-z]+\\d+:[A-Za-z]+\\d+$/.test((a || '').trim()) || !!parseRef3D(a); }
 function getCells(from, to) {
   var fc = colIndex((from.match(/[A-Za-z]+/) || ['A'])[0]);
   var fr = parseInt((from.match(/\\d+/) || [1])[0]) - 1;
@@ -1764,8 +2172,30 @@ function getCells(from, to) {
     for (var c = Math.min(fc, tc); c <= Math.max(fc, tc); c++) out.push(cellId(r, c));
   return out;
 }
-function rangeNums(a) { var info = partirRango(a); return getCells(info.from, info.to).map(function (c) { return toNum(computeValueEnHoja(info.hoja, c)); }); }
-function rangeVals(a) { var info = partirRango(a); return getCells(info.from, info.to).map(function (c) { return computeValueEnHoja(info.hoja, c); }); }
+function rangeNums(a) {
+  var info3D = parseRef3D(a);
+  if (info3D) {
+    var out3DN = [];
+    info3D.hojas.forEach(function (hoja) {
+      getCells(info3D.from, info3D.to).forEach(function (c) { out3DN.push(toNum(computeValueEnHoja(hoja, c))); });
+    });
+    return out3DN;
+  }
+  var info = partirRango(a);
+  return getCells(info.from, info.to).map(function (c) { return toNum(computeValueEnHoja(info.hoja, c)); });
+}
+function rangeVals(a) {
+  var info3Dv = parseRef3D(a);
+  if (info3Dv) {
+    var out3DV = [];
+    info3Dv.hojas.forEach(function (hoja) {
+      getCells(info3Dv.from, info3Dv.to).forEach(function (c) { out3DV.push(computeValueEnHoja(hoja, c)); });
+    });
+    return out3DV;
+  }
+  var info = partirRango(a);
+  return getCells(info.from, info.to).map(function (c) { return computeValueEnHoja(info.hoja, c); });
+}
 function resolveArg(a) {
   a = (a || '').trim();
   if ((a.startsWith('"') && a.endsWith('"')) || (a.startsWith("'") && a.endsWith("'"))) return a.slice(1, -1);
@@ -1864,12 +2294,22 @@ function computeExpr(expr) {
 
     if ((inner = matchFn('SUMA|SUM')) !== null) {
       args = splitArgs(inner); var s = 0;
-      args.forEach(function (a) { if (isRange(a)) rangeNums(a).forEach(function (n) { s += n; }); else s += resolveNum(a); });
+      args.forEach(function (a) {
+        var arrAnidado = valoresDeFuncionArrayAnidada(a);
+        if (arrAnidado) arrAnidado.forEach(function (v) { s += toNum(v); });
+        else if (isRange(a)) rangeNums(a).forEach(function (n) { s += n; });
+        else s += resolveNum(a);
+      });
       return fmtNum(s);
     }
     if ((inner = matchFn('PROMEDIO|AVERAGE')) !== null) {
       args = splitArgs(inner); var t = 0, c = 0;
-      args.forEach(function (a) { if (isRange(a)) rangeNums(a).forEach(function (n) { t += n; c++; }); else { t += resolveNum(a); c++; } });
+      args.forEach(function (a) {
+        var arrAnidado2 = valoresDeFuncionArrayAnidada(a);
+        if (arrAnidado2) arrAnidado2.forEach(function (v) { t += toNum(v); c++; });
+        else if (isRange(a)) rangeNums(a).forEach(function (n) { t += n; c++; });
+        else { t += resolveNum(a); c++; }
+      });
       return c ? fmtNum(t / c) : '#DIV/0!';
     }
     if ((inner = matchFn('PROMEDIO\\\\.SI|AVERAGEIF')) !== null) {
@@ -1883,22 +2323,40 @@ function computeExpr(expr) {
     }
     if ((inner = matchFn('MAX|MAXIMO')) !== null) {
       args = splitArgs(inner); var nums = [];
-      args.forEach(function (a) { if (isRange(a)) rangeNums(a).forEach(function (n) { nums.push(n); }); else nums.push(resolveNum(a)); });
+      args.forEach(function (a) {
+        var arrAnidado3 = valoresDeFuncionArrayAnidada(a);
+        if (arrAnidado3) arrAnidado3.forEach(function (v) { nums.push(toNum(v)); });
+        else if (isRange(a)) rangeNums(a).forEach(function (n) { nums.push(n); });
+        else nums.push(resolveNum(a));
+      });
       return nums.length ? fmtNum(Math.max.apply(null, nums)) : '0';
     }
     if ((inner = matchFn('MIN|MINIMO')) !== null) {
       args = splitArgs(inner); var nums2 = [];
-      args.forEach(function (a) { if (isRange(a)) rangeNums(a).forEach(function (n) { nums2.push(n); }); else nums2.push(resolveNum(a)); });
+      args.forEach(function (a) {
+        var arrAnidado4 = valoresDeFuncionArrayAnidada(a);
+        if (arrAnidado4) arrAnidado4.forEach(function (v) { nums2.push(toNum(v)); });
+        else if (isRange(a)) rangeNums(a).forEach(function (n) { nums2.push(n); });
+        else nums2.push(resolveNum(a));
+      });
       return nums2.length ? fmtNum(Math.min.apply(null, nums2)) : '0';
     }
     if ((inner = matchFn('CONTAR|COUNT')) !== null) {
       args = splitArgs(inner); var cnt = 0;
-      args.forEach(function (a) { if (isRange(a)) rangeNums(a).forEach(function (n) { if (!isNaN(n)) cnt++; }); });
+      args.forEach(function (a) {
+        var arrAnidado5 = valoresDeFuncionArrayAnidada(a);
+        if (arrAnidado5) arrAnidado5.forEach(function (v) { if (!isNaN(toNum(v))) cnt++; });
+        else if (isRange(a)) rangeNums(a).forEach(function (n) { if (!isNaN(n)) cnt++; });
+      });
       return String(cnt);
     }
     if ((inner = matchFn('CONTARA|COUNTA')) !== null) {
       args = splitArgs(inner); var cnt2 = 0;
-      args.forEach(function (a) { if (isRange(a)) rangeVals(a).forEach(function (v) { if (v !== '') cnt2++; }); });
+      args.forEach(function (a) {
+        var arrAnidado6 = valoresDeFuncionArrayAnidada(a);
+        if (arrAnidado6) arrAnidado6.forEach(function (v) { if (v !== '') cnt2++; });
+        else if (isRange(a)) rangeVals(a).forEach(function (v) { if (v !== '') cnt2++; });
+      });
       return String(cnt2);
     }
     if ((inner = matchFn('CONTAR\\\\.SI|COUNTIF')) !== null) {
@@ -4798,6 +5256,13 @@ function computeValue(id) {
   var clave = hojaDeEstaCelda + '!' + id;
   if (pilaEvaluacionFormulas.indexOf(clave) !== -1) return '#REF_CIRCULAR!';
   var raw = getRaw(id);
+  // La barra de fórmulas ahora permite varias líneas (Mayús+Enter) para
+  // que las fórmulas largas/anidadas se puedan leer mejor mientras se
+  // editan. Esos saltos de línea se guardan tal cual en la celda (para
+  // que al volver a abrirla se vean igual que como se escribieron), pero
+  // acá, justo antes de evaluarla, se cambian por espacios — el motor de
+  // fórmulas nunca ve un salto de línea de por medio.
+  if (typeof raw === 'string' && raw.indexOf('\n') !== -1) raw = raw.replace(/[\r\n]+/g, ' ');
   if (typeof raw === 'string' && raw.charAt(0) === '=') {
     // ── Fórmulas matriciales / derrame (FILTRAR, ÚNICOS, SECUENCIA, ORDENAR) ──
     // Si la fórmula ES (completa, no anidada en otra cosa) una de estas
@@ -4906,14 +5371,68 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
     }
     var idxOrdenCol = Math.min(colOrden - 1, filasO[0] ? filasO[0].length - 1 : 0);
     filasO.sort(function (a, b) {
-      var va = a[idxOrdenCol], vb = b[idxOrdenCol];
-      var na = parseFloat(String(va).replace(/[₡,\\s]/g, '')), nb = parseFloat(String(vb).replace(/[₡,\\s]/g, ''));
-      var cmp = (!isNaN(na) && !isNaN(nb)) ? (na - nb) : String(va).localeCompare(String(vb), 'es');
+      var cmp = compararValoresOrdenables(a[idxOrdenCol], b[idxOrdenCol]);
       return orden < 0 ? -cmp : cmp;
     });
     return filasO;
   }
   return [['#NOMBRE?']];
+}
+// Permite ANIDAR FILTRAR/ORDENAR/ÚNICOS/SECUENCIA dentro de otra función,
+// por ejemplo =SUMA(FILTRAR(A1:A10,B1:B10)) o =CONTAR(UNICOS(A1:A20)) — antes
+// esto no funcionaba porque el motor solo sabía usarlas cuando eran TODA la
+// fórmula de la celda (ver formulaArrayInfo). Si "texto" es exactamente una
+// llamada completa a una de esas funciones, devuelve su resultado como un
+// array PLANO de valores; si no, devuelve null para que quien llama siga
+// tratando el argumento como siempre (rango normal, número, etc.).
+function valoresDeFuncionArrayAnidada(texto) {
+  if (typeof texto !== 'string') return null;
+  var t = texto.trim();
+  var m = t.match(/^(FILTRAR|FILTER|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE)\\s*\\(/i);
+  if (!m) return null;
+  var inicio = m[0].length;
+  var prof = 1, i = inicio;
+  while (i < t.length && prof > 0) {
+    if (t.charAt(i) === '(') prof++;
+    else if (t.charAt(i) === ')') prof--;
+    i++;
+  }
+  if (prof !== 0 || i !== t.length) return null; // tiene que ser TODO el argumento, no la función seguida de algo más
+  var mapaNombres = { FILTER: 'FILTRAR', SORT: 'ORDENAR', UNIQUE: 'UNICOS', SEQUENCE: 'SECUENCIA' };
+  var nombreFn = mapaNombres[m[1].toUpperCase()] || m[1].toUpperCase();
+  var argsTexto = t.slice(inicio, i - 1);
+  try {
+    // FILTRAR anidado usa la sintaxis estándar de Excel/Sheets: un rango de
+    // condición booleana (=FILTRAR(datos, condición)), NO los 3 argumentos
+    // "al estilo SUMAR.SI" que usa la versión "derramada" (standalone) de
+    // esta misma función — son dos formas de usar FILTRAR que ya convivían
+    // en la app, y acá se respeta la que espera cualquiera que conozca
+    // FILTER() de Excel/Sheets, que es la forma más común de anidarla.
+    if (nombreFn === 'FILTRAR') {
+      var argsF = splitArgs(argsTexto);
+      if (!argsF[0] || !isRange(argsF[0]) || !argsF[1] || !isRange(argsF[1])) return null;
+      var datosValsF = rangeVals(argsF[0]);
+      var condValsF = rangeVals(argsF[1]);
+      var resultadoF = [];
+      datosValsF.forEach(function (v, iF) {
+        var cv = condValsF[iF];
+        if (cv === 'VERDADERO' || cv === true || (toNum(cv) !== 0 && cv !== '')) resultadoF.push(v);
+      });
+      if (!resultadoF.length && argsF[2] !== undefined) return [resolveArg(argsF[2])];
+      return resultadoF;
+    }
+    // ORDENAR/ÚNICOS/SECUENCIA sí comparten la misma forma de calcularse que
+    // su versión "derramada" — para sumar/contar/promediar da igual el
+    // orden de los valores, así que reusar esa lógica es seguro acá.
+    var filas = calcularFormulaArray(hojaFormulaActual || activeSheet, nombreFn, argsTexto);
+    if (!filas || !filas.length) return null;
+    // Los resultados "vacíos" especiales de ÚNICOS (texto entre paréntesis
+    // como "(sin datos)") no son datos reales — no deben sumarse/contarse.
+    if (filas.length === 1 && filas[0].length === 1 && typeof filas[0][0] === 'string' && filas[0][0].charAt(0) === '(') return [];
+    var plano = [];
+    filas.forEach(function (fila) { fila.forEach(function (v) { plano.push(v); }); });
+    return plano;
+  } catch (eAnidada) { return null; }
 }
 function filaDe(ref) { return parseInt((ref.match(/\\d+/) || [1])[0], 10) - 1; }
 function colDe(ref) { return colIndex((ref.match(/[A-Za-z]+/) || ['A'])[0]); }
@@ -4970,10 +5489,90 @@ function applyNumberFormat(val, fmt) {
   }
   var isNeg = num < 0;
   var absStr = Math.abs(num).toLocaleString('es-CR', { minimumFractionDigits: dec, maximumFractionDigits: dec, useGrouping: thousands });
-  if (type === 'currency') return (isNeg ? '-' : '') + '₡' + absStr;
+  // Presets de moneda disponibles en el selector "Tipo" del formato numérico
+  // avanzado: colones (por defecto), dólares y euros. Si en el futuro se
+  // agrega otro preset, solo hay que sumar una línea aquí.
+  var SIMBOLOS_MONEDA_PRESET = { currency: '₡', currency_usd: '$', currency_eur: '€' };
+  if (SIMBOLOS_MONEDA_PRESET[type]) return (isNeg ? '-' : '') + SIMBOLOS_MONEDA_PRESET[type] + absStr;
   if (type === 'accounting') return isNeg ? '(₡' + absStr + ')' : '₡' + absStr;
   if (type === 'number') return (isNeg ? '-' : '') + absStr;
   return String(val);
+}
+
+// ══════════════════════════════════════════════
+// FORMATO NUMÉRICO PERSONALIZADO (código estilo Excel)
+// ══════════════════════════════════════════════
+// Soporta lo más usado de los códigos de formato de Excel:
+//   #,##0.00            número con separador de miles y 2 decimales
+//   0.00%               porcentaje
+//   "₡"#,##0.00         texto literal (entre comillas) pegado al número
+//   #,##0;[Rojo](#,##0) hasta 3 secciones separadas por ";" — positivos;
+//                       negativos;ceros — cada una con un color [Nombre]
+//                       opcional al principio.
+// No es un intérprete completo de todos los códigos de Excel (por ejemplo
+// no soporta fechas/horas con este mecanismo, que ya tienen su propio
+// formato en esta app), pero cubre los casos reales de moneda/contable con
+// los que se arma un reporte en Costa Rica.
+var COLORES_FORMATO_PERSONALIZADO = {
+  'ROJO': '#dc2626', 'AZUL': '#2563eb', 'VERDE': '#16a34a', 'NEGRO': '#000000',
+  'BLANCO': '#ffffff', 'AMARILLO': '#ca8a04', 'MAGENTA': '#db2777', 'CIAN': '#0891b2', 'GRIS': '#6b7280',
+  'RED': '#dc2626', 'BLUE': '#2563eb', 'GREEN': '#16a34a', 'BLACK': '#000000',
+  'WHITE': '#ffffff', 'YELLOW': '#ca8a04', 'CYAN': '#0891b2', 'GRAY': '#6b7280'
+};
+// Da forma a UNA sección del código (ya sin el [Color]) sobre un número
+// que ya viene en positivo (el signo lo decide quien llama a esta función).
+function formatearSeccionPersonalizada(numAbs, patron) {
+  var literales = [];
+  // El texto entre comillas se reemplaza por UN solo caracter "privado"
+  // (fuera de las tablas normales de Unicode) en vez de un marcador con
+  // números — si usáramos dígitos, se confundirían con los propios "0"/"#"
+  // del patrón numérico y rompían el cálculo de decimales/miles.
+  var limpio = String(patron || '').replace(/"([^"]*)"/g, function (m, txt) {
+    literales.push(txt); return String.fromCharCode(0xE000 + literales.length - 1);
+  });
+  var esPorcentaje = limpio.indexOf('%') !== -1;
+  var numParaMostrar = esPorcentaje ? numAbs * 100 : numAbs;
+  var mPlaceholder = limpio.match(/[#0][#0,]*(?:\\.[#0]+)?|\\.[#0]+/);
+  var resultado;
+  if (mPlaceholder) {
+    var placeholder = mPlaceholder[0];
+    var prefijo = limpio.slice(0, mPlaceholder.index);
+    var sufijo = limpio.slice(mPlaceholder.index + placeholder.length);
+    var usaMiles = placeholder.indexOf(',') !== -1;
+    var partesDec = placeholder.split('.');
+    var decimales = partesDec[1] ? partesDec[1].replace(/[^0#]/g, '').length : 0;
+    var numeroFormateado = numParaMostrar.toLocaleString('es-CR', { minimumFractionDigits: decimales, maximumFractionDigits: decimales, useGrouping: usaMiles });
+    resultado = prefijo + numeroFormateado + sufijo;
+  } else {
+    // El patrón no tiene ningún "0"/"#": es solo texto fijo, sin número.
+    resultado = limpio;
+  }
+  resultado = resultado.replace(/[-]/g, function (m) { return literales[m.charCodeAt(0) - 0xE000]; });
+  resultado = resultado.replace(/\\\\(.)/g, '$1'); // "\%" → "%" literal, etc.
+  return resultado;
+}
+// Punto de entrada: recibe el valor crudo de la celda y el código completo
+// (con sus hasta 3 secciones) y devuelve { texto, color }.
+function aplicarFormatoPersonalizado(val, codigo) {
+  if (val === '' || val === null || val === undefined) return { texto: val, color: null };
+  var num = parseFloat(String(val).replace(/[₡,%\\s()]/g, ''));
+  if (isNaN(num)) return { texto: String(val), color: null };
+  var secciones = String(codigo || '0').split(';');
+  var idxSeccion = 0, numAbs = num, signoAutomatico = '';
+  if (num < 0) {
+    if (secciones.length > 1) { idxSeccion = 1; numAbs = Math.abs(num); }
+    else { signoAutomatico = '-'; numAbs = Math.abs(num); }
+  } else if (num === 0 && secciones.length > 2) {
+    idxSeccion = 2; numAbs = 0;
+  }
+  var seccion = secciones[idxSeccion] || secciones[0] || '0';
+  var color = null;
+  var mColor = seccion.match(/^\[([A-Za-zÁÉÍÓÚáéíóúñÑ]+)\]/);
+  if (mColor) {
+    color = COLORES_FORMATO_PERSONALIZADO[mColor[1].toUpperCase()] || null;
+    seccion = seccion.slice(mColor[0].length);
+  }
+  return { texto: signoAutomatico + formatearSeccionPersonalizada(numAbs, seccion), color: color };
 }
 
 // ══════════════════════════════════════════════
@@ -4982,6 +5581,36 @@ function applyNumberFormat(val, fmt) {
 function getColWidth(c) {
   var w = colWidths[activeSheet] && colWidths[activeSheet][c];
   return w || 78;
+}
+
+// Autofit: igual que hacer doble clic en el borde de una columna en Excel.
+// Mide con un <canvas> oculto el ancho real (con la misma tipografía de las
+// celdas) del texto YA FORMATEADO que se ve en cada celda de la columna
+// (toma el textContent del DOM, así respeta moneda, porcentaje, formato
+// personalizado, etc. sin tener que recalcular el formato aquí) y deja el
+// ancho de columna justo para que entre el contenido más largo.
+function anchoDeTextoPx(texto) {
+  if (!anchoDeTextoPx._ctx) {
+    var canvas = document.createElement('canvas');
+    anchoDeTextoPx._ctx = canvas.getContext('2d');
+    anchoDeTextoPx._ctx.font = "13px Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif";
+  }
+  return anchoDeTextoPx._ctx.measureText(texto || '').width;
+}
+function autoajustarColumna(c) {
+  var maxW = 36; // ancho mínimo (igual al mínimo que ya se usa al arrastrar a mano)
+  for (var r = 0; r < ROWS; r++) {
+    var id = cellId(r, c);
+    var el = document.getElementById('cell_' + id);
+    var texto = el ? el.textContent : '';
+    if (!texto) continue;
+    var fmt = (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || {};
+    var w = anchoDeTextoPx(texto) + (fmt.bold ? 5 : 0) + 14; // + padding horizontal de la celda (5px c/lado) y un poco más si es negrita
+    if (w > maxW) maxW = w;
+  }
+  maxW = Math.min(Math.round(maxW), 420); // tope razonable para no generar una columna gigante por una celda con texto muy largo
+  if (!colWidths[activeSheet]) colWidths[activeSheet] = {};
+  colWidths[activeSheet][c] = maxW;
 }
 
 // ── Segmentadores (slicers): qué filas tapan los chips destildados ──
@@ -5002,12 +5631,59 @@ function filasOcultasPorSlicer(hoja) {
   });
   return Object.keys(ocultas).map(function (k) { return parseInt(k, 10); });
 }
+function ultimaFilaConDatos(hoja) {
+  var data = sheetData[hoja] || {};
+  var maxR = 0;
+  Object.keys(data).forEach(function (key) {
+    var m = key.match(/([A-Za-z]+)(\\d+)/); if (!m) return;
+    var r = parseInt(m[2]) - 1;
+    if (r > maxR) maxR = r;
+  });
+  return maxR;
+}
+// Qué filas tapa el autofiltro: para cada fila de datos (debajo de la fila
+// de encabezados del autofiltro), si el valor de ALGUNA columna filtrada
+// está en la lista de "excluidos" de esa columna, se oculta — igual que en
+// Excel, donde filtrar varias columnas combina los filtros con Y.
+function filasOcultasPorAutoFiltro(hoja) {
+  var af = sheetAutoFiltro[hoja];
+  if (!af || !af.filtros) return [];
+  var colsConFiltro = Object.keys(af.filtros).filter(function (k) { return af.filtros[k] && af.filtros[k].length; });
+  if (!colsConFiltro.length) return [];
+  var ultimaFila = ultimaFilaConDatos(hoja);
+  var ocultas = [];
+  for (var r = af.fila + 1; r <= ultimaFila; r++) {
+    var seOculta = colsConFiltro.some(function (colStr) {
+      var c = parseInt(colStr, 10);
+      var v = String(computeValueEnHoja(hoja, cellId(r, c)));
+      return af.filtros[colStr].indexOf(v) !== -1;
+    });
+    if (seOculta) ocultas.push(r);
+  }
+  return ocultas;
+}
 function buildTable() {
   var btnProteger = document.getElementById('btnProtegerHoja');
   if (btnProteger) {
     var protegida = !!sheetProtegida[activeSheet];
-    btnProteger.textContent = protegida ? '🔒 Hoja Protegida' : '🔓 Proteger Hoja';
+    var protegidaConPass = protegida && !!sheetProtegidaHash[activeSheet];
+    btnProteger.textContent = protegida ? (protegidaConPass ? '🔒🔑 Hoja Protegida' : '🔒 Hoja Protegida') : '🔓 Proteger Hoja';
     btnProteger.style.background = protegida ? '#dc2626' : '';
+  }
+  // Si esta hoja fue generada por el asistente de Tabla Dinámica, mostramos
+  // los botones para cambiar sus campos o recalcularla con datos de hoy.
+  var btnCampos = document.getElementById('btnCamposDinamica');
+  var btnActualizarPivote = document.getElementById('btnActualizarDinamica');
+  if (btnCampos && btnActualizarPivote) {
+    var esHojaPivote = !!sheetPivoteConfig[activeSheet];
+    btnCampos.style.display = esHojaPivote ? '' : 'none';
+    btnActualizarPivote.style.display = esHojaPivote ? '' : 'none';
+  }
+  var af = sheetAutoFiltro[activeSheet];
+  var btnAutofiltro = document.getElementById('btnAutofiltro');
+  if (btnAutofiltro) {
+    btnAutofiltro.textContent = af ? '✖ Quitar Autofiltro' : '🔽 Autofiltro';
+    btnAutofiltro.style.background = af ? '#dc2626' : '';
   }
   var table = document.getElementById('sheetTable');
   var merges = sheetMerges[activeSheet] || [];
@@ -5023,14 +5699,48 @@ function buildTable() {
     }
     anchorSpan[m.r1 + '_' + m.c1] = { rowSpan: m.r2 - m.r1 + 1, colSpan: m.c2 - m.c1 + 1 };
   });
-  var colLeft = []; var acc = 34;
+  // ── Agrupar filas/columnas (el "esquema" de Excel): un grupo
+  // {from,to,collapsed} oculta las filas/columnas from+1..to cuando está
+  // colapsado — la primera (from) queda SIEMPRE visible, como "cabecera"
+  // del grupo, con el botón −/+ para colapsar o expandir. Esto agrega una
+  // franja angosta extra (el "gutter") a la izquierda de los números de
+  // fila y/o arriba de las letras de columna, solo cuando la hoja tiene
+  // algún grupo — si nunca se agrupó nada, la grilla se ve exactamente
+  // igual que siempre. ──
+  var GUTTER_W = 16;
+  var gruposFila = sheetGroupsRow[activeSheet] || [];
+  var gruposCol = sheetGroupsCol[activeSheet] || [];
+  var hayGutterFila = gruposFila.length > 0;
+  var hayGutterCol = gruposCol.length > 0;
+  var rowheadLeft = hayGutterFila ? GUTTER_W : 0;
+  var colLeft = []; var acc = 34 + rowheadLeft;
   for (var cg2 = 0; cg2 < COLS; cg2++) { colLeft.push(acc); acc += getColWidth(cg2); }
-  var filasOcultas = (sheetHiddenRows[activeSheet] || []).concat(filasOcultasPorSlicer(activeSheet));
-  var colsOcultas = sheetHiddenCols[activeSheet] || [];
-  var html = '<colgroup><col style="width:34px">';
+  var filasOcultas = (sheetHiddenRows[activeSheet] || []).concat(filasOcultasPorSlicer(activeSheet)).concat(filasOcultasPorGrupos(activeSheet)).concat(filasOcultasPorAutoFiltro(activeSheet));
+  var colsOcultas = (sheetHiddenCols[activeSheet] || []).concat(colsOcultasPorGrupos(activeSheet));
+  var html = '<colgroup>';
+  if (hayGutterFila) html += '<col style="width:' + GUTTER_W + 'px">';
+  html += '<col style="width:34px">';
   for (var cg = 0; cg < COLS; cg++) html += '<col style="width:' + getColWidth(cg) + 'px' + (colsOcultas.indexOf(cg) !== -1 ? ';display:none' : '') + '">';
   html += '</colgroup>';
-  html += '<thead><tr><th class="corner"></th>';
+  html += '<thead>';
+  if (hayGutterCol) {
+    // Franja horizontal con los botones −/+ de los grupos de columnas.
+    html += '<tr class="outlineHeaderRow">';
+    if (hayGutterFila) html += '<th class="corner outlineCorner" style="left:0;width:' + GUTTER_W + 'px;min-width:' + GUTTER_W + 'px;"></th>';
+    html += '<th class="corner outlineCorner" style="left:' + rowheadLeft + 'px;"></th>';
+    for (var cc = 0; cc < COLS; cc++) {
+      var grupoColAqui = null;
+      for (var gi = 0; gi < gruposCol.length; gi++) { if (gruposCol[gi].from === cc) { grupoColAqui = gruposCol[gi]; break; } }
+      var botonCol = grupoColAqui
+        ? '<button type="button" class="outlineToggle" data-tipo="col" data-from="' + grupoColAqui.from + '">' + (grupoColAqui.collapsed ? '+' : '−') + '</button>'
+        : '';
+      html += '<th class="outlineGutterCol"' + (colsOcultas.indexOf(cc) !== -1 ? ' style="display:none;"' : '') + '>' + botonCol + '</th>';
+    }
+    html += '</tr>';
+  }
+  html += '<tr>';
+  if (hayGutterFila) html += '<th class="corner outlineCorner" style="left:0;width:' + GUTTER_W + 'px;min-width:' + GUTTER_W + 'px;"></th>';
+  html += '<th class="corner" style="left:' + rowheadLeft + 'px;"></th>';
   for (var c = 0; c < COLS; c++) {
     var thFrozen = c < freeze.col;
     var thStyleParts = [];
@@ -5043,9 +5753,20 @@ function buildTable() {
   for (var r = 0; r < ROWS; r++) {
     var rFrozen = r < freeze.row;
     var rowheadCls = 'rowhead' + (rFrozen ? ' frozen-row-head' : '');
-    var rowheadStyle = rFrozen ? (' style="top:' + (HEADER_H + r * ROW_H) + 'px;"') : '';
+    var rowheadStyleParts = ['left:' + rowheadLeft + 'px;'];
+    if (rFrozen) rowheadStyleParts.push('top:' + (HEADER_H + r * ROW_H) + 'px;');
+    var rowheadStyle = ' style="' + rowheadStyleParts.join('') + '"';
     var trStyleAttr = filasOcultas.indexOf(r) !== -1 ? ' style="display:none;"' : '';
-    html += '<tr' + trStyleAttr + '><td class="' + rowheadCls + '" data-row="' + r + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
+    html += '<tr' + trStyleAttr + '>';
+    if (hayGutterFila) {
+      var grupoFilaAqui = null;
+      for (var gfi = 0; gfi < gruposFila.length; gfi++) { if (gruposFila[gfi].from === r) { grupoFilaAqui = gruposFila[gfi]; break; } }
+      var botonFila = grupoFilaAqui
+        ? '<button type="button" class="outlineToggle" data-tipo="fila" data-from="' + grupoFilaAqui.from + '">' + (grupoFilaAqui.collapsed ? '+' : '−') + '</button>'
+        : '';
+      html += '<td class="outlineGutterRow">' + botonFila + '</td>';
+    }
+    html += '<td class="' + rowheadCls + '" data-row="' + r + '"' + rowheadStyle + '>' + (r + 1) + '</td>';
     for (var c2 = 0; c2 < COLS; c2++) {
       if (skip[r + '_' + c2]) continue;
       var id = cellId(r, c2);
@@ -5057,9 +5778,18 @@ function buildTable() {
       if (cFrozen) { tdCls.push('frozen-col'); tdStyleParts.push('left:' + colLeft[c2] + 'px;'); }
       if (rFrozen) { tdCls.push('frozen-row-td'); tdStyleParts.push('top:' + (HEADER_H + r * ROW_H) + 'px;'); }
       if (colsOcultas.indexOf(c2) !== -1) tdStyleParts.push('display:none;');
+      // Flechita de autofiltro: solo en la fila de encabezados elegida
+      // (af.fila) y dentro del rango de columnas que se puso en autofiltro.
+      var esEncabezadoAutoFiltro = af && r === af.fila && c2 >= af.colIni && c2 <= af.colFin;
+      var botonFiltro = '';
+      if (esEncabezadoAutoFiltro) {
+        tdStyleParts.push('position:relative;');
+        var filtroActivoAqui = af.filtros && af.filtros[c2] && af.filtros[c2].length;
+        botonFiltro = '<button type="button" class="filtroArrowBtn' + (filtroActivoAqui ? ' activo' : '') + '" data-col="' + c2 + '" title="Filtrar">▾</button>';
+      }
       var tdClsAttr = tdCls.length ? (' class="' + tdCls.join(' ') + '"') : '';
       var tdStyleAttr = tdStyleParts.length ? (' style="' + tdStyleParts.join('') + '"') : '';
-      html += '<td' + spanAttr + tdClsAttr + tdStyleAttr + '><div class="cell" id="cell_' + id + '" data-id="' + id + '" contenteditable="true"></div></td>';
+      html += '<td' + spanAttr + tdClsAttr + tdStyleAttr + '><div class="cell" id="cell_' + id + '" data-id="' + id + '" contenteditable="true"></div>' + botonFiltro + '</td>';
     }
     html += '</tr>';
   }
@@ -5073,14 +5803,89 @@ function buildTable() {
   renderizarCursoresRemotos();
   var btnMO = document.getElementById('btnMostrarOcultos');
   if (btnMO) {
-    // El contador es solo de lo oculto A MANO (no cuenta lo que un
-    // segmentador esté filtrando — eso se "muestra todo" desde su propio
-    // panel, tocando sus chips, no con este botón).
-    var totalOcultos = (sheetHiddenRows[activeSheet] || []).length + colsOcultas.length;
+    // El contador es solo de lo oculto A MANO (ni lo que un segmentador
+    // esté filtrando, ni lo que esté colapsado por un grupo — esos tienen
+    // su propia forma de volver a mostrarse: el chip del segmentador, o
+    // el botón + del grupo).
+    var totalOcultos = (sheetHiddenRows[activeSheet] || []).length + (sheetHiddenCols[activeSheet] || []).length;
     btnMO.style.display = totalOcultos ? '' : 'none';
     btnMO.textContent = '👁 Mostrar todo (' + totalOcultos + ' oculta' + (totalOcultos === 1 ? '' : 's') + ')';
   }
 }
+// Filas/columnas ocultas porque su grupo (ver sheetGroupsRow/sheetGroupsCol
+// arriba) está colapsado — todas MENOS la primera del grupo, que queda de
+// cabecera visible con el botón −/+.
+function filasOcultasPorGrupos(hoja) {
+  var out = [];
+  (sheetGroupsRow[hoja] || []).forEach(function (g) {
+    if (g.collapsed) for (var r = g.from + 1; r <= g.to; r++) out.push(r);
+  });
+  return out;
+}
+function colsOcultasPorGrupos(hoja) {
+  var out = [];
+  (sheetGroupsCol[hoja] || []).forEach(function (g) {
+    if (g.collapsed) for (var c = g.from + 1; c <= g.to; c++) out.push(c);
+  });
+  return out;
+}
+// Agrupa las filas/columnas del rango seleccionado actualmente. Si el
+// nuevo grupo se cruza con uno que ya existía, el viejo se reemplaza (no
+// se permiten grupos superpuestos, para no complicar el "colapsar/expandir").
+function agruparFilas() {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Primero seleccioná (arrastrando sobre la grilla) las filas que querés agrupar.'); return; }
+  if (bounds.minR === bounds.maxR) { alert('Seleccioná al menos 2 filas para agrupar. La primera del grupo queda siempre visible, como cabecera con el botón −/+; el resto se puede colapsar.'); return; }
+  snapshot();
+  if (!sheetGroupsRow[activeSheet]) sheetGroupsRow[activeSheet] = [];
+  var grupos = sheetGroupsRow[activeSheet];
+  for (var i = grupos.length - 1; i >= 0; i--) {
+    if (!(grupos[i].to < bounds.minR || grupos[i].from > bounds.maxR)) grupos.splice(i, 1);
+  }
+  grupos.push({ from: bounds.minR, to: bounds.maxR, collapsed: false });
+  buildTable(); autoSave();
+}
+function agruparColumnas() {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Primero seleccioná (arrastrando sobre la grilla) las columnas que querés agrupar.'); return; }
+  if (bounds.minC === bounds.maxC) { alert('Seleccioná al menos 2 columnas para agrupar. La primera del grupo queda siempre visible, como cabecera con el botón −/+; el resto se puede colapsar.'); return; }
+  snapshot();
+  if (!sheetGroupsCol[activeSheet]) sheetGroupsCol[activeSheet] = [];
+  var grupos = sheetGroupsCol[activeSheet];
+  for (var i = grupos.length - 1; i >= 0; i--) {
+    if (!(grupos[i].to < bounds.minC || grupos[i].from > bounds.maxC)) grupos.splice(i, 1);
+  }
+  grupos.push({ from: bounds.minC, to: bounds.maxC, collapsed: false });
+  buildTable(); autoSave();
+}
+// Quita cualquier grupo (de filas y de columnas) que se cruce con la
+// selección actual.
+function desagruparEnSeleccion() {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná el rango de filas/columnas agrupadas que querés desagrupar.'); return; }
+  snapshot();
+  var gf = sheetGroupsRow[activeSheet] || [];
+  var gc = sheetGroupsCol[activeSheet] || [];
+  for (var i = gf.length - 1; i >= 0; i--) { if (!(gf[i].to < bounds.minR || gf[i].from > bounds.maxR)) gf.splice(i, 1); }
+  for (var j = gc.length - 1; j >= 0; j--) { if (!(gc[j].to < bounds.minC || gc[j].from > bounds.maxC)) gc.splice(j, 1); }
+  buildTable(); autoSave();
+}
+// Un solo listener de clic sobre la tabla (en vez de uno por botón, ya
+// que buildTable() reconstruye toda la grilla a cada rato) atiende
+// cualquier botón −/+ de agrupación que se haya dibujado.
+document.getElementById('sheetTable').addEventListener('click', function (e) {
+  var btn = e.target.closest ? e.target.closest('.outlineToggle') : null;
+  if (!btn) return;
+  e.stopPropagation();
+  var tipo = btn.getAttribute('data-tipo');
+  var from = parseInt(btn.getAttribute('data-from'), 10);
+  var grupos = (tipo === 'fila' ? sheetGroupsRow : sheetGroupsCol)[activeSheet] || [];
+  var g = null;
+  for (var i = 0; i < grupos.length; i++) { if (grupos[i].from === from) { g = grupos[i]; break; } }
+  if (!g) return;
+  g.collapsed = !g.collapsed;
+  buildTable(); autoSave();
+});
 // Tocar el encabezado de una fila o columna selecciona esa fila/columna
 // entera — así "Ocultar fila(s)"/"Ocultar columna(s)" en la barra de
 // rango saben exactamente qué ocultar, igual que hacer clic derecho
@@ -5136,6 +5941,52 @@ function mergeToggle(bounds) {
 document.getElementById('btnMerge').addEventListener('click', function () { mergeToggle(currentRangeBounds()); });
 document.getElementById('raMerge').addEventListener('click', function () { mergeToggle(currentRangeBounds()); });
 
+// Reconoce una fecha escrita en los formatos más comunes en Costa Rica
+// (DD/MM/AAAA, DD-MM-AAAA, DD.MM.AAAA) o en formato ISO (AAAA-MM-DD), y
+// devuelve su valor cronológico en milisegundos para poder COMPARARLA como
+// fecha real — no como texto. Las fechas de esta hoja se siguen guardando y
+// mostrando como texto (eso no cambia), pero "Ordenar" y ORDENAR() ahora
+// reconocen cuándo ese texto es una fecha y ordenan por año/mes/día en vez
+// de alfabéticamente: antes, una columna con "01/02/2026", "15/01/2026" y
+// "03/12/2025" quedaba en ese mismo orden raro (ordenado letra por letra
+// como si fuera texto) en vez de quedar 03/12/2025, 15/01/2026, 01/02/2026.
+function parsearFechaFlexible(texto) {
+  var s = String(texto == null ? '' : texto).trim();
+  var m = s.match(/^(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{4})$/);
+  var y, mo, d;
+  if (m) { d = parseInt(m[1], 10); mo = parseInt(m[2], 10); y = parseInt(m[3], 10); }
+  else {
+    m = s.match(/^(\\d{4})-(\\d{1,2})-(\\d{1,2})$/);
+    if (!m) return null;
+    y = parseInt(m[1], 10); mo = parseInt(m[2], 10); d = parseInt(m[3], 10);
+  }
+  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+  var dt = new Date(y, mo - 1, d);
+  // new Date() "corrige" fechas imposibles (31/02/2026 → 03/03/2026) en vez
+  // de rechazarlas — este chequeo detecta esa corrección y descarta el
+  // resultado, para no tratar un error de tipeo como una fecha válida.
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
+  return dt.getTime();
+}
+// Comparador compartido por "Ordenar" (ordenarRango) y la función ORDENAR():
+// vacíos siempre al final, después números, después fechas reconocibles, y
+// solo como último recurso, texto alfabético.
+function compararValoresOrdenables(va, vb) {
+  var vacíaA = String(va == null ? '' : va).trim() === '', vacíaB = String(vb == null ? '' : vb).trim() === '';
+  if (vacíaA && !vacíaB) return 1;
+  if (!vacíaA && vacíaB) return -1;
+  if (vacíaA && vacíaB) return 0;
+  // OJO: parseFloat("01/02/2026") da 1 (lee el "01" y se detiene ahí en vez
+  // de fallar), así que no basta con que parseFloat no dé NaN — hay que
+  // confirmar que el texto ENTERO (ya sin ₡/comas/espacios) es un número,
+  // para no confundir una fecha con texto que "empieza como" un número.
+  var limpiaA = String(va).replace(/[₡,\\s]/g, ''), limpiaB = String(vb).replace(/[₡,\\s]/g, '');
+  var esNumA = /^-?\\d+(\\.\\d+)?$/.test(limpiaA), esNumB = /^-?\\d+(\\.\\d+)?$/.test(limpiaB);
+  if (esNumA && esNumB) return parseFloat(limpiaA) - parseFloat(limpiaB);
+  var fa = parsearFechaFlexible(va), fb = parsearFechaFlexible(vb);
+  if (fa !== null && fb !== null) return fa - fb;
+  return String(va).localeCompare(String(vb), 'es', { numeric: true, sensitivity: 'base' });
+}
 // ── Ordenar un rango por una columna ──────────────────────────────
 // OJO con fórmulas: si una fila tiene una fórmula (=SUMA(...), etc.)
 // que depende de la POSICIÓN de la fila, moverla de lugar sin ajustar
@@ -5186,15 +6037,7 @@ function ordenarRango() {
   }
 
   filas.sort(function (a, b) {
-    var va = a.clave, vb = b.clave;
-    var na = parseFloat(String(va).replace(/[₡,\\s]/g, '')), nb = parseFloat(String(vb).replace(/[₡,\\s]/g, ''));
-    var vacíaA = String(va).trim() === '', vacíaB = String(vb).trim() === '';
-    var cmp;
-    if (vacíaA && !vacíaB) cmp = 1;
-    else if (!vacíaA && vacíaB) cmp = -1;
-    else if (vacíaA && vacíaB) cmp = 0;
-    else if (!isNaN(na) && !isNaN(nb)) cmp = na - nb;
-    else cmp = String(va).localeCompare(String(vb), 'es', { numeric: true, sensitivity: 'base' });
+    var cmp = compararValoresOrdenables(a.clave, b.clave);
     return descendente ? -cmp : cmp;
   });
 
@@ -5272,14 +6115,39 @@ document.getElementById('btnFreeze').addEventListener('click', function () {
   buildTable(); autoSave();
 });
 
+// Modo de selección múltiple no contigua (para pantallas táctiles, donde
+// no hay tecla Ctrl): se activa/desactiva con este botón. Mientras está
+// activo, cada celda o rango que tocás se agrega a la selección en vez
+// de reemplazarla — igual que mantener Ctrl apretado en una computadora.
+document.getElementById('btnMultiSel').addEventListener('click', function () {
+  multiSelMode = !multiSelMode;
+  this.classList.toggle('active', multiSelMode);
+  if (!multiSelMode) {
+    // Al apagar el modo, se deja la selección actual tal cual (por si el
+    // usuario todavía quiere aplicarle un formato), solo deja de "sumar".
+    document.getElementById('saveStatus').textContent = 'Modo selección múltiple desactivado';
+  } else {
+    document.getElementById('saveStatus').textContent = 'Modo selección múltiple: tocá varias celdas o rangos salteados';
+  }
+});
+
 function attachColResizeEvents() {
   document.querySelectorAll('.colResizer').forEach(function (el) {
     var startX = 0, startW = 0, col = parseInt(el.dataset.col);
+    var ultimoTapMs = 0; // para detectar doble-tap en pantallas táctiles, donde "dblclick" no siempre llega
     el.addEventListener('pointerdown', function (e) {
       e.stopPropagation();
       startX = e.clientX;
       startW = getColWidth(col);
       el.setPointerCapture(e.pointerId);
+      var ahora = Date.now();
+      if (ahora - ultimoTapMs < 350) {
+        autoajustarColumna(col);
+        buildTable(); autoSave();
+        ultimoTapMs = 0;
+        return;
+      }
+      ultimoTapMs = ahora;
     });
     el.addEventListener('pointermove', function (e) {
       if (e.buttons !== 1) return;
@@ -5291,6 +6159,13 @@ function attachColResizeEvents() {
       if (colgroupCol) colgroupCol.style.width = newW + 'px';
     });
     el.addEventListener('pointerup', function () { autoSave(); });
+    // Doble clic (mouse/trackpad, p.ej. probando desde una compu) también
+    // autoajusta, igual que en Excel real.
+    el.addEventListener('dblclick', function (e) {
+      e.stopPropagation();
+      autoajustarColumna(col);
+      buildTable(); autoSave();
+    });
   });
 }
 
@@ -5299,12 +6174,36 @@ function renderAllCells() {
   var formats = sheetFormats[activeSheet] || {};
   var notes = sheetNotes[activeSheet] || {};
   document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-note'); });
-  Object.keys(data).forEach(function (id) {
+  // Triangulito rojo de error: se limpia y se vuelve a calcular en cada
+  // render (igual que las notas/validaciones), así una celda que se arregla
+  // pierde la marca y una que empieza a fallar la recibe.
+  document.querySelectorAll('.cell.has-error').forEach(function (el) {
+    el.classList.remove('has-error');
+    var viejo = el.querySelector('.errorFlag');
+    if (viejo) viejo.remove();
+  });
+  // Se recorre la unión de celdas con datos Y celdas que solo tienen
+  // formato (por ejemplo, un borde puesto sobre una celda vacía para armar
+  // una tabla/cuadrícula) — antes solo se pintaban las celdas con
+  // contenido, así que un borde o color de fondo en una celda vacía no se
+  // veía reflejado hasta que se escribiera algo ahí.
+  var idsAPintar = {};
+  Object.keys(data).forEach(function (id) { idsAPintar[id] = true; });
+  Object.keys(formats).forEach(function (id) { idsAPintar[id] = true; });
+  Object.keys(idsAPintar).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
     if (!el || document.activeElement === el) return;
     var val = computeValue(id);
     var fmt = formats[id] || {};
-    if (fmt.numFormat) {
+    // Formato personalizado tipo Excel (#,##0.00;[Rojo](#,##0.00), etc.):
+    // puede traer su propio color según el signo del número, que pisa el
+    // color de fuente normal de la celda (se aplica más abajo).
+    var colorFormatoPersonalizado = '';
+    if (fmt.numFormat && fmt.numFormat.type === 'custom') {
+      var resCustom = aplicarFormatoPersonalizado(val, fmt.numFormat.codigo);
+      el.textContent = resCustom.texto;
+      colorFormatoPersonalizado = resCustom.color || '';
+    } else if (fmt.numFormat) {
       el.textContent = applyNumberFormat(val, fmt.numFormat);
     } else if (fmt.currency && val !== '' && !isNaN(parseFloat(String(val).replace(/[₡,]/g, '')))) {
       el.textContent = '₡' + parseFloat(String(val).replace(/[₡,\\s]/g, '')).toLocaleString('es-CR', { minimumFractionDigits: 2 });
@@ -5315,12 +6214,42 @@ function renderAllCells() {
     }
     el.classList.toggle('bold', !!fmt.bold);
     el.classList.toggle('italic', !!fmt.italic);
-    el.classList.toggle('bordered', !!fmt.border);
     el.classList.toggle('wrap-text', !!fmt.wrap);
     el.style.textAlign = fmt.align || '';
     el.style.backgroundColor = fmt.bgColor || '';
-    el.style.color = fmt.fontColor || '';
+    el.style.color = colorFormatoPersonalizado || fmt.fontColor || '';
     el.style.fontSize = fmt.fontSize ? (fmt.fontSize + 'px') : '';
+    // ── Bordes por lado (arriba/abajo/izquierda/derecha, con su propio
+    // grosor y color) — reemplaza el viejo "borde marcado" todo-o-nada.
+    // Si la celda trae el formato viejo (fmt.border = true, guardado antes
+    // de este cambio) se lo traduce al estilo clásico de 4 lados. ──
+    var bordes = fmt.borders;
+    if (!bordes && fmt.border) bordes = { top: true, bottom: true, left: true, right: true, width: 1.5, color: '#217346' };
+    if (bordes && (bordes.top || bordes.bottom || bordes.left || bordes.right)) {
+      var estiloBorde = (bordes.width || 1) + 'px solid ' + (bordes.color || '#217346');
+      el.style.borderTop = bordes.top ? estiloBorde : '';
+      el.style.borderBottom = bordes.bottom ? estiloBorde : '';
+      el.style.borderLeft = bordes.left ? estiloBorde : '';
+      el.style.borderRight = bordes.right ? estiloBorde : '';
+    } else {
+      el.style.borderTop = ''; el.style.borderBottom = ''; el.style.borderLeft = ''; el.style.borderRight = '';
+    }
+    // ── Triangulito rojo de error: la celda quedó limpia al principio de
+    // esta función, así que si el valor calculado es un código de error
+    // (#REF!, #DIV/0!, etc.) se le agrega de nuevo la marca, tocable para
+    // ver qué significa. ──
+    if (esValorError(val)) {
+      el.classList.add('has-error');
+      var bandera = document.createElement('span');
+      bandera.className = 'errorFlag';
+      ['pointerdown', 'mousedown', 'click'].forEach(function (evt) {
+        bandera.addEventListener(evt, function (e) {
+          e.stopPropagation();
+          alert('⚠ ' + val + '\n\n' + explicarErrorCelda(val));
+        });
+      });
+      el.appendChild(bandera);
+    }
   });
   Object.keys(notes).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -5332,6 +6261,18 @@ function renderAllCells() {
     var el = document.getElementById('cell_' + id);
     if (el && attachments[id]) el.classList.add('has-attachment');
   });
+
+  // ── Celdas "permitir editar" dentro de una hoja protegida: solo se
+  // marcan visualmente (un borde punteado) cuando la protección está
+  // ACTIVA — si la hoja no está protegida, da igual cuáles estén en la
+  // lista, no se nota nada raro en la cuadrícula. ──
+  document.querySelectorAll('.cell.celda-desbloqueada').forEach(function (el) { el.classList.remove('celda-desbloqueada'); });
+  if (sheetProtegida[activeSheet]) {
+    (sheetCeldasDesbloqueadas[activeSheet] || []).forEach(function (id) {
+      var el = document.getElementById('cell_' + id);
+      if (el) el.classList.add('celda-desbloqueada');
+    });
+  }
 
   // ── Validación de datos: marcar celdas con lista desplegable ──
   document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-validation'); });
@@ -5545,7 +6486,7 @@ function renderTabs() {
     snapshot();
     var n = sheets.length + 1; var name = 'Hoja' + n;
     while (sheets.indexOf(name) >= 0) { n++; name = 'Hoja' + n; }
-    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {};
+    sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; sheetProtegidaHash[name] = null; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetGroupsRow[name] = []; sheetGroupsCol[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {}; sheetPivoteConfig[name] = null; sheetAutoFiltro[name] = null; sheetCeldasDesbloqueadas[name] = [];
     activeSheet = name; buildTable(); autoSave();
   });
 }
@@ -5571,12 +6512,25 @@ document.getElementById('btnRenameConfirm').addEventListener('click', function (
   sheetValidations[newName] = sheetValidations[tabMenuTarget] || {}; delete sheetValidations[tabMenuTarget];
   sheetHiddenRows[newName] = sheetHiddenRows[tabMenuTarget] || []; delete sheetHiddenRows[tabMenuTarget];
   sheetHiddenCols[newName] = sheetHiddenCols[tabMenuTarget] || []; delete sheetHiddenCols[tabMenuTarget];
+  sheetGroupsRow[newName] = sheetGroupsRow[tabMenuTarget] || []; delete sheetGroupsRow[tabMenuTarget];
+  sheetGroupsCol[newName] = sheetGroupsCol[tabMenuTarget] || []; delete sheetGroupsCol[tabMenuTarget];
+  // La protección (y su contraseña, si tiene) viaja con la hoja al renombrarla —
+  // antes se perdía silenciosamente porque no se copiaba a la clave nueva.
+  sheetProtegida[newName] = sheetProtegida[tabMenuTarget] || false; delete sheetProtegida[tabMenuTarget];
+  sheetProtegidaHash[newName] = sheetProtegidaHash[tabMenuTarget] || null; delete sheetProtegidaHash[tabMenuTarget];
+  sheetPivoteConfig[newName] = sheetPivoteConfig[tabMenuTarget] || null; delete sheetPivoteConfig[tabMenuTarget];
   sheetSparklines[newName] = sheetSparklines[tabMenuTarget] || {}; delete sheetSparklines[tabMenuTarget];
   sheetSlicers[newName] = sheetSlicers[tabMenuTarget] || []; delete sheetSlicers[tabMenuTarget];
   sheetEscenarios[newName] = sheetEscenarios[tabMenuTarget] || []; delete sheetEscenarios[tabMenuTarget];
   sheetCondFormatsAvanzado[newName] = sheetCondFormatsAvanzado[tabMenuTarget] || []; delete sheetCondFormatsAvanzado[tabMenuTarget];
   sheetControles[newName] = sheetControles[tabMenuTarget] || {}; delete sheetControles[tabMenuTarget];
   sheetValidacionNativa[newName] = sheetValidacionNativa[tabMenuTarget] || {}; delete sheetValidacionNativa[tabMenuTarget];
+  sheetAutoFiltro[newName] = sheetAutoFiltro[tabMenuTarget] || null; delete sheetAutoFiltro[tabMenuTarget];
+  sheetCeldasDesbloqueadas[newName] = sheetCeldasDesbloqueadas[tabMenuTarget] || []; delete sheetCeldasDesbloqueadas[tabMenuTarget];
+  // Las vistas guardadas apuntan a una hoja por su nombre — si se renombra,
+  // se actualizan las vistas que apuntaban a ese nombre para que no quede
+  // ninguna "huérfana" señalando a una hoja que ya no existe.
+  vistasGuardadas.forEach(function (v) { if (v.hoja === tabMenuTarget) v.hoja = newName; });
   if (activeSheet === tabMenuTarget) activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -5596,12 +6550,20 @@ document.getElementById('btnDuplicate').addEventListener('click', function () {
   sheetValidations[newName] = JSON.parse(JSON.stringify(sheetValidations[tabMenuTarget] || {}));
   sheetHiddenRows[newName] = JSON.parse(JSON.stringify(sheetHiddenRows[tabMenuTarget] || []));
   sheetHiddenCols[newName] = JSON.parse(JSON.stringify(sheetHiddenCols[tabMenuTarget] || []));
+  sheetGroupsRow[newName] = JSON.parse(JSON.stringify(sheetGroupsRow[tabMenuTarget] || []));
+  sheetGroupsCol[newName] = JSON.parse(JSON.stringify(sheetGroupsCol[tabMenuTarget] || []));
+  // La copia hereda la protección/contraseña de la original, igual que en Excel.
+  sheetProtegida[newName] = sheetProtegida[tabMenuTarget] || false;
+  sheetProtegidaHash[newName] = sheetProtegidaHash[tabMenuTarget] || null;
+  sheetPivoteConfig[newName] = sheetPivoteConfig[tabMenuTarget] ? JSON.parse(JSON.stringify(sheetPivoteConfig[tabMenuTarget])) : null;
   sheetSparklines[newName] = JSON.parse(JSON.stringify(sheetSparklines[tabMenuTarget] || {}));
   sheetSlicers[newName] = JSON.parse(JSON.stringify(sheetSlicers[tabMenuTarget] || []));
   sheetEscenarios[newName] = JSON.parse(JSON.stringify(sheetEscenarios[tabMenuTarget] || []));
   sheetCondFormatsAvanzado[newName] = JSON.parse(JSON.stringify(sheetCondFormatsAvanzado[tabMenuTarget] || []));
   sheetControles[newName] = JSON.parse(JSON.stringify(sheetControles[tabMenuTarget] || {}));
   sheetValidacionNativa[newName] = JSON.parse(JSON.stringify(sheetValidacionNativa[tabMenuTarget] || {}));
+  sheetAutoFiltro[newName] = sheetAutoFiltro[tabMenuTarget] ? JSON.parse(JSON.stringify(sheetAutoFiltro[tabMenuTarget])) : null;
+  sheetCeldasDesbloqueadas[newName] = JSON.parse(JSON.stringify(sheetCeldasDesbloqueadas[tabMenuTarget] || []));
   activeSheet = newName;
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -5616,10 +6578,15 @@ document.getElementById('btnDeleteSheet').addEventListener('click', function () 
   delete sheetMerges[tabMenuTarget]; delete sheetFreeze[tabMenuTarget];
   delete sheetCondFormats[tabMenuTarget]; delete sheetValidations[tabMenuTarget];
   delete sheetHiddenRows[tabMenuTarget]; delete sheetHiddenCols[tabMenuTarget];
+  delete sheetGroupsRow[tabMenuTarget]; delete sheetGroupsCol[tabMenuTarget];
+  delete sheetProtegida[tabMenuTarget]; delete sheetProtegidaHash[tabMenuTarget];
+  delete sheetPivoteConfig[tabMenuTarget];
   delete sheetSparklines[tabMenuTarget]; delete sheetSlicers[tabMenuTarget];
   delete sheetEscenarios[tabMenuTarget];
   delete sheetCondFormatsAvanzado[tabMenuTarget];
   delete sheetControles[tabMenuTarget]; delete sheetValidacionNativa[tabMenuTarget];
+  delete sheetAutoFiltro[tabMenuTarget];
+  delete sheetCeldasDesbloqueadas[tabMenuTarget];
   if (activeSheet === tabMenuTarget) activeSheet = sheets[0];
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
@@ -5943,7 +6910,7 @@ document.getElementById('reportesBtnExportar').addEventListener('click', async f
   ordenado.forEach(function (h) {
     var fechaLegible = '';
     try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR'); } catch (e) { fechaLegible = h.fecha || ''; }
-    var tipo = h.tipoDocumento === 'notaCredito' ? 'Nota de crédito' : (h.esTiquete ? 'Tiquete' : 'Factura');
+    var tipo = h.tipoDocumento === 'notaCredito' ? 'Nota de crédito' : h.tipoDocumento === 'notaDebito' ? 'Nota de débito' : (h.esTiquete ? 'Tiquete' : 'Factura');
     filas.push([
       fechaLegible, tipo, h.numeroConsecutivo || '', h.clave || '', h.ambiente || '',
       h.estado || '', h.receptorNombre || '', h.receptorCedula || '',
@@ -5973,11 +6940,14 @@ function renderizarReportes() {
     if (isNaN(fecha.getTime())) return;
     var llave = fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0');
     if (!meses[llave]) {
-      meses[llave] = { facturado: 0, cantFacturas: 0, notasCredito: 0, cantNotas: 0, fechaRef: fecha };
+      meses[llave] = { facturado: 0, cantFacturas: 0, notasCredito: 0, cantNotas: 0, notasDebito: 0, cantDebitos: 0, fechaRef: fecha };
     }
     if (h.tipoDocumento === 'notaCredito') {
       meses[llave].notasCredito += Number(h.total || 0);
       meses[llave].cantNotas += 1;
+    } else if (h.tipoDocumento === 'notaDebito') {
+      meses[llave].notasDebito += Number(h.total || 0);
+      meses[llave].cantDebitos += 1;
     } else {
       meses[llave].facturado += Number(h.total || 0);
       meses[llave].cantFacturas += 1;
@@ -5988,17 +6958,18 @@ function renderizarReportes() {
   var html = '';
   llaves.forEach(function (llave) {
     var m = meses[llave];
-    var neto = m.facturado - m.notasCredito;
+    var neto = m.facturado - m.notasCredito + m.notasDebito;
     var nombreMes = m.fechaRef.toLocaleDateString('es-CR', { month: 'long', year: 'numeric' });
     html += '<div class="repMes">' +
       '<div class="repMesTitulo">' + nombreMes + '</div>' +
       '<div class="repMesFila"><span>Facturado (' + m.cantFacturas + ' comprobante' + (m.cantFacturas === 1 ? '' : 's') + ')</span><span>₡' + m.facturado.toLocaleString('es-CR') + '</span></div>' +
+      (m.cantDebitos ? '<div class="repMesFila"><span>Notas de débito (' + m.cantDebitos + ')</span><span>+₡' + m.notasDebito.toLocaleString('es-CR') + '</span></div>' : '') +
       (m.cantNotas ? '<div class="repMesFila"><span>Notas de crédito (' + m.cantNotas + ')</span><span class="repNegativo">−₡' + m.notasCredito.toLocaleString('es-CR') + '</span></div>' : '') +
       '<div class="repMesFila repNeto"><span>Neto</span><span>₡' + neto.toLocaleString('es-CR') + '</span></div>' +
       '</div>';
   });
 
-  var totalGeneral = llaves.reduce(function (suma, llave) { return suma + (meses[llave].facturado - meses[llave].notasCredito); }, 0);
+  var totalGeneral = llaves.reduce(function (suma, llave) { return suma + (meses[llave].facturado - meses[llave].notasCredito + meses[llave].notasDebito); }, 0);
   html = '<div style="text-align:center;font-size:11px;color:#888;margin-bottom:10px;">Solo cuenta comprobantes ACEPTADOS por Hacienda. Los últimos 100 registros del historial.</div>' + html +
     '<div class="repMes" style="background:#f7fbf0;"><div class="repMesFila repNeto"><span>Total general (neto)</span><span>₡' + totalGeneral.toLocaleString('es-CR') + '</span></div></div>';
 
@@ -6108,9 +7079,16 @@ function renderHistorialHacienda() {
     var fechaLegible = '';
     try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { fechaLegible = h.fecha || ''; }
     var esNotaCredito = h.tipoDocumento === 'notaCredito';
+    var esNotaDebito = h.tipoDocumento === 'notaDebito';
     var yaAnulada = clavesYaAnuladas[h.clave];
-    var etiquetaTipo = esNotaCredito ? '🔴 Nota de crédito' : (h.esTiquete ? 'Tiquete' : 'Factura');
-    var puedeAnular = h.estado === 'aceptado' && !esNotaCredito && !yaAnulada;
+    var etiquetaTipo = esNotaCredito ? '🔴 Nota de crédito' : esNotaDebito ? '🟠 Nota de débito' : (h.esTiquete ? 'Tiquete' : 'Factura');
+    var puedeAnular = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito && !yaAnulada;
+    // Se puede cargar un cargo adicional sobre cualquier Factura/Tiquete
+    // ya aceptado — incluso si ya tiene otra nota de débito encima (por
+    // ejemplo, dos ajustes distintos en fechas distintas) — pero no
+    // sobre una nota de crédito o de débito (esas son ajustes, no el
+    // documento original que se estaría recargando).
+    var puedeDebitar = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito;
 
     html += '<div class="feHistHItem">' +
       '<div class="fhhTop">' +
@@ -6122,6 +7100,7 @@ function renderHistorialHacienda() {
       '<div class="fhhBtns">' +
       '<button data-idx="' + i + '" data-accion="cargar">📄 Cargar</button>' +
       (h.receptorEmail ? '<button data-idx="' + i + '" data-accion="correo" class="fhhBtnCorreo">✉️ Reenviar</button>' : '') +
+      (puedeDebitar ? '<button data-idx="' + i + '" data-accion="debitar" class="fhhBtnDebitar">💰 N. Débito</button>' : '') +
       (puedeAnular ? '<button data-idx="' + i + '" data-accion="anular" class="fhhBtnAnular">🗑️ Anular</button>' : '') +
       '</div></div>';
   });
@@ -6131,6 +7110,7 @@ function renderHistorialHacienda() {
       var registro = historialHaciendaCache[parseInt(btn.dataset.idx)];
       if (btn.dataset.accion === 'cargar') cargarRegistroHaciendaEnFormulario(registro);
       else if (btn.dataset.accion === 'correo') reenviarCorreoDesdeHistorial(registro);
+      else if (btn.dataset.accion === 'debitar') abrirNotaDebito(registro);
       else anularFacturaConNotaCredito(registro);
     });
   });
@@ -6202,6 +7182,147 @@ async function anularFacturaConNotaCredito(registro) {
   }
 }
 
+// ══════════════════════════════════════════════
+// NOTA DE DÉBITO — cargo adicional sobre una factura/tiquete ya aceptado
+// ══════════════════════════════════════════════
+// A diferencia de la nota de crédito (que repite las líneas del
+// documento original para anularlo al 100%), la nota de débito trae
+// líneas NUEVAS — el cargo que se está agregando — así que pide una
+// mini-tabla de líneas, igual de simple que la de "Factura Electrónica"
+// pero sin el buscador de CABYS (se escribe el código a mano).
+var notaDebitoRegistro = null;
+
+function abrirNotaDebito(registro) {
+  if (!registro) return;
+  notaDebitoRegistro = registro;
+  document.getElementById('ndReferenciaTexto').textContent = registro.numeroConsecutivo || registro.clave || '—';
+  document.getElementById('ndMotivo').value = '';
+  var body = document.getElementById('ndLineasBody');
+  body.innerHTML = '';
+  agregarLineaNotaDebito();
+  document.getElementById('notaDebitoOverlay').classList.add('show');
+}
+
+function agregarLineaNotaDebito() {
+  var body = document.getElementById('ndLineasBody');
+  var fila = document.createElement('div');
+  fila.className = 'ndLineaRow';
+  fila.style.cssText = 'display:flex;gap:5px;margin-bottom:6px;align-items:center;';
+  fila.innerHTML =
+    '<input type="text" class="ndDesc" placeholder="Descripción del cargo" value="Ajuste / cargo adicional" style="flex:2;min-width:0;padding:7px;border:1px solid #cce9ae;border-radius:6px;font-size:12.5px;">' +
+    '<input type="text" class="ndCabys" value="8399000000000" title="Código CABYS de 13 dígitos" style="flex:1;min-width:0;padding:7px;border:1px solid #cce9ae;border-radius:6px;font-size:11.5px;">' +
+    '<select class="ndIva" style="padding:7px;border:1px solid #cce9ae;border-radius:6px;font-size:12px;">' +
+      '<option value="13">13%</option><option value="4">4%</option><option value="2">2%</option>' +
+      '<option value="1">1%</option><option value="0">0%</option>' +
+    '</select>' +
+    '<input type="number" class="ndMonto" placeholder="Monto" min="0" step="0.01" style="flex:1;min-width:0;padding:7px;border:1px solid #cce9ae;border-radius:6px;font-size:12.5px;">' +
+    '<button class="ndQuitarLinea" style="background:none;border:none;color:#dc2626;font-size:16px;flex-shrink:0;">×</button>';
+  body.appendChild(fila);
+  fila.querySelectorAll('.ndMonto, .ndIva').forEach(function (el) { el.addEventListener('input', recalcularTotalNotaDebito); });
+  fila.querySelector('.ndQuitarLinea').addEventListener('click', function () {
+    if (document.querySelectorAll('#ndLineasBody .ndLineaRow').length > 1) { fila.remove(); recalcularTotalNotaDebito(); }
+  });
+  recalcularTotalNotaDebito();
+}
+
+function recalcularTotalNotaDebito() {
+  var total = 0;
+  document.querySelectorAll('#ndLineasBody .ndLineaRow').forEach(function (fila) {
+    var monto = parseFloat(fila.querySelector('.ndMonto').value) || 0;
+    var tarifa = parseFloat(fila.querySelector('.ndIva').value) || 0;
+    total += monto + (monto * tarifa / 100);
+  });
+  document.getElementById('ndTotalTexto').textContent = fmtCRC(total);
+}
+
+document.getElementById('ndAddLinea').addEventListener('click', agregarLineaNotaDebito);
+document.getElementById('notaDebitoClose').addEventListener('click', function () { document.getElementById('notaDebitoOverlay').classList.remove('show'); });
+document.getElementById('ndCancelar').addEventListener('click', function () { document.getElementById('notaDebitoOverlay').classList.remove('show'); });
+
+document.getElementById('ndEmitir').addEventListener('click', async function () {
+  var registro = notaDebitoRegistro;
+  if (!registro) return;
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+
+  var lineas = [];
+  var filasInvalidas = false;
+  document.querySelectorAll('#ndLineasBody .ndLineaRow').forEach(function (fila, i) {
+    var desc = fila.querySelector('.ndDesc').value || '';
+    var cabys = (fila.querySelector('.ndCabys').value || '').replace(/[^0-9]/g, '');
+    var tarifa = parseFloat(fila.querySelector('.ndIva').value) || 0;
+    var monto = parseFloat(fila.querySelector('.ndMonto').value) || 0;
+    if (!desc || !monto || cabys.length !== 13) { filasInvalidas = true; }
+    lineas.push({
+      numeroLinea: i + 1,
+      codigoCabys: cabys,
+      cantidad: 1,
+      unidadMedida: 'Unid',
+      detalle: desc,
+      precioUnitario: monto,
+      esServicio: true,
+      impuesto: tarifa === 0 ? [] : [{ codigo: '01', codigoTarifaIVA: '08', tarifa: tarifa }],
+    });
+  });
+  if (filasInvalidas) {
+    alert('Revisá las líneas: cada una necesita descripción, un monto mayor a cero, y un código CABYS de exactamente 13 dígitos.');
+    return;
+  }
+
+  var motivo = document.getElementById('ndMotivo').value || 'Cargo adicional sobre el comprobante de referencia';
+
+  if (!confirm(
+    '¿Confirmás emitir esta Nota de Débito por ' + document.getElementById('ndTotalTexto').textContent +
+    ' sobre ' + (registro.numeroConsecutivo || registro.clave) + '?\\n\\nEsto la firma con tu certificado real y la envía a Hacienda — no se puede deshacer.'
+  )) return;
+
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Emitiendo nota de débito...';
+
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(NOTA_DEBITO_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: idToken,
+        claveOriginal: registro.clave,
+        fechaOriginal: registro.fecha,
+        motivo: motivo,
+        receptor: registro.receptorNombre ? {
+          nombre: registro.receptorNombre,
+          identificacion: { tipo: '01', numero: registro.receptorCedula || '' },
+          correoElectronico: registro.receptorEmail || undefined,
+        } : undefined,
+        lineas: lineas,
+        condicionVenta: registro.condicionVenta || '01',
+        medioPago: registro.medioPago || ['01'],
+        esTiquete: !!registro.esTiquete,
+        emisorNombre: registro.emisorNombre,
+      }),
+    });
+    var datos = await respuesta.json();
+    if (!respuesta.ok) {
+      statusEl.textContent = '✗ Error al emitir';
+      alert('No se pudo emitir la nota de débito: ' + (datos.error || 'error desconocido'));
+      return;
+    }
+    document.getElementById('notaDebitoOverlay').classList.remove('show');
+    if (datos.aceptado === true) {
+      statusEl.textContent = '✓ Nota de débito aceptada';
+      alert('✅ Nota de débito ACEPTADA por Hacienda.\\n\\nClave: ' + datos.clave);
+    } else if (datos.pendiente) {
+      statusEl.textContent = '⏳ Nota de débito pendiente';
+      alert('⏳ ' + datos.mensajePendiente);
+    } else {
+      statusEl.textContent = '✗ Nota de débito rechazada';
+      alert('❌ Hacienda rechazó la nota de débito:\\n\\n' + (datos.motivoRechazo || 'motivo no especificado'));
+    }
+    cargarHistorialHacienda(); // refresca la lista para mostrar el resultado
+  } catch (err) {
+    statusEl.textContent = '✗ Error al emitir';
+    alert('No se pudo contactar el servicio: ' + err.message);
+  }
+});
 
 // Carga un registro del historial de Hacienda en el formulario, igual
 // que un borrador — útil para ver el detalle o armar una factura
@@ -6425,6 +7546,7 @@ var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-fact
 var CONSULTAR_ESTADO_URL = 'https://matriz-contable-app.vercel.app/api/consultar-estado';
 var ENVIAR_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-correo-factura';
 var NOTA_CREDITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-credito';
+var NOTA_DEBITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-debito';
 var VALIDAR_CEDULA_URL = 'https://matriz-certificados.kacn1z.workers.dev/validar-cedula';
 var GUARDAR_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/guardar-plantillas';
 var OBTENER_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/obtener-plantillas';
@@ -7066,6 +8188,7 @@ function siboOfrecerInsertar(texto) {
     var el = document.getElementById('cell_' + id);
     snapshot();
     document.getElementById('formulaInput').value = formula;
+    ajustarFormulaBar();
     if (el) el.textContent = formula;
     if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
     sheetData[activeSheet][id] = formula;
@@ -7450,10 +8573,13 @@ document.getElementById('buscarGlobalClose').addEventListener('click', function 
 document.getElementById('buscarGlobalInput').addEventListener('input', buscarGlobalEjecutar);
 
 // ══════════════════════════════════════════════
-// TABLA DINÁMICA (pivote)
+// TABLA DINÁMICA (pivote) — interactiva: recuerda con qué campos se armó
+// cada tabla ("sheetPivoteConfig"), así se puede volver a abrir el asistente
+// para cambiar los campos, o apretar "Actualizar" para recalcularla con los
+// datos de hoy, sin tener que repetir todo el asistente desde cero.
 // ══════════════════════════════════════════════
-function pivoteLeerEncabezados() {
-  var data = sheetData[activeSheet] || {};
+function pivoteLeerEncabezados(hoja) {
+  var data = sheetData[hoja] || {};
   var maxCol = 0;
   Object.keys(data).forEach(function (key) {
     var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
@@ -7463,35 +8589,102 @@ function pivoteLeerEncabezados() {
   });
   var encabezados = [];
   for (var c = 0; c <= maxCol; c++) {
-    var texto = computeValue(cellId(0, c));
+    var texto = computeValueEnHoja(hoja, cellId(0, c));
     encabezados.push({ col: c, nombre: (texto === '' || texto === undefined) ? cellId(0, c).replace(/\\d+/, '') : String(texto) });
   }
   return encabezados;
 }
-document.getElementById('btnTablaDinamica').addEventListener('click', function () {
-  var data = sheetData[activeSheet] || {};
-  if (!Object.keys(data).length) { alert('Esta hoja está vacía.'); return; }
-  var encabezados = pivoteLeerEncabezados();
-  if (!encabezados.length) { alert('No se detectaron columnas con datos.'); return; }
-  document.getElementById('pivoteOrigenNombre').textContent = activeSheet;
+// Mientras el asistente está abierto: si "pivoteHojaDestino" tiene un
+// nombre, "Generar/Actualizar" va a volcar el resultado en ESA hoja ya
+// existente (reconfigurar) en vez de crear una hoja nueva.
+var pivoteHojaOrigen = null;
+var pivoteHojaDestino = null;
+function abrirAsistentePivote(hojaOrigen, hojaDestinoExistente) {
+  var data = sheetData[hojaOrigen] || {};
+  if (!Object.keys(data).length) { alert('La hoja "' + hojaOrigen + '" está vacía.'); return; }
+  var encabezados = pivoteLeerEncabezados(hojaOrigen);
+  if (!encabezados.length) { alert('No se detectaron columnas con datos en "' + hojaOrigen + '".'); return; }
+  pivoteHojaOrigen = hojaOrigen;
+  pivoteHojaDestino = hojaDestinoExistente || null;
+  document.getElementById('pivoteTitulo').textContent = hojaDestinoExistente ? '🧩 Cambiar campos de la Tabla Dinámica' : '📐 Tabla Dinámica';
+  document.getElementById('pivoteOrigenNombre').textContent = hojaOrigen;
   var opciones = encabezados.map(function (e) { return '<option value="' + e.col + '">' + e.nombre + '</option>'; }).join('');
   document.getElementById('pivoteFilas').innerHTML = opciones;
   document.getElementById('pivoteValores').innerHTML = opciones;
   document.getElementById('pivoteColumnas').innerHTML = '<option value="">— Ninguno —</option>' + opciones;
+  var cfgPrevia = hojaDestinoExistente ? sheetPivoteConfig[hojaDestinoExistente] : null;
+  if (cfgPrevia) {
+    document.getElementById('pivoteFilas').value = String(cfgPrevia.colFilas);
+    document.getElementById('pivoteColumnas').value = cfgPrevia.colColumnas === null ? '' : String(cfgPrevia.colColumnas);
+    document.getElementById('pivoteValores').value = String(cfgPrevia.colValores);
+    document.getElementById('pivoteFuncion').value = cfgPrevia.funcion;
+  }
+  document.getElementById('pivoteGenerarBtn').textContent = hojaDestinoExistente ? 'Aplicar cambios' : 'Generar Tabla Dinámica';
   document.getElementById('pivoteStatus').textContent = '';
   document.getElementById('pivoteOverlay').classList.add('show');
+}
+document.getElementById('btnTablaDinamica').addEventListener('click', function () {
+  abrirAsistentePivote(activeSheet, null);
+});
+// "Campos": reabre el asistente con los campos actuales de esta tabla ya
+// generada, para poder moverlos (cambiar qué va en filas/columnas/valores)
+// sin perder la configuración ni tener que empezar de cero.
+document.getElementById('btnCamposDinamica').addEventListener('click', function () {
+  var cfg = sheetPivoteConfig[activeSheet];
+  if (!cfg) return;
+  if (sheets.indexOf(cfg.origen) === -1) { alert('La hoja de origen "' + cfg.origen + '" ya no existe; no se puede reconfigurar esta tabla.'); return; }
+  abrirAsistentePivote(cfg.origen, activeSheet);
+});
+// "Actualizar": recalcula la misma tabla, con los mismos campos, pero
+// leyendo los datos de la hoja de origen tal como están ahora — así se
+// refleja en vivo cualquier dato nuevo o cambiado desde que se generó.
+document.getElementById('btnActualizarDinamica').addEventListener('click', function () {
+  var cfg = sheetPivoteConfig[activeSheet];
+  if (!cfg) return;
+  if (sheets.indexOf(cfg.origen) === -1) { alert('La hoja de origen "' + cfg.origen + '" ya no existe; no se puede actualizar esta tabla.'); return; }
+  snapshot();
+  generarPivoteEnHoja(cfg.origen, cfg.colFilas, cfg.colColumnas, cfg.colValores, cfg.funcion, cfg.etiquetaFilas, activeSheet);
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '🔄 Tabla dinámica actualizada con los datos de "' + cfg.origen + '"';
 });
 document.getElementById('pivoteClose').addEventListener('click', function () {
   document.getElementById('pivoteOverlay').classList.remove('show');
+  pivoteHojaOrigen = null; pivoteHojaDestino = null;
 });
 document.getElementById('pivoteGenerarBtn').addEventListener('click', function () {
+  if (!pivoteHojaOrigen) return;
   var colFilas = parseInt(document.getElementById('pivoteFilas').value, 10);
   var colColumnasStr = document.getElementById('pivoteColumnas').value;
   var colColumnas = colColumnasStr === '' ? null : parseInt(colColumnasStr, 10);
   var colValores = parseInt(document.getElementById('pivoteValores').value, 10);
   var funcion = document.getElementById('pivoteFuncion').value;
+  var optFilas = document.getElementById('pivoteFilas');
+  var etiquetaFilas = optFilas.options[optFilas.selectedIndex] ? optFilas.options[optFilas.selectedIndex].textContent : 'Campo';
 
-  var data = sheetData[activeSheet] || {};
+  snapshot();
+  var origen = pivoteHojaOrigen;
+  var name;
+  var eraReconfiguracion = !!(pivoteHojaDestino && sheets.indexOf(pivoteHojaDestino) !== -1);
+  if (eraReconfiguracion) {
+    name = pivoteHojaDestino;
+    activeSheet = name;
+  } else {
+    name = crearHojaDestino('Tabla Dinámica');
+    activeSheet = name;
+  }
+  generarPivoteEnHoja(origen, colFilas, colColumnas, colValores, funcion, etiquetaFilas, name);
+  sheetPivoteConfig[name] = { origen: origen, colFilas: colFilas, colColumnas: colColumnas, colValores: colValores, funcion: funcion, etiquetaFilas: etiquetaFilas };
+
+  buildTable(); autoSave();
+  document.getElementById('pivoteOverlay').classList.remove('show');
+  document.getElementById('saveStatus').textContent = eraReconfiguracion ? '✓ Campos de la tabla dinámica actualizados' : '✓ Tabla dinámica generada';
+  pivoteHojaOrigen = null; pivoteHojaDestino = null;
+});
+// Vuelca el cálculo de la tabla dinámica (según los campos elegidos) dentro
+// de "hojaDestino", reemplazando lo que haya ahí — se usa tanto para
+// generarla por primera vez como para recalcularla o reconfigurarla.
+function generarPivoteEnHoja(origen, colFilas, colColumnas, colValores, funcion, etiquetaFilas, hojaDestino) {
+  var data = sheetData[origen] || {};
   var maxRow = 0;
   Object.keys(data).forEach(function (key) {
     var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
@@ -7504,9 +8697,9 @@ document.getElementById('pivoteGenerarBtn').addEventListener('click', function (
   var filasVistas = [];
 
   for (var r = 1; r <= maxRow; r++) {
-    var filaKey = String(computeValue(cellId(r, colFilas)) || '(vacío)');
-    var colKey = colColumnas === null ? 'Valor' : String(computeValue(cellId(r, colColumnas)) || '(vacío)');
-    var valorCrudo = computeValue(cellId(r, colValores));
+    var filaKey = String(computeValueEnHoja(origen, cellId(r, colFilas)) || '(vacío)');
+    var colKey = colColumnas === null ? 'Valor' : String(computeValueEnHoja(origen, cellId(r, colColumnas)) || '(vacío)');
+    var valorCrudo = computeValueEnHoja(origen, cellId(r, colValores));
     var valorNum = parseFloat(String(valorCrudo).replace(/[₡,\\s]/g, ''));
 
     if (filasVistas.indexOf(filaKey) === -1) filasVistas.push(filaKey);
@@ -7526,41 +8719,32 @@ document.getElementById('pivoteGenerarBtn').addEventListener('click', function (
     return 0;
   }
 
-  snapshot();
-  var origen = activeSheet;
-  var name = crearHojaDestino('Tabla Dinámica');
-  activeSheet = name;
-  var d = sheetData[name], f = sheetFormats[name];
+  // Se reemplaza todo el contenido de la hoja destino: es una tabla calculada,
+  // no una hoja para editar a mano (igual que ya pasaba al generarla la primera vez).
+  sheetData[hojaDestino] = {};
+  sheetFormats[hojaDestino] = {};
+  var d = sheetData[hojaDestino], f = sheetFormats[hojaDestino];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
 
   set(0, 0, '📐 TABLA DINÁMICA — origen: ' + origen, true);
-  set(2, 0, encabezados_pivote_filas_label(), true);
+  set(2, 0, etiquetaFilas, true);
   columnasVistas.forEach(function (colKey, i) { set(2, i + 1, colKey, true); });
   var totalCol = columnasVistas.length + 1;
   set(2, totalCol, 'Total', true);
 
   filasVistas.forEach(function (filaKey, ri) {
-    var r = 3 + ri;
-    set(r, 0, filaKey, true);
+    var rr = 3 + ri;
+    set(rr, 0, filaKey, true);
     var totalFila = [];
     columnasVistas.forEach(function (colKey, ci) {
       var arr = (celdas[filaKey] && celdas[filaKey][colKey]) || [];
       var val = agregar(arr);
-      set(r, ci + 1, val);
+      set(rr, ci + 1, val);
       totalFila = totalFila.concat(arr);
     });
-    set(r, totalCol, agregar(totalFila), true);
+    set(rr, totalCol, agregar(totalFila), true);
   });
-
-  function encabezados_pivote_filas_label() {
-    var opt = document.getElementById('pivoteFilas');
-    return opt.options[opt.selectedIndex] ? opt.options[opt.selectedIndex].textContent : 'Campo';
-  }
-
-  buildTable(); autoSave();
-  document.getElementById('pivoteOverlay').classList.remove('show');
-  document.getElementById('saveStatus').textContent = '✓ Tabla dinámica generada (' + filasVistas.length + ' filas)';
-});
+}
 
 document.getElementById('fnSearchInput').addEventListener('input', function () {
   var q = this.value.trim().toLowerCase();
@@ -7582,31 +8766,85 @@ document.getElementById('fnInsertBtn').addEventListener('click', function () {
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   sheetData[activeSheet][id] = toInsert;
   document.getElementById('formulaInput').value = toInsert;
+  ajustarFormulaBar();
   document.getElementById('fnOverlay').classList.remove('show');
   buildTable(); autoSave();
   var elAfter = document.getElementById('cell_' + id);
   if (elAfter) { elAfter.focus(); }
 });
 
+// Las notas de celda eran un solo texto que se sobrescribía cada vez que
+// alguien guardaba una nota nueva. Ahora son un HILO: una lista de
+// comentarios, cada uno con su autor y su fecha/hora, igual que los
+// comentarios de Excel/Sheets. "hiloDeNotas" se encarga de la
+// compatibilidad con notas viejas (donde sheetNotes[hoja][id] era un simple
+// string): si encuentra un string, lo convierte en un hilo de un solo
+// comentario "heredado" en vez de perderlo.
+function hiloDeNotas(hoja, id) {
+  var raw = sheetNotes[hoja] && sheetNotes[hoja][id];
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string') return [{ texto: raw, autor: 'Nota anterior', fecha: null }];
+  return [];
+}
+function autorActual() {
+  return (currentUser && (currentUser.email || currentUser.displayName)) || 'Colaborador sin sesión';
+}
+function renderHiloDeNotas() {
+  var id = document.getElementById('noteCellRef').textContent;
+  var hilo = hiloDeNotas(activeSheet, id);
+  var cont = document.getElementById('noteHilo');
+  if (!hilo.length) { cont.innerHTML = '<div class="noteVacio">Todavía no hay comentarios en esta celda.</div>'; return; }
+  cont.innerHTML = hilo.map(function (n, i) {
+    var fechaTxt = n.fecha ? new Date(n.fecha).toLocaleString('es-CR') : '(sin fecha, nota anterior)';
+    var autorEsc = String(n.autor || 'Desconocido').replace(/</g, '&lt;');
+    var textoEsc = String(n.texto || '').replace(/</g, '&lt;');
+    return '<div class="noteItem" data-idx="' + i + '">' +
+      '<button class="noteBorrarUno" data-idx="' + i + '" title="Borrar este comentario">✕</button>' +
+      '<span class="noteFecha">' + autorEsc + ' · ' + fechaTxt + '</span>' +
+      '<span class="noteTexto">' + textoEsc + '</span>' +
+      '</div>';
+  }).join('');
+}
 document.getElementById('btnNote').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
   document.getElementById('noteCellRef').textContent = id;
-  document.getElementById('noteText').value = (sheetNotes[activeSheet] && sheetNotes[activeSheet][id]) || '';
+  document.getElementById('noteText').value = '';
+  renderHiloDeNotas();
   document.getElementById('noteOverlay').classList.add('show');
 });
 document.getElementById('noteCancel').addEventListener('click', function () { document.getElementById('noteOverlay').classList.remove('show'); });
 document.getElementById('noteSave').addEventListener('click', function () {
-  snapshot();
   var id = document.getElementById('cellRef').textContent;
+  var texto = document.getElementById('noteText').value;
+  if (!texto.trim()) return;
+  snapshot();
+  var hilo = hiloDeNotas(activeSheet, id);
+  hilo.push({ texto: texto, autor: autorActual(), fecha: new Date().toISOString() });
   if (!sheetNotes[activeSheet]) sheetNotes[activeSheet] = {};
-  sheetNotes[activeSheet][id] = document.getElementById('noteText').value;
-  document.getElementById('noteOverlay').classList.remove('show');
+  sheetNotes[activeSheet][id] = hilo;
+  document.getElementById('noteText').value = '';
+  renderHiloDeNotas();
+  renderAllCells(); autoSave();
+});
+document.getElementById('noteHilo').addEventListener('click', function (e) {
+  var btn = e.target.closest('.noteBorrarUno');
+  if (!btn) return;
+  var id = document.getElementById('noteCellRef').textContent;
+  var idx = parseInt(btn.getAttribute('data-idx'));
+  snapshot();
+  var hilo = hiloDeNotas(activeSheet, id);
+  hilo.splice(idx, 1);
+  if (!sheetNotes[activeSheet]) sheetNotes[activeSheet] = {};
+  if (hilo.length) sheetNotes[activeSheet][id] = hilo; else delete sheetNotes[activeSheet][id];
+  renderHiloDeNotas();
   renderAllCells(); autoSave();
 });
 document.getElementById('noteDelete').addEventListener('click', function () {
   snapshot();
   var id = document.getElementById('cellRef').textContent;
   if (sheetNotes[activeSheet]) delete sheetNotes[activeSheet][id];
+  renderHiloDeNotas();
   document.getElementById('noteOverlay').classList.remove('show');
   renderAllCells(); autoSave();
 });
@@ -7616,17 +8854,38 @@ document.getElementById('noteDelete').addEventListener('click', function () {
 // ══════════════════════════════════════════════
 function clearRangeHighlight() {
   document.querySelectorAll('.cell.in-range').forEach(function (e) { e.classList.remove('in-range'); });
+  document.querySelectorAll('.cell.in-range-extra').forEach(function (e) { e.classList.remove('in-range-extra'); });
+}
+function boundsFromIds(idA, idB) {
+  var mA = idA.match(/([A-Za-z]+)(\\d+)/), mB = idB.match(/([A-Za-z]+)(\\d+)/);
+  if (!mA || !mB) return null;
+  var c1 = colIndex(mA[1]), r1 = parseInt(mA[2]) - 1, c2 = colIndex(mB[1]), r2 = parseInt(mB[2]) - 1;
+  return { minC: Math.min(c1, c2), maxC: Math.max(c1, c2), minR: Math.min(r1, r2), maxR: Math.max(r1, r2) };
 }
 function currentRangeBounds() {
   if (!selRangeStart || !selRangeEnd) return null;
-  var mA = selRangeStart.match(/([A-Za-z]+)(\\d+)/), mB = selRangeEnd.match(/([A-Za-z]+)(\\d+)/);
-  if (!mA || !mB) return null;
-  var c1 = colIndex(mA[1]), r1 = parseInt(mA[2]) - 1, c2 = colIndex(mB[1]), r2 = parseInt(mB[2]) - 1;
-  var minC = Math.min(c1, c2), maxC = Math.max(c1, c2), minR = Math.min(r1, r2), maxR = Math.max(r1, r2);
-  return { minC: minC, maxC: maxC, minR: minR, maxR: maxR, isMulti: (minC !== maxC || minR !== maxR) };
+  var b = boundsFromIds(selRangeStart, selRangeEnd);
+  if (!b) return null;
+  b.isMulti = (b.minC !== b.maxC || b.minR !== b.maxR) || multiSelRanges.length > 0;
+  return b;
+}
+// Limpia la selección múltiple no contigua (rangos "salteados"). Se usa
+// al empezar una selección nueva sin Ctrl/modo Multi, o tras aplicar
+// una acción que ya no tiene sentido mantener seleccionada.
+function limpiarMultiSeleccion() {
+  multiSelRanges = [];
 }
 function highlightRange(idA, idB) {
   clearRangeHighlight();
+  // Repinta los rangos "salteados" adicionales (Ctrl+click / modo Multi)
+  multiSelRanges.forEach(function (rango) {
+    var b = boundsFromIds(rango.a, rango.b);
+    if (!b) return;
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) {
+      var el = document.getElementById('cell_' + cellId(r, c));
+      if (el) el.classList.add('in-range-extra');
+    }
+  });
   if (!idA || !idB) return;
   var mA = idA.match(/([A-Za-z]+)(\\d+)/), mB = idB.match(/([A-Za-z]+)(\\d+)/);
   if (!mA || !mB) return;
@@ -7642,7 +8901,8 @@ function highlightRange(idA, idB) {
   var bounds = currentRangeBounds();
   var rab = document.getElementById('rangeActionsBar');
   if (bounds) {
-    document.getElementById('rangeLabel').textContent = rangeStr;
+    var etiqueta = rangeStr + (multiSelRanges.length ? ' +' + multiSelRanges.length + ' rango(s)' : '');
+    document.getElementById('rangeLabel').textContent = etiqueta;
     rab.classList.add('show');
   } else {
     rab.classList.remove('show');
@@ -7650,10 +8910,22 @@ function highlightRange(idA, idB) {
   posicionarManijaRelleno();
 }
 function rangeCellIds() {
-  var b = currentRangeBounds();
-  if (!b) return [];
-  var out = [];
-  for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) out.push(cellId(r, c));
+  var out = [], visto = {};
+  multiSelRanges.forEach(function (rango) {
+    var b = boundsFromIds(rango.a, rango.b);
+    if (!b) return;
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) {
+      var id = cellId(r, c);
+      if (!visto[id]) { visto[id] = true; out.push(id); }
+    }
+  });
+  var b2 = currentRangeBounds();
+  if (b2) {
+    for (var r2 = b2.minR; r2 <= b2.maxR; r2++) for (var c2 = b2.minC; c2 <= b2.maxC; c2++) {
+      var id2 = cellId(r2, c2);
+      if (!visto[id2]) { visto[id2] = true; out.push(id2); }
+    }
+  }
   return out;
 }
 
@@ -7671,6 +8943,10 @@ function posicionarManijaRelleno() {
   var anterior = document.getElementById('fillHandle');
   if (anterior) anterior.remove();
   if (sheetProtegida[activeSheet]) return;
+  // Con rangos salteados (no contiguos) de por medio, "rellenar/continuar
+  // serie" no tiene un sentido claro — se oculta la manija hasta que la
+  // selección vuelva a ser un solo rango.
+  if (multiSelRanges.length > 0) return;
   var bounds = currentRangeBounds();
   if (!bounds) return;
   var celdaEsquina = document.getElementById('cell_' + cellId(bounds.maxR, bounds.maxC));
@@ -7909,6 +9185,7 @@ function attachCellEvents() {
       var id = el.dataset.id;
       document.getElementById('cellRef').textContent = id;
       document.getElementById('formulaInput').value = getRaw(id);
+      ajustarFormulaBar();
       el.textContent = getRaw(id);
       showValidPicker(id);
       marcarEncabezadoActivo(id);
@@ -7922,6 +9199,16 @@ function attachCellEvents() {
       commitCell(el);
     });
     el.addEventListener('keydown', function (e) {
+      var esFlecha = e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight';
+      if (esFlecha && (e.ctrlKey || e.metaKey)) {
+        // Ctrl+flecha (o Cmd+flecha): saltar al borde del bloque de datos,
+        // igual que en Excel — para quien use teclado físico en el celular.
+        e.preventDefault(); el.blur();
+        var dcBorde = e.key === 'ArrowLeft' ? -1 : (e.key === 'ArrowRight' ? 1 : 0);
+        var drBorde = e.key === 'ArrowUp' ? -1 : (e.key === 'ArrowDown' ? 1 : 0);
+        moveSelectionBorde(dcBorde, drBorde);
+        return;
+      }
       if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); snapshot(); el.blur(); moveSelection(e.key === 'Tab' ? 1 : 0, e.key === 'Enter' ? 1 : 0); }
       else if (e.key === 'ArrowDown') { e.preventDefault(); el.blur(); moveSelection(0, 1); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); el.blur(); moveSelection(0, -1); }
@@ -7929,6 +9216,16 @@ function attachCellEvents() {
       else if (e.key === 'ArrowRight' && el.textContent === '') { e.preventDefault(); el.blur(); moveSelection(1, 0); }
     });
     el.addEventListener('pointerdown', function (e) {
+      // Ctrl/Cmd+click (teclado+mouse) o el botón 🧷 Multi (táctil) agregan
+      // este punto como un rango salteado más, en vez de reemplazar la
+      // selección anterior — así se puede formatear/copiar celdas no
+      // contiguas de una sola vez, igual que en Excel.
+      var agregarRango = multiSelMode || e.ctrlKey || e.metaKey;
+      if (agregarRango && selRangeStart && selRangeEnd) {
+        multiSelRanges.push({ a: selRangeStart, b: selRangeEnd });
+      } else if (!agregarRango) {
+        limpiarMultiSeleccion();
+      }
       isSelecting = true; selRangeStart = el.dataset.id; selRangeEnd = el.dataset.id;
       highlightRange(selRangeStart, selRangeEnd);
     });
@@ -7936,6 +9233,35 @@ function attachCellEvents() {
       if (isSelecting) { selRangeEnd = el.dataset.id; highlightRange(selRangeStart, selRangeEnd); }
       else if (isFilling) { actualizarPreviewRelleno(el.dataset.id); }
     });
+    // Clic derecho (mouse/teclado) → menú contextual al instante.
+    el.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+      prepararSeleccionParaMenu(el);
+      mostrarMenuContextual(e.clientX, e.clientY);
+    });
+    // Mantener presionado (táctil) → el mismo menú contextual, sin tener
+    // que levantar el dedo primero. Se cancela si el dedo se mueve (eso
+    // ya es un gesto de selección de rango, no un "long press").
+    var cmPressTimer = null, cmPressX = 0, cmPressY = 0, cmMovido = false;
+    el.addEventListener('touchstart', function (e) {
+      if (!e.touches || e.touches.length !== 1) return;
+      cmMovido = false;
+      cmPressX = e.touches[0].clientX; cmPressY = e.touches[0].clientY;
+      clearTimeout(cmPressTimer);
+      cmPressTimer = setTimeout(function () {
+        if (cmMovido) return;
+        prepararSeleccionParaMenu(el);
+        mostrarMenuContextual(cmPressX, cmPressY);
+        if (navigator.vibrate) { try { navigator.vibrate(12); } catch (err) {} }
+      }, 480);
+    }, { passive: true });
+    el.addEventListener('touchmove', function (e) {
+      if (!e.touches || !e.touches[0]) return;
+      if (Math.abs(e.touches[0].clientX - cmPressX) > 9 || Math.abs(e.touches[0].clientY - cmPressY) > 9) {
+        cmMovido = true; clearTimeout(cmPressTimer);
+      }
+    }, { passive: true });
+    el.addEventListener('touchend', function () { clearTimeout(cmPressTimer); }, { passive: true });
   });
   document.addEventListener('pointerup', function () {
     isSelecting = false;
@@ -7948,6 +9274,85 @@ function attachCellEvents() {
   });
 }
 
+// ══════════════════════════════════════════════
+// MENÚ CONTEXTUAL (clic derecho / mantener presionado)
+// ══════════════════════════════════════════════
+// Si la celda tocada ya forma parte de la selección actual (un rango, o
+// una selección múltiple no contigua), se respeta esa selección — igual
+// que en Excel, para poder aplicarle una acción a todo lo seleccionado.
+// Si se tocó una celda fuera de la selección, se la vuelve la única
+// celda seleccionada.
+function prepararSeleccionParaMenu(el) {
+  var id = el.dataset.id;
+  var yaEnSeleccion = rangeCellIds().indexOf(id) !== -1;
+  if (!yaEnSeleccion) {
+    limpiarMultiSeleccion();
+    selRangeStart = id; selRangeEnd = id;
+    highlightRange(id, id);
+  }
+  if (document.activeElement !== el) el.focus();
+}
+function mostrarMenuContextual(x, y) {
+  var menu = document.getElementById('cellContextMenu');
+  menu.classList.add('show');
+  // Primero se muestra para poder medirlo, y recién ahí se acomoda
+  // dentro de la pantalla (para que no se corte contra un borde).
+  var anchoVentana = window.innerWidth, altoVentana = window.innerHeight;
+  var anchoMenu = menu.offsetWidth || 190, altoMenu = menu.offsetHeight || 260;
+  var left = Math.min(x, anchoVentana - anchoMenu - 8);
+  var top = Math.min(y, altoVentana - altoMenu - 8);
+  left = Math.max(8, left); top = Math.max(8, top);
+  menu.style.left = left + 'px';
+  menu.style.top = top + 'px';
+}
+function ocultarMenuContextual() {
+  document.getElementById('cellContextMenu').classList.remove('show');
+}
+// Cierra el menú si se toca/hace clic afuera de él.
+document.addEventListener('pointerdown', function (e) {
+  var menu = document.getElementById('cellContextMenu');
+  if (menu.classList.contains('show') && !menu.contains(e.target)) ocultarMenuContextual();
+});
+document.getElementById('gridWrap').addEventListener('scroll', ocultarMenuContextual, { passive: true });
+
+// Usa el botón simple (celda activa) o el de rango (rangeCellIds) según
+// corresponda, reutilizando toda la lógica que esos botones ya tienen.
+function accionSegunSeleccion(idBtnSimple, idBtnRango) {
+  var bounds = currentRangeBounds();
+  var idElegido = (bounds && bounds.isMulti) ? idBtnRango : idBtnSimple;
+  var btn = document.getElementById(idElegido);
+  if (btn) btn.click();
+}
+function eliminarColumnaActual() {
+  var id = document.getElementById('cellRef').textContent;
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
+  if (!m) return;
+  if (COLS <= 1) { alert('No se puede eliminar la única columna de la hoja.'); return; }
+  var targetCol = colIndex(m[1]);
+  if (!confirm('¿Eliminar la columna ' + m[1] + '?')) return;
+  snapshot();
+  var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
+  for (var c = targetCol; c < COLS - 1; c++) {
+    for (var r = 0; r < ROWS; r++) {
+      var nk = cellId(r, c + 1), ck = cellId(r, c);
+      if (d[nk] !== undefined) d[ck] = d[nk]; else delete d[ck];
+      if (f[nk] !== undefined) f[ck] = f[nk]; else delete f[ck];
+    }
+  }
+  for (var r2 = 0; r2 < ROWS; r2++) { delete d[cellId(r2, COLS - 1)]; delete f[cellId(r2, COLS - 1)]; }
+  buildTable(); autoSave();
+}
+document.getElementById('cmCortar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnCut', 'raCut'); });
+document.getElementById('cmCopiar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnCopy', 'raCopy'); });
+document.getElementById('cmPegar').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnPaste').click(); });
+document.getElementById('cmPegadoEspecial').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnPasteEspecial').click(); });
+document.getElementById('cmFormatoNum').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnFormat').click(); });
+document.getElementById('cmCombinar').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnMerge').click(); });
+document.getElementById('cmNota').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnNote').click(); });
+document.getElementById('cmEliminarFila').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnDelRow').click(); });
+document.getElementById('cmEliminarCol').addEventListener('click', function () { ocultarMenuContextual(); eliminarColumnaActual(); });
+document.getElementById('cmBorrar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnClear', 'raClear'); });
+
 // ── Gesto de deshacer: toque simultáneo con 2 dedos sobre la grilla ──
 (function () {
   var gridWrap = document.getElementById('gridWrap');
@@ -7957,6 +9362,7 @@ function attachCellEvents() {
       isSelecting = false;
       if (isFilling) { isFilling = false; limpiarPreviewRelleno(); fillOrigenBounds = null; fillDestinoBounds = null; fillEjeBloqueado = null; }
       clearRangeHighlight();
+      limpiarMultiSeleccion();
       document.getElementById('rangeActionsBar').classList.remove('show');
       if (!gestureFired) {
         gestureFired = true;
@@ -7983,10 +9389,10 @@ function registrarCambioAuditoria(celda, valorAnterior, valorNuevo) {
 }
 function commitCell(el) {
   var id = el.dataset.id;
-  if (sheetProtegida[activeSheet]) {
+  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id)) {
     el.textContent = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
     el.classList.remove('selected');
-    alert('🔒 Esta hoja está protegida. Tocá "🔒 Proteger Hoja" para desbloquearla antes de editar.');
+    alert('🔒 Esta hoja está protegida. Tocá "🔒 Proteger Hoja" para desbloquearla antes de editar (o marcá esta celda como "Permitir editar" desde una hoja sin proteger).');
     return;
   }
   var val = el.textContent.trim();
@@ -8006,15 +9412,113 @@ function moveSelection(dc, dr) {
   var next = document.getElementById('cell_' + cellId(r, c));
   if (next) next.focus();
 }
+// "Saltar al borde de los datos" (Ctrl+flecha de Excel): desde la celda
+// activa, salta en esa dirección hasta el último borde del bloque de datos
+// continuo (o hasta el borde de la hoja si no hay más datos), con la misma
+// lógica de Excel: si la celda actual está vacía, avanza hasta la primera
+// celda con contenido; si tiene contenido y la siguiente está vacía, avanza
+// hasta la próxima con contenido; si tiene contenido y la siguiente también,
+// avanza hasta la última celda contigua con contenido.
+function celdaTieneContenido(r, c) {
+  if (r < 0 || c < 0 || r >= ROWS || c >= COLS) return false;
+  var v = (sheetData[activeSheet] || {})[cellId(r, c)];
+  return v !== undefined && v !== null && String(v) !== '';
+}
+function moveSelectionBorde(dc, dr) {
+  var id = document.getElementById('cellRef').textContent;
+  var m = id.match(/([A-Za-z]+)(\\d+)/);
+  var c = colIndex(m[1]), r = parseInt(m[2]) - 1;
+  var actualTieneAlgo = celdaTieneContenido(r, c);
+  var siguienteTieneAlgo = celdaTieneContenido(r + dr, c + dc);
+  var nr = r, nc = c;
+  if (!actualTieneAlgo || !siguienteTieneAlgo) {
+    // Desde una celda vacía, o con un salto vacío justo al lado: avanzar
+    // hasta la primera celda con contenido (o hasta el borde de la hoja).
+    while (true) {
+      var pr = nr + dr, pc = nc + dc;
+      if (pr < 0 || pc < 0 || pr >= ROWS || pc >= COLS) break;
+      nr = pr; nc = pc;
+      if (celdaTieneContenido(nr, nc)) break;
+    }
+  } else {
+    // Bloque continuo de datos: avanzar mientras siga habiendo contenido.
+    while (true) {
+      var pr2 = nr + dr, pc2 = nc + dc;
+      if (pr2 < 0 || pc2 < 0 || pr2 >= ROWS || pc2 >= COLS) break;
+      if (!celdaTieneContenido(pr2, pc2)) break;
+      nr = pr2; nc = pc2;
+    }
+  }
+  nc = Math.max(0, Math.min(COLS - 1, nc)); nr = Math.max(0, Math.min(ROWS - 1, nr));
+  var next = document.getElementById('cell_' + cellId(nr, nc));
+  if (next) next.focus();
+}
+document.getElementById('navBordeArriba').addEventListener('click', function () { moveSelectionBorde(0, -1); });
+document.getElementById('navBordeAbajo').addEventListener('click', function () { moveSelectionBorde(0, 1); });
+document.getElementById('navBordeIzq').addEventListener('click', function () { moveSelectionBorde(-1, 0); });
+document.getElementById('navBordeDer').addEventListener('click', function () { moveSelectionBorde(1, 0); });
 
+// ══════════════════════════════════════════════
+// BARRA DE FÓRMULAS: varias líneas + resaltado de sintaxis
+// ══════════════════════════════════════════════
+// Colorea funciones, texto entre comillas, números y referencias de celda
+// directamente sobre el HTML (ya escapado) — se dibuja en "formulaHighlight",
+// que queda exactamente debajo del textarea real (ver CSS de #formulaInput).
+function resaltarFormula(texto) {
+  function escaparHTML(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  if (!texto) return '';
+  if (texto.charAt(0) !== '=') return escaparHTML(texto);
+  var escapado = escaparHTML(texto);
+  var patron = /("(?:[^"]|"")*")|([A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-zÁÉÍÓÚÑáéíóúñ0-9_.]*)(\()|((?:(?:'[^']+')|(?:[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-zÁÉÍÓÚÑáéíóúñ0-9_ ]*))!)?(\$?[A-Za-z]{1,3}\$?\d+\b)|(\b\d+(?:\.\d+)?\b)/g;
+  return escapado.replace(patron, function (whole, str, fnName, parenAbre, hojaPrefijo, refCelda, num) {
+    if (str !== undefined) return '<span class="fh-str">' + str + '</span>';
+    if (fnName !== undefined) return '<span class="fh-fn">' + fnName + '</span>' + parenAbre;
+    if (refCelda !== undefined) return (hojaPrefijo || '') + '<span class="fh-ref">' + refCelda + '</span>';
+    if (num !== undefined) return '<span class="fh-num">' + num + '</span>';
+    return whole;
+  });
+}
+function refrescarResaltadoFormula() {
+  var input = document.getElementById('formulaInput');
+  document.getElementById('formulaHighlight').innerHTML = resaltarFormula(input.value) || '&nbsp;';
+}
+// Autoajusta la altura del textarea al contenido (hasta un máximo, luego
+// aparece su propia barra de scroll) y mantiene la capa de resaltado del
+// mismo tamaño y con el mismo scroll, para que el color no se desalinee
+// del texto real al escribir fórmulas largas.
+function ajustarAlturaFormulaInput() {
+  var input = document.getElementById('formulaInput');
+  var overlay = document.getElementById('formulaHighlight');
+  input.style.height = 'auto';
+  var nuevaAltura = Math.min(150, Math.max(30, input.scrollHeight));
+  input.style.height = nuevaAltura + 'px';
+  overlay.style.height = nuevaAltura + 'px';
+  overlay.scrollTop = input.scrollTop;
+}
+function ajustarFormulaBar() {
+  refrescarResaltadoFormula();
+  ajustarAlturaFormulaInput();
+}
+document.getElementById('formulaInput').addEventListener('scroll', function () {
+  document.getElementById('formulaHighlight').scrollTop = this.scrollTop;
+});
 document.getElementById('formulaInput').addEventListener('input', function () {
   var id = document.getElementById('cellRef').textContent;
   var el = document.getElementById('cell_' + id);
   if (el) el.textContent = this.value;
   updateFormulaAutocomplete();
+  ajustarFormulaBar();
 });
 document.getElementById('formulaInput').addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    // Enter solo (sin Mayús) confirma la celda, como siempre. Mayús+Enter
+    // agrega un salto de línea dentro de la barra de fórmulas, para poder
+    // acomodar visualmente una fórmula larga o anidada mientras se edita
+    // — ese salto de línea NUNCA llega al motor de fórmulas (se cambia
+    // por un espacio justo antes de calcular, ver computeValue()).
+    e.preventDefault();
     document.getElementById('fnAutocomplete').classList.remove('show');
     snapshot();
     var id = document.getElementById('cellRef').textContent;
@@ -8078,22 +9582,55 @@ function boundsDeId(id) {
   return { minR: r, maxR: r, minC: c, maxC: c };
 }
 function copiarAClipboard(bounds) {
-  var filasRaw = [], filasVal = [];
+  var filasRaw = [], filasVal = [], filasFmt = [];
   for (var r = bounds.minR; r <= bounds.maxR; r++) {
-    var filaR = [], filaV = [];
+    var filaR = [], filaV = [], filaF = [];
     for (var c = bounds.minC; c <= bounds.maxC; c++) {
       var id = cellId(r, c);
       filaR.push(getRaw(id));
       filaV.push(String(computeValue(id)));
+      // El formato se guarda CELDA POR CELDA (antes solo se guardaba el de
+      // la celda de arriba-a-la-izquierda del rango, y ese único formato se
+      // le pegaba a TODAS las celdas de destino — un error que hacía que
+      // copiar una tabla con colores variados aplanara todo al color de la
+      // primera celda. Ahora cada celda copiada lleva su propio formato.
+      var fmtCelda = sheetFormats[activeSheet] && sheetFormats[activeSheet][id];
+      filaF.push(fmtCelda ? JSON.parse(JSON.stringify(fmtCelda)) : null);
     }
-    filasRaw.push(filaR); filasVal.push(filaV);
+    filasRaw.push(filaR); filasVal.push(filaV); filasFmt.push(filaF);
   }
-  var id0 = cellId(bounds.minR, bounds.minC);
   clipboard = {
     origenMinR: bounds.minR, origenMinC: bounds.minC,
-    rangeRows: filasRaw, rangeValues: filasVal,
-    format: (sheetFormats[activeSheet] && sheetFormats[activeSheet][id0]) || null,
+    rangeRows: filasRaw, rangeValues: filasVal, rangeFormats: filasFmt,
   };
+  // Además de guardarlo en el portapapeles interno (para pegar fórmulas con
+  // referencias ajustadas dentro de la propia hoja), lo mandamos también al
+  // portapapeles REAL del celular — como texto separado por tabulaciones/
+  // saltos de línea — para poder pegarlo en WhatsApp, Notas, otra app, etc.
+  var textoPlano = filasVal.map(function (fila) { return fila.join('\t'); }).join('\n');
+  copiarTextoAlPortapapelesDelSistema(textoPlano);
+}
+// Copia texto al portapapeles del sistema (no solo al interno de la app).
+// Se intenta primero con la API moderna y, si no está disponible o el
+// WebView la rechaza (pasa en algunos Android viejos), se cae a la técnica
+// clásica del textarea oculto + execCommand, que funciona casi siempre.
+function copiarTextoAlPortapapelesDelSistema(texto) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).catch(function () { copiarConTextareaOculto(texto); });
+  } else {
+    copiarConTextareaOculto(texto);
+  }
+}
+function copiarConTextareaOculto(texto) {
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.style.position = 'fixed'; ta.style.left = '-9999px'; ta.style.top = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  } catch (e) {}
 }
 function transponerMatriz(filas) {
   var out = [];
@@ -8114,35 +9651,46 @@ function ejecutarPegado(modo) {
   var dR = destR - clipboard.origenMinR, dC = destC - clipboard.origenMinC;
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   var filasRaw = clipboard.rangeRows, filasVal = clipboard.rangeValues;
-  if (modo === 'transponer') { filasRaw = transponerMatriz(filasRaw); filasVal = transponerMatriz(filasVal); }
-  filasRaw.forEach(function (fila, drFila) {
-    fila.forEach(function (rawVal, dcCol) {
-      var r = destR + drFila, c = destC + dcCol;
-      if (r >= ROWS || c >= COLS) return;
-      var id = cellId(r, c);
-      var esFormula = typeof rawVal === 'string' && rawVal.charAt(0) === '=';
-      var nuevoVal;
-      if (modo === 'transponer' || modo === 'valores') nuevoVal = filasVal[drFila][dcCol];
-      else if (esFormula) nuevoVal = ajustarFormulaRelativa(rawVal, dR, dC);
-      else nuevoVal = rawVal;
-      if (nuevoVal === '' || nuevoVal === undefined || nuevoVal === null) delete sheetData[activeSheet][id];
-      else sheetData[activeSheet][id] = nuevoVal;
+  var filasFmt = clipboard.rangeFormats || [];
+  if (modo === 'transponer') { filasRaw = transponerMatriz(filasRaw); filasVal = transponerMatriz(filasVal); filasFmt = transponerMatriz(filasFmt); }
+  // "Solo formato" (como el "pintor de formato" de Excel/Sheets) no toca el
+  // contenido de las celdas de destino en absoluto — solo les cambia el
+  // color, los bordes, la negrita, etc. En cualquier otro modo, sí se pega
+  // el contenido como siempre.
+  if (modo !== 'soloformato') {
+    filasRaw.forEach(function (fila, drFila) {
+      fila.forEach(function (rawVal, dcCol) {
+        var r = destR + drFila, c = destC + dcCol;
+        if (r >= ROWS || c >= COLS) return;
+        var id = cellId(r, c);
+        var esFormula = typeof rawVal === 'string' && rawVal.charAt(0) === '=';
+        var nuevoVal;
+        if (modo === 'transponer' || modo === 'valores') nuevoVal = filasVal[drFila][dcCol];
+        else if (esFormula) nuevoVal = ajustarFormulaRelativa(rawVal, dR, dC);
+        else nuevoVal = rawVal;
+        if (nuevoVal === '' || nuevoVal === undefined || nuevoVal === null) delete sheetData[activeSheet][id];
+        else sheetData[activeSheet][id] = nuevoVal;
+      });
     });
-  });
-  if (clipboard.format && modo !== 'valores') {
-    var filasRef = modo === 'transponer' ? transponerMatriz(clipboard.rangeRows) : clipboard.rangeRows;
-    filasRef.forEach(function (fila, drFila) {
-      fila.forEach(function (_, dcCol) {
+  }
+  // El formato se pega en todo modo salvo "Solo valores" (que a propósito
+  // deja el destino con su formato tal cual estaba, igual que en Excel).
+  if (modo !== 'valores') {
+    filasFmt.forEach(function (fila, drFila) {
+      fila.forEach(function (fmtCelda, dcCol) {
         var r = destR + drFila, c = destC + dcCol;
         if (r >= ROWS || c >= COLS) return;
         if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
-        sheetFormats[activeSheet][cellId(r, c)] = JSON.parse(JSON.stringify(clipboard.format));
+        var id = cellId(r, c);
+        if (fmtCelda) sheetFormats[activeSheet][id] = JSON.parse(JSON.stringify(fmtCelda));
+        else delete sheetFormats[activeSheet][id];
       });
     });
   }
   document.getElementById('formulaInput').value = getRaw(destinoId);
+  ajustarFormulaBar();
   buildTable(); autoSave();
-  var etiquetaModo = modo === 'valores' ? 'solo valores' : modo === 'transponer' ? 'transpuesto' : 'normal';
+  var etiquetaModo = modo === 'valores' ? 'solo valores' : modo === 'transponer' ? 'transpuesto' : modo === 'soloformato' ? 'solo formato' : 'normal';
   document.getElementById('saveStatus').textContent = '✓ Pegado (' + etiquetaModo + ')';
 }
 document.getElementById('btnCut').addEventListener('click', function () {
@@ -8152,6 +9700,7 @@ document.getElementById('btnCut').addEventListener('click', function () {
   delete sheetData[activeSheet][id];
   if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
   document.getElementById('formulaInput').value = '';
+  ajustarFormulaBar();
   renderAllCells(); autoSave();
   document.getElementById('saveStatus').textContent = 'Cortado ' + id;
 });
@@ -8161,19 +9710,56 @@ document.getElementById('btnCopy').addEventListener('click', function () {
   document.getElementById('saveStatus').textContent = 'Copiado ' + id;
 });
 document.getElementById('btnPaste').addEventListener('click', function () { ejecutarPegado('normal'); });
+// Pegar texto copiado en OTRA app (WhatsApp, Notas, etc.) directamente sobre
+// una celda: el navegador dispara este evento cuando el usuario usa el menú
+// nativo "Pegar" (mantener presionado) sobre la celda enfocada. Si el texto
+// pegado tiene varias líneas/columnas (separadas por salto de línea/tab, tal
+// como las copia Excel/Sheets/esta misma app), se reparte en varias celdas,
+// igual que "Pegar" normal — así no queda todo amontonado en una sola celda.
+document.addEventListener('paste', function (e) {
+  var activo = document.activeElement;
+  var esCelda = activo && activo.classList && activo.classList.contains('cell');
+  if (!esCelda) return; // en cualquier otro campo (fórmula, buscador, modales) se deja el pegado normal del navegador
+  var portapapelesSistema = e.clipboardData || window.clipboardData;
+  var texto = portapapelesSistema ? portapapelesSistema.getData('text') : '';
+  if (!texto) return;
+  e.preventDefault();
+  if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida. Desbloqueala (🔒 Proteger Hoja) antes de pegar.'); return; }
+  snapshot();
+  var filas = texto.replace(/\r/g, '').split('\n');
+  if (filas.length > 1 && filas[filas.length - 1] === '') filas.pop(); // última línea vacía por el salto final
+  var destinoId = activo.dataset.id;
+  var b0 = boundsDeId(destinoId);
+  var destR = b0.minR, destC = b0.minC;
+  if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+  filas.forEach(function (lineaTexto, drFila) {
+    lineaTexto.split('\t').forEach(function (valorCelda, dcCol) {
+      var r = destR + drFila, c = destC + dcCol;
+      if (r >= ROWS || c >= COLS) return;
+      var id = cellId(r, c);
+      if (valorCelda === '') delete sheetData[activeSheet][id];
+      else sheetData[activeSheet][id] = valorCelda;
+    });
+  });
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Pegado desde el portapapeles del celular';
+});
 document.getElementById('btnPasteEspecial').addEventListener('click', function () {
   document.getElementById('pasteEspecialOverlay').classList.add('show');
 });
 document.getElementById('raPasteEspecial').addEventListener('click', function () {
   document.getElementById('pasteEspecialOverlay').classList.add('show');
 });
+document.getElementById('raExportarImagen').addEventListener('click', function () {
+  exportarRangoComoImagen();
+});
 document.getElementById('pasteEspecialClose').addEventListener('click', function () {
   document.getElementById('pasteEspecialOverlay').classList.remove('show');
 });
-['peNormal', 'peValores', 'peTransponer'].forEach(function (btnId, idx) {
+['peNormal', 'peValores', 'peFormato', 'peTransponer'].forEach(function (btnId, idx) {
   document.getElementById(btnId).addEventListener('click', function () {
     document.getElementById('pasteEspecialOverlay').classList.remove('show');
-    ejecutarPegado(['normal', 'valores', 'transponer'][idx]);
+    ejecutarPegado(['normal', 'valores', 'soloformato', 'transponer'][idx]);
   });
 });
 
@@ -8218,6 +9804,7 @@ document.getElementById('btnClear').addEventListener('click', function () {
   if (sheetFormats[activeSheet]) delete sheetFormats[activeSheet][id];
   if (sheetNotes[activeSheet]) delete sheetNotes[activeSheet][id];
   document.getElementById('formulaInput').value = '';
+  ajustarFormulaBar();
   renderAllCells(); autoSave();
 });
 document.getElementById('btnAddRow').addEventListener('click', function () { snapshot(); ROWS += 10; buildTable(); });
@@ -8350,7 +9937,7 @@ function loadTemplate(tipo) {
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; sheetProtegidaHash[name] = null; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetGroupsRow[name] = []; sheetGroupsCol[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {}; sheetPivoteConfig[name] = null; sheetAutoFiltro[name] = null; sheetCeldasDesbloqueadas[name] = [];
   activeSheet = name;
   var d = sheetData[name], f = sheetFormats[name], m = sheetMerges[name];
   function set(r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = { bold: true }; }
@@ -8608,7 +10195,7 @@ function crearHojaDestino(baseName) {
   var n = sheets.length + 1;
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
-  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {};
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; sheetProtegidaHash[name] = null; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetGroupsRow[name] = []; sheetGroupsCol[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {}; sheetPivoteConfig[name] = null; sheetAutoFiltro[name] = null; sheetCeldasDesbloqueadas[name] = [];
   return name;
 }
 
@@ -8839,17 +10426,39 @@ document.getElementById('btnComparativoMensual').addEventListener('click', funct
 
 document.getElementById('btnProtegerHoja').addEventListener('click', function () {
   if (sheetProtegida[activeSheet]) {
-    if (confirm('¿Desbloquear "' + activeSheet + '" para poder editarla de nuevo?')) {
-      sheetProtegida[activeSheet] = false;
-      buildTable(); autoSave();
-      document.getElementById('saveStatus').textContent = '🔓 Hoja desbloqueada';
+    if (sheetProtegidaHash[activeSheet]) {
+      var intentoPass = prompt('🔒🔑 La hoja "' + activeSheet + '" está protegida con contraseña.\nIngresá la contraseña para desbloquearla:');
+      if (intentoPass === null) return;
+      if (hashSimple(intentoPass) !== sheetProtegidaHash[activeSheet]) {
+        alert('❌ Contraseña incorrecta. La hoja sigue protegida.');
+        return;
+      }
+    } else {
+      if (!confirm('¿Desbloquear "' + activeSheet + '" para poder editarla de nuevo?')) return;
     }
+    sheetProtegida[activeSheet] = false;
+    sheetProtegidaHash[activeSheet] = null;
+    buildTable(); autoSave();
+    document.getElementById('saveStatus').textContent = '🔓 Hoja desbloqueada';
   } else {
-    if (confirm('¿Proteger "' + activeSheet + '" contra edición accidental? (Podés desbloquearla cuando quieras con el mismo botón)')) {
+    var pass1 = prompt('Protegiendo "' + activeSheet + '" contra ediciones accidentales.\n\nEscribí una contraseña para que solo quien la sepa pueda desbloquearla, o dejá el campo vacío para proteger SIN contraseña (como antes):');
+    if (pass1 === null) return;
+    if (pass1 === '') {
+      if (!confirm('¿Proteger "' + activeSheet + '" SIN contraseña? Cualquiera podrá desbloquearla tocando el mismo botón.')) return;
       sheetProtegida[activeSheet] = true;
-      buildTable(); autoSave();
-      document.getElementById('saveStatus').textContent = '🔒 Hoja protegida';
+      sheetProtegidaHash[activeSheet] = null;
+    } else {
+      var pass2 = prompt('Repetí la contraseña para confirmarla:');
+      if (pass2 === null) return;
+      if (pass1 !== pass2) {
+        alert('❌ Las contraseñas no coinciden. Tocá "Proteger Hoja" de nuevo para intentarlo otra vez.');
+        return;
+      }
+      sheetProtegida[activeSheet] = true;
+      sheetProtegidaHash[activeSheet] = hashSimple(pass1);
     }
+    buildTable(); autoSave();
+    document.getElementById('saveStatus').textContent = sheetProtegidaHash[activeSheet] ? '🔒🔑 Hoja protegida con contraseña' : '🔒 Hoja protegida';
   }
 });
 
@@ -9019,28 +10628,74 @@ function openFormatModal(isRangeTarget) {
   document.getElementById('fmtType').value = existing.type || 'general';
   document.getElementById('fmtDecimals').value = existing.decimals !== undefined ? existing.decimals : 2;
   document.getElementById('fmtThousands').value = existing.thousands === false ? 'no' : 'yes';
+  document.getElementById('fmtCustomCodigo').value = existing.type === 'custom' ? (existing.codigo || '') : '';
+  actualizarCajasFormatoNumerico();
   document.getElementById('fmtAlign').value = cellFmt.align || '';
   document.getElementById('fmtBgColor').value = cellFmt.bgColor || '#ffffff';
   document.getElementById('fmtFontColor').value = cellFmt.fontColor || '#000000';
   document.getElementById('fmtFontSize').value = cellFmt.fontSize || 12;
-  document.getElementById('fmtBorder').checked = !!cellFmt.border;
+  // Bordes por lado — si la celda todavía tiene el formato "viejo"
+  // (fmt.border = true/false, borde completo sin opción de lado/grosor/
+  // color), se lo traduce a las 4 casillas marcadas con el estilo clásico,
+  // sin perder lo que ya tenía guardado.
+  var bordesExistentes = cellFmt.borders;
+  if (!bordesExistentes && cellFmt.border) {
+    bordesExistentes = { top: true, bottom: true, left: true, right: true, width: 1.5, color: '#217346' };
+  }
+  bordesExistentes = bordesExistentes || {};
+  document.getElementById('fmtBorderTop').checked = !!bordesExistentes.top;
+  document.getElementById('fmtBorderBottom').checked = !!bordesExistentes.bottom;
+  document.getElementById('fmtBorderLeft').checked = !!bordesExistentes.left;
+  document.getElementById('fmtBorderRight').checked = !!bordesExistentes.right;
+  document.getElementById('fmtBorderWidth').value = bordesExistentes.width || 1;
+  document.getElementById('fmtBorderColor').value = bordesExistentes.color || '#217346';
   document.getElementById('fmtWrap').checked = !!cellFmt.wrap;
   document.getElementById('formatOverlay').classList.add('show');
 }
+// Muestra la caja del código personalizado (y oculta decimales/miles, que
+// no aplican ahí) o viceversa, según el tipo elegido en "fmtType".
+function actualizarCajasFormatoNumerico() {
+  var esPersonalizado = document.getElementById('fmtType').value === 'custom';
+  document.getElementById('fmtCustomBox').style.display = esPersonalizado ? '' : 'none';
+  document.getElementById('fmtNormalBox').style.display = esPersonalizado ? 'none' : '';
+}
+document.getElementById('fmtType').addEventListener('change', actualizarCajasFormatoNumerico);
+document.getElementById('fmtBorderTodos').addEventListener('click', function () {
+  ['fmtBorderTop', 'fmtBorderBottom', 'fmtBorderLeft', 'fmtBorderRight'].forEach(function (elId) {
+    document.getElementById(elId).checked = true;
+  });
+});
+document.getElementById('fmtBorderNinguno').addEventListener('click', function () {
+  ['fmtBorderTop', 'fmtBorderBottom', 'fmtBorderLeft', 'fmtBorderRight'].forEach(function (elId) {
+    document.getElementById(elId).checked = false;
+  });
+});
 document.getElementById('fmtCancel').addEventListener('click', function () { document.getElementById('formatOverlay').classList.remove('show'); });
 document.getElementById('fmtApply').addEventListener('click', function () {
   snapshot();
-  var numFormat = {
-    type: document.getElementById('fmtType').value,
-    decimals: parseInt(document.getElementById('fmtDecimals').value) || 0,
-    thousands: document.getElementById('fmtThousands').value === 'yes'
-  };
+  var tipoFmt = document.getElementById('fmtType').value;
+  var numFormat = (tipoFmt === 'custom')
+    ? { type: 'custom', codigo: document.getElementById('fmtCustomCodigo').value || '0' }
+    : {
+        type: tipoFmt,
+        decimals: parseInt(document.getElementById('fmtDecimals').value) || 0,
+        thousands: document.getElementById('fmtThousands').value === 'yes'
+      };
+  // Si el formato se abrió sobre un solo rango (formatTargetIsRange) se
+  // reparte entre todas las celdas de la selección actual — incluida la
+  // selección múltiple no contigua (Ctrl+click), gracias a rangeCellIds().
   var ids = formatTargetIsRange ? rangeCellIds() : [document.getElementById('cellRef').textContent];
   var align = document.getElementById('fmtAlign').value;
   var bgColor = document.getElementById('fmtBgColor').value;
   var fontColor = document.getElementById('fmtFontColor').value;
   var fontSize = parseInt(document.getElementById('fmtFontSize').value) || 12;
-  var border = document.getElementById('fmtBorder').checked;
+  var bTop = document.getElementById('fmtBorderTop').checked;
+  var bBottom = document.getElementById('fmtBorderBottom').checked;
+  var bLeft = document.getElementById('fmtBorderLeft').checked;
+  var bRight = document.getElementById('fmtBorderRight').checked;
+  var bWidth = parseInt(document.getElementById('fmtBorderWidth').value) || 1;
+  var bColor = document.getElementById('fmtBorderColor').value || '#217346';
+  var hayBorde = bTop || bBottom || bLeft || bRight;
   var wrap = document.getElementById('fmtWrap').checked;
   if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
   ids.forEach(function (id) {
@@ -9052,7 +10707,12 @@ document.getElementById('fmtApply').addEventListener('click', function () {
     sheetFormats[activeSheet][id].bgColor = bgColor !== '#ffffff' ? bgColor : '';
     sheetFormats[activeSheet][id].fontColor = fontColor !== '#000000' ? fontColor : '';
     sheetFormats[activeSheet][id].fontSize = fontSize !== 12 ? fontSize : null;
-    sheetFormats[activeSheet][id].border = border;
+    sheetFormats[activeSheet][id].border = false; // reemplazado por "borders" (por lado); se deja en false para no pisar datos viejos de otra celda
+    if (hayBorde) {
+      sheetFormats[activeSheet][id].borders = { top: bTop, bottom: bBottom, left: bLeft, right: bRight, width: bWidth, color: bColor };
+    } else {
+      delete sheetFormats[activeSheet][id].borders;
+    }
     sheetFormats[activeSheet][id].wrap = wrap;
   });
   document.getElementById('formatOverlay').classList.remove('show');
@@ -9251,6 +10911,7 @@ function showValidPicker(id) {
       e.preventDefault();
       var val = row.getAttribute('data-v');
       document.getElementById('formulaInput').value = val;
+      ajustarFormulaBar();
       box.classList.remove('show'); box.innerHTML = '';
       var el = document.getElementById('cell_' + id);
       if (el) { el.textContent = val; snapshot(); commitCell(el); }
@@ -9549,62 +11210,314 @@ document.getElementById('btnCSV').addEventListener('click', function () {
   document.getElementById('saveStatus').textContent = 'CSV exportado';
 });
 
-function generarYCompartirPdfReporte(paraImprimir) {
+// Convierte "#rrggbb" (o "#rgb") a [r,g,b] para los métodos de color de
+// jsPDF, que no entienden strings de color CSS — si el texto no es un color
+// hex válido, devuelve null (y quien llama usa su color por defecto).
+function hexARgb(hex) {
+  if (!hex) return null;
+  var h = String(hex).replace('#', '');
+  if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+  if (h.length !== 6) return null;
+  var num = parseInt(h, 16);
+  if (isNaN(num)) return null;
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
+// Da el texto ya formateado de una celda (moneda/porcentaje/contable/
+// personalizado) para el PDF — la misma lógica que pinta la pantalla, para
+// que el reporte se vea igual que la hoja en vez de solo el número crudo.
+function textoFormateadoParaPdf(id, fmt, val) {
+  if (fmt.numFormat && fmt.numFormat.type === 'custom') return aplicarFormatoPersonalizado(val, fmt.numFormat.codigo).texto;
+  if (fmt.numFormat) return applyNumberFormat(val, fmt.numFormat);
+  if (fmt.currency && val !== '' && !isNaN(parseFloat(String(val).replace(/[₡,]/g, '')))) {
+    return '₡' + parseFloat(String(val).replace(/[₡,\\s]/g, '')).toLocaleString('es-CR', { minimumFractionDigits: 2 });
+  }
+  if (fmt.percent && val !== '' && !isNaN(parseFloat(val))) return (parseFloat(val) * 100).toFixed(1) + '%';
+  return (val === undefined || val === null) ? '' : String(val);
+}
+// Exporta un rango de celdas (el que esté seleccionado) como una imagen PNG
+// — útil para mandar un resumen rápido por WhatsApp sin tener que generar
+// el PDF del reporte completo. Se dibuja a mano en un <canvas> (en vez de
+// capturar literalmente la pantalla), reutilizando el mismo
+// "textoFormateadoParaPdf" que ya usa el reporte en PDF, así el texto que
+// aparece en la imagen (moneda, porcentaje, formato personalizado) es el
+// mismo que ves en la hoja, con sus colores, bordes y negrita.
+function exportarRangoComoImagen() {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero el rango de celdas que querés exportar como imagen (arrastrá sobre las celdas).'); return; }
+  var merges = sheetMerges[activeSheet] || [];
+  var formats = sheetFormats[activeSheet] || {};
+  var skipImg = {}, anchoCombinadoImg = {};
+  merges.forEach(function (mg) {
+    anchoCombinadoImg[cellId(mg.r1, mg.c1)] = (mg.c2 - mg.c1 + 1);
+    for (var rr = mg.r1; rr <= mg.r2; rr++) {
+      for (var cc = mg.c1; cc <= mg.c2; cc++) {
+        if (rr === mg.r1 && cc === mg.c1) continue;
+        skipImg[cellId(rr, cc)] = true;
+      }
+    }
+  });
+
+  var ROW_H = 28;
+  var FUENTE = "13px Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif";
+  var anchosCol = [];
+  var anchoTotal = 0;
+  for (var c = bounds.minC; c <= bounds.maxC; c++) { var w = getColWidth(c); anchosCol.push(w); anchoTotal += w; }
+  var altoTotal = (bounds.maxR - bounds.minR + 1) * ROW_H;
+
+  // Se dibuja al doble de tamaño ("escala 2") y se achica con CSS/el
+  // visor de imágenes del celular — el resultado se ve nítido en vez de
+  // pixelado al ampliarlo o compartirlo.
+  var escala = 2;
+  var canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(anchoTotal * escala));
+  canvas.height = Math.max(1, Math.round(altoTotal * escala));
+  var ctx = canvas.getContext('2d');
+  ctx.scale(escala, escala);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, anchoTotal, altoTotal);
+  ctx.textBaseline = 'middle';
+
+  var yPos = 0;
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    var xPos = 0;
+    for (var ci = 0; ci < anchosCol.length; ci++) {
+      var c2 = bounds.minC + ci;
+      var id = cellId(r, c2);
+      var anchoCeldaBase = anchosCol[ci];
+      if (!skipImg[id]) {
+        var combinadas = anchoCombinadoImg[id] || 1;
+        var anchoDibujo = 0;
+        for (var k = 0; k < combinadas && (ci + k) < anchosCol.length; k++) anchoDibujo += anchosCol[ci + k];
+        var fmt = formats[id] || {};
+        var val = computeValue(id);
+        var texto = String(textoFormateadoParaPdf(id, fmt, val) || '');
+
+        ctx.fillStyle = fmt.bgColor || '#ffffff';
+        ctx.fillRect(xPos, yPos, anchoDibujo, ROW_H);
+        ctx.strokeStyle = '#e4efd6'; ctx.lineWidth = 1;
+        ctx.strokeRect(xPos + 0.5, yPos + 0.5, anchoDibujo - 1, ROW_H - 1);
+
+        var bordes = fmt.borders;
+        if (bordes && (bordes.top || bordes.bottom || bordes.left || bordes.right)) {
+          ctx.strokeStyle = bordes.color || '#217346';
+          ctx.lineWidth = bordes.width || 1;
+          ctx.beginPath();
+          if (bordes.top) { ctx.moveTo(xPos, yPos); ctx.lineTo(xPos + anchoDibujo, yPos); }
+          if (bordes.bottom) { ctx.moveTo(xPos, yPos + ROW_H); ctx.lineTo(xPos + anchoDibujo, yPos + ROW_H); }
+          if (bordes.left) { ctx.moveTo(xPos, yPos); ctx.lineTo(xPos, yPos + ROW_H); }
+          if (bordes.right) { ctx.moveTo(xPos + anchoDibujo, yPos); ctx.lineTo(xPos + anchoDibujo, yPos + ROW_H); }
+          ctx.stroke();
+        }
+
+        ctx.font = (fmt.bold ? 'bold ' : (fmt.italic ? 'italic ' : '')) + FUENTE;
+        ctx.fillStyle = fmt.fontColor || '#1e1e1e';
+        var alineacion = fmt.align === 'center' ? 'center' : (fmt.align === 'right' ? 'right' : 'left');
+        ctx.textAlign = alineacion;
+        var xTexto = alineacion === 'center' ? (xPos + anchoDibujo / 2) : (alineacion === 'right' ? (xPos + anchoDibujo - 6) : (xPos + 6));
+        ctx.fillText(texto, xTexto, yPos + ROW_H / 2 + 1, anchoDibujo - 10);
+      }
+      xPos += anchoCeldaBase;
+    }
+    yPos += ROW_H;
+  }
+
+  var dataUrl = canvas.toDataURL('image/png');
+  var base64 = dataUrl.split(',')[1];
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  guardarArchivoNativo('MatrizContableCR_' + activeSheet + '_rango.png', base64, 'image/png');
+  document.getElementById('saveStatus').textContent = '🖼 Imagen del rango exportada';
+}
+// Genera el PDF del reporte respetando el formato real de cada celda
+// (colores, negrita, bordes por lado, formato de número) en vez de texto
+// plano, y sin truncar a 6 columnas: si no entran todas en el ancho de la
+// página, se reparten en "bloques" de columnas (cada uno con sus propias
+// páginas), como el "ajustar a una página de ancho" de Excel, pero sin
+// perder columnas por el camino.
+function generarYCompartirPdfReporte(paraImprimir, orientacion, rango) {
   var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
   if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return; }
   var data = sheetData[activeSheet] || {};
-  var maxRow = 0, maxCol = 0;
-  Object.keys(data).forEach(function (key) {
-    var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
-    var r = parseInt(m[2]) - 1; var c = colIndex(m[1]);
-    if (r > maxRow) maxRow = r; if (c > maxCol) maxCol = c;
-  });
   if (!Object.keys(data).length) { alert('No hay datos para exportar.'); return; }
-  maxCol = Math.min(maxCol, 6);
+  orientacion = orientacion || 'portrait';
+  rango = rango || 'hoja';
+
+  var minR, maxR, minC, maxC;
+  if (rango === 'seleccion') {
+    var bSel = currentRangeBounds();
+    minR = bSel.minR; maxR = bSel.maxR; minC = bSel.minC; maxC = bSel.maxC;
+  } else {
+    minR = 0; minC = 0; maxR = 0; maxC = 0;
+    Object.keys(data).forEach(function (key) {
+      var m = key.match(/([A-Z]+)(\\d+)/); if (!m) return;
+      var r = parseInt(m[2]) - 1; var c = colIndex(m[1]);
+      if (r > maxR) maxR = r; if (c > maxC) maxC = c;
+    });
+  }
+
+  var merges = sheetMerges[activeSheet] || [];
+  var formats = sheetFormats[activeSheet] || {};
+  var skipPdf = {}, anchoCombinadoPdf = {};
+  merges.forEach(function (mg) {
+    anchoCombinadoPdf[cellId(mg.r1, mg.c1)] = (mg.c2 - mg.c1 + 1);
+    for (var rr = mg.r1; rr <= mg.r2; rr++) {
+      for (var cc = mg.c1; cc <= mg.c2; cc++) {
+        if (rr === mg.r1 && cc === mg.c1) continue;
+        skipPdf[cellId(rr, cc)] = true;
+      }
+    }
+  });
 
   var g3 = [45, 122, 12], bg = [238, 248, 228], border = [204, 233, 174];
-  var doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  var pageW = 210, marginX = 12, usableW = pageW - marginX * 2;
-  var colW = usableW / (maxCol + 1);
+  var doc = new jsPDFLib({ orientation: orientacion, unit: 'mm', format: 'a4' });
+  var pageW = orientacion === 'landscape' ? 297 : 210;
+  var pageH = orientacion === 'landscape' ? 210 : 297;
+  var marginX = 12, usableW = pageW - marginX * 2;
 
-  function drawHeader() {
+  var totalCols = maxC - minC + 1;
+  var MIN_COL_W = 20; // mm — ancho mínimo para que el texto siga siendo legible
+  var colsPorBloque = Math.max(1, Math.floor(usableW / MIN_COL_W));
+  var colW = usableW / Math.min(totalCols, colsPorBloque);
+
+  function drawHeader(etiquetaBloque) {
     doc.setFillColor(g3[0], g3[1], g3[2]);
     doc.rect(0, 0, pageW, 24, 'F');
     doc.setTextColor(255, 255, 255);
+    // Si hay un logo cargado, se dibuja a la izquierda y el título/nombre de
+    // hoja se recorren hacia la derecha para no tapárselo; si no hay logo,
+    // se usa el texto fijo de siempre ("MATRIZ CONTABLE CR").
+    var textoInicioX = marginX;
+    if (logoPdfDataUrl) {
+      try {
+        var altoLogo = 16, anchoLogo = altoLogo; // cuadrado por simplicidad; jsPDF reescala la imagen a este tamaño sin deformar demasiado los logos típicos
+        doc.addImage(logoPdfDataUrl, marginX, 4, anchoLogo, altoLogo);
+        textoInicioX = marginX + anchoLogo + 4;
+      } catch (e) { /* si el logo no se puede dibujar (formato raro), se sigue sin él */ }
+    }
     doc.setFontSize(15); doc.setFont('helvetica', 'bold');
-    doc.text('MATRIZ CONTABLE CR', marginX, 11);
+    doc.text('MATRIZ CONTABLE CR', textoInicioX, 11);
     doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text(activeSheet, marginX, 18);
+    doc.text(activeSheet + (etiquetaBloque || ''), textoInicioX, 18);
     doc.text(new Date().toLocaleDateString('es-CR'), pageW - marginX, 11, { align: 'right' });
   }
-  drawHeader();
 
-  var y = 34;
-  for (var r = 0; r <= maxRow; r++) {
-    if (y > 275) { doc.addPage(); drawHeader(); y = 34; }
-    var isHeaderRow = (r === 0);
-    if (r % 2 === 0 && !isHeaderRow) {
+  // Dibuja UNA fila de datos en la posición Y dada, dentro del bloque de
+  // columnas [bloqueInicio..bloqueFin] — queda aparte de la función
+  // principal para poder llamarla dos veces: la vez normal (según le toque
+  // en la hoja) y, si la fila es la de encabezados, otra vez al tope de
+  // cada página nueva en la que se siga imprimiendo esta misma tabla (como
+  // "Imprimir títulos" de Excel), para que las columnas se puedan seguir
+  // identificando aunque el reporte ocupe varias páginas.
+  function pintarFilaPdf(r, y, bloqueInicio, bloqueFin, esEncabezadoFijo) {
+    var isHeaderRow = esEncabezadoFijo || (r === 0 && rango !== 'seleccion');
+    if ((r - minR) % 2 === 0 && !isHeaderRow) {
       doc.setFillColor(bg[0], bg[1], bg[2]);
       doc.rect(marginX, y - 4.5, usableW, 7, 'F');
     }
-    doc.setDrawColor(border[0], border[1], border[2]);
-    doc.setFont('helvetica', isHeaderRow ? 'bold' : 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(isHeaderRow ? g3[0] : 30, isHeaderRow ? g3[1] : 30, isHeaderRow ? g3[2] : 30);
-    for (var c = 0; c <= maxCol; c++) {
-      var val = computeValue(cellId(r, c)) || '';
-      var txt = String(val).substring(0, 22);
-      doc.text(txt, marginX + c * colW + 1, y);
+    for (var c = bloqueInicio; c <= bloqueFin; c++) {
+      var id = cellId(r, c);
+      if (skipPdf[id]) continue; // celda tapada por una combinada vecina
+      var fmt = formats[id] || {};
+      var val = computeValue(id);
+      var texto = String(textoFormateadoParaPdf(id, fmt, val) || '');
+      var anchoCelda = colW * (anchoCombinadoPdf[id] || 1);
+      var xCelda = marginX + (c - bloqueInicio) * colW;
+
+      if (fmt.bgColor) {
+        var rgbFondo = hexARgb(fmt.bgColor);
+        if (rgbFondo) { doc.setFillColor(rgbFondo[0], rgbFondo[1], rgbFondo[2]); doc.rect(xCelda, y - 4.5, anchoCelda, 7, 'F'); }
+      }
+      var bordes = fmt.borders;
+      if (bordes && (bordes.top || bordes.bottom || bordes.left || bordes.right)) {
+        var rgbBorde = hexARgb(bordes.color || '#217346') || border;
+        doc.setDrawColor(rgbBorde[0], rgbBorde[1], rgbBorde[2]);
+        doc.setLineWidth((bordes.width || 1) * 0.15);
+        if (bordes.top) doc.line(xCelda, y - 4.5, xCelda + anchoCelda, y - 4.5);
+        if (bordes.bottom) doc.line(xCelda, y + 2.5, xCelda + anchoCelda, y + 2.5);
+        if (bordes.left) doc.line(xCelda, y - 4.5, xCelda, y + 2.5);
+        if (bordes.right) doc.line(xCelda + anchoCelda, y - 4.5, xCelda + anchoCelda, y + 2.5);
+      }
+      doc.setFont('helvetica', (fmt.bold || isHeaderRow) ? 'bold' : (fmt.italic ? 'italic' : 'normal'));
+      doc.setFontSize(9);
+      var colorTexto = (fmt.fontColor && hexARgb(fmt.fontColor)) || (isHeaderRow ? g3 : [30, 30, 30]);
+      doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+      var alineacion = fmt.align === 'center' ? 'center' : (fmt.align === 'right' ? 'right' : 'left');
+      var xTexto = alineacion === 'center' ? (xCelda + anchoCelda / 2) : (alineacion === 'right' ? (xCelda + anchoCelda - 1) : (xCelda + 1));
+      doc.text(texto.substring(0, 40), xTexto, y, { align: alineacion });
     }
-    y += 7;
   }
+
+  var primerBloque = true;
+  // Si se está exportando toda la hoja (no una selección puntual), la fila 1
+  // es la fila de encabezados y se repite arriba de cada página nueva.
+  var hayFilaEncabezadoFija = rango !== 'seleccion';
+  for (var bloqueInicio = minC; bloqueInicio <= maxC; bloqueInicio += colsPorBloque) {
+    var bloqueFin = Math.min(bloqueInicio + colsPorBloque - 1, maxC);
+    var hayVariosBloques = totalCols > colsPorBloque;
+    var etiquetaBloque = hayVariosBloques ? (' (columnas ' + colLetter(bloqueInicio) + '–' + colLetter(bloqueFin) + ')') : '';
+    if (!primerBloque) doc.addPage();
+    primerBloque = false;
+    drawHeader(etiquetaBloque);
+    var y = 34;
+    if (hayFilaEncabezadoFija) { pintarFilaPdf(0, y, bloqueInicio, bloqueFin, true); y += 7; }
+    for (var r = minR; r <= maxR; r++) {
+      if (hayFilaEncabezadoFija && r === 0) continue; // ya se pintó como encabezado fijo arriba
+      if (y > pageH - 15) {
+        doc.addPage(); drawHeader(etiquetaBloque); y = 34;
+        if (hayFilaEncabezadoFija) { pintarFilaPdf(0, y, bloqueInicio, bloqueFin, true); y += 7; }
+      }
+      pintarFilaPdf(r, y, bloqueInicio, bloqueFin, false);
+      y += 7;
+    }
+  }
+
   var pdfDataUri = doc.output('datauristring');
   var pdfBase64 = pdfDataUri.split(',')[1];
   guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.pdf', pdfBase64, 'application/pdf');
   document.getElementById('saveStatus').textContent = paraImprimir ? 'Listo para imprimir' : 'PDF exportado';
 }
+function actualizarVistaPrevioLogoPdf() {
+  var img = document.getElementById('pdfLogoPreview');
+  var vacio = document.getElementById('pdfLogoVacio');
+  var btnQuitar = document.getElementById('pdfLogoQuitar');
+  if (logoPdfDataUrl) {
+    img.src = logoPdfDataUrl; img.style.display = '';
+    vacio.style.display = 'none';
+    btnQuitar.style.display = '';
+  } else {
+    img.style.display = 'none';
+    vacio.style.display = '';
+    btnQuitar.style.display = 'none';
+  }
+}
 document.getElementById('btnPdfReporte').addEventListener('click', function () {
-  generarYCompartirPdfReporte(false);
+  actualizarVistaPrevioLogoPdf();
+  document.getElementById('pdfExportOverlay').classList.add('show');
+});
+document.getElementById('pdfExportCancel').addEventListener('click', function () {
+  document.getElementById('pdfExportOverlay').classList.remove('show');
+});
+document.getElementById('pdfLogoInput').addEventListener('change', function (e) {
+  var archivo = e.target.files && e.target.files[0];
+  if (!archivo) return;
+  var lector = new FileReader();
+  lector.onload = function () {
+    logoPdfDataUrl = lector.result;
+    actualizarVistaPrevioLogoPdf();
+    autoSave();
+  };
+  lector.readAsDataURL(archivo);
+});
+document.getElementById('pdfLogoQuitar').addEventListener('click', function () {
+  logoPdfDataUrl = null;
+  document.getElementById('pdfLogoInput').value = '';
+  actualizarVistaPrevioLogoPdf();
+  autoSave();
+});
+document.getElementById('pdfExportGenerar').addEventListener('click', function () {
+  var orientacionElegida = document.getElementById('pdfOrientacion').value;
+  var rangoElegido = document.getElementById('pdfRango').value;
+  document.getElementById('pdfExportOverlay').classList.remove('show');
+  generarYCompartirPdfReporte(false, orientacionElegida, rangoElegido);
 });
 
 // ══════════════════════════════════════════════
@@ -9880,7 +11793,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, zoomLevel: zoomLevel };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, sheetProtegidaHash: sheetProtegidaHash, sheetPivoteConfig: sheetPivoteConfig, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, zoomLevel: zoomLevel, logoPdfDataUrl: logoPdfDataUrl };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -9890,6 +11803,8 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetNotes = obj.sheetNotes || {};
   sheetAttachments = obj.sheetAttachments || {};
   sheetProtegida = obj.sheetProtegida || {};
+  sheetProtegidaHash = obj.sheetProtegidaHash || {};
+  sheetPivoteConfig = obj.sheetPivoteConfig || {};
   colWidths = obj.colWidths || {};
   sheetMerges = obj.sheetMerges || {};
   sheetFreeze = obj.sheetFreeze || {};
@@ -9898,6 +11813,8 @@ function cargarEstadoDesdeObjeto(obj) {
   rangosNombrados = obj.rangosNombrados || {};
   sheetHiddenRows = obj.sheetHiddenRows || {};
   sheetHiddenCols = obj.sheetHiddenCols || {};
+  sheetGroupsRow = obj.sheetGroupsRow || {};
+  sheetGroupsCol = obj.sheetGroupsCol || {};
   macros = obj.macros || {};
   sheetSparklines = obj.sheetSparklines || {};
   sheetSlicers = obj.sheetSlicers || {};
@@ -9905,7 +11822,11 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetCondFormatsAvanzado = obj.sheetCondFormatsAvanzado || {};
   sheetControles = obj.sheetControles || {};
   sheetValidacionNativa = obj.sheetValidacionNativa || {};
+  sheetAutoFiltro = obj.sheetAutoFiltro || {};
+  sheetCeldasDesbloqueadas = obj.sheetCeldasDesbloqueadas || {};
+  vistasGuardadas = obj.vistasGuardadas || [];
   zoomLevel = obj.zoomLevel || 100;
+  logoPdfDataUrl = obj.logoPdfDataUrl || null;
   activeSheet = sheets[0];
   buildTable();
   applyZoom();
@@ -10182,6 +12103,8 @@ function autoSave() {
     localStorage.setItem('mcr_notes_v6', JSON.stringify(sheetNotes));
     localStorage.setItem('mcr_attachments_v6', JSON.stringify(sheetAttachments));
     localStorage.setItem('mcr_protegida_v6', JSON.stringify(sheetProtegida));
+    localStorage.setItem('mcr_protegidahash_v6', JSON.stringify(sheetProtegidaHash));
+    localStorage.setItem('mcr_pivoteconfig_v6', JSON.stringify(sheetPivoteConfig));
     localStorage.setItem('mcr_colwidths_v6', JSON.stringify(colWidths));
     localStorage.setItem('mcr_merges_v6', JSON.stringify(sheetMerges));
     localStorage.setItem('mcr_freeze_v6', JSON.stringify(sheetFreeze));
@@ -10190,6 +12113,8 @@ function autoSave() {
     localStorage.setItem('mcr_rangos_v6', JSON.stringify(rangosNombrados));
     localStorage.setItem('mcr_hiddenrows_v6', JSON.stringify(sheetHiddenRows));
     localStorage.setItem('mcr_hiddencols_v6', JSON.stringify(sheetHiddenCols));
+    localStorage.setItem('mcr_groupsrow_v6', JSON.stringify(sheetGroupsRow));
+    localStorage.setItem('mcr_groupscol_v6', JSON.stringify(sheetGroupsCol));
     localStorage.setItem('mcr_macros_v6', JSON.stringify(macros));
     localStorage.setItem('mcr_sparklines_v6', JSON.stringify(sheetSparklines));
     localStorage.setItem('mcr_slicers_v6', JSON.stringify(sheetSlicers));
@@ -10197,8 +12122,12 @@ function autoSave() {
     localStorage.setItem('mcr_condavanzado_v6', JSON.stringify(sheetCondFormatsAvanzado));
     localStorage.setItem('mcr_controles_v6', JSON.stringify(sheetControles));
     localStorage.setItem('mcr_validacionnativa_v6', JSON.stringify(sheetValidacionNativa));
+    localStorage.setItem('mcr_autofiltro_v6', JSON.stringify(sheetAutoFiltro));
+    localStorage.setItem('mcr_celdasdesbloq_v6', JSON.stringify(sheetCeldasDesbloqueadas));
+    localStorage.setItem('mcr_vistas_v6', JSON.stringify(vistasGuardadas));
     localStorage.setItem('mcr_zoom_v6', String(zoomLevel));
     localStorage.setItem('mcr_active_v6', activeSheet);
+    if (logoPdfDataUrl) localStorage.setItem('mcr_logopdf_v6', logoPdfDataUrl); else localStorage.removeItem('mcr_logopdf_v6');
     if (!currentMatrizId) document.getElementById('saveStatus').textContent = '💾 ' + new Date().toLocaleTimeString('es-CR');
     if (currentMatrizId && currentUser) {
       clearTimeout(saveDebounceTimer);
@@ -10214,6 +12143,8 @@ function restore() {
     var no = localStorage.getItem('mcr_notes_v6');
     var at = localStorage.getItem('mcr_attachments_v6');
     var pr = localStorage.getItem('mcr_protegida_v6');
+    var ph = localStorage.getItem('mcr_protegidahash_v6');
+    var pc = localStorage.getItem('mcr_pivoteconfig_v6');
     var cw = localStorage.getItem('mcr_colwidths_v6');
     var mg = localStorage.getItem('mcr_merges_v6');
     var fz = localStorage.getItem('mcr_freeze_v6');
@@ -10222,6 +12153,8 @@ function restore() {
     var rn = localStorage.getItem('mcr_rangos_v6');
     var hr = localStorage.getItem('mcr_hiddenrows_v6');
     var hc = localStorage.getItem('mcr_hiddencols_v6');
+    var gr = localStorage.getItem('mcr_groupsrow_v6');
+    var gc = localStorage.getItem('mcr_groupscol_v6');
     var mc = localStorage.getItem('mcr_macros_v6');
     var sp = localStorage.getItem('mcr_sparklines_v6');
     var sl = localStorage.getItem('mcr_slicers_v6');
@@ -10229,14 +12162,20 @@ function restore() {
     var ca = localStorage.getItem('mcr_condavanzado_v6');
     var ct = localStorage.getItem('mcr_controles_v6');
     var vn = localStorage.getItem('mcr_validacionnativa_v6');
+    var atf = localStorage.getItem('mcr_autofiltro_v6');
+    var cde = localStorage.getItem('mcr_celdasdesbloq_v6');
+    var vst = localStorage.getItem('mcr_vistas_v6');
     var zm = localStorage.getItem('mcr_zoom_v6');
     var a = localStorage.getItem('mcr_active_v6');
+    var lg = localStorage.getItem('mcr_logopdf_v6');
     if (s) sheets = JSON.parse(s);
     if (d) sheetData = JSON.parse(d);
     if (f) sheetFormats = JSON.parse(f);
     if (no) sheetNotes = JSON.parse(no);
     if (at) sheetAttachments = JSON.parse(at);
     if (pr) sheetProtegida = JSON.parse(pr);
+    if (ph) sheetProtegidaHash = JSON.parse(ph);
+    if (pc) sheetPivoteConfig = JSON.parse(pc);
     if (cw) colWidths = JSON.parse(cw);
     if (mg) sheetMerges = JSON.parse(mg);
     if (fz) sheetFreeze = JSON.parse(fz);
@@ -10245,6 +12184,8 @@ function restore() {
     if (rn) rangosNombrados = JSON.parse(rn);
     if (hr) sheetHiddenRows = JSON.parse(hr);
     if (hc) sheetHiddenCols = JSON.parse(hc);
+    if (gr) sheetGroupsRow = JSON.parse(gr);
+    if (gc) sheetGroupsCol = JSON.parse(gc);
     if (mc) macros = JSON.parse(mc);
     if (sp) sheetSparklines = JSON.parse(sp);
     if (sl) sheetSlicers = JSON.parse(sl);
@@ -10252,8 +12193,12 @@ function restore() {
     if (ca) sheetCondFormatsAvanzado = JSON.parse(ca);
     if (ct) sheetControles = JSON.parse(ct);
     if (vn) sheetValidacionNativa = JSON.parse(vn);
+    if (atf) sheetAutoFiltro = JSON.parse(atf);
+    if (cde) sheetCeldasDesbloqueadas = JSON.parse(cde);
+    if (vst) vistasGuardadas = JSON.parse(vst);
     if (zm) zoomLevel = parseInt(zm) || 100;
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
+    if (lg) logoPdfDataUrl = lg;
   } catch (e) {}
 }
 
@@ -11176,6 +13121,102 @@ document.getElementById('escAgregarBtn').addEventListener('click', function () {
   crearEscenario(currentRangeBounds());
 });
 
+// ── Vistas guardadas (filtro + zoom + selección, con nombre) ──
+function aplicarVistaGuardada(id) {
+  var vista = vistasGuardadas.find(function (v) { return v.id === id; });
+  if (!vista) return;
+  if (sheets.indexOf(vista.hoja) === -1) { alert('La hoja "' + vista.hoja + '" de esta vista ya no existe (se habrá borrado o renombrado).'); return; }
+  activeSheet = vista.hoja;
+  sheetAutoFiltro[activeSheet] = vista.autoFiltro ? JSON.parse(JSON.stringify(vista.autoFiltro)) : null;
+  zoomLevel = vista.zoom || 100;
+  buildTable();
+  applyZoom();
+  if (vista.seleccion) {
+    var idA = cellId(vista.seleccion.minR, vista.seleccion.minC);
+    var idB = cellId(vista.seleccion.maxR, vista.seleccion.maxC);
+    selRangeStart = idA; selRangeEnd = idB;
+    highlightRange(idA, idB);
+    var el = document.getElementById('cell_' + idA);
+    if (el) { el.scrollIntoView({ block: 'center', inline: 'center' }); el.focus(); }
+  }
+  document.getElementById('vistasOverlay').classList.remove('show');
+  document.getElementById('saveStatus').textContent = '✓ Vista "' + vista.nombre + '" aplicada';
+}
+function renderVistasList() {
+  var wrap = document.getElementById('vistasList');
+  if (!vistasGuardadas.length) { wrap.innerHTML = '<div style="padding:10px;color:#888;">Todavía no guardaste ninguna vista.</div>'; return; }
+  var html = '';
+  vistasGuardadas.forEach(function (v) {
+    var detalle = v.hoja + ' · zoom ' + (v.zoom || 100) + '%' + (v.autoFiltro ? ' · con autofiltro' : '');
+    html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;"><b>' + escHtml(v.nombre) + '</b>' +
+      '<div style="display:flex;gap:4px;"><button class="vistaAplicarBtn" data-id="' + v.id + '" style="padding:6px 9px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;">▶</button>' +
+      '<button class="vistaEliminarBtn" data-id="' + v.id + '" style="padding:6px 9px;border-radius:6px;background:#dc2626;color:#fff;border:none;">🗑</button></div></div>' +
+      '<div style="color:#888;font-size:11px;">' + escHtml(detalle) + '</div></div>';
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.vistaAplicarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () { aplicarVistaGuardada(btn.dataset.id); });
+  });
+  wrap.querySelectorAll('.vistaEliminarBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (!confirm('¿Eliminar esta vista guardada?')) return;
+      vistasGuardadas = vistasGuardadas.filter(function (v) { return v.id !== btn.dataset.id; });
+      autoSave();
+      renderVistasList();
+    });
+  });
+}
+document.getElementById('btnVistas').addEventListener('click', function () {
+  document.getElementById('vistasOverlay').classList.add('show');
+  renderVistasList();
+});
+document.getElementById('vistasClose').addEventListener('click', function () {
+  document.getElementById('vistasOverlay').classList.remove('show');
+});
+document.getElementById('vistaGuardarBtn').addEventListener('click', function () {
+  var nombre = prompt('¿Cómo se llama esta vista?', activeSheet + ' - ' + new Date().toLocaleDateString('es-CR'));
+  if (!nombre) return;
+  var bounds = currentRangeBounds();
+  vistasGuardadas.push({
+    id: 'vista_' + Date.now(),
+    nombre: nombre,
+    hoja: activeSheet,
+    zoom: zoomLevel,
+    autoFiltro: sheetAutoFiltro[activeSheet] ? JSON.parse(JSON.stringify(sheetAutoFiltro[activeSheet])) : null,
+    seleccion: bounds ? { minR: bounds.minR, minC: bounds.minC, maxR: bounds.maxR, maxC: bounds.maxC } : null,
+  });
+  autoSave();
+  renderVistasList();
+  document.getElementById('saveStatus').textContent = '✓ Vista "' + nombre + '" guardada';
+});
+
+// ── Permitir editar ciertas celdas aunque la hoja esté protegida ──
+document.getElementById('raDesbloquearCeldas').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero la celda o el rango que querés dejar editable.'); return; }
+  snapshot();
+  if (!sheetCeldasDesbloqueadas[activeSheet]) sheetCeldasDesbloqueadas[activeSheet] = [];
+  var lista = sheetCeldasDesbloqueadas[activeSheet];
+  // Si la celda de arriba-a-la-izquierda del rango ya está desbloqueada, el
+  // botón hace lo contrario (volverla a bloquear) — así un mismo botón
+  // sirve para marcar y para desmarcar.
+  var idEsquina = cellId(bounds.minR, bounds.minC);
+  var vaADesbloquear = lista.indexOf(idEsquina) === -1;
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var id = cellId(r, c);
+      var idx = lista.indexOf(id);
+      if (vaADesbloquear) { if (idx === -1) lista.push(id); }
+      else { if (idx !== -1) lista.splice(idx, 1); }
+    }
+  }
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  document.getElementById('saveStatus').textContent = vaADesbloquear
+    ? '🔓 Esta celda queda editable aunque protejás la hoja'
+    : '🔒 Esta celda vuelve a bloquearse con el resto de la hoja';
+  buildTable(); autoSave();
+});
 // ── Agrupar/ocultar filas y columnas ──
 document.getElementById('raOcultarFilas').addEventListener('click', function () {
   var bounds = currentRangeBounds();
@@ -11198,6 +13239,109 @@ document.getElementById('raOcultarCols').addEventListener('click', function () {
   }
   document.getElementById('rangeActionsBar').classList.remove('show');
   buildTable(); autoSave();
+});
+document.getElementById('raAutofit').addEventListener('click', function () {
+  var bounds = currentRangeBounds();
+  if (!bounds) { alert('Seleccioná primero las columnas a autoajustar (tocá la letra de columna, o arrastrá sobre varias).'); return; }
+  snapshot();
+  for (var c = bounds.minC; c <= bounds.maxC; c++) autoajustarColumna(c);
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+});
+document.getElementById('raAgruparFilas').addEventListener('click', function () {
+  agruparFilas();
+  document.getElementById('rangeActionsBar').classList.remove('show');
+});
+
+// ── Autofiltro por columna (flechitas en la fila de encabezados) ──
+document.getElementById('btnAutofiltro').addEventListener('click', function () {
+  snapshot();
+  if (sheetAutoFiltro[activeSheet]) {
+    // Ya estaba activo en esta hoja: lo que hace el botón es apagarlo.
+    sheetAutoFiltro[activeSheet] = null;
+  } else {
+    var bounds = currentRangeBounds();
+    if (!bounds) { alert('Primero seleccioná la fila de encabezados de tu tabla (y, si querés, también las columnas) y volvé a tocar "Autofiltro".'); return; }
+    sheetAutoFiltro[activeSheet] = { fila: bounds.minR, colIni: bounds.minC, colFin: bounds.maxC, filtros: {} };
+  }
+  document.getElementById('rangeActionsBar').classList.remove('show');
+  buildTable(); autoSave();
+});
+var autofiltroColEditando = null;
+document.getElementById('sheetTable').addEventListener('click', function (e) {
+  var btn = e.target.closest('.filtroArrowBtn');
+  if (!btn) return;
+  e.stopPropagation();
+  var c = parseInt(btn.dataset.col);
+  autofiltroColEditando = c;
+  var af = sheetAutoFiltro[activeSheet];
+  if (!af) return;
+  document.getElementById('autofiltroColRef').textContent = colLetter(c);
+  // Valores únicos que aparecen hoy en esa columna (debajo del encabezado),
+  // en el orden en que aparecen — como las listas de filtro de Excel.
+  var ultimaFila = ultimaFilaConDatos(activeSheet);
+  var vistos = {}; var valoresUnicos = [];
+  for (var r = af.fila + 1; r <= ultimaFila; r++) {
+    var v = String(computeValueEnHoja(activeSheet, cellId(r, c)));
+    if (v === '' || vistos[v]) continue;
+    vistos[v] = true; valoresUnicos.push(v);
+  }
+  var excluidos = (af.filtros && af.filtros[c]) || [];
+  var lista = document.getElementById('autofiltroLista');
+  if (!valoresUnicos.length) {
+    lista.innerHTML = '<div style="font-size:12.5px;color:#889;padding:4px 0;">Esta columna no tiene datos todavía.</div>';
+  } else {
+    lista.innerHTML = valoresUnicos.map(function (v, i) {
+      var marcado = excluidos.indexOf(v) === -1;
+      var vEsc = v.replace(/</g, '&lt;');
+      return '<label><input type="checkbox" data-val-idx="' + i + '"' + (marcado ? ' checked' : '') + '>' + (vEsc || '(vacío)') + '</label>';
+    }).join('');
+    lista.dataset.valores = JSON.stringify(valoresUnicos);
+  }
+  document.getElementById('autofiltroOverlay').classList.add('show');
+});
+document.getElementById('autofiltroCancelar').addEventListener('click', function () {
+  document.getElementById('autofiltroOverlay').classList.remove('show');
+});
+document.getElementById('autofiltroTodo').addEventListener('click', function () {
+  document.querySelectorAll('#autofiltroLista input[type="checkbox"]').forEach(function (cb) { cb.checked = true; });
+});
+document.getElementById('autofiltroNinguno').addEventListener('click', function () {
+  document.querySelectorAll('#autofiltroLista input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+});
+document.getElementById('autofiltroAceptar').addEventListener('click', function () {
+  var af = sheetAutoFiltro[activeSheet];
+  if (!af || autofiltroColEditando === null) { document.getElementById('autofiltroOverlay').classList.remove('show'); return; }
+  var lista = document.getElementById('autofiltroLista');
+  var valores = JSON.parse(lista.dataset.valores || '[]');
+  var excluidos = [];
+  document.querySelectorAll('#autofiltroLista input[type="checkbox"]').forEach(function (cb) {
+    if (!cb.checked) excluidos.push(valores[parseInt(cb.dataset.valIdx)]);
+  });
+  snapshot();
+  if (!af.filtros) af.filtros = {};
+  if (excluidos.length) af.filtros[autofiltroColEditando] = excluidos;
+  else delete af.filtros[autofiltroColEditando];
+  document.getElementById('autofiltroOverlay').classList.remove('show');
+  buildTable(); autoSave();
+});
+document.getElementById('autofiltroQuitarCol').addEventListener('click', function () {
+  var af = sheetAutoFiltro[activeSheet];
+  if (af && af.filtros && autofiltroColEditando !== null) {
+    snapshot();
+    delete af.filtros[autofiltroColEditando];
+    autoSave();
+  }
+  document.getElementById('autofiltroOverlay').classList.remove('show');
+  buildTable();
+});
+document.getElementById('raAgruparCols').addEventListener('click', function () {
+  agruparColumnas();
+  document.getElementById('rangeActionsBar').classList.remove('show');
+});
+document.getElementById('raDesagrupar').addEventListener('click', function () {
+  desagruparEnSeleccion();
+  document.getElementById('rangeActionsBar').classList.remove('show');
 });
 document.getElementById('btnMostrarOcultos').addEventListener('click', function () {
   snapshot();
@@ -11286,6 +13430,12 @@ function abrirOnboarding() {
   document.getElementById('onboardingOverlay').classList.add('show');
 }
 document.getElementById('btnAyuda').addEventListener('click', abrirOnboarding);
+document.getElementById('btnAtajos').addEventListener('click', function () {
+  document.getElementById('atajosOverlay').classList.add('show');
+});
+document.getElementById('atajosClose').addEventListener('click', function () {
+  document.getElementById('atajosOverlay').classList.remove('show');
+});
 document.getElementById('onboardingSkip').addEventListener('click', function () {
   document.getElementById('onboardingOverlay').classList.remove('show');
   try { localStorage.setItem('kcn_onboarding_visto', '1'); } catch (e) {}
