@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Matriz Contable CR",
-    "slug": "matriz-contable-cr",
-    "owner": "matrizcontablecrs-team",
+    "slug": "matriz-contable-cr-app-",
+    "owner": "guiscerdas",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -35,7 +35,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "3e03047a-9a69-4e96-b778-52e9a757f1f6"
+        "projectId": "40c054b3-9c47-4a8f-91e1-39d142dbd6bf"
       }
     }
   }
