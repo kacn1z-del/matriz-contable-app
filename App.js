@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { StatusBar } from 'expo-status-bar'
@@ -10,10 +10,12 @@ import CertificadoScreen from './src/screens/CertificadoScreen'
 import ProfileScreen from './src/screens/ProfileScreen'
 import SiboScreen from './src/screens/SiboScreen'
 import SheetEditor from './src/components/SheetEditor'
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import PantallaBloqueo from './src/components/PantallaBloqueo'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, AppState } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './src/services/firebase'
+import { obtenerPreferenciaBloqueo, pedirAutenticacion } from './src/services/bloqueoBiometrico'
 
 const Stack = createNativeStackNavigator()
 
@@ -82,6 +84,17 @@ export default function App() {
   const [usuario, setUsuario] = useState(null)
   const [cargandoSesion, setCargandoSesion] = useState(true)
 
+  // ─── Bloqueo biométrico (Face ID/Touch ID/huella/PIN) ───────────
+  // bloqueada: si la app está TAPADA en este momento esperando verificación.
+  // La preferencia en sí (si el bloqueo está activado) se guarda en
+  // AsyncStorage (ProfileScreen la cambia) y siempre se relee "fresca"
+  // en el momento — así, si el usuario la activa o desactiva durante la
+  // misma sesión, el cambio aplica de inmediato sin tener que cerrar y
+  // volver a abrir la app.
+  const [bloqueada, setBloqueada] = useState(false)
+  const estadoAppAnterior = useRef(AppState.currentState)
+  const verificandoAlVolver = useRef(false)
+
   useEffect(() => {
     const dejarDeEscuchar = onAuthStateChanged(auth, (user) => {
       setUsuario(user)
@@ -90,6 +103,40 @@ export default function App() {
     return dejarDeEscuchar
   }, [])
 
+  // Si hay sesión y la preferencia está activa, bloquea la app de
+  // entrada (recién abierta = se trata igual que "volver de segundo plano").
+  useEffect(() => {
+    if (cargandoSesion || !usuario) return
+    let vigente = true
+    obtenerPreferenciaBloqueo().then((activo) => {
+      if (vigente && activo) setBloqueada(true)
+    })
+    return () => { vigente = false }
+  }, [cargandoSesion, usuario])
+
+  // Vuelve a bloquear cada vez que la app pasa de segundo plano
+  // ("background"/"inactive") a primer plano ("active") — el caso real
+  // de alguien tomando el teléfono ya desbloqueado y reabriendo la app.
+  useEffect(() => {
+    const escuchador = AppState.addEventListener('change', async (siguienteEstado) => {
+      var estadoAnterior = estadoAppAnterior.current
+      estadoAppAnterior.current = siguienteEstado
+      var volvioAlFrente = /inactive|background/.test(estadoAnterior) && siguienteEstado === 'active'
+      if (!volvioAlFrente || !usuario || verificandoAlVolver.current) return
+      var activo = await obtenerPreferenciaBloqueo()
+      if (activo) setBloqueada(true)
+    })
+    return () => escuchador.remove()
+  }, [usuario])
+
+  async function intentarDesbloquear() {
+    verificandoAlVolver.current = true
+    const exito = await pedirAutenticacion()
+    verificandoAlVolver.current = false
+    if (exito) setBloqueada(false)
+    return exito
+  }
+
   return (
     <SafeAreaProvider>
       <LangProvider>
@@ -97,7 +144,11 @@ export default function App() {
         {cargandoSesion ? (
           <CargandoScreen />
         ) : usuario ? (
-          <AppNavigator />
+          bloqueada ? (
+            <PantallaBloqueo onIntentar={intentarDesbloquear} />
+          ) : (
+            <AppNavigator />
+          )
         ) : (
           <LoginScreen />
         )}
