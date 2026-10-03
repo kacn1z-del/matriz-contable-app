@@ -472,12 +472,12 @@ const SHEET_HTML = `<!DOCTYPE html>
   #tipoCambioHead h3, #haciendaHead h3 { color: #fff; margin: 0; font-size: 13px; }
   #tipoCambioHead button, #haciendaHead button { background: none; border: none; color: #fff; font-size: 18px; }
   #tipoCambioModal code, #haciendaModal code { background: #f2f9ea; padding: 1px 4px; border-radius: 4px; }
-  #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay, #vistasOverlay, #atajosOverlay, #notaDebitoOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
-  #buscarObjetivoOverlay.show, #tablaDatosOverlay.show, #escenariosOverlay.show, #vistasOverlay.show, #atajosOverlay.show, #notaDebitoOverlay.show { display: flex; }
-  #buscarObjetivoModal, #tablaDatosModal, #escenariosModal, #vistasModal, #atajosModal, #notaDebitoModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto; }
-  #buscarObjetivoHead, #tablaDatosHead, #escenariosHead, #vistasHead, #atajosHead, #notaDebitoHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
-  #buscarObjetivoHead h3, #tablaDatosHead h3, #escenariosHead h3, #vistasHead h3, #atajosHead h3, #notaDebitoHead h3 { color: #fff; margin: 0; font-size: 13px; }
-  #buscarObjetivoHead button, #tablaDatosHead button, #escenariosHead button, #vistasHead button, #atajosHead button, #notaDebitoHead button { background: none; border: none; color: #fff; font-size: 18px; }
+  #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay, #vistasOverlay, #atajosOverlay, #notaDebitoOverlay, #mensajeReceptorOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
+  #buscarObjetivoOverlay.show, #tablaDatosOverlay.show, #escenariosOverlay.show, #vistasOverlay.show, #atajosOverlay.show, #notaDebitoOverlay.show, #mensajeReceptorOverlay.show { display: flex; }
+  #buscarObjetivoModal, #tablaDatosModal, #escenariosModal, #vistasModal, #atajosModal, #notaDebitoModal, #mensajeReceptorModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto; }
+  #buscarObjetivoHead, #tablaDatosHead, #escenariosHead, #vistasHead, #atajosHead, #notaDebitoHead, #mensajeReceptorHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #245f09; flex-shrink: 0; }
+  #buscarObjetivoHead h3, #tablaDatosHead h3, #escenariosHead h3, #vistasHead h3, #atajosHead h3, #notaDebitoHead h3, #mensajeReceptorHead h3 { color: #fff; margin: 0; font-size: 13px; }
+  #buscarObjetivoHead button, #tablaDatosHead button, #escenariosHead button, #vistasHead button, #atajosHead button, #notaDebitoHead button, #mensajeReceptorHead button { background: none; border: none; color: #fff; font-size: 18px; }
   #buscarObjetivoModal > div:last-child, #tablaDatosModal > div:last-child { padding-bottom: 14px; }
   #escenariosList, #vistasList { overflow-y: auto; padding: 6px 10px; }
   #atajosList { padding: 4px 14px 16px; }
@@ -623,7 +623,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
     #noteOverlay, #formatOverlay, #tabMenuOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay, #pdfExportOverlay, #autofiltroOverlay,
     #macrosOverlay, #segmentadoresOverlay, #tipoCambioOverlay, #haciendaOverlay,
-    #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay, #vistasOverlay, #atajosOverlay, #notaDebitoOverlay { display: none !important; }
+    #buscarObjetivoOverlay, #tablaDatosOverlay, #escenariosOverlay, #vistasOverlay, #atajosOverlay, #notaDebitoOverlay, #mensajeReceptorOverlay { display: none !important; }
     #gridWrap { overflow: visible !important; height: auto !important; }
     body, html { overflow: visible !important; height: auto !important; background: #fff !important; }
     .cell.has-note::after, .cell.has-attachment::before, .cell.has-validation::after { display: none; }
@@ -715,6 +715,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="btnValidacion">✅ Validación</button>
     <button id="btnMerge">⛶ Combinar</button>
     <button id="btnOrdenar">⇅ Ordenar</button>
+    <button id="btnQuitarDuplicados">🧹 Quitar duplicados</button>
     <button id="btnFillColor" style="background:#c8960c;">🎨 Relleno</button>
     <button id="btnFontColor" style="background:#333;">A Color</button>
     <button id="btnFreeze">❄ Congelar</button>
@@ -817,6 +818,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="raFormat">🔢 Formato</button>
     <button id="raMerge">⛶ Combinar</button>
     <button id="raOrdenar">⇅ Ordenar</button>
+    <button id="raQuitarDuplicados">🧹 Quitar duplicados</button>
     <button id="raFillColor" style="background:#c8960c;">🎨 Relleno</button>
     <button id="raFontColor" style="background:#333;">A Color</button>
     <button id="raCut">✂️ Cortar</button>
@@ -1235,6 +1237,16 @@ const SHEET_HTML = `<!DOCTYPE html>
         </div>
       </div>
 
+      <div class="feRow2">
+        <div class="feField"><label>Condición de venta</label>
+          <select id="fe-condicion-venta">
+            <option value="01">Contado</option>
+            <option value="02">Crédito</option>
+          </select>
+        </div>
+        <div class="feField" id="fe-plazo-credito-wrap" style="display:none;"><label>Plazo de crédito (días)</label><input id="fe-plazo-credito" type="number" min="1" step="1" value="30"></div>
+      </div>
+
       <div class="feCard">
         <div class="feCardTitle">EMISOR</div>
         <div class="feField"><label>Nombre / Razón Social</label><input id="fe-emisor-nombre" placeholder="Mi Empresa S.A." /></div>
@@ -1276,6 +1288,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     </div>
     <div id="feFooter">
       <button id="feBtnHistorial">🕐 Historial</button>
+      <button id="feBtnMensajeReceptor" style="background:#1e5c99;">📨 Recibida</button>
       <button id="feBtnReportes" style="background:#5b3e96;">📊 Reportes</button>
       <button id="feBtnPlantillas" style="background:#c8960c;">📋 Plantillas</button>
       <button id="feBtnClear">Limpiar</button>
@@ -1548,6 +1561,42 @@ const SHEET_HTML = `<!DOCTYPE html>
     <div class="row" style="padding:0 14px 14px;">
       <button class="cancel" id="ndCancelar">Cancelar</button>
       <button class="ok" id="ndEmitir">Emitir nota de débito</button>
+    </div>
+  </div>
+</div>
+
+<div id="mensajeReceptorOverlay">
+  <div id="mensajeReceptorModal">
+    <div id="mensajeReceptorHead">
+      <h3>📨 Mensaje Receptor</h3>
+      <button id="mensajeReceptorClose">✕</button>
+    </div>
+    <div style="padding:8px 14px 0;font-size:11.5px;color:#6b8f48;">
+      Confirmále a Hacienda que aceptás, aceptás parcialmente, o rechazás una factura o tiquete que RECIBISTE de otra persona (no una que vos emitiste). Escribí los datos tal como vienen en el comprobante que te llegó.
+    </div>
+    <div style="padding:10px 14px;">
+      <span class="field-label">Clave del comprobante recibido (50 dígitos)</span>
+      <input id="mrClave" type="text" placeholder="50601012025..." style="width:100%;padding:8px;border:1px solid #cce9ae;border-radius:8px;font-size:12.5px;box-sizing:border-box;">
+      <div class="feRow2" style="margin-top:8px;">
+        <div class="feField"><label>Cédula de quien te facturó</label><input id="mrCedulaEmisor" placeholder="3-101-000000"></div>
+        <div class="feField"><label>Fecha de emisión</label><input id="mrFecha" type="date"></div>
+      </div>
+      <div class="feRow2">
+        <div class="feField"><label>Monto total de la factura</label><input id="mrTotal" type="number" min="0" step="0.01" value="0"></div>
+        <div class="feField"><label>Monto total de IVA (si aplica)</label><input id="mrImpuesto" type="number" min="0" step="0.01" value="0"></div>
+      </div>
+      <span class="field-label" style="margin-top:8px;display:block;">Tu respuesta</span>
+      <select id="mrMensaje" style="width:100%;padding:8px;border:1px solid #cce9ae;border-radius:8px;font-size:12.5px;">
+        <option value="1">✅ Aceptación total</option>
+        <option value="2">🟡 Aceptación parcial</option>
+        <option value="3">❌ Rechazo</option>
+      </select>
+      <span class="field-label" style="margin-top:8px;display:block;">Detalle / motivo (recomendado si no es aceptación total)</span>
+      <textarea id="mrDetalle" placeholder="Ej: Se recibió la mercadería incompleta" style="width:100%;min-height:46px;padding:8px;border:1px solid #cce9ae;border-radius:8px;font-size:12.5px;box-sizing:border-box;font-family:inherit;"></textarea>
+    </div>
+    <div class="row" style="padding:0 14px 14px;">
+      <button class="cancel" id="mrCancelar">Cancelar</button>
+      <button class="ok" id="mrEnviar">Enviar a Hacienda</button>
     </div>
   </div>
 </div>
@@ -6063,6 +6112,87 @@ function ordenarRango() {
 document.getElementById('btnOrdenar').addEventListener('click', ordenarRango);
 document.getElementById('raOrdenar').addEventListener('click', ordenarRango);
 
+// ══════════════════════════════════════════════
+// QUITAR DUPLICADOS
+// ══════════════════════════════════════════════
+// Compara cada fila del rango seleccionado usando TODAS sus columnas (no
+// deja elegir columnas clave, para que sea de un solo toque) y borra las
+// filas que ya aparecieron antes, recorriendo las que quedan hacia
+// arriba dentro del mismo rango — igual que "Quitar duplicados" de
+// Excel/Sheets, pero sin tocar columnas fuera del rango seleccionado.
+function quitarDuplicadosRango() {
+  var bounds = currentRangeBounds();
+  if (!bounds || bounds.minR === bounds.maxR) {
+    alert('Primero seleccioná un rango de al menos 2 filas (arrastrá sobre las celdas) y volvé a tocar "Quitar duplicados".');
+    return;
+  }
+
+  snapshot();
+  var huboFormulas = false;
+  var filas = [];
+  for (var r = bounds.minR; r <= bounds.maxR; r++) {
+    var fila = { valores: {}, formatos: {} };
+    var firmaPartes = [];
+    for (var c = bounds.minC; c <= bounds.maxC; c++) {
+      var id = cellId(r, c);
+      var crudo = getRaw(id);
+      var valorFinal;
+      if (typeof crudo === 'string' && crudo.charAt(0) === '=') {
+        // Fórmula: se congela al valor ya calculado — mover/borrar filas
+        // le quitaría sentido como fórmula "viva" (igual que al ordenar).
+        huboFormulas = true;
+        valorFinal = computeValue(id);
+      } else {
+        valorFinal = crudo;
+      }
+      fila.valores[c] = valorFinal;
+      fila.formatos[c] = (sheetFormats[activeSheet] && sheetFormats[activeSheet][id])
+        ? JSON.parse(JSON.stringify(sheetFormats[activeSheet][id])) : null;
+      firmaPartes.push(valorFinal === undefined || valorFinal === null ? '' : String(valorFinal));
+    }
+    fila.firma = firmaPartes.join('\u0001');
+    filas.push(fila);
+  }
+
+  var vistos = {};
+  var filasUnicas = [];
+  filas.forEach(function (fila) {
+    if (vistos[fila.firma]) return; // ya había una fila idéntica antes: se descarta
+    vistos[fila.firma] = true;
+    filasUnicas.push(fila);
+  });
+  var eliminadas = filas.length - filasUnicas.length;
+
+  if (!eliminadas) {
+    document.getElementById('saveStatus').textContent = 'No había filas duplicadas en el rango';
+    return;
+  }
+
+  if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {};
+  var totalFilasRango = bounds.maxR - bounds.minR + 1;
+  for (var i = 0; i < totalFilasRango; i++) {
+    var rDest = bounds.minR + i;
+    var filaOrigen = filasUnicas[i]; // undefined en las filas que quedan "de más" al final
+    for (var c2 = bounds.minC; c2 <= bounds.maxC; c2++) {
+      var idDest = cellId(rDest, c2);
+      var val = filaOrigen ? filaOrigen.valores[c2] : '';
+      if (val === '' || val === undefined || val === null) delete sheetData[activeSheet][idDest];
+      else sheetData[activeSheet][idDest] = val;
+      var fmt = filaOrigen ? filaOrigen.formatos[c2] : null;
+      if (fmt) sheetFormats[activeSheet][idDest] = fmt;
+      else delete sheetFormats[activeSheet][idDest];
+    }
+  }
+
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = eliminadas + (eliminadas === 1 ? ' fila duplicada eliminada' : ' filas duplicadas eliminadas');
+  if (huboFormulas) {
+    alert('Se quitaron ' + eliminadas + (eliminadas === 1 ? ' fila duplicada.' : ' filas duplicadas.') + '\\n\\nOjo: algunas celdas del rango tenían fórmulas (=...) — quedaron convertidas a su valor calculado, porque mover/borrar filas les haría perder sentido como fórmulas vivas.');
+  }
+}
+document.getElementById('btnQuitarDuplicados').addEventListener('click', quitarDuplicadosRango);
+document.getElementById('raQuitarDuplicados').addEventListener('click', quitarDuplicadosRango);
+
 // ── Accesos rápidos de color (relleno / fuente) sin abrir el modal ──
 // completo de Formato. Usan el mismo <input type="color"> nativo del
 // celular (se abre el selector de color del sistema), y aplican el
@@ -6672,6 +6802,8 @@ function limpiarFactura() {
   agregarLineaFactura();
   var numEl = document.getElementById('fe-num');
   if (numEl) numEl.value = siguienteConsecutivo();
+  var condEl = document.getElementById('fe-condicion-venta');
+  if (condEl) { condEl.value = '01'; document.getElementById('fe-plazo-credito-wrap').style.display = 'none'; }
 }
 
 // ── Historial de facturas (localStorage) ──
@@ -6910,7 +7042,10 @@ document.getElementById('reportesBtnExportar').addEventListener('click', async f
   ordenado.forEach(function (h) {
     var fechaLegible = '';
     try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR'); } catch (e) { fechaLegible = h.fecha || ''; }
-    var tipo = h.tipoDocumento === 'notaCredito' ? 'Nota de crédito' : h.tipoDocumento === 'notaDebito' ? 'Nota de débito' : (h.esTiquete ? 'Tiquete' : 'Factura');
+    var tipo = h.tipoDocumento === 'notaCredito' ? 'Nota de crédito' : h.tipoDocumento === 'notaDebito' ? 'Nota de débito' :
+      h.tipoDocumento === 'mensajeReceptor' ? ('Mensaje receptor (' + (h.mensajeReceptorTipo === '1' ? 'aceptación' : h.mensajeReceptorTipo === '2' ? 'aceptación parcial' : 'rechazo') + ')') :
+      h.tipoDocumento === 'reciboPago' ? 'Recibo de pago' :
+      (h.esTiquete ? 'Tiquete' : 'Factura');
     filas.push([
       fechaLegible, tipo, h.numeroConsecutivo || '', h.clave || '', h.ambiente || '',
       h.estado || '', h.receptorNombre || '', h.receptorCedula || '',
@@ -6927,7 +7062,14 @@ document.getElementById('reportesBtnExportar').addEventListener('click', async f
 
 function renderizarReportes() {
   var lista = document.getElementById('reportesList');
-  var aceptados = historialHaciendaCache.filter(function (h) { return h.estado === 'aceptado'; });
+  // Los mensajes receptor no son plata facturada ni acreditada — son solo
+  // la confirmación de un comprobante que este usuario RECIBIÓ — así que
+  // no entran en el reporte de ingresos (ya tienen su propio rastro en el
+  // historial general y en el CSV de respaldo). Los recibos de pago (REP)
+  // tampoco son un ingreso NUEVO — la factura a crédito ya se contó como
+  // facturado cuando se emitió; el REP solo confirma que se cobró, así
+  // que sumarlo otra vez duplicaría el ingreso.
+  var aceptados = historialHaciendaCache.filter(function (h) { return h.estado === 'aceptado' && h.tipoDocumento !== 'mensajeReceptor' && h.tipoDocumento !== 'reciboPago'; });
   if (!aceptados.length) {
     lista.innerHTML = '<div id="feHistEmptyH">Todavía no hay facturas aceptadas para reportar.</div>';
     return;
@@ -7070,8 +7212,13 @@ function renderHistorialHacienda() {
   // crédito del historial — así se puede avisar en vez de dejar anular
   // la misma factura dos veces por accidente.
   var clavesYaAnuladas = {};
+  // Igual que con las notas de crédito: un set con las claves de las
+  // facturas a crédito que YA tienen un Recibo Electrónico de Pago
+  // encima, para no ofrecer "Marcar pagada" dos veces sobre la misma.
+  var clavesYaConRep = {};
   historialHaciendaCache.forEach(function (h) {
     if (h.tipoDocumento === 'notaCredito' && h.claveReferenciada) clavesYaAnuladas[h.claveReferenciada] = true;
+    if (h.tipoDocumento === 'reciboPago' && h.claveReferenciada) clavesYaConRep[h.claveReferenciada] = true;
   });
 
   var html = '';
@@ -7080,27 +7227,40 @@ function renderHistorialHacienda() {
     try { fechaLegible = new Date(h.fecha).toLocaleString('es-CR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { fechaLegible = h.fecha || ''; }
     var esNotaCredito = h.tipoDocumento === 'notaCredito';
     var esNotaDebito = h.tipoDocumento === 'notaDebito';
+    var esMensajeReceptor = h.tipoDocumento === 'mensajeReceptor';
+    var esReciboPago = h.tipoDocumento === 'reciboPago';
     var yaAnulada = clavesYaAnuladas[h.clave];
-    var etiquetaTipo = esNotaCredito ? '🔴 Nota de crédito' : esNotaDebito ? '🟠 Nota de débito' : (h.esTiquete ? 'Tiquete' : 'Factura');
-    var puedeAnular = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito && !yaAnulada;
+    var yaConRep = clavesYaConRep[h.clave];
+    var etiquetaMensajeReceptor = h.mensajeReceptorTipo === '1' ? '📨 Aceptación enviada' : h.mensajeReceptorTipo === '2' ? '📨 Aceptación parcial enviada' : '📨 Rechazo enviado';
+    var etiquetaTipo = esNotaCredito ? '🔴 Nota de crédito' : esNotaDebito ? '🟠 Nota de débito' : esMensajeReceptor ? etiquetaMensajeReceptor : esReciboPago ? '🧾 Recibo de pago' : (h.esTiquete ? 'Tiquete' : 'Factura');
+    var puedeAnular = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaAnulada;
     // Se puede cargar un cargo adicional sobre cualquier Factura/Tiquete
     // ya aceptado — incluso si ya tiene otra nota de débito encima (por
     // ejemplo, dos ajustes distintos en fechas distintas) — pero no
-    // sobre una nota de crédito o de débito (esas son ajustes, no el
-    // documento original que se estaría recargando).
-    var puedeDebitar = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito;
+    // sobre una nota de crédito, de débito, un mensaje receptor, ni un
+    // recibo de pago (esos son ajustes o confirmaciones, no el documento
+    // original a recargar).
+    var puedeDebitar = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago;
+    // Solo se puede marcar como "pagada" (emitir el REP) una factura a
+    // crédito ('02') ya aceptada por Hacienda, que no esté anulada y que
+    // todavía no tenga su propio recibo de pago.
+    var puedeMarcarPagada = h.estado === 'aceptado' && h.condicionVenta === '02' &&
+      !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaAnulada && !yaConRep;
 
     html += '<div class="feHistHItem">' +
       '<div class="fhhTop">' +
       '<div class="fhhInfo"><div class="fhhNum">' + (h.numeroConsecutivo || h.clave || '—') + '</div>' +
-      '<div class="fhhMeta">' + etiquetaTipo + ' · ' + (h.receptorNombre || (h.esTiquete ? 'Sin receptor' : 'Sin receptor')) + ' · ₡' + (Number(h.total || 0).toLocaleString('es-CR')) + ' · ' + fechaLegible + '</div></div>' +
+      '<div class="fhhMeta">' + etiquetaTipo + ' · ' + ((esMensajeReceptor || esReciboPago) ? ('Comprobante ' + String(h.claveReferenciada || '').slice(0, 10) + '...') : (h.receptorNombre || (h.esTiquete ? 'Sin receptor' : 'Sin receptor'))) + ' · ₡' + (Number(h.total || 0).toLocaleString('es-CR')) + ' · ' + fechaLegible + '</div></div>' +
       '<span class="fhhEstado ' + (h.estado || 'pendiente') + '">' + (h.estado === 'aceptado' ? 'Aceptada' : h.estado === 'rechazado' ? 'Rechazada' : 'Pendiente') + '</span>' +
       '</div>' +
       (yaAnulada ? '<div style="font-size:10.5px;color:#b02a2a;margin-top:2px;">⚠️ Ya tiene una nota de crédito aplicada</div>' : '') +
+      (h.condicionVenta === '02' && !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaConRep && h.estado === 'aceptado' ? '<div style="font-size:10.5px;color:#9a6700;margin-top:2px;">🕒 Venta a crédito — todavía sin cobrar</div>' : '') +
+      (yaConRep ? '<div style="font-size:10.5px;color:#1e7e34;margin-top:2px;">✓ Ya tiene un recibo de pago</div>' : '') +
       '<div class="fhhBtns">' +
       '<button data-idx="' + i + '" data-accion="cargar">📄 Cargar</button>' +
       (h.receptorEmail ? '<button data-idx="' + i + '" data-accion="correo" class="fhhBtnCorreo">✉️ Reenviar</button>' : '') +
       (puedeDebitar ? '<button data-idx="' + i + '" data-accion="debitar" class="fhhBtnDebitar">💰 N. Débito</button>' : '') +
+      (puedeMarcarPagada ? '<button data-idx="' + i + '" data-accion="pagar" class="fhhBtnPagar">🧾💰 Marcar pagada</button>' : '') +
       (puedeAnular ? '<button data-idx="' + i + '" data-accion="anular" class="fhhBtnAnular">🗑️ Anular</button>' : '') +
       '</div></div>';
   });
@@ -7111,6 +7271,7 @@ function renderHistorialHacienda() {
       if (btn.dataset.accion === 'cargar') cargarRegistroHaciendaEnFormulario(registro);
       else if (btn.dataset.accion === 'correo') reenviarCorreoDesdeHistorial(registro);
       else if (btn.dataset.accion === 'debitar') abrirNotaDebito(registro);
+      else if (btn.dataset.accion === 'pagar') marcarFacturaComoPagada(registro);
       else anularFacturaConNotaCredito(registro);
     });
   });
@@ -7324,6 +7485,163 @@ document.getElementById('ndEmitir').addEventListener('click', async function () 
   }
 });
 
+// ══════════════════════════════════════════════
+// MENSAJE RECEPTOR — aceptar/rechazar un comprobante que ESTE usuario
+// recibió de otra persona (el lado contrario de emitir una factura)
+// ══════════════════════════════════════════════
+document.getElementById('feBtnMensajeReceptor').addEventListener('click', function () {
+  document.getElementById('mrClave').value = '';
+  document.getElementById('mrCedulaEmisor').value = '';
+  document.getElementById('mrFecha').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('mrTotal').value = 0;
+  document.getElementById('mrImpuesto').value = 0;
+  document.getElementById('mrMensaje').value = '1';
+  document.getElementById('mrDetalle').value = '';
+  document.getElementById('mensajeReceptorOverlay').classList.add('show');
+});
+document.getElementById('mensajeReceptorClose').addEventListener('click', function () { document.getElementById('mensajeReceptorOverlay').classList.remove('show'); });
+document.getElementById('mrCancelar').addEventListener('click', function () { document.getElementById('mensajeReceptorOverlay').classList.remove('show'); });
+
+document.getElementById('mrEnviar').addEventListener('click', async function () {
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+
+  var claveLimpia = (document.getElementById('mrClave').value || '').replace(/[^0-9]/g, '');
+  var cedulaEmisorLimpia = (document.getElementById('mrCedulaEmisor').value || '').replace(/[^0-9]/g, '');
+  var fecha = document.getElementById('mrFecha').value;
+  var total = parseFloat(document.getElementById('mrTotal').value) || 0;
+  var impuesto = parseFloat(document.getElementById('mrImpuesto').value) || 0;
+  var mensajeCod = document.getElementById('mrMensaje').value;
+  var detalle = document.getElementById('mrDetalle').value || '';
+
+  if (claveLimpia.length !== 50) {
+    alert('La clave del comprobante recibido debe tener exactamente 50 dígitos. Revisala — normalmente viene en el XML o en el PDF que te mandó quien te facturó.');
+    return;
+  }
+  if (!cedulaEmisorLimpia) {
+    alert('Falta la cédula de quien te facturó.');
+    return;
+  }
+  if (mensajeCod !== '1' && !detalle.trim()) {
+    if (!confirm('No escribiste un detalle/motivo. ¿Confirmás enviar la ' + (mensajeCod === '2' ? 'aceptación parcial' : 'rechazo') + ' sin detalle?')) return;
+  }
+
+  var etiquetaMensaje = mensajeCod === '1' ? 'Aceptación total' : mensajeCod === '2' ? 'Aceptación parcial' : 'Rechazo';
+  if (!confirm(
+    '¿Confirmás enviar a Hacienda "' + etiquetaMensaje + '" sobre el comprobante ' + claveLimpia.slice(0, 10) + '...?\\n\\nEsto lo firma con tu certificado real y lo envía a Hacienda — no se puede deshacer.'
+  )) return;
+
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Enviando mensaje receptor...';
+
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(MENSAJE_RECEPTOR_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: idToken,
+        claveRecibida: claveLimpia,
+        cedulaEmisorRecibido: cedulaEmisorLimpia,
+        fechaEmisionRecibida: fecha ? new Date(fecha).toISOString() : undefined,
+        totalFacturaRecibida: total,
+        montoTotalImpuestoRecibido: impuesto,
+        mensaje: mensajeCod,
+        detalleMensaje: detalle,
+      }),
+    });
+    var datos = await respuesta.json();
+    if (!respuesta.ok) {
+      statusEl.textContent = '✗ Error al enviar';
+      alert('No se pudo enviar el mensaje receptor: ' + (datos.error || 'error desconocido'));
+      return;
+    }
+    document.getElementById('mensajeReceptorOverlay').classList.remove('show');
+    if (datos.aceptado === true) {
+      statusEl.textContent = '✓ Mensaje receptor aceptado';
+      alert('✅ Hacienda recibió y aceptó tu "' + etiquetaMensaje + '".');
+    } else if (datos.pendiente) {
+      statusEl.textContent = '⏳ Mensaje receptor pendiente';
+      alert('⏳ ' + datos.mensajePendiente);
+    } else {
+      statusEl.textContent = '✗ Mensaje receptor rechazado';
+      alert('❌ Hacienda rechazó el mensaje:\\n\\n' + (datos.motivoRechazo || 'motivo no especificado'));
+    }
+  } catch (err) {
+    statusEl.textContent = '✗ Error al enviar';
+    alert('No se pudo contactar el servicio: ' + err.message);
+  }
+});
+
+// ══════════════════════════════════════════════
+// RECIBO ELECTRÓNICO DE PAGO (REP) — confirma ante Hacienda que una
+// factura vendida "a crédito" ya se cobró. No anula ni reemplaza la
+// factura original, solo la marca como pagada.
+// ══════════════════════════════════════════════
+async function marcarFacturaComoPagada(registro) {
+  if (!registro) return;
+  if (!currentUser) { alert('Iniciá sesión primero.'); return; }
+
+  var medioPago = prompt(
+    '¿Cómo se cobró esta factura?\\n\\n01 = Efectivo\\n02 = Tarjeta\\n03 = Cheque\\n04 = Transferencia\\n05 = Recaudado por terceros\\n99 = Otro',
+    '01'
+  );
+  if (medioPago === null) return; // Canceló.
+  medioPago = (medioPago || '').replace(/[^0-9]/g, '').padStart(2, '0');
+  if (!['01', '02', '03', '04', '05', '99'].includes(medioPago)) {
+    alert('Código de medio de pago no válido. Usá 01, 02, 03, 04, 05 o 99.');
+    return;
+  }
+
+  if (!confirm(
+    '¿Confirmás marcar como PAGADA la factura ' + (registro.numeroConsecutivo || registro.clave) + ' por ₡' +
+    Number(registro.total || 0).toLocaleString('es-CR') + '?\\n\\nEsto emite un Recibo Electrónico de Pago REAL ante Hacienda — no se puede deshacer.\\n\\n⚠️ Nota: probá esto primero en modo sandbox si no estás seguro — hay un detalle del tipo de documento que todavía no se verificó contra Hacienda en producción (ver el comentario en el código del servidor).'
+  )) return;
+
+  var statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Emitiendo recibo de pago...';
+
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(RECIBO_PAGO_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idToken: idToken,
+        claveOriginal: registro.clave,
+        fechaOriginal: registro.fecha,
+        receptor: registro.receptorNombre ? {
+          nombre: registro.receptorNombre,
+          identificacion: { tipo: '01', numero: registro.receptorCedula || '' },
+          correoElectronico: registro.receptorEmail || undefined,
+        } : undefined,
+        lineas: registro.lineas || [],
+        medioPago: [medioPago],
+        emisorNombre: registro.emisorNombre,
+      }),
+    });
+    var datos = await respuesta.json();
+    if (!respuesta.ok) {
+      statusEl.textContent = '✗ Error al emitir';
+      alert('No se pudo emitir el recibo de pago: ' + (datos.error || 'error desconocido'));
+      return;
+    }
+    if (datos.aceptado === true) {
+      statusEl.textContent = '✓ Recibo de pago aceptado';
+      alert('✅ Recibo de pago ACEPTADO por Hacienda.\\n\\nClave: ' + datos.clave + '\\nLa factura queda marcada como pagada.');
+    } else if (datos.pendiente) {
+      statusEl.textContent = '⏳ Recibo de pago pendiente';
+      alert('⏳ ' + datos.mensajePendiente);
+    } else {
+      statusEl.textContent = '✗ Recibo de pago rechazado';
+      alert('❌ Hacienda rechazó el recibo de pago:\\n\\n' + (datos.motivoRechazo || 'motivo no especificado') + '\\n\\nSi el motivo menciona el tipo de documento, puede ser el detalle "07 vs 10" explicado en el código del servidor — avisale a soporte.');
+    }
+    cargarHistorialHacienda(); // refresca la lista para mostrar el resultado
+  } catch (err) {
+    statusEl.textContent = '✗ Error al emitir';
+    alert('No se pudo contactar el servicio: ' + err.message);
+  }
+}
+
 // Carga un registro del historial de Hacienda en el formulario, igual
 // que un borrador — útil para ver el detalle o armar una factura
 // parecida. OJO: esto NO vuelve a enviarla a Hacienda por sí solo,
@@ -7507,6 +7825,9 @@ document.getElementById('btnFactura').addEventListener('click', function () {
 });
 document.getElementById('feClose').addEventListener('click', function () { document.getElementById('feOverlay').classList.remove('show'); });
 document.getElementById('feAddLineaBtn').addEventListener('click', agregarLineaFactura);
+document.getElementById('fe-condicion-venta').addEventListener('change', function () {
+  document.getElementById('fe-plazo-credito-wrap').style.display = this.value === '02' ? '' : 'none';
+});
 document.getElementById('fe-iva-rate').addEventListener('change', recalcularFactura);
 document.getElementById('feBtnClear').addEventListener('click', function () {
   if (confirm('¿Limpiar todos los datos de la factura?')) limpiarFactura();
@@ -7547,6 +7868,8 @@ var CONSULTAR_ESTADO_URL = 'https://matriz-contable-app.vercel.app/api/consultar
 var ENVIAR_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-correo-factura';
 var NOTA_CREDITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-credito';
 var NOTA_DEBITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-debito';
+var MENSAJE_RECEPTOR_URL = 'https://matriz-contable-app.vercel.app/api/emitir-mensaje-receptor';
+var RECIBO_PAGO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-recibo-pago';
 var VALIDAR_CEDULA_URL = 'https://matriz-certificados.kacn1z.workers.dev/validar-cedula';
 var GUARDAR_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/guardar-plantillas';
 var OBTENER_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/obtener-plantillas';
@@ -7705,6 +8028,17 @@ document.getElementById('feBtnHacienda').addEventListener('click', async functio
     return;
   }
 
+  var condicionVentaElegida = gv('fe-condicion-venta') || '01';
+  var plazoCreditoElegido = gv('fe-plazo-credito').replace(/[^0-9]/g, '');
+  if (condicionVentaElegida === '02' && !cedulaReceptorLimpia) {
+    alert('Para facturar a crédito hace falta la cédula del receptor (una venta a crédito no puede ser un Tiquete sin receptor).');
+    return;
+  }
+  if (condicionVentaElegida === '02' && !plazoCreditoElegido) {
+    alert('Para facturar a crédito hace falta indicar el plazo de crédito en días.');
+    return;
+  }
+
   if (!confirm('Esto va a firmar la factura con tu certificado real y enviarla a Hacienda. ¿Continuar?')) return;
 
   var statusEl = document.getElementById('saveStatus');
@@ -7725,7 +8059,8 @@ document.getElementById('feBtnHacienda').addEventListener('click', async functio
         correoElectronico: gv('fe-receptor-email') || undefined,
       },
       lineas: lineas,
-      condicionVenta: '01',
+      condicionVenta: condicionVentaElegida,
+      plazoCredito: condicionVentaElegida === '02' ? plazoCreditoElegido : undefined,
       medioPago: ['01'],
       esTiquete: !cedulaReceptorLimpia,
     }),
