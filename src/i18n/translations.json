@@ -1,0 +1,2080 @@
+{
+  "es": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "share": {
+        "title": "Compartir"
+      },
+      "tabla": "Tabla",
+      "nota": "Nota",
+      "grafico": "Gráfico",
+      "plantillas2": "Plantillas",
+      "factura": "Factura",
+      "exportar": "Exportar",
+      "guardar": "Guardar",
+      "enviar": "Enviar a Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Versión 12 — Offline First",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Funciones | Factura Electrónica 4.3 | Canvas Libre | Sibö ✦ Asistente",
+      "start": "Empezar",
+      "templates": "Plantillas"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Genera facturas XML + PDF con QR para Hacienda CR. IVA 13%, 4%, 2%, 1%, Exento."
+    },
+    "feat2": {
+      "title": "Canvas Libre",
+      "desc": "Libro Diario, Mayor, Balance. Tablas dinámicas con fórmulas =SUMA, =IVA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Asistente",
+      "desc": "Asistente en 10 lenguas. Te ayuda con asientos, cálculos y reportes."
+    },
+    "feat4": {
+      "title": "10 Lenguas CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Plantillas",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura CR, Compras/Ventas."
+    },
+    "feat6": {
+      "title": "Exportar",
+      "desc": "PDF, Excel, XML 4.3. Funciona 100% offline sin internet."
+    },
+    "canvas": {
+      "label": "Área de trabajo",
+      "toolbar": "ÁREA DE TRABAJO",
+      "empty": "Escribí aquí o usá el menú para insertar plantillas, tablas y fórmulas..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura Electrónica 4.3 · CR"
+      },
+      "fn": {
+        "fns": "funciones",
+        "buscar": "Buscar función... ej: BUSCARV, SUMA, VAN, FILTER",
+        "insertar": "↓ Insertar en área"
+      },
+      "apps": {
+        "title": "📱 Apps de Contabilidad · CR 2026"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "col": {
+        "cant": "Cant.",
+        "desc": "Descripción",
+        "unit": "Precio Unit.",
+        "total": "Total"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Total:"
+    },
+    "templates": {
+      "title": "Plantillas Contables CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Asientos contables con Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Cuentas T y saldos"
+      },
+      "balance": {
+        "title": "📊 Balance Comprobación",
+        "desc": "Sumas iguales y saldos"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación Bancaria",
+        "desc": "Banco vs Libros"
+      },
+      "factura": {
+        "title": "📄 Factura Electrónica CR",
+        "desc": "XML 4.3 + QR Hacienda"
+      },
+      "compras": {
+        "title": "🛒 Reporte Compras/Ventas",
+        "desc": "D-151 compatible"
+      }
+    },
+    "sibo": {
+      "placeholder": "Escribe aquí...",
+      "welcome": "¡Pura vida! Soy Sibö ✦, tu asistente contable tico. ¿En qué te ayudo?",
+      "r": {
+        "quien": "Soy Sibö ✦, tu asistente contable tico. Te ayudo con facturas, IVA, asientos y reportes en 10 lenguas de CR.",
+        "factura": "Para factura electrónica: toca el botón Factura, llena datos del cliente, monto e IVA 13%. Se genera PDF + XML 4.3 con QR para Hacienda.",
+        "iva": "IVA CR: 13% general, 4% canasta básica, 2% medicinas, 1% equipo médico, 0% exento. Fórmula: Monto × 0.13",
+        "diario": "Libro Diario: toca Plantillas → Libro Diario. Fecha | Cuenta | Debe | Haber. Ej: Caja (D) vs Ventas (H).",
+        "idioma": "Cambia el idioma arriba a la derecha. Disponible: Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca.",
+        "balance": "Balance de Comprobación: Plantillas → Balance. Verifica que Debe = Haber. Si no cuadran, hay un error en los asientos.",
+        "banco": "Conciliación Bancaria: Plantillas → Conciliación. Compara saldo del banco vs tus libros. Identifica cheques en tránsito y depósitos no acreditados.",
+        "default": "¡Pura vida! Puedo ayudarte con: Facturas, Libro Diario/Mayor, Balance, Conciliación, IVA, reportes D-151. ¿Qué ocupás?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Preguntame..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Guardado",
+      "copiado": "Link copiado al portapapeles.",
+      "hacienda": "✓ Factura enviada a Hacienda CR\nNo. 001-00001-00000001\nXML 4.3 generado\nClave: 50603062600310100000000100001010000000001",
+      "pdf": "Generando PDF...\n(Demo) En producción usa jsPDF.\nFactura guardada como: factura-001.pdf"
+    },
+    "credit": "Diseño y programación: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Archivo",
+      "inicio": "🏠 Inicio",
+      "insertar": "➕ Insertar",
+      "plantillas": "📋 Plantillas",
+      "formulas": "fx Fórmulas",
+      "factura": "🧾 Factura",
+      "apps": "📱 Apps CR",
+      "lenguajes": "🌐 Lenguajes",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Plantillas",
+      "formulas": "Fórmulas",
+      "apps": "Apps"
+    },
+    "status": {
+      "listo": "Listo",
+      "funciones": "funciones"
+    },
+    "tb": {
+      "ver": "v13 · Pro"
+    },
+    "dd": {
+      "nuevo": "Nuevo",
+      "guardar": "Guardar",
+      "restaurar": "Restaurar guardado",
+      "limpiar": "Limpiar área",
+      "exportar": "Exportar",
+      "compartir": "Compartir enlace",
+      "negrita": "Negrita",
+      "cursiva": "Cursiva",
+      "tabla": "Tabla contable",
+      "nota": "Nota de texto",
+      "grafico": "Gráfico de barras",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance de Comprobación",
+      "conciliacion": "Conciliación Bancaria",
+      "d151": "D-151 Compras/Ventas",
+      "factura": "Factura Electrónica",
+      "insertar": {
+        "fn": "Insertar función..."
+      },
+      "autosuma": "Autosuma",
+      "agregar": {
+        "fila": "Agregar fila"
+      },
+      "quitar": {
+        "fila": "Eliminar fila"
+      },
+      "calcular": "Calcular totales",
+      "apps": {
+        "todas": "Ver todas las apps"
+      }
+    },
+    "sec": {
+      "portapapeles": "Portapapeles",
+      "edicion": "Edición",
+      "celdas": "Celdas",
+      "elementos": "Elementos",
+      "plantillas": {
+        "rapidas": "Plantillas rápidas"
+      },
+      "libros": "Libros contables",
+      "reportes": "Reportes CR",
+      "herramientas": "Herramientas de plantilla",
+      "funcion": "Función",
+      "categorias": "Categorías recientes",
+      "especiales": "Especiales",
+      "exportar": "Exportar",
+      "factura": {
+        "cr": "Factura Electrónica 4.3 CR"
+      },
+      "apps": {
+        "cr": "Apps de Contabilidad CR 2026"
+      },
+      "lenguas": "Lenguas de Costa Rica",
+      "indigenas": "Lenguas indígenas CR",
+      "sibo": "Sibö ✦ Asistente IA",
+      "capacidades": "Capacidades IA",
+      "atajos": "Atajos frecuentes"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance Comprobación",
+      "conciliacion": "Conciliación Bancaria",
+      "d151": "D-151 Compras/Ventas",
+      "factura": "Factura Electrónica",
+      "biblioteca": "Biblioteca (452 fns)",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "cv": {
+      "tabla": "📋 Tabla",
+      "nota": "📝 Nota",
+      "grafico": "📊 Gráfico",
+      "calcular": "∑ Calcular",
+      "guardar": "💾 Guardar"
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "nombre": "Nombre/Razón Social",
+      "cedula": "Cédula Jurídica",
+      "telefono": "Teléfono",
+      "lineas": "Líneas de detalle",
+      "observaciones": "Observaciones",
+      "subtotal": "Subtotal:",
+      "btn": {
+        "linea": "+ Línea",
+        "limpiar": "🗑 Limpiar",
+        "cerrar": "✓ Cerrar"
+      }
+    },
+    "apps": {
+      "todas": "Todas",
+      "gratis": "🆓 Gratis"
+    },
+    "formula": {
+      "placeholder": "Ingresá un valor o fórmula..."
+    },
+    "chip": {
+      "iva": "IVA CR",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    },
+    "app": {
+      "nuevaHoja": "Nueva Hoja",
+      "nuevaHojaDesc": "Crear una matriz contable en blanco",
+      "factura": "Factura Electrónica 4.3",
+      "facturaDesc": "Generar comprobantes electrónicos CR",
+      "funciones": "Biblioteca de Funciones",
+      "funcionesDesc": "452 funciones contables y fiscales CR",
+      "sibo": "Sibö Asistente IA",
+      "siboDesc": "Consultas contables con inteligencia artificial",
+      "idioma": "Idioma",
+      "elegirIdioma": "Elegí el idioma de la app",
+      "perfil": "Mi perfil",
+      "cerrarSesion": "Cerrar sesión",
+      "funcionesSubtitulo": "funciones disponibles",
+      "buscarFuncion": "Buscar función, alias o descripción...",
+      "siboTitulo": "Sibö · Asistente IA",
+      "siboPlaceholder": "Preguntale algo a Sibö..."
+    }
+  },
+  "en": {
+    "logo": {
+      "name": "Accounting Matrix CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "share": {
+        "title": "Share"
+      },
+      "tabla": "Table",
+      "nota": "Note",
+      "grafico": "Chart",
+      "plantillas2": "Templates",
+      "factura": "Invoice",
+      "exportar": "Export",
+      "guardar": "Save",
+      "enviar": "Send to Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Version 12 — Offline First",
+      "title": {
+        "span": "Accounting Matrix"
+      },
+      "desc": "300+ Functions | Electronic Invoice 4.3 | Free Canvas | Sibö ✦ Assistant",
+      "start": "Start",
+      "templates": "Templates"
+    },
+    "feat1": {
+      "title": "Electronic Invoice 4.3",
+      "desc": "Generate XML + PDF invoices with QR for Hacienda CR. VAT 13%, 4%, 2%, 1%, Exempt."
+    },
+    "feat2": {
+      "title": "Free Canvas",
+      "desc": "Journal, Ledger, Balance. Dynamic tables with =SUM, =VAT formulas."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Assistant",
+      "desc": "Assistant in 10 languages. Helps with entries, calculations and reports."
+    },
+    "feat4": {
+      "title": "10 CR Languages",
+      "desc": "Spanish, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Templates",
+      "desc": "Journal, Ledger, Balance, Reconciliation, CR Invoice, Purchases/Sales."
+    },
+    "feat6": {
+      "title": "Export",
+      "desc": "PDF, Excel, XML 4.3. Works 100% offline without internet."
+    },
+    "canvas": {
+      "label": "Workspace",
+      "toolbar": "WORK AREA",
+      "empty": "Type here or use the menu to insert templates, tables and formulas..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Electronic Invoice 4.3 · CR"
+      },
+      "fn": {
+        "fns": "functions",
+        "buscar": "Search function... e.g: VLOOKUP, SUM, NPV, FILTER",
+        "insertar": "↓ Insert in area"
+      },
+      "apps": {
+        "title": "📱 Accounting Apps · CR 2026"
+      }
+    },
+    "factura": {
+      "label": "ELECTRONIC INVOICE",
+      "emisor": "Issuer",
+      "receptor": "Recipient",
+      "col": {
+        "cant": "Qty.",
+        "desc": "Description",
+        "unit": "Unit Price",
+        "total": "Total"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "VAT 13%:",
+      "total": "Total:"
+    },
+    "templates": {
+      "title": "CR Accounting Templates"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Journal",
+        "desc": "Accounting entries with Debit/Credit"
+      },
+      "mayor": {
+        "title": "📗 General Ledger",
+        "desc": "T-accounts and balances"
+      },
+      "balance": {
+        "title": "📊 Trial Balance",
+        "desc": "Equal sums and balances"
+      },
+      "conciliacion": {
+        "title": "🏦 Bank Reconciliation",
+        "desc": "Bank vs Books"
+      },
+      "factura": {
+        "title": "📄 CR Electronic Invoice",
+        "desc": "XML 4.3 + QR Hacienda"
+      },
+      "compras": {
+        "title": "🛒 Purchase/Sales Report",
+        "desc": "D-151 compatible"
+      }
+    },
+    "sibo": {
+      "placeholder": "Type here...",
+      "welcome": "Hello! I am Sibö ✦, your Costa Rican accounting assistant. How can I help you?",
+      "r": {
+        "quien": "I am Sibö ✦, your CR accounting assistant. I help with invoices, VAT, journal entries and reports in 10 languages.",
+        "factura": "For electronic invoice: tap the Invoice button, fill in client data, amount and VAT 13%. Generates PDF + XML 4.3 with QR for Hacienda.",
+        "iva": "CR VAT: 13% general, 4% basic basket, 2% medicines, 1% medical equipment, 0% exempt. Formula: Amount × 0.13",
+        "diario": "Journal: tap Templates → Journal. Date | Account | Debit | Credit. Ex: Cash (D) vs Sales (C).",
+        "idioma": "Change language top right. Available: Spanish, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca.",
+        "balance": "Trial Balance: Templates → Balance. Verify Debit = Credit. If they don't match, there's an entry error.",
+        "banco": "Bank Reconciliation: Templates → Reconciliation. Compare bank balance vs your books. Identify outstanding checks and uncleared deposits.",
+        "default": "Hello! I can help you with: Invoices, Journal/Ledger, Balance, Reconciliation, VAT, D-151 reports. What do you need?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Ask me anything..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Saved",
+      "copiado": "Link copied to clipboard.",
+      "hacienda": "✓ Invoice sent to Hacienda CR\nNo. 001-00001-00000001\nXML 4.3 generated\nKey: 50603062600310100000000100001010000000001",
+      "pdf": "Generating PDF...\n(Demo) In production use jsPDF.\nInvoice saved as: invoice-001.pdf"
+    },
+    "credit": "Design and programming: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 File",
+      "inicio": "🏠 Home",
+      "insertar": "➕ Insert",
+      "plantillas": "📋 Templates",
+      "formulas": "fx Formulas",
+      "factura": "🧾 Invoice",
+      "apps": "📱 Apps CR",
+      "lenguajes": "🌐 Languages",
+      "ia": "🦙 AI"
+    },
+    "sidebar": {
+      "plantillas": "Templates",
+      "formulas": "Formulas",
+      "apps": "Apps"
+    },
+    "status": {
+      "listo": "Ready",
+      "funciones": "functions"
+    },
+    "tb": {
+      "ver": "v13 · Pro"
+    },
+    "dd": {
+      "nuevo": "New",
+      "guardar": "Save",
+      "restaurar": "Restore saved",
+      "limpiar": "Clear area",
+      "exportar": "Export",
+      "compartir": "Share link",
+      "negrita": "Bold",
+      "cursiva": "Italic",
+      "tabla": "Accounting table",
+      "nota": "Text note",
+      "grafico": "Bar chart",
+      "diario": "Journal",
+      "mayor": "General Ledger",
+      "balance": "Trial Balance",
+      "conciliacion": "Bank Reconciliation",
+      "d151": "D-151 Purchases/Sales",
+      "factura": "Electronic Invoice",
+      "insertar": {
+        "fn": "Insert function..."
+      },
+      "autosuma": "AutoSum",
+      "agregar": {
+        "fila": "Add row"
+      },
+      "quitar": {
+        "fila": "Remove row"
+      },
+      "calcular": "Calculate totals",
+      "apps": {
+        "todas": "View all apps"
+      }
+    },
+    "sec": {
+      "portapapeles": "Clipboard",
+      "edicion": "Edit",
+      "celdas": "Cells",
+      "elementos": "Elements",
+      "plantillas": {
+        "rapidas": "Quick Templates"
+      },
+      "libros": "Accounting Books",
+      "reportes": "CR Reports",
+      "herramientas": "Template Tools",
+      "funcion": "Function",
+      "categorias": "Recent Categories",
+      "especiales": "Special",
+      "exportar": "Export",
+      "factura": {
+        "cr": "Electronic Invoice 4.3 CR"
+      },
+      "apps": {
+        "cr": "Accounting Apps CR 2026"
+      },
+      "lenguas": "Languages of Costa Rica",
+      "indigenas": "Indigenous languages CR",
+      "sibo": "Sibö ✦ AI Assistant",
+      "capacidades": "AI Capabilities",
+      "atajos": "Quick shortcuts"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Journal",
+        "mayor": "General Ledger"
+      },
+      "balance": "Trial Balance",
+      "conciliacion": "Bank Reconciliation",
+      "d151": "D-151 Purchases/Sales",
+      "factura": "Electronic Invoice",
+      "biblioteca": "Library (452 fns)",
+      "financieras": "Financial",
+      "estadisticas": "Statistics"
+    },
+    "cv": {
+      "tabla": "📋 Table",
+      "nota": "📝 Note",
+      "grafico": "📊 Chart",
+      "calcular": "∑ Calculate",
+      "guardar": "💾 Save"
+    },
+    "fe": {
+      "emisor": "Issuer",
+      "receptor": "Recipient",
+      "nombre": "Name/Company",
+      "cedula": "Tax ID",
+      "telefono": "Phone",
+      "lineas": "Line items",
+      "observaciones": "Notes",
+      "subtotal": "Subtotal:",
+      "btn": {
+        "linea": "+ Line",
+        "limpiar": "🗑 Clear",
+        "cerrar": "✓ Close"
+      }
+    },
+    "apps": {
+      "todas": "All",
+      "gratis": "🆓 Free"
+    },
+    "formula": {
+      "placeholder": "Enter a value or formula..."
+    },
+    "chip": {
+      "iva": "VAT CR",
+      "diario": "Journal",
+      "factura": "Invoice",
+      "apps": "Apps",
+      "niif": "IFRS",
+      "bancaria": "Banking"
+    },
+    "app": {
+      "nuevaHoja": "New Sheet",
+      "nuevaHojaDesc": "Create a blank accounting matrix",
+      "factura": "Electronic Invoice 4.3",
+      "facturaDesc": "Generate CR electronic receipts",
+      "funciones": "Function Library",
+      "funcionesDesc": "452 accounting and tax functions for CR",
+      "sibo": "Sibö AI Assistant",
+      "siboDesc": "Accounting questions with artificial intelligence",
+      "idioma": "Language",
+      "elegirIdioma": "Choose the app language",
+      "perfil": "My profile",
+      "cerrarSesion": "Sign out",
+      "funcionesSubtitulo": "functions available",
+      "buscarFuncion": "Search function, alias or description...",
+      "siboTitulo": "Sibö · AI Assistant",
+      "siboPlaceholder": "Ask Sibö something..."
+    }
+  },
+  "bri": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "tabla": "Ù Tök",
+      "nota": "Ù Ie",
+      "grafico": "Ù Kö",
+      "plantillas2": "Ù Tök",
+      "factura": "Factura",
+      "exportar": "Ù Tsá",
+      "guardar": "Ù Ie",
+      "enviar": "Ù Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Tsuru 12 — Offline",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Ù tök | Factura 4.3 | Canvas | Sibö ✦",
+      "start": "Tsá",
+      "templates": "Ù Tök"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Ù tök XML + PDF ie QR Hacienda CR."
+    },
+    "feat2": {
+      "title": "Canvas Ù",
+      "desc": "Libro Diario, Mayor, Balance. Ù tök =SUMA, =IVA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Ù",
+      "desc": "Ù ie 10 tsuru. Ù tök asientos, cálculos."
+    },
+    "feat4": {
+      "title": "10 Tsuru CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Ù Tök",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura, Compras."
+    },
+    "feat6": {
+      "title": "Ù Tsá",
+      "desc": "PDF, Excel, XML 4.3. Ù offline."
+    },
+    "canvas": {
+      "label": "Ù Tök",
+      "toolbar": "Ù TÖK",
+      "empty": "Tsá ù..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura Ù CR"
+      },
+      "fn": {
+        "fns": "ù",
+        "buscar": "Ù...",
+        "insertar": "↓ Ù"
+      },
+      "apps": {
+        "title": "📱 Apps CR"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Ù Tsá",
+      "receptor": "Ù Ie",
+      "col": {
+        "cant": "Ù",
+        "desc": "Ù Tök",
+        "unit": "Ù Kö",
+        "total": "Tsá"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Tsá:"
+    },
+    "templates": {
+      "title": "Ù Tök Contable CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Ù tök Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Ù tök saldos"
+      },
+      "balance": {
+        "title": "📊 Balance",
+        "desc": "Ù sumas"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación",
+        "desc": "Banco ie Libros"
+      },
+      "factura": {
+        "title": "📄 Factura CR",
+        "desc": "XML 4.3 + QR"
+      },
+      "compras": {
+        "title": "🛒 Compras/Ventas",
+        "desc": "D-151"
+      }
+    },
+    "sibo": {
+      "placeholder": "Tsá ie...",
+      "welcome": "Ù pura vida! Soy Sibö ✦, ù tök contable CR. ¿Ù tsá?",
+      "r": {
+        "quien": "Ù Sibö ✦, asistente contable CR. Ù tök facturas, IVA, asientos ie 10 tsuru.",
+        "factura": "Factura: Ù tök Factura, llena datos, monto, IVA 13%. PDF + XML 4.3 + QR.",
+        "iva": "IVA CR: 13% general, 4% canasta, 2% medicinas. Ù: Monto × 0.13",
+        "diario": "Libro Diario: Plantillas → Diario. Fecha | Cuenta | Debe | Haber.",
+        "idioma": "Tsuru: arriba derecha. 10 tsuru CR.",
+        "balance": "Balance: Plantillas → Balance. Debe = Haber.",
+        "banco": "Conciliación: Plantillas → Conciliación. Banco ie libros.",
+        "default": "Ù tök: Facturas, Diario, Balance, IVA, D-151. ¿Ù tsá?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Tsuru..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Ù Ie",
+      "copiado": "Ù tsá portapapeles.",
+      "hacienda": "✓ Factura Hacienda CR\nNo. 001-00001-00000001",
+      "pdf": "Ù PDF..."
+    },
+    "credit": "Wéshke tö kàl: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Ù Tök",
+      "inicio": "🏠 Tsá",
+      "insertar": "➕ Ù",
+      "plantillas": "📋 Ù Tök",
+      "formulas": "fx Ù",
+      "factura": "🧾 Ù",
+      "apps": "📱 Apps CR",
+      "lenguajes": "🌐 Tsuru",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Ù Tök",
+      "formulas": "Ù",
+      "apps": "Apps"
+    },
+    "status": {
+      "listo": "Tsá",
+      "funciones": "ù"
+    },
+    "tb": {
+      "ver": "v13"
+    },
+    "dd": {
+      "nuevo": "Ù Tök",
+      "guardar": "Ù",
+      "restaurar": "Ù Tök",
+      "limpiar": "Ù",
+      "exportar": "Ù",
+      "compartir": "Tsuru",
+      "negrita": "Ù",
+      "cursiva": "Ù",
+      "tabla": "Ù Tök",
+      "nota": "Tsá ù",
+      "grafico": "Ù",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "insertar": {
+        "fn": "Ù fx..."
+      },
+      "autosuma": "∑ Ù",
+      "agregar": {
+        "fila": "+ Ù"
+      },
+      "quitar": {
+        "fila": "- Ù"
+      },
+      "calcular": "∑",
+      "apps": {
+        "todas": "Apps CR"
+      }
+    },
+    "sec": {
+      "portapapeles": "Tsá",
+      "edicion": "Tsá ù",
+      "celdas": "Ù",
+      "elementos": "Ù",
+      "plantillas": {
+        "rapidas": "Ù Tök"
+      },
+      "libros": "Ù Tök",
+      "reportes": "Tsá",
+      "herramientas": "Ù",
+      "funcion": "Ù",
+      "categorias": "Ù",
+      "especiales": "Ù",
+      "exportar": "Ù",
+      "factura": {
+        "cr": "Factura CR"
+      },
+      "apps": {
+        "cr": "Apps CR"
+      },
+      "lenguas": "Tsuru Bribri",
+      "indigenas": "Tsuru Indígena",
+      "sibo": "Sibö ✦",
+      "capacidades": "Sibö Ù",
+      "atajos": "Tsá"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "biblioteca": "Biblioteca",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "cv": {
+      "tabla": "📋 Ù",
+      "nota": "📝 Tsá",
+      "grafico": "📊 Ù",
+      "calcular": "∑ Tsá",
+      "guardar": "💾 Ù"
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "nombre": "Tsá",
+      "cedula": "Cédula",
+      "telefono": "Tsuru",
+      "lineas": "Ù",
+      "observaciones": "Tsá",
+      "subtotal": "Tsá:",
+      "btn": {
+        "linea": "+ Ù",
+        "limpiar": "🗑 Ù",
+        "cerrar": "✓ Tsá"
+      }
+    },
+    "apps": {
+      "todas": "Tsá",
+      "gratis": "🆓 Tsá"
+    },
+    "formula": {
+      "placeholder": "Ù tsá..."
+    },
+    "chip": {
+      "iva": "IVA",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    }
+  },
+  "cab": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "tabla": "Jí Tök",
+      "nota": "Jí",
+      "grafico": "Jí Kö",
+      "plantillas2": "Jí Tök",
+      "factura": "Factura",
+      "exportar": "Jí Tsá",
+      "guardar": "Jí Ie",
+      "enviar": "Jí Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Jí 12 — Offline",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Jí tök | Factura 4.3 | Canvas | Sibö ✦",
+      "start": "Ják",
+      "templates": "Jí Tök"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Jí tök XML + PDF ie QR Hacienda CR."
+    },
+    "feat2": {
+      "title": "Canvas Jí",
+      "desc": "Libro Diario, Mayor, Balance. Jí tök =SUMA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Jí",
+      "desc": "Jí ie 10 tsuru. Jí tök asientos."
+    },
+    "feat4": {
+      "title": "10 Jí CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Jí Tök",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura, Compras."
+    },
+    "feat6": {
+      "title": "Jí Tsá",
+      "desc": "PDF, Excel, XML 4.3. Jí offline."
+    },
+    "canvas": {
+      "label": "ÁREA DE TRABAJO",
+      "toolbar": "ÁREA DE TRABAJO",
+      "empty": "Dawö yë ùl..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura CR"
+      },
+      "fn": {
+        "fns": "dawö"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "col": {
+        "cant": "Jí",
+        "desc": "Jí Tök",
+        "unit": "Precio",
+        "total": "Tsá"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Tsá:"
+    },
+    "templates": {
+      "title": "Jí Tök Contable CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Jí Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Jí saldos"
+      },
+      "balance": {
+        "title": "📊 Balance",
+        "desc": "Jí sumas"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación",
+        "desc": "Banco ie Libros"
+      },
+      "factura": {
+        "title": "📄 Factura CR",
+        "desc": "XML 4.3 + QR"
+      },
+      "compras": {
+        "title": "🛒 Compras/Ventas",
+        "desc": "D-151"
+      }
+    },
+    "sibo": {
+      "placeholder": "Jí tsá...",
+      "welcome": "Ják! Soy Sibö ✦, jí tök contable CR. ¿Jí tsá?",
+      "r": {
+        "quien": "Jí Sibö ✦, asistente contable CR. Jí tök facturas, IVA ie 10 lenguas.",
+        "factura": "Factura: Jí tök Factura, datos, monto, IVA 13%. PDF + XML 4.3.",
+        "iva": "IVA CR: 13%, 4%, 2%. Jí: Monto × 0.13",
+        "diario": "Diario: Plantillas → Diario. Fecha | Cuenta | Debe | Haber.",
+        "idioma": "Jí tsuru: arriba derecha.",
+        "balance": "Balance: Debe = Haber.",
+        "banco": "Conciliación: Banco ie libros.",
+        "default": "Jí tök: Facturas, Diario, Balance, IVA. ¿Jí tsá?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Dawö yë..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Jí Ie",
+      "copiado": "Jí tsá portapapeles.",
+      "hacienda": "✓ Factura Hacienda CR\nNo. 001-00001-00000001",
+      "pdf": "Jí PDF..."
+    },
+    "credit": "Yé ki ta: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Yawö",
+      "inicio": "🏠 Yë",
+      "insertar": "➕ Dawö",
+      "plantillas": "📋 Yawö",
+      "formulas": "fx Dawö",
+      "factura": "🧾 Yawö",
+      "lenguajes": "🌐 Cabécar",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Yawö",
+      "formulas": "Dawö"
+    },
+    "status": {
+      "listo": "Yë dawö",
+      "funciones": "dawö"
+    },
+    "tb": {
+      "ver": "v13"
+    },
+    "dd": {
+      "nuevo": "Yawö Yë",
+      "guardar": "Yawö",
+      "restaurar": "Yawö yë",
+      "limpiar": "Dawö",
+      "exportar": "Dawö yawö",
+      "compartir": "Yawö dawö",
+      "tabla": "Yawö ùl",
+      "nota": "Dawö yë",
+      "grafico": "Yawö ùl",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "insertar": {
+        "fn": "fx Dawö..."
+      },
+      "autosuma": "∑ Dawö",
+      "agregar": {
+        "fila": "+ Dawö"
+      },
+      "quitar": {
+        "fila": "- Dawö"
+      },
+      "calcular": "∑ Yë",
+      "apps": {
+        "todas": "Apps CR"
+      }
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "btn": {
+        "cerrar": "✓ Dawö"
+      }
+    },
+    "apps": {
+      "todas": "Todas",
+      "gratis": "🆓 Dawö"
+    },
+    "chip": {
+      "iva": "IVA",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "biblioteca": "Biblioteca (452)",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "formula": {
+      "placeholder": "Dawö yë o fx..."
+    },
+    "sec": {
+      "portapapeles": "Yawö",
+      "edicion": "Dawö",
+      "celdas": "Yawö ùl",
+      "elementos": "Dawö yë",
+      "libros": "Yawö Libros",
+      "reportes": "Dawö CR",
+      "funcion": "fx Dawö",
+      "categorias": "Yawö dawö",
+      "especiales": "Dawö",
+      "factura": {
+        "cr": "Factura CR"
+      },
+      "sibo": "Sibö ✦ IA",
+      "capacidades": "Sibö IA",
+      "atajos": "Yawö dawö"
+    },
+    "cv": {
+      "tabla": "📋 Yawö",
+      "nota": "📝 Dawö",
+      "grafico": "📊 Yawö",
+      "calcular": "∑ Dawö",
+      "guardar": "💾 Yawö"
+    }
+  },
+  "ngb": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "tabla": "Kwe",
+      "nota": "Ngöbö",
+      "grafico": "Kwe Kö",
+      "plantillas2": "Kwe Tök",
+      "factura": "Factura",
+      "exportar": "Kwe Nän",
+      "guardar": "Kwe Ie",
+      "enviar": "Kwe Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Kwe 12 — Offline",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Kwe | Factura 4.3 | Canvas | Sibö ✦",
+      "start": "Nän",
+      "templates": "Kwe Tök"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Kwe tök XML + PDF QR Hacienda CR."
+    },
+    "feat2": {
+      "title": "Canvas Kwe",
+      "desc": "Diario, Mayor, Balance. Kwe =SUMA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Kwe",
+      "desc": "Kwe ie 10 ngöbö. Kwe tök asientos."
+    },
+    "feat4": {
+      "title": "10 Ngöbö CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Kwe Tök",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura, Compras."
+    },
+    "feat6": {
+      "title": "Kwe Nän",
+      "desc": "PDF, Excel, XML 4.3. Kwe offline."
+    },
+    "canvas": {
+      "label": "ÁREA DE TRABAJO",
+      "toolbar": "ÁREA DE TRABAJO",
+      "empty": "Tö nt kräbätä..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura CR"
+      },
+      "fn": {
+        "fns": "tö"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "col": {
+        "cant": "Kwe",
+        "desc": "Kwe Tök",
+        "unit": "Precio",
+        "total": "Nän"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Nän:"
+    },
+    "templates": {
+      "title": "Kwe Tök Contable CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Kwe Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Kwe saldos"
+      },
+      "balance": {
+        "title": "📊 Balance",
+        "desc": "Kwe sumas"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación",
+        "desc": "Banco ie Libros"
+      },
+      "factura": {
+        "title": "📄 Factura CR",
+        "desc": "XML 4.3 + QR"
+      },
+      "compras": {
+        "title": "🛒 Compras/Ventas",
+        "desc": "D-151"
+      }
+    },
+    "sibo": {
+      "placeholder": "Kwe ngöbö...",
+      "welcome": "Nän! Soy Sibö ✦, kwe tök contable CR. ¿Kwe nän?",
+      "r": {
+        "quien": "Kwe Sibö ✦, asistente CR. Kwe tök facturas, IVA ie ngöbö.",
+        "factura": "Factura: Kwe tök Factura, datos, monto, IVA 13%.",
+        "iva": "IVA CR: 13%, 4%, 2%. Kwe: Monto × 0.13",
+        "diario": "Diario: Plantillas → Diario. Fecha | Cuenta | Debe | Haber.",
+        "idioma": "Kwe ngöbö: arriba derecha.",
+        "balance": "Balance: Debe = Haber.",
+        "banco": "Conciliación: Banco ie libros.",
+        "default": "Kwe tök: Facturas, Diario, Balance, IVA. ¿Kwe nän?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Tö nt..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Kwe Ie",
+      "copiado": "Kwe ngöbö portapapeles.",
+      "hacienda": "✓ Factura Hacienda CR\nNo. 001-00001-00000001",
+      "pdf": "Kwe PDF..."
+    },
+    "credit": "Ngöbö käre: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Kräbätä",
+      "inicio": "🏠 Ño",
+      "insertar": "➕ Tö",
+      "plantillas": "📋 Kräbätä",
+      "formulas": "fx Tö",
+      "factura": "🧾 Tö",
+      "lenguajes": "🌐 Ngäbere",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Kräbätä",
+      "formulas": "Tö"
+    },
+    "status": {
+      "listo": "Ño tö",
+      "funciones": "tö"
+    },
+    "tb": {
+      "ver": "v13"
+    },
+    "dd": {
+      "nuevo": "Ño Tö",
+      "guardar": "Tö Kräbätä",
+      "restaurar": "Tö ño",
+      "limpiar": "Tö",
+      "exportar": "Tö kräbätä",
+      "compartir": "Tö ño",
+      "tabla": "Kräbätä tö",
+      "nota": "Tö nt",
+      "grafico": "Tö kräbätä",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "insertar": {
+        "fn": "fx Tö..."
+      },
+      "autosuma": "∑ Tö",
+      "agregar": {
+        "fila": "+ Tö"
+      },
+      "quitar": {
+        "fila": "- Tö"
+      },
+      "calcular": "∑ Ño",
+      "apps": {
+        "todas": "Apps CR"
+      }
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "btn": {
+        "cerrar": "✓ Tö"
+      }
+    },
+    "apps": {
+      "todas": "Todas",
+      "gratis": "🆓 Tö"
+    },
+    "chip": {
+      "iva": "IVA",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "biblioteca": "Biblioteca (452)",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "formula": {
+      "placeholder": "Tö nt o fx..."
+    },
+    "sec": {
+      "portapapeles": "Kräbätä",
+      "edicion": "Tö",
+      "celdas": "Kräbätä tö",
+      "elementos": "Tö nt",
+      "libros": "Kräbätä Libros",
+      "reportes": "Tö CR",
+      "funcion": "fx Tö",
+      "categorias": "Kräbätä tö",
+      "especiales": "Tö",
+      "factura": {
+        "cr": "Factura CR"
+      },
+      "sibo": "Sibö ✦ IA",
+      "capacidades": "Sibö IA",
+      "atajos": "Kräbätä tö"
+    },
+    "cv": {
+      "tabla": "📋 Kräbätä",
+      "nota": "📝 Tö",
+      "grafico": "📊 Kräbätä",
+      "calcular": "∑ Tö",
+      "guardar": "💾 Kräbätä"
+    }
+  },
+  "bor": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "tabla": "Ró",
+      "nota": "Shú",
+      "grafico": "Ró Kö",
+      "plantillas2": "Ró Tök",
+      "factura": "Factura",
+      "exportar": "Ró Ísh",
+      "guardar": "Ró Ie",
+      "enviar": "Ró Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Ró 12 — Offline",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Ró | Factura 4.3 | Canvas | Sibö ✦",
+      "start": "Ísh",
+      "templates": "Ró Tök"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Ró tök XML + PDF QR Hacienda CR."
+    },
+    "feat2": {
+      "title": "Canvas Ró",
+      "desc": "Diario, Mayor, Balance. Ró =SUMA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Ró",
+      "desc": "Ró ie 10 shú. Ró tök asientos."
+    },
+    "feat4": {
+      "title": "10 Shú CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Ró Tök",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura, Compras."
+    },
+    "feat6": {
+      "title": "Ró Ísh",
+      "desc": "PDF, Excel, XML 4.3. Ró offline."
+    },
+    "canvas": {
+      "label": "ÁREA DE TRABAJO",
+      "toolbar": "ÁREA DE TRABAJO",
+      "empty": "Ísh boro..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura CR"
+      },
+      "fn": {
+        "fns": "ísh"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "col": {
+        "cant": "Ró",
+        "desc": "Ró Tök",
+        "unit": "Precio",
+        "total": "Ísh"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Ísh:"
+    },
+    "templates": {
+      "title": "Ró Tök Contable CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Ró Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Ró saldos"
+      },
+      "balance": {
+        "title": "📊 Balance",
+        "desc": "Ró sumas"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación",
+        "desc": "Banco ie Libros"
+      },
+      "factura": {
+        "title": "📄 Factura CR",
+        "desc": "XML 4.3 + QR"
+      },
+      "compras": {
+        "title": "🛒 Compras/Ventas",
+        "desc": "D-151"
+      }
+    },
+    "sibo": {
+      "placeholder": "Ró shú...",
+      "welcome": "Ísh! Soy Sibö ✦, ró tök contable CR. ¿Ró ísh?",
+      "r": {
+        "quien": "Ró Sibö ✦, asistente CR. Ró tök facturas, IVA.",
+        "factura": "Factura: Ró tök Factura, datos, IVA 13%.",
+        "iva": "IVA CR: 13%, 4%, 2%. Ró: Monto × 0.13",
+        "diario": "Diario: Plantillas → Diario.",
+        "idioma": "Shú: arriba derecha.",
+        "balance": "Balance: Debe = Haber.",
+        "banco": "Conciliación: Banco ie libros.",
+        "default": "Ró tök: Facturas, Diario, Balance. ¿Ró ísh?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Ísh boro..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Ró Ie",
+      "copiado": "Ró shú portapapeles.",
+      "hacienda": "✓ Factura Hacienda CR\nNo. 001-00001-00000001",
+      "pdf": "Ró PDF..."
+    },
+    "credit": "Shú ki: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Boro",
+      "inicio": "🏠 Bö",
+      "insertar": "➕ Ísh",
+      "plantillas": "📋 Boro",
+      "formulas": "fx Ísh",
+      "factura": "🧾 Boro",
+      "lenguajes": "🌐 Boruca",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Boro",
+      "formulas": "Ísh"
+    },
+    "status": {
+      "listo": "Bö ísh",
+      "funciones": "ísh"
+    },
+    "tb": {
+      "ver": "v13"
+    },
+    "dd": {
+      "nuevo": "Bö Ísh",
+      "guardar": "Ísh Boro",
+      "restaurar": "Ísh bö",
+      "limpiar": "Ísh",
+      "exportar": "Ísh boro",
+      "compartir": "Ísh bö",
+      "tabla": "Boro ísh",
+      "nota": "Ísh boro",
+      "grafico": "Boro ísh",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "insertar": {
+        "fn": "fx Ísh..."
+      },
+      "autosuma": "∑ Ísh",
+      "agregar": {
+        "fila": "+ Ísh"
+      },
+      "quitar": {
+        "fila": "- Ísh"
+      },
+      "calcular": "∑ Bö",
+      "apps": {
+        "todas": "Apps CR"
+      }
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "btn": {
+        "cerrar": "✓ Ísh"
+      }
+    },
+    "apps": {
+      "todas": "Todas",
+      "gratis": "🆓 Ísh"
+    },
+    "chip": {
+      "iva": "IVA",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "biblioteca": "Biblioteca (452)",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "formula": {
+      "placeholder": "Ísh boro o fx..."
+    },
+    "sec": {
+      "portapapeles": "Boro",
+      "edicion": "Ísh",
+      "celdas": "Boro ísh",
+      "elementos": "Ísh boro",
+      "libros": "Boro Libros",
+      "reportes": "Ísh CR",
+      "funcion": "fx Ísh",
+      "categorias": "Boro ísh",
+      "especiales": "Ísh",
+      "factura": {
+        "cr": "Factura CR"
+      },
+      "sibo": "Sibö ✦ IA",
+      "capacidades": "Sibö IA",
+      "atajos": "Boro ísh"
+    },
+    "cv": {
+      "tabla": "📋 Boro",
+      "nota": "📝 Ísh",
+      "grafico": "📊 Boro",
+      "calcular": "∑ Ísh",
+      "guardar": "💾 Boro"
+    }
+  },
+  "ter": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "tabla": "Kò",
+      "nota": "Së",
+      "grafico": "Kò Kö",
+      "plantillas2": "Kò Tök",
+      "factura": "Factura",
+      "exportar": "Kò Kà",
+      "guardar": "Kò Ie",
+      "enviar": "Kò Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Kò 12 — Offline",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Kò | Factura 4.3 | Canvas | Sibö ✦",
+      "start": "Kà",
+      "templates": "Kò Tök"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Kò tök XML + PDF QR Hacienda CR."
+    },
+    "feat2": {
+      "title": "Canvas Kò",
+      "desc": "Diario, Mayor, Balance. Kò =SUMA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Kò",
+      "desc": "Kò ie 10 së. Kò tök asientos."
+    },
+    "feat4": {
+      "title": "10 Së CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Kò Tök",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura, Compras."
+    },
+    "feat6": {
+      "title": "Kò Kà",
+      "desc": "PDF, Excel, XML 4.3. Kò offline."
+    },
+    "canvas": {
+      "label": "ÁREA DE TRABAJO",
+      "toolbar": "ÁREA DE TRABAJO",
+      "empty": "Kà të chon..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura CR"
+      },
+      "fn": {
+        "fns": "kà"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "col": {
+        "cant": "Kò",
+        "desc": "Kò Tök",
+        "unit": "Precio",
+        "total": "Kà"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Kà:"
+    },
+    "templates": {
+      "title": "Kò Tök Contable CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Kò Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Kò saldos"
+      },
+      "balance": {
+        "title": "📊 Balance",
+        "desc": "Kò sumas"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación",
+        "desc": "Banco ie Libros"
+      },
+      "factura": {
+        "title": "📄 Factura CR",
+        "desc": "XML 4.3 + QR"
+      },
+      "compras": {
+        "title": "🛒 Compras/Ventas",
+        "desc": "D-151"
+      }
+    },
+    "sibo": {
+      "placeholder": "Kò së...",
+      "welcome": "Kà! Soy Sibö ✦, kò tök contable CR. ¿Kò kà?",
+      "r": {
+        "quien": "Kò Sibö ✦, asistente CR. Kò tök facturas, IVA.",
+        "factura": "Factura: Kò tök Factura, datos, IVA 13%.",
+        "iva": "IVA CR: 13%, 4%, 2%. Kò: Monto × 0.13",
+        "diario": "Diario: Plantillas → Diario.",
+        "idioma": "Së: arriba derecha.",
+        "balance": "Balance: Debe = Haber.",
+        "banco": "Conciliación: Banco ie libros.",
+        "default": "Kò tök: Facturas, Diario, Balance. ¿Kò kà?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Kà të..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Kò Ie",
+      "copiado": "Kò portapapeles.",
+      "hacienda": "✓ Factura Hacienda CR\nNo. 001-00001-00000001",
+      "pdf": "Kò PDF..."
+    },
+    "credit": "Së ki: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Të Chon",
+      "inicio": "🏠 Të",
+      "insertar": "➕ Kà",
+      "plantillas": "📋 Të Chon",
+      "formulas": "fx Kà",
+      "factura": "🧾 Të",
+      "lenguajes": "🌐 Teribe",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Të Chon",
+      "formulas": "Kà"
+    },
+    "status": {
+      "listo": "Të kà",
+      "funciones": "kà"
+    },
+    "tb": {
+      "ver": "v13"
+    },
+    "dd": {
+      "nuevo": "Të Kà",
+      "guardar": "Kà Të",
+      "restaurar": "Kà të",
+      "limpiar": "Kà",
+      "exportar": "Kà të",
+      "compartir": "Kà të",
+      "tabla": "Të kà",
+      "nota": "Kà të",
+      "grafico": "Të kà",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "insertar": {
+        "fn": "fx Kà..."
+      },
+      "autosuma": "∑ Kà",
+      "agregar": {
+        "fila": "+ Kà"
+      },
+      "quitar": {
+        "fila": "- Kà"
+      },
+      "calcular": "∑ Të",
+      "apps": {
+        "todas": "Apps CR"
+      }
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "btn": {
+        "cerrar": "✓ Kà"
+      }
+    },
+    "apps": {
+      "todas": "Todas",
+      "gratis": "🆓 Kà"
+    },
+    "chip": {
+      "iva": "IVA",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "biblioteca": "Biblioteca (452)",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "formula": {
+      "placeholder": "Kà të o fx..."
+    },
+    "sec": {
+      "portapapeles": "Të Chon",
+      "edicion": "Kà",
+      "celdas": "Të kà",
+      "elementos": "Kà të",
+      "libros": "Të Libros",
+      "reportes": "Kà CR",
+      "funcion": "fx Kà",
+      "categorias": "Të kà",
+      "especiales": "Kà",
+      "factura": {
+        "cr": "Factura CR"
+      },
+      "sibo": "Sibö ✦ IA",
+      "capacidades": "Sibö IA",
+      "atajos": "Të kà"
+    },
+    "cv": {
+      "tabla": "📋 Të",
+      "nota": "📝 Kà",
+      "grafico": "📊 Të",
+      "calcular": "∑ Kà",
+      "guardar": "💾 Të"
+    }
+  },
+  "mal": {
+    "logo": {
+      "name": "Matriz Contable CR"
+    },
+    "btn": {
+      "sibo": "Sibö ✦",
+      "tabla": "Tó",
+      "nota": "Marama",
+      "grafico": "Tó Kö",
+      "plantillas2": "Tó Tök",
+      "factura": "Factura",
+      "exportar": "Tó Tóri",
+      "guardar": "Tó Ie",
+      "enviar": "Tó Hacienda",
+      "pdf": "PDF",
+      "xml": "XML"
+    },
+    "hero": {
+      "badge": "Tó 12 — Offline",
+      "title": {
+        "span": "Matriz Contable"
+      },
+      "desc": "300+ Tó | Factura 4.3 | Canvas | Sibö ✦",
+      "start": "Tó",
+      "templates": "Tó Tök"
+    },
+    "feat1": {
+      "title": "Factura Electrónica 4.3",
+      "desc": "Tó tök XML + PDF QR Hacienda CR."
+    },
+    "feat2": {
+      "title": "Canvas Tó",
+      "desc": "Diario, Mayor, Balance. Tó =SUMA."
+    },
+    "feat3": {
+      "title": "Sibö ✦ Tó",
+      "desc": "Tó ie 10 marama. Tó tök asientos."
+    },
+    "feat4": {
+      "title": "10 Marama CR",
+      "desc": "Español, English, Bribri, Cabécar, Ngäbe, Boruca, Térraba, Maleku, Guaymí, Brunca."
+    },
+    "feat5": {
+      "title": "6 Tó Tök",
+      "desc": "Diario, Mayor, Balance, Conciliación, Factura, Compras."
+    },
+    "feat6": {
+      "title": "Tó Tóri",
+      "desc": "PDF, Excel, XML 4.3. Tó offline."
+    },
+    "canvas": {
+      "label": "ÁREA DE TRABAJO",
+      "toolbar": "ÁREA DE TRABAJO",
+      "empty": "Yö tó..."
+    },
+    "modal": {
+      "factura": {
+        "title": "🧾 Factura CR"
+      },
+      "fn": {
+        "fns": "yö"
+      }
+    },
+    "factura": {
+      "label": "FACTURA ELECTRÓNICA",
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "col": {
+        "cant": "Tó",
+        "desc": "Tó Tök",
+        "unit": "Precio",
+        "total": "Tóri"
+      },
+      "subtotal": "Subtotal:",
+      "iva": "IVA 13%:",
+      "total": "Tóri:"
+    },
+    "templates": {
+      "title": "Tó Tök Contable CR"
+    },
+    "tpl": {
+      "diario": {
+        "title": "📘 Libro Diario",
+        "desc": "Tó Debe/Haber"
+      },
+      "mayor": {
+        "title": "📗 Libro Mayor",
+        "desc": "Tó saldos"
+      },
+      "balance": {
+        "title": "📊 Balance",
+        "desc": "Tó sumas"
+      },
+      "conciliacion": {
+        "title": "🏦 Conciliación",
+        "desc": "Banco ie Libros"
+      },
+      "factura": {
+        "title": "📄 Factura CR",
+        "desc": "XML 4.3 + QR"
+      },
+      "compras": {
+        "title": "🛒 Compras/Ventas",
+        "desc": "D-151"
+      }
+    },
+    "sibo": {
+      "placeholder": "Tó marama...",
+      "welcome": "Tó! Soy Sibö ✦, tó tök contable CR. ¿Tó tóri?",
+      "r": {
+        "quien": "Tó Sibö ✦, asistente CR. Tó tök facturas, IVA.",
+        "factura": "Factura: Tó tök Factura, datos, IVA 13%.",
+        "iva": "IVA CR: 13%, 4%, 2%. Tó: Monto × 0.13",
+        "diario": "Diario: Plantillas → Diario.",
+        "idioma": "Marama: arriba derecha.",
+        "balance": "Balance: Debe = Haber.",
+        "banco": "Conciliación: Banco ie libros.",
+        "default": "Tó tök: Facturas, Diario, Balance. ¿Tó tóri?"
+      },
+      "name": "Sibö",
+      "input": {
+        "placeholder": "Yö tó..."
+      }
+    },
+    "alert": {
+      "guardado": "✓ Tó Ie",
+      "copiado": "Tó portapapeles.",
+      "hacienda": "✓ Factura Hacienda CR\nNo. 001-00001-00000001",
+      "pdf": "Tó PDF..."
+    },
+    "credit": "Marama ki: Keny Chinchilla Navarro",
+    "menu": {
+      "archivo": "📁 Tó Yö",
+      "inicio": "🏠 Tó",
+      "insertar": "➕ Yö",
+      "plantillas": "📋 Tó Yö",
+      "formulas": "fx Yö",
+      "factura": "🧾 Tó",
+      "lenguajes": "🌐 Maléku",
+      "ia": "🦙 IA"
+    },
+    "sidebar": {
+      "plantillas": "Tó Yö",
+      "formulas": "Yö"
+    },
+    "status": {
+      "listo": "Tó yö",
+      "funciones": "yö"
+    },
+    "tb": {
+      "ver": "v13"
+    },
+    "dd": {
+      "nuevo": "Tó Yö",
+      "guardar": "Yö Tó",
+      "restaurar": "Yö tó",
+      "limpiar": "Yö",
+      "exportar": "Yö tó",
+      "compartir": "Yö tó",
+      "tabla": "Tó yö",
+      "nota": "Yö tó",
+      "grafico": "Tó yö",
+      "diario": "Libro Diario",
+      "mayor": "Libro Mayor",
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "insertar": {
+        "fn": "fx Yö..."
+      },
+      "autosuma": "∑ Yö",
+      "agregar": {
+        "fila": "+ Yö"
+      },
+      "quitar": {
+        "fila": "- Yö"
+      },
+      "calcular": "∑ Tó",
+      "apps": {
+        "todas": "Apps CR"
+      }
+    },
+    "fe": {
+      "emisor": "Emisor",
+      "receptor": "Receptor",
+      "btn": {
+        "cerrar": "✓ Yö"
+      }
+    },
+    "apps": {
+      "todas": "Todas",
+      "gratis": "🆓 Yö"
+    },
+    "chip": {
+      "iva": "IVA",
+      "diario": "Diario",
+      "factura": "Factura",
+      "apps": "Apps",
+      "niif": "NIIF",
+      "bancaria": "Bancaria"
+    },
+    "sb": {
+      "libro": {
+        "diario": "Libro Diario",
+        "mayor": "Libro Mayor"
+      },
+      "balance": "Balance",
+      "conciliacion": "Conciliación",
+      "d151": "D-151",
+      "factura": "Factura",
+      "biblioteca": "Biblioteca (452)",
+      "financieras": "Financieras",
+      "estadisticas": "Estadísticas"
+    },
+    "formula": {
+      "placeholder": "Yö tó o fx..."
+    },
+    "sec": {
+      "portapapeles": "Tó Yö",
+      "edicion": "Yö",
+      "celdas": "Tó yö",
+      "elementos": "Yö tó",
+      "libros": "Tó Libros",
+      "reportes": "Yö CR",
+      "funcion": "fx Yö",
+      "categorias": "Tó yö",
+      "especiales": "Yö",
+      "factura": {
+        "cr": "Factura CR"
+      },
+      "sibo": "Sibö ✦ IA",
+      "capacidades": "Sibö IA",
+      "atajos": "Tó yö"
+    },
+    "cv": {
+      "tabla": "📋 Tó",
+      "nota": "📝 Yö",
+      "grafico": "📊 Tó",
+      "calcular": "∑ Yö",
+      "guardar": "💾 Tó"
+    }
+  },
+  "_languageNames": {
+    "es": "🇨🇷 Español",
+    "en": "🇺🇸 English",
+    "bri": "🌿 Bribri",
+    "cab": "🌱 Cabécar",
+    "ngb": "🌾 Ngäbere",
+    "bor": "🌺 Boruca (Brunca)",
+    "ter": "🌻 Térraba",
+    "mal": "🌼 Maléku"
+  }
+}
+
