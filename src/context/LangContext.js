@@ -1,28 +1,18 @@
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import TRANSLATIONS from '../i18n/translations.json'
 
-import React, { createContext, useContext, useState, useMemo } from 'react'
+// Idiomas disponibles: español, inglés y 6 lenguas indígenas de Costa Rica
+// (Bribri, Cabécar, Ngäbere, Boruca/Brunca, Térraba, Maléku). El contenido
+// de las lenguas indígenas viene tal cual de la versión web de Matriz
+// Contable CR (src/i18n/translations.json) — nunca se inventa ni se
+// completa a mano, así que algunas claves de pantallas propias de la app
+// (que no existen en la web) solo tienen español e inglés; en esos casos
+// t() cae a español en vez de mostrar una traducción inventada.
+export const IDIOMAS_DISPONIBLES = Object.keys(TRANSLATIONS).filter((k) => k !== '_languageNames')
+export const NOMBRES_IDIOMAS = TRANSLATIONS._languageNames || {}
 
-// Traducciones básicas. Si más adelante llenás src/i18n/translations.json
-// con más idiomas, podés reemplazar este objeto por esa data.
-const TRANSLATIONS = {
-  es: {
-    menu: {
-      inicio: 'Inicio',
-      nuevaHoja: 'Nueva Hoja',
-      nuevaHojaDesc: 'Crear una matriz contable en blanco',
-      factura: 'Factura Electrónica 4.3',
-      facturaDesc: 'Generar comprobantes electrónicos CR',
-      funciones: 'Biblioteca de Funciones',
-      funcionesDesc: '452 funciones contables y fiscales CR',
-      sibo: 'Sibö Asistente IA',
-      siboDesc: 'Consultas contables con inteligencia artificial',
-    },
-    canvas: {
-      toolbar: 'Editor de Matriz',
-    },
-  },
-}
-
-const LangContext = createContext(null)
+const LANG_STORAGE_KEY = 'mcr_idioma_v1'
 
 function getNestedValue(obj, path) {
   return path
@@ -30,15 +20,36 @@ function getNestedValue(obj, path) {
     .reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), obj)
 }
 
+const LangContext = createContext(null)
+
 export function LangProvider({ children }) {
-  const [lang, setLang] = useState('es')
+  const [lang, setLangState] = useState('es')
+
+  useEffect(() => {
+    let activo = true
+    AsyncStorage.getItem(LANG_STORAGE_KEY).then((guardado) => {
+      if (activo && guardado && TRANSLATIONS[guardado]) setLangState(guardado)
+    })
+    return () => { activo = false }
+  }, [])
+
+  const setLang = (nuevo) => {
+    if (!TRANSLATIONS[nuevo]) return
+    setLangState(nuevo)
+    AsyncStorage.setItem(LANG_STORAGE_KEY, nuevo).catch(() => {})
+  }
 
   const value = useMemo(() => {
     const dict = TRANSLATIONS[lang] || TRANSLATIONS.es
+    const dictEs = TRANSLATIONS.es
 
     const t = (key) => {
       const found = getNestedValue(dict, key)
-      return found !== undefined ? found : key
+      if (found !== undefined) return found
+      // Si la lengua actual todavía no tiene esta clave puntual, cae a
+      // español (no se inventa contenido en la lengua indígena).
+      const fallback = getNestedValue(dictEs, key)
+      return fallback !== undefined ? fallback : key
     }
 
     return { lang, setLang, t }
