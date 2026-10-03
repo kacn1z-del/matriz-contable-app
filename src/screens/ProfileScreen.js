@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  Image, ActivityIndicator, Alert, ScrollView,
+  Image, ActivityIndicator, Alert, ScrollView, Switch,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker'
@@ -9,6 +9,9 @@ import { updateProfile, signOut } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { useLang } from '../context/LangContext'
 import { useResponsive } from '../hooks/useResponsive'
+import {
+  dispositivoSoportaBloqueo, obtenerPreferenciaBloqueo, guardarPreferenciaBloqueo, pedirAutenticacion,
+} from '../services/bloqueoBiometrico'
 
 // Mismo Cloudinary que ya usa Los Pirchas para fotos, con un preset
 // nuevo dedicado solo a avatares de Matriz Contable (creado como
@@ -26,6 +29,42 @@ export default function ProfileScreen({ navigation }) {
   const [fotoLocal, setFotoLocal] = useState(usuario?.photoURL || null)
   const [subiendoFoto, setSubiendoFoto] = useState(false)
   const [guardando, setGuardando] = useState(false)
+
+  // ─── Bloqueo biométrico (Face ID/Touch ID/huella/PIN) ───────────
+  const [soportaBloqueo, setSoportaBloqueo] = useState(true) // optimista mientras se revisa, para no mostrar un parpadeo
+  const [bloqueoActivo, setBloqueoActivoLocal] = useState(false)
+  const [cambiandoBloqueo, setCambiandoBloqueo] = useState(false)
+
+  useEffect(() => {
+    let vigente = true
+    Promise.all([dispositivoSoportaBloqueo(), obtenerPreferenciaBloqueo()]).then(([soporta, activo]) => {
+      if (!vigente) return
+      setSoportaBloqueo(soporta)
+      setBloqueoActivoLocal(activo)
+    })
+    return () => { vigente = false }
+  }, [])
+
+  async function alternarBloqueo(nuevoValor) {
+    if (cambiandoBloqueo) return
+    setCambiandoBloqueo(true)
+    try {
+      if (nuevoValor) {
+        // Antes de activarlo, pide verificar una vez — así el usuario
+        // confirma que su Face ID/huella/PIN realmente funciona en este
+        // teléfono, en vez de activarlo "a ciegas" y quedar trabado afuera.
+        const exito = await pedirAutenticacion()
+        if (!exito) {
+          Alert.alert('No se pudo verificar', 'No se activó el bloqueo porque la verificación no se completó. Probá de nuevo.')
+          return
+        }
+      }
+      await guardarPreferenciaBloqueo(nuevoValor)
+      setBloqueoActivoLocal(nuevoValor)
+    } finally {
+      setCambiandoBloqueo(false)
+    }
+  }
 
   const inicial = (nombre || usuario?.email || '?').trim().charAt(0).toUpperCase()
 
@@ -152,6 +191,28 @@ export default function ProfileScreen({ navigation }) {
             )}
           </TouchableOpacity>
 
+          <View style={styles.bloqueoFila}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.bloqueoTitulo}>🔒 Bloqueo biométrico</Text>
+              <Text style={styles.bloqueoDesc}>
+                {soportaBloqueo
+                  ? 'Pide Face ID / huella / PIN cada vez que abrís la app o volvés de otra app.'
+                  : 'Este teléfono no tiene Face ID/huella configurado, o no es compatible.'}
+              </Text>
+            </View>
+            {cambiandoBloqueo ? (
+              <ActivityIndicator color="#2d7a0c" />
+            ) : (
+              <Switch
+                value={bloqueoActivo}
+                onValueChange={alternarBloqueo}
+                disabled={!soportaBloqueo}
+                trackColor={{ false: '#cce9ae', true: '#2d7a0c' }}
+                thumbColor="#fff"
+              />
+            )}
+          </View>
+
           <TouchableOpacity style={styles.botonSecundario} onPress={cerrarSesion}>
             <Text style={styles.botonSecundarioTexto}>Cerrar sesión</Text>
           </TouchableOpacity>
@@ -206,6 +267,13 @@ const styles = StyleSheet.create({
   },
   botonDisabled: { opacity: 0.6 },
   botonPrincipalTexto: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  bloqueoFila: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    width: '100%', marginTop: 22, paddingTop: 16,
+    borderTopWidth: 1, borderTopColor: '#e3f0d4',
+  },
+  bloqueoTitulo: { fontSize: 13.5, fontWeight: '700', color: '#3d6020' },
+  bloqueoDesc: { fontSize: 11, color: '#8fa87a', marginTop: 3, lineHeight: 15 },
   botonSecundario: {
     width: '100%', borderWidth: 1.5, borderColor: '#c0392b', borderRadius: 10,
     paddingVertical: 12, alignItems: 'center', marginTop: 12,
