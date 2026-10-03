@@ -10,10 +10,16 @@ import {
 } from 'react-native'
 import fnData from '../i18n/fndata.json'
 import { useResponsive } from '../hooks/useResponsive'
+import { useLang } from '../context/LangContext'
 
 const ALL_CATEGORIES = 'Todas'
 
 export default function FunctionsScreen({ navigation }) {
+  const { t } = useLang()
+  const translate = (key, fallback) => {
+    const value = t ? t(key) : null
+    return value && value !== key ? value : fallback
+  }
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState(ALL_CATEGORIES)
   const { isTablet, isDesktop } = useResponsive()
@@ -42,16 +48,16 @@ export default function FunctionsScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backBtn}>← Inicio</Text>
+          <Text style={styles.backBtn}>← {translate('menu.inicio', 'Inicio')}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>fx Biblioteca de Funciones</Text>
-        <Text style={styles.subtitle}>{fnData.length} funciones disponibles</Text>
+        <Text style={styles.title}>fx {translate('app.funciones', 'Biblioteca de Funciones')}</Text>
+        <Text style={styles.subtitle}>{fnData.length} {translate('app.funcionesSubtitulo', 'funciones disponibles')}</Text>
       </View>
 
       <View style={styles.searchBox}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Buscar función, alias o descripción..."
+          placeholder={translate('app.buscarFuncion', 'Buscar función, alias o descripción...')}
           placeholderTextColor="#8fae6f"
           value={query}
           onChangeText={setQuery}
