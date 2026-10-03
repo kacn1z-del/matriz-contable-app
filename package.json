@@ -37,6 +37,7 @@
     "expo-sharing": "~12.0.1",
     "expo-print": "~13.0.1",
     "expo-image-picker": "~15.0.5",
+    "expo-local-authentication": "~14.0.1",
     "@dojocoding/hacienda-sdk": "latest"
   },
   "devDependencies": {
