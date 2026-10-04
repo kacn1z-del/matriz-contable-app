@@ -14392,8 +14392,53 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
   }
 }
 
+// ─── Entrega de SHEET_HTML en trozos chicos (arregla el "Invalid or
+// unexpected token" al abrir la hoja) ───────────────────────────────────
+// SHEET_HTML pesa cerca de 840,000 caracteres. Entregarlo de una sola vez
+// como prop "html" del WebView obliga al puente de React Native a
+// empaquetar y mandar ese texto gigante en un solo mensaje — en ciertos
+// dispositivos ese mensaje tan grande llega corrompido o cortado a mitad
+// de camino, y el motor de JavaScript de la WebView termina leyendo
+// código roto a partir de ahí (de ahí el "Invalid or unexpected token":
+// no es un error en el código — se revisó letra por letra y está
+// correcto — sino en el transporte). La solución: cargar primero una
+// página mínima vacía con la MISMA dirección base (para no romper
+// Firebase Auth ni las llamadas a Hacienda, que dependen de esa
+// dirección), y una vez cargada, mandar el HTML real en trozos chicos uno
+// por uno vía injectJavaScript, para después reconstruir la página
+// completa con document.write(). Cada trozo es lo bastante chico para
+// que el puente nunca vuelva a tener este problema.
+const SHEET_HTML_BASE_URL = 'https://matriz-contable-app.vercel.app'
+const SHEET_HTML_BOOTSTRAP = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#e6f0e6"></body></html>'
+const TAMANO_TROZO_SHEET_HTML = 120000
+
+function partirSheetHtmlEnTrozos() {
+  var trozos = []
+  for (var i = 0; i < SHEET_HTML.length; i += TAMANO_TROZO_SHEET_HTML) {
+    trozos.push(SHEET_HTML.slice(i, i + TAMANO_TROZO_SHEET_HTML))
+  }
+  return trozos
+}
+
 export default function SheetEditor({ userId, sheetId }) {
   const webViewRef = useRef(null)
+  const hojaYaEnviada = useRef(false)
+
+  // Manda SHEET_HTML en trozos chicos y, al final, reconstruye la página
+  // completa. Se protege con hojaYaEnviada para que, si onLoadEnd se
+  // dispara más de una vez (por ejemplo, el propio document.write puede
+  // volver a disparar ese evento), no se mande todo de nuevo.
+  function enviarHojaEnTrozos() {
+    if (hojaYaEnviada.current) return
+    hojaYaEnviada.current = true
+    var trozos = partirSheetHtmlEnTrozos()
+    trozos.forEach(function (trozo) {
+      var script = '(function(){ window.__mcrTrozos = window.__mcrTrozos || []; window.__mcrTrozos.push(' + JSON.stringify(trozo) + '); })(); true;'
+      webViewRef.current && webViewRef.current.injectJavaScript(script)
+    })
+    var scriptFinal = '(function(){ var completo = (window.__mcrTrozos || []).join(""); window.__mcrTrozos = null; document.open(); document.write(completo); document.close(); })(); true;'
+    webViewRef.current && webViewRef.current.injectJavaScript(scriptFinal)
+  }
 
   useEffect(() => {
     programarNotificacionesVencimientos()
@@ -14479,12 +14524,13 @@ export default function SheetEditor({ userId, sheetId }) {
       <WebView
         ref={webViewRef}
         originWhitelist={['*']}
-        source={{ html: SHEET_HTML, baseUrl: 'https://matriz-contable-app.vercel.app' }}
+        source={{ html: SHEET_HTML_BOOTSTRAP, baseUrl: SHEET_HTML_BASE_URL }}
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         mixedContentMode="always"
         allowFileAccess={true}
+        onLoadEnd={() => enviarHojaEnTrozos()}
         onMessage={(event) => {
           try {
             const msg = JSON.parse(event.nativeEvent.data)
