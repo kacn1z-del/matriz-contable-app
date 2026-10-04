@@ -200,6 +200,7 @@ const SHEET_HTML = `<!DOCTYPE html>
      el error, en vez de depender de un hover que en celular no existe. ── */
   .cell.has-error { box-shadow: inset 0 0 0 1px #dc2626; }
   .errorFlag { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 9px 9px 0; border-color: transparent #dc2626 transparent transparent; cursor: pointer; z-index: 4; }
+  .condIcon { margin-right: 3px; font-size: 11px; }
   /* ── Autofiltro: la flechita que va EN la fila de encabezados de una
      tabla (no en la letra de columna A/B/C), igual que en Excel. ── */
   .filtroArrowBtn { position: absolute; right: 1px; bottom: 1px; width: 15px; height: 15px; line-height: 13px; font-size: 9px; border: 1px solid #a9c98a; background: #fff; color: #245f09; border-radius: 3px; cursor: pointer; padding: 0; z-index: 4; }
@@ -819,6 +820,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="raMerge">⛶ Combinar</button>
     <button id="raOrdenar">⇅ Ordenar</button>
     <button id="raQuitarDuplicados">🧹 Quitar duplicados</button>
+    <button id="raRellenoRapido">⚡ Relleno rápido</button>
     <button id="raFillColor" style="background:#c8960c;">🎨 Relleno</button>
     <button id="raFontColor" style="background:#333;">A Color</button>
     <button id="raCut">✂️ Cortar</button>
@@ -853,6 +855,8 @@ const SHEET_HTML = `<!DOCTYPE html>
     <button id="cmCombinar">⛶ Combinar/separar celdas</button>
     <button id="cmNota">📝 Nota</button>
     <div class="cmSep"></div>
+    <button id="cmInsertarFila">➕ Insertar fila arriba</button>
+    <button id="cmInsertarCol">➕ Insertar columna a la izq.</button>
     <button id="cmEliminarFila">❌ Eliminar fila</button>
     <button id="cmEliminarCol">❌ Eliminar columna</button>
     <div class="cmSep"></div>
@@ -1064,6 +1068,7 @@ const SHEET_HTML = `<!DOCTYPE html>
     <select id="caTipo">
       <option value="databar">Barra de datos</option>
       <option value="colorscale">Escala de color</option>
+      <option value="iconset">Conjunto de íconos</option>
     </select>
     <div id="caDatabarCampos">
       <span class="field-label">Color de la barra</span>
@@ -1079,6 +1084,16 @@ const SHEET_HTML = `<!DOCTYPE html>
       </div>
       <span class="field-label">Color — valor más alto</span>
       <input id="caColorMax" type="color" value="#63be7b" />
+    </div>
+    <div id="caIconsetCampos" style="display:none;">
+      <span class="field-label">Estilo de íconos</span>
+      <select id="caIconStyle">
+        <option value="semaforo">🔴🟡🟢 Semáforo</option>
+        <option value="flechas">🔻➡️🔺 Flechas de tendencia</option>
+      </select>
+      <p style="font-size:10.5px;color:#889;margin:2px 0 8px;">
+        Se reparte el rango en 3 partes según el valor de cada celda: el tercio más bajo, el medio y el más alto — igual que en Excel.
+      </p>
     </div>
     <div class="row" style="justify-content:space-between;">
       <button class="cancel" id="caCancel">Cerrar</button>
@@ -1705,6 +1720,13 @@ const SHEET_HTML = `<!DOCTYPE html>
     </div>
     <input type="file" id="pdfLogoInput" accept="image/png,image/jpeg" style="margin-bottom:8px;" />
     <button id="pdfLogoQuitar" type="button" style="background:#eee;color:#333;margin-bottom:10px;display:none;">Quitar logo</button>
+    <span class="field-label">Encabezado personalizado (opcional)</span>
+    <input type="text" id="pdfEncabezadoInput" placeholder='Ej: Contabilidad Los Pirchas — reporte mensual' style="margin-bottom:8px;" />
+    <span class="field-label">Pie de página (opcional)</span>
+    <input type="text" id="pdfPiePaginaInput" placeholder="Ej: Página {pagina} de {total} — {fecha}" style="margin-bottom:4px;" />
+    <p style="font-size:10.5px;color:#889;margin:2px 0 10px;">
+      Podés usar <b>{pagina}</b>, <b>{total}</b> y <b>{fecha}</b> — se reemplazan solos al generar el PDF. Si lo dejás vacío, no se agrega pie de página.
+    </p>
     <button id="pdfExportGenerar">Generar PDF</button>
     <button id="pdfExportCancel" style="background:#eee;color:#333;margin-top:6px;">Cancelar</button>
   </div>
@@ -1777,6 +1799,14 @@ var ROWS = 60, COLS = 18;
 // a otra). Se guarda como data URL (imagen ya codificada en base64) para
 // poder persistirlo igual que el resto del estado.
 var logoPdfDataUrl = null;
+// Encabezado/pie de página personalizados del PDF del reporte (también
+// compartidos por todo el libro, igual que el logo). Admiten las
+// variables {pagina}, {total} y {fecha}, que se reemplazan por el número
+// de página actual, el total de páginas y la fecha de hoy al generar el
+// PDF. Si quedan vacíos, el encabezado usa el texto fijo de siempre
+// ("MATRIZ CONTABLE CR") y no se dibuja ningún pie de página.
+var pdfEncabezadoTexto = '';
+var pdfPiePaginaTexto = '';
 var sheets = ['Hoja1', 'Hoja2', 'Hoja3'];
 var activeSheet = 'Hoja1';
 var sheetData = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
@@ -6192,6 +6222,7 @@ function quitarDuplicadosRango() {
 }
 document.getElementById('btnQuitarDuplicados').addEventListener('click', quitarDuplicadosRango);
 document.getElementById('raQuitarDuplicados').addEventListener('click', quitarDuplicadosRango);
+document.getElementById('raRellenoRapido').addEventListener('click', rellenoRapidoRango);
 
 // ── Accesos rápidos de color (relleno / fuente) sin abrir el modal ──
 // completo de Formato. Usan el mismo <input type="color"> nativo del
@@ -6542,11 +6573,19 @@ function renderAllCells() {
     });
   }
 
-  // ── Formato condicional avanzado: barras de datos y escalas de color ──
-  // Se recalculan siempre según el mínimo/máximo ACTUAL de los valores
-  // del rango (nunca quedan guardadas como un color fijo), por eso se
-  // limpian todas las barras antes de volver a aplicarlas.
-  document.querySelectorAll('.cell').forEach(function (el) { el.style.backgroundImage = ''; });
+  // ── Formato condicional avanzado: barras de datos, escalas de color e
+  // íconos ── Se recalculan siempre según el mínimo/máximo ACTUAL de los
+  // valores del rango (nunca quedan guardados como algo fijo), por eso
+  // se limpian todas las barras/íconos antes de volver a aplicarlos.
+  document.querySelectorAll('.cell').forEach(function (el) {
+    el.style.backgroundImage = '';
+    var iconoViejo = el.querySelector('.condIcon');
+    if (iconoViejo) iconoViejo.remove();
+  });
+  var ICONOS_CONDICIONALES = {
+    semaforo: ['🔴', '🟡', '🟢'],
+    flechas: ['🔻', '➡️', '🔺'],
+  };
   var reglasAvanzadas = sheetCondFormatsAvanzado[activeSheet] || [];
   reglasAvanzadas.forEach(function (regla) {
     var ids = condRangeToIds(regla.range);
@@ -6568,6 +6607,14 @@ function renderAllCells() {
         el.style.backgroundImage = 'linear-gradient(to right, ' + (regla.color || '#5a9bd5') + ' ' + p + '%, transparent ' + p + '%)';
       } else if (regla.type === 'colorscale') {
         el.style.backgroundColor = interpolarColorEscala(pct, regla.colorMin, regla.colorMedio, regla.colorMax);
+      } else if (regla.type === 'iconset') {
+        // Mismos tercios que usa Excel por defecto: 0–33%, 33–67%, 67–100%.
+        var lista = ICONOS_CONDICIONALES[regla.iconStyle] || ICONOS_CONDICIONALES.semaforo;
+        var icono = pct < 33.4 ? lista[0] : (pct < 66.7 ? lista[1] : lista[2]);
+        var span = document.createElement('span');
+        span.className = 'condIcon';
+        span.textContent = icono;
+        el.insertBefore(span, el.firstChild);
       }
     });
   });
@@ -9366,6 +9413,184 @@ function ajustarFormulaRelativa(formula, dR, dC) {
   return out;
 }
 
+// ══════════════════════════════════════════════
+// INSERTAR FILA/COLUMNA EN MEDIO — como Ctrl+"+" en Excel: a diferencia
+// de "+Fila"/"+Col" (que solo agrandan la hoja al final) y de "Eliminar
+// fila/columna" (que corre celdas pero deja las fórmulas tal cual
+// estaban escritas), esto corre las celdas Y reacomoda las fórmulas de
+// toda la hoja para que sigan apuntando a lo mismo que apuntaban antes.
+// ══════════════════════════════════════════════
+
+// Ajusta una fórmula cuando se INSERTA una fila o columna nueva: a
+// diferencia de ajustarFormulaRelativa (que mueve TODAS las referencias
+// con el mismo delta fijo, pensada para copiar/pegar), acá cada
+// referencia se corre +1 SOLO si su fila/columna cae en el punto de
+// inserción o después — las que quedan antes no cambian. No toca una
+// referencia precedida por "!" (ej. Hoja2!A1): esta función solo
+// reacomoda referencias DENTRO de la hoja que recibió la fila/columna
+// nueva, no las que otra hoja le hace a esta desde afuera (limitación
+// conocida — ver nota en insertarFilaEn/insertarColumnaEn).
+function ajustarFormulaPorInsercion(formula, tipo, indice) {
+  var out = '', i = 0, inStr = false, strChar = '';
+  while (i < formula.length) {
+    var ch = formula.charAt(i);
+    if (!inStr && (ch === '"' || ch === "'")) { inStr = true; strChar = ch; out += ch; i++; continue; }
+    if (inStr) { out += ch; if (ch === strChar) inStr = false; i++; continue; }
+    if (/[A-Za-z]/.test(ch) && (i === 0 || !/[A-Za-z0-9_.]/.test(formula.charAt(i - 1)))) {
+      var m = /^[A-Za-z]{1,2}\\d{1,3}/.exec(formula.slice(i));
+      if (m) {
+        var fin = i + m[0].length;
+        var limiteDespues = fin >= formula.length || !/[A-Za-z0-9_.]/.test(formula.charAt(fin));
+        var precedidoPorHoja = i > 0 && formula.charAt(i - 1) === '!';
+        if (limiteDespues && !precedidoPorHoja) {
+          var mm = m[0].match(/^([A-Za-z]{1,2})(\\d{1,3})$/);
+          var col = colIndex(mm[1]), row = parseInt(mm[2], 10) - 1;
+          var nc = col, nr = row;
+          if (tipo === 'fila' && row >= indice) nr = row + 1;
+          if (tipo === 'col' && col >= indice) nc = col + 1;
+          out += cellId(nr, nc);
+          i = fin; continue;
+        }
+      }
+    }
+    out += ch; i++;
+  }
+  return out;
+}
+
+// Inserta una fila nueva ANTES de "indice" (0-based) en la hoja activa:
+// empuja hacia abajo datos, formato, notas y adjuntos desde esa fila en
+// adelante, deja la fila nueva vacía, y reacomoda las fórmulas de toda
+// la hoja.
+function insertarFilaEn(indice) {
+  snapshot();
+  ROWS += 1;
+  var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
+  var notas = sheetNotes[activeSheet] || {}, adjuntos = sheetAttachments[activeSheet] || {};
+
+  for (var r = ROWS - 1; r > indice; r--) {
+    for (var c = 0; c < COLS; c++) {
+      var origen = cellId(r - 1, c), destino = cellId(r, c);
+      if (d[origen] !== undefined) d[destino] = d[origen]; else delete d[destino];
+      if (f[origen] !== undefined) f[destino] = f[origen]; else delete f[destino];
+      if (notas[origen] !== undefined) notas[destino] = notas[origen]; else delete notas[destino];
+      if (adjuntos[origen] !== undefined) adjuntos[destino] = adjuntos[origen]; else delete adjuntos[destino];
+    }
+  }
+  for (var c2 = 0; c2 < COLS; c2++) {
+    var k = cellId(indice, c2);
+    delete d[k]; delete f[k]; delete notas[k]; delete adjuntos[k];
+  }
+
+  // Reacomoda TODAS las fórmulas de la hoja (se hayan movido o no) para
+  // que sigan apuntando a la misma celda real de antes de insertar.
+  Object.keys(d).forEach(function (celda) {
+    var raw = d[celda];
+    if (typeof raw === 'string' && raw.charAt(0) === '=') {
+      d[celda] = ajustarFormulaPorInsercion(raw, 'fila', indice);
+    }
+  });
+
+  // Estructuras auxiliares ancladas a números de fila. OJO — esto NO
+  // alcanza a sheetCondFormats/sheetCondFormatsAvanzado/sheetValidations/
+  // sheetSparklines/sheetSlicers/sheetPivoteConfig (sus rangos se guardan
+  // como texto "A1:B10" con usos más variados) — esas reglas pueden
+  // quedar apuntando a un rango corrido. Mismo tipo de límite que ya
+  // tenían "Eliminar fila"/"Eliminar columna" con las fórmulas, así que
+  // no es una regresión, pero vale revisarlas a mano después de insertar
+  // si la hoja las usa.
+  sheetHiddenRows[activeSheet] = (sheetHiddenRows[activeSheet] || []).map(function (rr) { return rr >= indice ? rr + 1 : rr; });
+  (sheetGroupsRow[activeSheet] || []).forEach(function (g) {
+    if (g.from >= indice) g.from += 1;
+    if (g.to >= indice) g.to += 1;
+  });
+  (sheetMerges[activeSheet] || []).forEach(function (mg) {
+    if (mg.r1 >= indice) mg.r1 += 1;
+    if (mg.r2 >= indice) mg.r2 += 1;
+  });
+  if (sheetFreeze[activeSheet] && sheetFreeze[activeSheet].row > indice) sheetFreeze[activeSheet].row += 1;
+  if (sheetAutoFiltro[activeSheet] && sheetAutoFiltro[activeSheet].fila >= indice) sheetAutoFiltro[activeSheet].fila += 1;
+  Object.keys(rangosNombrados).forEach(function (nombre) {
+    var rn = rangosNombrados[nombre];
+    if (!rn || rn.hoja !== activeSheet) return;
+    rn.from = ajustarFormulaPorInsercion(rn.from, 'fila', indice);
+    rn.to = ajustarFormulaPorInsercion(rn.to, 'fila', indice);
+  });
+
+  buildTable();
+  autoSave();
+  document.getElementById('saveStatus').textContent = 'Fila insertada';
+}
+
+// Inserta una columna nueva ANTES de "indice" (0-based) en la hoja
+// activa — mismo mecanismo que insertarFilaEn pero en el otro eje.
+function insertarColumnaEn(indice) {
+  if (COLS >= 26) { alert('No se pueden agregar más columnas — esta hoja ya llegó al máximo (26, hasta la Z).'); return; }
+  snapshot();
+  COLS += 1;
+  var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
+  var notas = sheetNotes[activeSheet] || {}, adjuntos = sheetAttachments[activeSheet] || {};
+
+  for (var c = COLS - 1; c > indice; c--) {
+    for (var r = 0; r < ROWS; r++) {
+      var origen = cellId(r, c - 1), destino = cellId(r, c);
+      if (d[origen] !== undefined) d[destino] = d[origen]; else delete d[destino];
+      if (f[origen] !== undefined) f[destino] = f[origen]; else delete f[destino];
+      if (notas[origen] !== undefined) notas[destino] = notas[origen]; else delete notas[destino];
+      if (adjuntos[origen] !== undefined) adjuntos[destino] = adjuntos[origen]; else delete adjuntos[destino];
+    }
+  }
+  for (var r2 = 0; r2 < ROWS; r2++) {
+    var k = cellId(r2, indice);
+    delete d[k]; delete f[k]; delete notas[k]; delete adjuntos[k];
+  }
+
+  Object.keys(d).forEach(function (celda) {
+    var raw = d[celda];
+    if (typeof raw === 'string' && raw.charAt(0) === '=') {
+      d[celda] = ajustarFormulaPorInsercion(raw, 'col', indice);
+    }
+  });
+
+  // Mismo límite anotado en insertarFilaEn respecto a condFormats/
+  // validaciones/sparklines/slicers/pivote (rangos en texto, no se
+  // tocan acá).
+  sheetHiddenCols[activeSheet] = (sheetHiddenCols[activeSheet] || []).map(function (cc) { return cc >= indice ? cc + 1 : cc; });
+  (sheetGroupsCol[activeSheet] || []).forEach(function (g) {
+    if (g.from >= indice) g.from += 1;
+    if (g.to >= indice) g.to += 1;
+  });
+  (sheetMerges[activeSheet] || []).forEach(function (mg) {
+    if (mg.c1 >= indice) mg.c1 += 1;
+    if (mg.c2 >= indice) mg.c2 += 1;
+  });
+  if (sheetFreeze[activeSheet] && sheetFreeze[activeSheet].col > indice) sheetFreeze[activeSheet].col += 1;
+  if (sheetAutoFiltro[activeSheet]) {
+    var af = sheetAutoFiltro[activeSheet];
+    if (af.colIni >= indice) af.colIni += 1;
+    if (af.colFin >= indice) af.colFin += 1;
+  }
+  // colWidths va por índice de columna: se recorre de atrás hacia
+  // adelante para no pisar un ancho antes de haberlo leído.
+  var anchos = colWidths[activeSheet];
+  if (anchos) {
+    for (var cw = COLS - 1; cw > indice; cw--) {
+      if (anchos[cw - 1] !== undefined) anchos[cw] = anchos[cw - 1]; else delete anchos[cw];
+    }
+    delete anchos[indice];
+  }
+  Object.keys(rangosNombrados).forEach(function (nombre) {
+    var rn = rangosNombrados[nombre];
+    if (!rn || rn.hoja !== activeSheet) return;
+    rn.from = ajustarFormulaPorInsercion(rn.from, 'col', indice);
+    rn.to = ajustarFormulaPorInsercion(rn.to, 'col', indice);
+  });
+
+  buildTable();
+  autoSave();
+  document.getElementById('saveStatus').textContent = 'Columna insertada';
+}
+
 function parsearFechaCR(v) {
   var m = String(v || '').trim().match(/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/);
   if (!m) return null;
@@ -9443,6 +9668,145 @@ function generarValorSerie(valoresOrigen, posicion) {
   }
 
   return valoresOrigen[posicion % n];
+}
+
+// ══════════════════════════════════════════════
+// RELLENO RÁPIDO (Flash Fill) — a diferencia de la manija de relleno
+// (que continúa una SERIE a partir de los valores de la MISMA columna:
+// números, fechas, o repetir el patrón), esto reconoce una
+// TRANSFORMACIÓN DE TEXTO a partir de otras columnas de la misma fila
+// (separar un nombre completo en nombre/apellido, armar un correo con
+// nombre+dominio, pasar a mayúsculas, etc.) usando como "pista" el o los
+// ejemplos que el usuario ya escribió a mano en esa columna.
+// ══════════════════════════════════════════════
+
+// Separa un texto en "palabras" por los separadores más comunes en datos
+// reales (espacio, coma, punto y coma, guion, barra, arroba, punto,
+// guion bajo) — así "Juan Pérez", "correo@dominio.com" y "2024-01-15"
+// se pueden partir en sus pedazos con la misma función.
+function tokenizarParaRelleno(texto) {
+  return String(texto == null ? '' : texto).split(/[\\s,;\\-\\/@._]+/).filter(function (t) { return t.length > 0; });
+}
+function capitalizarParaRelleno(texto) {
+  return String(texto == null ? '' : texto).toLowerCase().replace(/(^|\\s)([a-záéíóúñ])/g, function (m, pre, letra) { return pre + letra.toUpperCase(); });
+}
+
+// Busca, entre TODAS las demás columnas de la hoja, una transformación
+// que reproduzca EXACTO el valor de la columna destino en cada una de
+// las filas de ejemplo (si el usuario ya llenó varias celdas a mano, se
+// exige que el patrón funcione en todas — no solo en la primera — para
+// no "adivinar" con un solo dato suelto). Devuelve un objeto {tipo,...}
+// que después aplica aplicarPatronRelleno(), o null si no encontró nada
+// confiable.
+function inferirPatronRelleno(filasEjemplo, colDestino) {
+  var data = sheetData[activeSheet] || {};
+  function val(c, f) { return String(data[cellId(f, c)] == null ? '' : data[cellId(f, c)]); }
+
+  var colsCandidatas = [];
+  for (var c = 0; c < COLS; c++) if (c !== colDestino) colsCandidatas.push(c);
+
+  function cumpleTodos(fnAplicar) {
+    return filasEjemplo.every(function (f) {
+      var objetivo = val(colDestino, f);
+      return objetivo !== '' && fnAplicar(f) === objetivo;
+    });
+  }
+
+  // 1) Una sola columna de origen: mayúsculas/minúsculas/capitalizar, o
+  // un "pedazo" (primera palabra, última, o en una posición fija).
+  for (var i = 0; i < colsCandidatas.length; i++) {
+    var colA = colsCandidatas[i];
+    if (filasEjemplo.some(function (f) { return val(colA, f) === ''; })) continue;
+
+    if (cumpleTodos(function (f) { return val(colA, f).toUpperCase(); })) return { tipo: 'mayusculas', colA: colA };
+    if (cumpleTodos(function (f) { return val(colA, f).toLowerCase(); })) return { tipo: 'minusculas', colA: colA };
+    if (cumpleTodos(function (f) { return capitalizarParaRelleno(val(colA, f)); })) return { tipo: 'capitalizar', colA: colA };
+    if (cumpleTodos(function (f) { var t = tokenizarParaRelleno(val(colA, f)); return t[0] || ''; })) return { tipo: 'primerToken', colA: colA };
+    if (cumpleTodos(function (f) { var t = tokenizarParaRelleno(val(colA, f)); return t[t.length - 1] || ''; })) return { tipo: 'ultimoToken', colA: colA };
+    for (var idx = 1; idx < 4; idx++) {
+      if (cumpleTodos((function (idxFijo) { return function (f) { var t = tokenizarParaRelleno(val(colA, f)); return t[idxFijo] || ''; }; })(idx))) {
+        return { tipo: 'tokenEnIndice', colA: colA, indice: idx };
+      }
+    }
+  }
+
+  // 2) Combinación de DOS columnas con un separador fijo (ej. nombre +
+  // "@" + dominio). El separador se "descubre" comparando el primer
+  // ejemplo, y se valida que sirva igual en el resto de los ejemplos.
+  var primerEjemplo = filasEjemplo[0];
+  for (var a = 0; a < colsCandidatas.length; a++) {
+    for (var b = 0; b < colsCandidatas.length; b++) {
+      if (a === b) continue;
+      var colA2 = colsCandidatas[a], colB2 = colsCandidatas[b];
+      var va = val(colA2, primerEjemplo), vb = val(colB2, primerEjemplo);
+      var obj0 = val(colDestino, primerEjemplo);
+      if (!va || !vb || obj0.indexOf(va) !== 0) continue;
+      var resto = obj0.slice(va.length);
+      if (resto.length < vb.length || resto.slice(resto.length - vb.length) !== vb) continue;
+      var separador = resto.slice(0, resto.length - vb.length);
+      if (cumpleTodos(function (f) { return val(colA2, f) + separador + val(colB2, f); })) {
+        return { tipo: 'concat', colA: colA2, colB: colB2, separador: separador };
+      }
+    }
+  }
+
+  return null;
+}
+
+function aplicarPatronRelleno(patron, fila) {
+  var data = sheetData[activeSheet] || {};
+  function val(c) { return String(data[cellId(fila, c)] == null ? '' : data[cellId(fila, c)]); }
+  if (patron.tipo === 'mayusculas') return val(patron.colA).toUpperCase();
+  if (patron.tipo === 'minusculas') return val(patron.colA).toLowerCase();
+  if (patron.tipo === 'capitalizar') return capitalizarParaRelleno(val(patron.colA));
+  if (patron.tipo === 'primerToken') { var t1 = tokenizarParaRelleno(val(patron.colA)); return t1[0] || ''; }
+  if (patron.tipo === 'ultimoToken') { var t2 = tokenizarParaRelleno(val(patron.colA)); return t2[t2.length - 1] || ''; }
+  if (patron.tipo === 'tokenEnIndice') { var t3 = tokenizarParaRelleno(val(patron.colA)); return t3[patron.indice] || ''; }
+  if (patron.tipo === 'concat') return val(patron.colA) + patron.separador + val(patron.colB);
+  return '';
+}
+
+// Botón "⚡ Relleno rápido": el usuario selecciona UNA columna, con el
+// (o los) ejemplo(s) ya escritos a mano arriba y las celdas vacías que
+// quiere completar abajo, dentro de la misma selección.
+function rellenoRapidoRango() {
+  var b = currentRangeBounds();
+  if (!b || b.minC !== b.maxC || b.minR === b.maxR) {
+    alert('Seleccioná una sola columna: arriba la(s) celda(s) con el resultado ya escrito a mano, y abajo las celdas vacías que querés completar — después tocá "Relleno rápido" de nuevo.');
+    return;
+  }
+  if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida. Desbloqueala (🔒 Proteger Hoja) antes de usar Relleno rápido.'); return; }
+
+  var colDestino = b.minC;
+  var data = sheetData[activeSheet] || {};
+  var filasEjemplo = [], filasVacias = [];
+  for (var r = b.minR; r <= b.maxR; r++) {
+    var v = data[cellId(r, colDestino)];
+    if (v !== undefined && String(v).trim() !== '' && String(v).charAt(0) !== '=') filasEjemplo.push(r);
+    else if (v === undefined || String(v).trim() === '') filasVacias.push(r);
+  }
+  if (!filasEjemplo.length) {
+    alert('Primero escribí a mano el resultado ya armado en la primera celda de la columna (por ejemplo, el nombre separado del apellido) y volvé a intentar.');
+    return;
+  }
+  if (!filasVacias.length) {
+    alert('No hay celdas vacías en la selección para completar.');
+    return;
+  }
+
+  var patron = inferirPatronRelleno(filasEjemplo, colDestino);
+  if (!patron) {
+    alert('No se pudo reconocer un patrón a partir del ejemplo escrito. Probá escribiendo el resultado completo en una o dos celdas más (siempre con el mismo criterio) y volvé a tocar "Relleno rápido" — mientras más ejemplos, mejor reconoce el patrón.');
+    return;
+  }
+
+  snapshot();
+  filasVacias.forEach(function (r) {
+    var valorNuevo = aplicarPatronRelleno(patron, r);
+    if (valorNuevo !== '') data[cellId(r, colDestino)] = valorNuevo;
+  });
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = 'Relleno rápido aplicado';
 }
 
 // Ejecuta el relleno de verdad: por cada columna (relleno vertical) o
@@ -9686,6 +10050,20 @@ document.getElementById('cmCombinar').addEventListener('click', function () { oc
 document.getElementById('cmNota').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnNote').click(); });
 document.getElementById('cmEliminarFila').addEventListener('click', function () { ocultarMenuContextual(); document.getElementById('btnDelRow').click(); });
 document.getElementById('cmEliminarCol').addEventListener('click', function () { ocultarMenuContextual(); eliminarColumnaActual(); });
+document.getElementById('cmInsertarFila').addEventListener('click', function () {
+  ocultarMenuContextual();
+  var id = document.getElementById('cellRef').textContent;
+  var m = id.match(/([A-Za-z]+)(\d+)/);
+  if (!m) return;
+  insertarFilaEn(parseInt(m[2], 10) - 1);
+});
+document.getElementById('cmInsertarCol').addEventListener('click', function () {
+  ocultarMenuContextual();
+  var id = document.getElementById('cellRef').textContent;
+  var m = id.match(/([A-Za-z]+)(\d+)/);
+  if (!m) return;
+  insertarColumnaEn(colIndex(m[1]));
+});
 document.getElementById('cmBorrar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnClear', 'raClear'); });
 
 // ── Gesto de deshacer: toque simultáneo con 2 dedos sobre la grilla ──
@@ -11134,9 +11512,11 @@ function renderCARulesList() {
   var rules = sheetCondFormatsAvanzado[activeSheet] || [];
   if (!rules.length) { wrap.innerHTML = '<div style="font-size:11.5px;color:#888;">Sin reglas en esta hoja todavía.</div>'; return; }
   wrap.innerHTML = rules.map(function (r, i) {
-    var desc = r.type === 'databar' ? ('Barra de datos') : ('Escala de color');
-    var swatch = r.type === 'databar' ? r.color : r.colorMax;
-    return '<div class="condRuleItem"><span><span class="condSwatch" style="background:' + swatch + '"></span>' + escHtml(r.range) + ' — ' + desc + '</span><button class="caRuleDel" data-idx="' + i + '">🗑</button></div>';
+    var desc = r.type === 'databar' ? 'Barra de datos' : r.type === 'iconset' ? ('Conjunto de íconos (' + (r.iconStyle === 'flechas' ? 'flechas' : 'semáforo') + ')') : 'Escala de color';
+    var marcador = r.type === 'iconset'
+      ? '<span style="margin-right:6px;">' + (r.iconStyle === 'flechas' ? '🔻➡️🔺' : '🔴🟡🟢') + '</span>'
+      : '<span class="condSwatch" style="background:' + (r.type === 'databar' ? r.color : r.colorMax) + '"></span>';
+    return '<div class="condRuleItem"><span>' + marcador + escHtml(r.range) + ' — ' + desc + '</span><button class="caRuleDel" data-idx="' + i + '">🗑</button></div>';
   }).join('');
   wrap.querySelectorAll('.caRuleDel').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -11156,8 +11536,11 @@ document.getElementById('btnCondAvanzado').addEventListener('click', function ()
 document.getElementById('caCancel').addEventListener('click', function () { document.getElementById('condAvanzadoOverlay').classList.remove('show'); });
 document.getElementById('caTipo').addEventListener('change', function () {
   var esBarra = this.value === 'databar';
+  var esEscala = this.value === 'colorscale';
+  var esIconos = this.value === 'iconset';
   document.getElementById('caDatabarCampos').style.display = esBarra ? '' : 'none';
-  document.getElementById('caColorscaleCampos').style.display = esBarra ? 'none' : '';
+  document.getElementById('caColorscaleCampos').style.display = esEscala ? '' : 'none';
+  document.getElementById('caIconsetCampos').style.display = esIconos ? '' : 'none';
 });
 document.getElementById('caUsarMedio').addEventListener('change', function () {
   document.getElementById('caColorMedio').disabled = !this.checked;
@@ -11170,6 +11553,8 @@ document.getElementById('caAddBtn').addEventListener('click', function () {
   if (!sheetCondFormatsAvanzado[activeSheet]) sheetCondFormatsAvanzado[activeSheet] = [];
   if (tipo === 'databar') {
     sheetCondFormatsAvanzado[activeSheet].push({ range: range, type: 'databar', color: document.getElementById('caColorBarra').value });
+  } else if (tipo === 'iconset') {
+    sheetCondFormatsAvanzado[activeSheet].push({ range: range, type: 'iconset', iconStyle: document.getElementById('caIconStyle').value });
   } else {
     var usaMedio = document.getElementById('caUsarMedio').checked;
     sheetCondFormatsAvanzado[activeSheet].push({
@@ -11729,10 +12114,24 @@ function generarYCompartirPdfReporte(paraImprimir, orientacion, rango) {
       } catch (e) { /* si el logo no se puede dibujar (formato raro), se sigue sin él */ }
     }
     doc.setFontSize(15); doc.setFont('helvetica', 'bold');
-    doc.text('MATRIZ CONTABLE CR', textoInicioX, 11);
+    doc.text((pdfEncabezadoTexto && pdfEncabezadoTexto.trim()) ? pdfEncabezadoTexto.trim() : 'MATRIZ CONTABLE CR', textoInicioX, 11);
     doc.setFontSize(10); doc.setFont('helvetica', 'normal');
     doc.text(activeSheet + (etiquetaBloque || ''), textoInicioX, 18);
     doc.text(new Date().toLocaleDateString('es-CR'), pageW - marginX, 11, { align: 'right' });
+  }
+
+  // Dibuja el pie de página en la página ACTUAL del documento (se llama
+  // al final, recorriendo todas las páginas ya generadas, porque recién
+  // ahí se sabe cuántas páginas salieron en total — para el {total} de
+  // "Página {pagina} de {total}").
+  function drawFooter(numPagina, totalPaginas) {
+    var texto = pdfPiePaginaTexto
+      .replace(/\\{pagina\\}/g, String(numPagina))
+      .replace(/\\{total\\}/g, String(totalPaginas))
+      .replace(/\\{fecha\\}/g, new Date().toLocaleDateString('es-CR'));
+    doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+    doc.setTextColor(140, 140, 140);
+    doc.text(texto, pageW / 2, pageH - 7, { align: 'center' });
   }
 
   // Dibuja UNA fila de datos en la posición Y dada, dentro del bloque de
@@ -11805,6 +12204,17 @@ function generarYCompartirPdfReporte(paraImprimir, orientacion, rango) {
     }
   }
 
+  // Pie de página: recién acá se sabe el total de páginas que salieron
+  // (puede haber varias por los "bloques" de columnas), así que se
+  // recorren todas las páginas ya generadas para numerarlas.
+  if (pdfPiePaginaTexto && pdfPiePaginaTexto.trim()) {
+    var totalPaginasPdf = doc.internal.getNumberOfPages();
+    for (var pNum = 1; pNum <= totalPaginasPdf; pNum++) {
+      doc.setPage(pNum);
+      drawFooter(pNum, totalPaginasPdf);
+    }
+  }
+
   var pdfDataUri = doc.output('datauristring');
   var pdfBase64 = pdfDataUri.split(',')[1];
   guardarArchivoNativo('MatrizContableCR_' + activeSheet + '.pdf', pdfBase64, 'application/pdf');
@@ -11826,7 +12236,15 @@ function actualizarVistaPrevioLogoPdf() {
 }
 document.getElementById('btnPdfReporte').addEventListener('click', function () {
   actualizarVistaPrevioLogoPdf();
+  document.getElementById('pdfEncabezadoInput').value = pdfEncabezadoTexto || '';
+  document.getElementById('pdfPiePaginaInput').value = pdfPiePaginaTexto || '';
   document.getElementById('pdfExportOverlay').classList.add('show');
+});
+document.getElementById('pdfEncabezadoInput').addEventListener('input', function () {
+  pdfEncabezadoTexto = this.value; autoSave();
+});
+document.getElementById('pdfPiePaginaInput').addEventListener('input', function () {
+  pdfPiePaginaTexto = this.value; autoSave();
 });
 document.getElementById('pdfExportCancel').addEventListener('click', function () {
   document.getElementById('pdfExportOverlay').classList.remove('show');
@@ -12128,7 +12546,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, sheetProtegidaHash: sheetProtegidaHash, sheetPivoteConfig: sheetPivoteConfig, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, zoomLevel: zoomLevel, logoPdfDataUrl: logoPdfDataUrl };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, sheetProtegidaHash: sheetProtegidaHash, sheetPivoteConfig: sheetPivoteConfig, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, zoomLevel: zoomLevel, logoPdfDataUrl: logoPdfDataUrl, pdfEncabezadoTexto: pdfEncabezadoTexto, pdfPiePaginaTexto: pdfPiePaginaTexto };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -12162,6 +12580,8 @@ function cargarEstadoDesdeObjeto(obj) {
   vistasGuardadas = obj.vistasGuardadas || [];
   zoomLevel = obj.zoomLevel || 100;
   logoPdfDataUrl = obj.logoPdfDataUrl || null;
+  pdfEncabezadoTexto = obj.pdfEncabezadoTexto || '';
+  pdfPiePaginaTexto = obj.pdfPiePaginaTexto || '';
   activeSheet = sheets[0];
   buildTable();
   applyZoom();
@@ -12463,6 +12883,8 @@ function autoSave() {
     localStorage.setItem('mcr_zoom_v6', String(zoomLevel));
     localStorage.setItem('mcr_active_v6', activeSheet);
     if (logoPdfDataUrl) localStorage.setItem('mcr_logopdf_v6', logoPdfDataUrl); else localStorage.removeItem('mcr_logopdf_v6');
+    localStorage.setItem('mcr_pdfencabezado_v6', pdfEncabezadoTexto || '');
+    localStorage.setItem('mcr_pdfpiepagina_v6', pdfPiePaginaTexto || '');
     if (!currentMatrizId) document.getElementById('saveStatus').textContent = '💾 ' + new Date().toLocaleTimeString('es-CR');
     if (currentMatrizId && currentUser) {
       clearTimeout(saveDebounceTimer);
@@ -12503,6 +12925,8 @@ function restore() {
     var zm = localStorage.getItem('mcr_zoom_v6');
     var a = localStorage.getItem('mcr_active_v6');
     var lg = localStorage.getItem('mcr_logopdf_v6');
+    var pdfEnc = localStorage.getItem('mcr_pdfencabezado_v6');
+    var pdfPie = localStorage.getItem('mcr_pdfpiepagina_v6');
     if (s) sheets = JSON.parse(s);
     if (d) sheetData = JSON.parse(d);
     if (f) sheetFormats = JSON.parse(f);
@@ -12534,6 +12958,8 @@ function restore() {
     if (zm) zoomLevel = parseInt(zm) || 100;
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
     if (lg) logoPdfDataUrl = lg;
+    if (pdfEnc !== null) pdfEncabezadoTexto = pdfEnc;
+    if (pdfPie !== null) pdfPiePaginaTexto = pdfPie;
   } catch (e) {}
 }
 
