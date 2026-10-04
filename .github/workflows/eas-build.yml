@@ -48,6 +48,17 @@ jobs:
       - name: Instalar dependencias del proyecto
         run: npm install
 
+      - name: Enlazar/crear el proyecto en EAS (dueño actual de app.json)
+        # NO QUITAR ESTE PASO: aunque app.json ya trae el projectId
+        # escrito a mano, eas-cli en modo no-interactivo a veces no logra
+        # verificarlo solo contra una cuenta de tipo "team" (como
+        # carlos12chinchillas-team) y el build falla con "EAS project not
+        # configured" aunque el archivo esté bien. Este paso lo confirma
+        # explícitamente antes de compilar, sin pedir nada a mano.
+        run: eas init --non-interactive --force
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
       - name: Compilar (push a main → android preview automático)
         if: github.event_name == 'push'
         run: eas build --platform android --profile preview --non-interactive
