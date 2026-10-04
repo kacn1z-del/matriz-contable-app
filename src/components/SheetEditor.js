@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import { View, StyleSheet, Alert } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { View, StyleSheet, Alert, ActivityIndicator } from 'react-native'
 import { WebView } from 'react-native-webview'
 import * as Notifications from 'expo-notifications'
 import * as FileSystem from 'expo-file-system'
@@ -14421,8 +14421,42 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
   }
 }
 
+// ─── Por qué la hoja se carga desde un archivo y no como texto directo
+// ("Invalid or unexpected token" al abrir la hoja) ──────────────────────
+// SHEET_HTML pesa cerca de 840,000 caracteres. En Android, la WebView
+// corre en su propio proceso separado del resto de la app por seguridad,
+// y pasarle el HTML directo como prop ("source.html") obliga a cruzar
+// ese límite entre procesos con TODO el texto de una sola vez — un
+// mecanismo de Android (el mismo que usa, por ejemplo, para guardar el
+// estado de una pantalla) tiene un límite documentado de más o menos
+// 500,000 caracteres para ese tipo de transferencia. Pasado ese límite,
+// el contenido puede llegar recortado o alterado del otro lado, y el
+// motor de JavaScript termina leyendo código roto — de ahí el
+// "Invalid or unexpected token", que se confirmó que NO es un error en
+// el código (se probó letra por letra, incluso cargándolo tal cual en un
+// navegador real, sin un solo error).
+// La solución: en vez de mandar el texto completo como prop, se escribe
+// UNA VEZ en un archivo local (eso sí es seguro, porque no cruza ese
+// límite — queda en el almacenamiento de la app), y la WebView lo abre
+// con su propia dirección "file://", leyéndolo ella misma desde el
+// disco. Ningún texto gigante cruza ese límite entre procesos.
+const SHEET_HTML_FILE_URI = FileSystem.cacheDirectory + 'hoja_matriz_contable.html'
+
 export default function SheetEditor({ userId, sheetId }) {
   const webViewRef = useRef(null)
+  const [archivoHojaListo, setArchivoHojaListo] = useState(false)
+  const [errorEscribiendoArchivo, setErrorEscribiendoArchivo] = useState(false)
+
+  useEffect(() => {
+    let vigente = true
+    FileSystem.writeAsStringAsync(SHEET_HTML_FILE_URI, SHEET_HTML, { encoding: FileSystem.EncodingType.UTF8 })
+      .then(() => { if (vigente) setArchivoHojaListo(true) })
+      .catch((err) => {
+        console.log('No se pudo escribir el archivo de la hoja:', err && err.message)
+        if (vigente) setErrorEscribiendoArchivo(true)
+      })
+    return () => { vigente = false }
+  }, [])
 
   useEffect(() => {
     programarNotificacionesVencimientos()
@@ -14503,12 +14537,30 @@ export default function SheetEditor({ userId, sheetId }) {
     }
   }
 
+  // Mientras se escribe el archivo (una fracción de segundo, normalmente)
+  // se muestra un loader en vez de la WebView — así nunca se le pasa una
+  // ruta de archivo que todavía no existe.
+  if (!archivoHojaListo && !errorEscribiendoArchivo) {
+    return (
+      <View style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+        <ActivityIndicator size="large" color="#2d7a0c" />
+      </View>
+    )
+  }
+
+  // Respaldo: si por alguna razón no se pudo escribir el archivo (muy
+  // poco probable — almacenamiento lleno, etc.), se vuelve al método
+  // directo en vez de dejar la pantalla en blanco.
+  const fuenteWebView = errorEscribiendoArchivo
+    ? { html: SHEET_HTML, baseUrl: 'https://matriz-contable-app.vercel.app' }
+    : { uri: SHEET_HTML_FILE_URI }
+
   return (
     <View style={styles.container}>
       <WebView
         ref={webViewRef}
         originWhitelist={['*']}
-        source={{ html: SHEET_HTML, baseUrl: 'https://matriz-contable-app.vercel.app' }}
+        source={fuenteWebView}
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
