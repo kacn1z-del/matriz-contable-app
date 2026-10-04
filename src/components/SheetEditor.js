@@ -23,7 +23,15 @@ const SHEET_HTML = `<!DOCTYPE html>
 <script>
   // Manejador de errores visible en pantalla, para poder diagnosticar
   // sin necesidad de conectar el teléfono a una computadora. Si algo
-  // truena, aparece un banner rojo con el mensaje y la línea exacta.
+  // truena, aparece un banner rojo con el mensaje y la línea exacta, Y
+  // además se manda como alerta nativa a React Native (más fácil de leer
+  // completo y copiar que el banner, que a veces se corta en pantallas
+  // chicas) con todo el contexto posible: línea/columna, stack (si lo
+  // hay), si la conexión es lenta/con ahorro de datos, y si las
+  // librerías externas (Firebase, jsPDF, XLSX) ya estaban cargadas en
+  // ese momento — para distinguir un error de sintaxis real de uno
+  // causado por una librería que no llegó a cargar a tiempo.
+  var __mcrYaAvisado = false;
   window.addEventListener('error', function (ev) {
     try {
       var caja = document.getElementById('errorBox');
@@ -34,6 +42,27 @@ const SHEET_HTML = `<!DOCTYPE html>
         document.body.appendChild(caja);
       }
       caja.textContent += 'ERROR: ' + ev.message + '\\n  en ' + (ev.filename || '') + ':' + ev.lineno + ':' + ev.colno + '\\n\\n';
+
+      if (!__mcrYaAvisado) {
+        __mcrYaAvisado = true;
+        var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+        var detalle = ''
+          + 'Mensaje: ' + ev.message + '\\n'
+          + 'En: ' + (ev.filename || '?') + ':' + ev.lineno + ':' + ev.colno + '\\n'
+          + 'Stack: ' + (ev.error && ev.error.stack ? String(ev.error.stack).slice(0, 500) : '(sin stack)') + '\\n'
+          + 'readyState: ' + document.readyState + '\\n'
+          + 'UserAgent: ' + navigator.userAgent + '\\n'
+          + 'Conexión: ' + (conn ? ('effectiveType=' + conn.effectiveType + ' saveData=' + conn.saveData + ' downlink=' + conn.downlink) : '(no disponible)') + '\\n'
+          + 'firebase definido: ' + (typeof firebase !== 'undefined') + '\\n'
+          + 'jsPDF definido: ' + (typeof jspdf !== 'undefined' || typeof window.jsPDF !== 'undefined') + '\\n'
+          + 'XLSX definido: ' + (typeof XLSX !== 'undefined') + '\\n'
+          + 'Largo del documento: ' + (document.documentElement ? document.documentElement.outerHTML.length : '?');
+        try {
+          if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({ tipo: 'diagnosticoErrorHoja', detalle: detalle }));
+          }
+        } catch (e2) {}
+      }
     } catch (e) {}
   });
 </script>
@@ -14392,105 +14421,8 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
   }
 }
 
-// ─── Entrega de SHEET_HTML en trozos chicos (arregla el "Invalid or
-// unexpected token" al abrir la hoja) ───────────────────────────────────
-// SHEET_HTML pesa cerca de 840,000 caracteres. Entregarlo de una sola vez
-// como prop "html" del WebView obliga al puente de React Native a
-// empaquetar y mandar ese texto gigante en un solo mensaje — en ciertos
-// dispositivos ese mensaje tan grande llega corrompido o cortado a mitad
-// de camino, y el motor de JavaScript de la WebView termina leyendo
-// código roto a partir de ahí (de ahí el "Invalid or unexpected token":
-// no es un error en el código — se revisó letra por letra y está
-// correcto — sino en el transporte). La solución: cargar primero una
-// página mínima vacía con la MISMA dirección base (para no romper
-// Firebase Auth ni las llamadas a Hacienda, que dependen de esa
-// dirección), y una vez cargada, mandar el HTML real en trozos chicos uno
-// por uno vía injectJavaScript, para después reconstruir la página
-// completa con document.write(). Cada trozo es lo bastante chico para
-// que el puente nunca vuelva a tener este problema.
-const SHEET_HTML_BASE_URL = 'https://matriz-contable-app.vercel.app'
-const SHEET_HTML_BOOTSTRAP = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#e6f0e6"></body></html>'
-// Trozos más chicos que en el primer intento (120,000 caracteres no
-// alcanzó a resolverlo del todo) — cuanto más chico el trozo, menos
-// probable que el puente de React Native lo corrompa al mandarlo.
-const TAMANO_TROZO_SHEET_HTML = 20000
-
-function partirSheetHtmlEnTrozos() {
-  var trozos = []
-  for (var i = 0; i < SHEET_HTML.length; i += TAMANO_TROZO_SHEET_HTML) {
-    trozos.push(SHEET_HTML.slice(i, i + TAMANO_TROZO_SHEET_HTML))
-  }
-  return trozos
-}
-
 export default function SheetEditor({ userId, sheetId }) {
   const webViewRef = useRef(null)
-  const hojaYaEnviada = useRef(false)
-  const intentosCargaHoja = useRef(0)
-
-  // Manda SHEET_HTML en trozos chicos y, al final, reconstruye la página
-  // completa. Se protege con hojaYaEnviada para que, si onLoadEnd se
-  // dispara más de una vez (por ejemplo, el propio document.write puede
-  // volver a disparar ese evento), no se mande todo de nuevo.
-  //
-  // A diferencia del primer intento, esta vez la propia WebView CUENTA
-  // los caracteres que le llegaron y los compara contra el total
-  // esperado antes de armar la página. Si algo se perdió en el camino
-  // (el puente corrompiendo/cortando un trozo), en vez de intentar
-  // armar una página rota — que es lo que probablemente causaba el
-  // "Invalid or unexpected token" — se avisa con un mensaje claro y NO
-  // se intenta mostrar la hoja a medias.
-  function enviarHojaEnTrozos() {
-    if (hojaYaEnviada.current) return
-    hojaYaEnviada.current = true
-    var trozos = partirSheetHtmlEnTrozos()
-    var largoEsperado = SHEET_HTML.length
-
-    var scriptInicio = '(function(){ window.__mcrTrozos = new Array(' + trozos.length + '); window.__mcrLargoEsperado = ' + largoEsperado + '; window.__mcrErrorTrozo = null; })(); true;'
-    webViewRef.current && webViewRef.current.injectJavaScript(scriptInicio)
-
-    trozos.forEach(function (trozo, idx) {
-      var script = '(function(){ try { window.__mcrTrozos[' + idx + '] = ' + JSON.stringify(trozo) + '; } catch (e) { window.__mcrErrorTrozo = ' + JSON.stringify('trozo ' + idx + ': ' + String(trozo).length) + ' + " -> " + String(e); } })(); true;'
-      webViewRef.current && webViewRef.current.injectJavaScript(script)
-    })
-
-    var scriptFinal = [
-      '(function(){',
-      '  try {',
-      '    var faltantes = [];',
-      '    for (var i = 0; i < window.__mcrTrozos.length; i++) { if (typeof window.__mcrTrozos[i] !== "string") faltantes.push(i); }',
-      '    var completo = faltantes.length ? "" : window.__mcrTrozos.join("");',
-      '    var ok = !window.__mcrErrorTrozo && !faltantes.length && completo.length === window.__mcrLargoEsperado;',
-      '    if (!ok) {',
-      '      if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {',
-      '        window.ReactNativeWebView.postMessage(JSON.stringify({',
-      '          tipo: "errorCargaHoja",',
-      '          largoEsperado: window.__mcrLargoEsperado,',
-      '          largoRecibido: completo.length,',
-      '          trozosEsperados: window.__mcrTrozos.length,',
-      '          trozosFaltantes: faltantes,',
-      '          errorTrozo: window.__mcrErrorTrozo || null',
-      '        }));',
-      '      }',
-      '      document.open();',
-      '      document.write("<body style=\\"font-family:monospace;padding:20px;background:#fff3cd;color:#664d03;font-size:13px;\\">No se pudo cargar la hoja completa en este intento (llegaron " + completo.length + " de " + window.__mcrLargoEsperado + " caracteres esperados). Volvé a la pantalla de Inicio y abrí la hoja de nuevo.</body>");',
-      '      document.close();',
-      '      return;',
-      '    }',
-      '    window.__mcrTrozos = null;',
-      '    document.open();',
-      '    document.write(completo);',
-      '    document.close();',
-      '  } catch (e) {',
-      '    if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {',
-      '      window.ReactNativeWebView.postMessage(JSON.stringify({ tipo: "errorCargaHoja", error: String(e) }));',
-      '    }',
-      '  }',
-      '})();',
-      'true;',
-    ].join('\n')
-    webViewRef.current && webViewRef.current.injectJavaScript(scriptFinal)
-  }
 
   useEffect(() => {
     programarNotificacionesVencimientos()
@@ -14576,13 +14508,12 @@ export default function SheetEditor({ userId, sheetId }) {
       <WebView
         ref={webViewRef}
         originWhitelist={['*']}
-        source={{ html: SHEET_HTML_BOOTSTRAP, baseUrl: SHEET_HTML_BASE_URL }}
+        source={{ html: SHEET_HTML, baseUrl: 'https://matriz-contable-app.vercel.app' }}
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         mixedContentMode="always"
         allowFileAccess={true}
-        onLoadEnd={() => enviarHojaEnTrozos()}
         onMessage={(event) => {
           try {
             const msg = JSON.parse(event.nativeEvent.data)
@@ -14598,25 +14529,8 @@ export default function SheetEditor({ userId, sheetId }) {
             if (msg && msg.tipo === 'llamarNativo') {
               manejarLlamadaNativa(msg.id, msg.url, msg.opciones)
             }
-            if (msg && msg.tipo === 'errorCargaHoja') {
-              intentosCargaHoja.current += 1
-              if (intentosCargaHoja.current < 3) {
-                // Reintenta automáticamente (de nuevo en trozos chicos)
-                // antes de molestar al usuario — a veces el problema es
-                // pasajero.
-                hojaYaEnviada.current = false
-                setTimeout(function () { enviarHojaEnTrozos() }, 400)
-              } else {
-                Alert.alert(
-                  'No se pudo abrir la hoja',
-                  'Se recibieron ' + (msg.largoRecibido != null ? msg.largoRecibido : '?') +
-                    ' de ' + (msg.largoEsperado != null ? msg.largoEsperado : '?') + ' caracteres esperados' +
-                    (msg.trozosFaltantes && msg.trozosFaltantes.length ? (' (trozos faltantes: ' + msg.trozosFaltantes.join(', ') + ')') : '') +
-                    (msg.errorTrozo ? ('\nError: ' + msg.errorTrozo) : '') +
-                    (msg.error ? ('\nError: ' + msg.error) : '') +
-                    '\n\nProbá cerrar y volver a abrir esta hoja. Si sigue pasando, contame exactamente este mensaje.'
-                )
-              }
+            if (msg && msg.tipo === 'diagnosticoErrorHoja') {
+              Alert.alert('Diagnóstico del error', msg.detalle || '(sin detalle)')
             }
           } catch (e) {}
         }}
