@@ -142,71 +142,6 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
   }
 }
 
-// ─── Verificación de integridad del archivo de la hoja, una vez
-// copiado como asset ───────────────────────────────────────────────
-// Ya se comprobó (con la versión anterior de este diagnóstico) que
-// meter la hoja como texto de JavaScript la corrompía al compilar la
-// app — perdía caracteres sin ningún aviso de error. Ahora que la hoja
-// va como archivo aparte (ver el require de "hojaAsset" más arriba),
-// este chequeo confirma que el archivo llega COMPLETO e IDÉNTICO al
-// teléfono — calculando su largo y una "huella" (checksum) después de
-// copiarlo, y comparándolos contra los valores esperados (calculados
-// directo del archivo fuente). Si coinciden, confirma que el cambio
-// funcionó. Si no, hay que seguir investigando.
-function calcularChecksumHoja(texto) {
-  let suma = 0
-  for (let i = 0; i < texto.length; i++) {
-    suma = (suma + texto.charCodeAt(i) * ((i % 97) + 1)) % 1000000007
-  }
-  return suma
-}
-
-async function diagnosticarIntegridadHoja(rutaArchivo) {
-  try {
-    const texto = await FileSystem.readAsStringAsync(rutaArchivo, { encoding: FileSystem.EncodingType.UTF8 })
-    const largo = texto.length
-    const checksum = calcularChecksumHoja(texto)
-    const inicio = texto.slice(0, 60)
-    const fin = texto.slice(-60)
-    const medio400k = largo > 400060 ? texto.slice(400000, 400060) : '(texto más corto que 400,060)'
-    const medio800k = largo > 800060 ? texto.slice(800000, 800060) : '(texto más corto que 800,060)'
-
-    const largoEsperado = 836110
-    const checksumEsperado = 227001147
-    const inicioEsperado = '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8'
-    const finEsperado = 've);\nsetInterval(autoSave, 20000);\n</script>\n</body>\n</html>'
-    const medio400kEsperado = "push('display:none;');\n      // Flechita de autofiltro: solo"
-    const medio800kEsperado = '\n  buildTable(); autoSave();\n});\n\n// ── "Power Query" casero'
-
-    const todoCoincide =
-      largo === largoEsperado &&
-      checksum === checksumEsperado &&
-      inicio === inicioEsperado &&
-      fin === finEsperado &&
-      medio400k === medio400kEsperado &&
-      medio800k === medio800kEsperado
-
-    const detalle =
-      (todoCoincide
-        ? 'TODO COINCIDE: el archivo de la hoja, ya copiado en el teléfono, es IDÉNTICO al original. El cambio a archivo aparte funcionó.\n\n'
-        : 'NO COINCIDE: el archivo de la hoja sigue llegando distinto al esperado. Aquí está la diferencia encontrada:\n\n') +
-      'Largo real: ' + largo + ' (esperado ' + largoEsperado + ')\n' +
-      'Checksum real: ' + checksum + ' (esperado ' + checksumEsperado + ')\n' +
-      'Inicio real: ' + JSON.stringify(inicio) + '\n' +
-      'Inicio esperado: ' + JSON.stringify(inicioEsperado) + '\n' +
-      'Fin real: ' + JSON.stringify(fin) + '\n' +
-      'Fin esperado: ' + JSON.stringify(finEsperado) + '\n' +
-      'Medio (400k) real: ' + JSON.stringify(medio400k) + '\n' +
-      'Medio (400k) esperado: ' + JSON.stringify(medio400kEsperado) + '\n' +
-      'Medio (800k) real: ' + JSON.stringify(medio800k) + '\n' +
-      'Medio (800k) esperado: ' + JSON.stringify(medio800kEsperado)
-
-    Alert.alert('Diagnóstico de integridad (archivo ya copiado)', detalle)
-  } catch (err) {
-    Alert.alert('Error al calcular el diagnóstico de integridad', String(err && err.message ? err.message : err))
-  }
-}
-
 export default function SheetEditor({ userId, sheetId }) {
   const webViewRef = useRef(null)
   const [rutaHojaLista, setRutaHojaLista] = useState(null)
@@ -219,7 +154,6 @@ export default function SheetEditor({ userId, sheetId }) {
         await hojaAsset.downloadAsync()
         if (!vigente) return
         const ruta = hojaAsset.localUri
-        await diagnosticarIntegridadHoja(ruta)
         if (vigente) setRutaHojaLista(ruta)
       } catch (err) {
         console.log('No se pudo preparar el archivo de la hoja:', err && err.message)
