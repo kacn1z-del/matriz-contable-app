@@ -9155,7 +9155,12 @@ document.getElementById('fnInsertBtn').addEventListener('click', function () {
   if (!fnSelectedItem) return;
   var id = document.getElementById('cellRef').textContent;
   var el = document.getElementById('cell_' + id);
-  var toInsert = '=' + (fnSelectedItem.s || (fnSelectedItem.n + '()'));
+  // Se inserta el EJEMPLO (que trae rangos reales, p. ej. =AGUINALDO(B2:B13)) y no
+  // la sintaxis con nombres de parámetro (=AGUINALDO(rango_salarios)), porque esa
+  // última no es una fórmula válida y la celda quedaba con error.
+  var toInsert = fnSelectedItem.x
+    ? (fnSelectedItem.x.charAt(0) === '=' ? fnSelectedItem.x : '=' + fnSelectedItem.x)
+    : '=' + fnSelectedItem.n + '()';
   snapshot();
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   sheetData[activeSheet][id] = toInsert;
