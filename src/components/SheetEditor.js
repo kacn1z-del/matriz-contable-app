@@ -14442,10 +14442,83 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
 // disco. Ningún texto gigante cruza ese límite entre procesos.
 const SHEET_HTML_FILE_URI = FileSystem.cacheDirectory + 'hoja_matriz_contable.html'
 
+// ─── Diagnóstico de integridad de SHEET_HTML dentro del propio motor de
+// React Native (Hermes), ANTES de que el texto toque la WebView ───────
+// Hasta ahora todas las pruebas comprobaron que el texto es válido en
+// su ARCHIVO FUENTE (se revisó letra por letra, y cargado tal cual en
+// un navegador real no dio ningún error). Lo que nunca se había
+// comprobado es si ese texto SIGUE SIENDO IDÉNTICO una vez que la app
+// ya está compilada y corriendo en el teléfono — porque React Native
+// no ejecuta el archivo fuente directamente: lo empaqueta y lo compila
+// (con Hermes) a un formato propio, y en teoría ese paso de por sí
+// podría alterar un texto tan largo (más de 800,000 caracteres en un
+// solo literal). Esta función calcula el largo exacto y una "huella"
+// (checksum) del texto de SHEET_HTML tal como existe DENTRO de la app
+// ya compilada, para compararlos contra los valores esperados
+// (calculados aparte, directo del archivo fuente, sin pasar por
+// Hermes). Si coinciden, el problema no está en la compilación de la
+// app. Si no coinciden, encontramos la causa real.
+function calcularChecksumHoja(texto) {
+  let suma = 0
+  for (let i = 0; i < texto.length; i++) {
+    suma = (suma + texto.charCodeAt(i) * ((i % 97) + 1)) % 1000000007
+  }
+  return suma
+}
+
+function diagnosticarIntegridadSheetHtml() {
+  try {
+    const largo = SHEET_HTML.length
+    const checksum = calcularChecksumHoja(SHEET_HTML)
+    const inicio = SHEET_HTML.slice(0, 60)
+    const fin = SHEET_HTML.slice(-60)
+    const medio400k = largo > 400060 ? SHEET_HTML.slice(400000, 400060) : '(texto más corto que 400,060)'
+    const medio800k = largo > 800060 ? SHEET_HTML.slice(800000, 800060) : '(texto más corto que 800,060)'
+
+    const largoEsperado = 836110
+    const checksumEsperado = 227001147
+    const inicioEsperado = '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8'
+    const finEsperado = 've);\nsetInterval(autoSave, 20000);\n</script>\n</body>\n</html>'
+    const medio400kEsperado = "push('display:none;');\n      // Flechita de autofiltro: solo"
+    const medio800kEsperado = '\n  buildTable(); autoSave();\n});\n\n// ── "Power Query" casero'
+
+    const todoCoincide =
+      largo === largoEsperado &&
+      checksum === checksumEsperado &&
+      inicio === inicioEsperado &&
+      fin === finEsperado &&
+      medio400k === medio400kEsperado &&
+      medio800k === medio800kEsperado
+
+    const detalle =
+      (todoCoincide
+        ? 'TODO COINCIDE: el texto de SHEET_HTML dentro de la app compilada es IDÉNTICO al del archivo fuente. La compilación (Hermes) NO es la causa.\n\n'
+        : 'NO COINCIDE: el texto de SHEET_HTML cambió entre el archivo fuente y la app ya compilada. Aquí está la diferencia encontrada:\n\n') +
+      'Largo real: ' + largo + ' (esperado ' + largoEsperado + ')\n' +
+      'Checksum real: ' + checksum + ' (esperado ' + checksumEsperado + ')\n' +
+      'Inicio real: ' + JSON.stringify(inicio) + '\n' +
+      'Inicio esperado: ' + JSON.stringify(inicioEsperado) + '\n' +
+      'Fin real: ' + JSON.stringify(fin) + '\n' +
+      'Fin esperado: ' + JSON.stringify(finEsperado) + '\n' +
+      'Medio (400k) real: ' + JSON.stringify(medio400k) + '\n' +
+      'Medio (400k) esperado: ' + JSON.stringify(medio400kEsperado) + '\n' +
+      'Medio (800k) real: ' + JSON.stringify(medio800k) + '\n' +
+      'Medio (800k) esperado: ' + JSON.stringify(medio800kEsperado)
+
+    Alert.alert('Diagnóstico de integridad (antes de la WebView)', detalle)
+  } catch (err) {
+    Alert.alert('Error al calcular el diagnóstico de integridad', String(err && err.message ? err.message : err))
+  }
+}
+
 export default function SheetEditor({ userId, sheetId }) {
   const webViewRef = useRef(null)
   const [archivoHojaListo, setArchivoHojaListo] = useState(false)
   const [errorEscribiendoArchivo, setErrorEscribiendoArchivo] = useState(false)
+
+  useEffect(() => {
+    diagnosticarIntegridadSheetHtml()
+  }, [])
 
   useEffect(() => {
     let vigente = true
