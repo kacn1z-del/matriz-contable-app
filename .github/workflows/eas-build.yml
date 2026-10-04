@@ -48,17 +48,6 @@ jobs:
       - name: Instalar dependencias del proyecto
         run: npm install
 
-      - name: Enlazar/crear el proyecto en EAS (dueño actual de app.json)
-        # app.json ya no trae un "projectId" fijo, porque ese quedó pegado
-        # al dueño anterior (guiscerdas) y rompía el build al cambiar de
-        # cuenta. Este paso crea el proyecto en EAS (o lo reconecta, si ya
-        # existe) bajo el "owner" que diga app.json en cada momento, sin
-        # pedir confirmación a mano — así no hace falta una terminal para
-        # correr "eas init" la primera vez.
-        run: eas init --non-interactive --force
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
       - name: Compilar (push a main → android preview automático)
         if: github.event_name == 'push'
         run: eas build --platform android --profile preview --non-interactive
