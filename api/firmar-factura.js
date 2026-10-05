@@ -349,6 +349,7 @@ export default async function handler(req, res) {
       receptor, // { nombre, identificacion: { tipo, numero }, correoElectronico }
       lineas, // array de líneas (codigoCabys, cantidad, detalle, precioUnitario, impuesto)
       condicionVenta, // '01' contado, '02' crédito, etc. (default '01')
+      plazoCredito, // días de plazo — obligatorio cuando condicionVenta === '02'
       medioPago, // array, ej: ['01'] (default ['01'] efectivo)
       esTiquete, // true => Tiquete Electrónico (04) en vez de Factura (01)
       emisorNombre, // opcional: nombre / razón social del emisor
@@ -376,6 +377,21 @@ export default async function handler(req, res) {
       res.status(400).json({
         error: 'Para una Factura Electrónica hace falta el receptor (nombre y cédula).',
       })
+      return
+    }
+    // Hacienda exige el plazo en días cuando la condición de venta es
+    // "crédito" (02) — sin esto el comprobante se rechaza.
+    const plazoCreditoLimpio = String(plazoCredito || '').replace(/[^0-9]/g, '')
+    const esCreditoVenta = condicionVenta === '02' || condicionVenta === '10' // 10 = crédito con IVA diferido hasta 90 días (Art. 27 LIVA)
+    if (esCreditoVenta && !plazoCreditoLimpio) {
+      res.status(400).json({
+        error: 'Para facturar a crédito hace falta indicar el plazo de crédito en días.',
+      })
+      return
+    }
+
+    if (condicionVenta === '10' && Number(plazoCreditoLimpio) > 90) {
+      res.status(400).json({ error: 'El crédito con IVA diferido (Art. 27) permite un plazo máximo de 90 días.' })
       return
     }
 
@@ -511,6 +527,7 @@ export default async function handler(req, res) {
       detalleServicio: lineasCalculadas,
       resumenFactura: resumen,
     }
+    if (condicionVenta === '02' || condicionVenta === '10') documento.plazoCredito = plazoCreditoLimpio
 
     let xml
     if (esTiquete) {
@@ -557,6 +574,7 @@ export default async function handler(req, res) {
       total: resumen.totalComprobante,
       lineas: lineas,
       condicionVenta: condicionVenta || '01',
+      plazoCredito: (condicionVenta === '02' || condicionVenta === '10') ? plazoCreditoLimpio : null,
       medioPago: medioPago || ['01'],
       xmlFirmadoBase64: xmlFirmadoBase64,
     })
