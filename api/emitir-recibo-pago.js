@@ -55,7 +55,10 @@ const CERTIFICADOS_WORKER_URL = (
 
 const SUCURSAL = '001'
 const TERMINAL = '00001'
-const CODIGO_TIPO_REP = '07'
+// Código del REP en la estructura v4.4 de Hacienda (10). El SDK solo deja
+// armar claves con 01–09, así que la clave se arma con el SDK y luego se
+// corrige el código de tipo dentro del consecutivo que lleva incrustado.
+const CODIGO_TIPO_REP = '10'
 
 // ─── Utilidades (idénticas a emitir-nota-credito.js / emitir-nota-debito.js) ──
 function soloDigitos(valor) {
@@ -255,6 +258,8 @@ export default async function handler(req, res) {
       lineas, // mismas líneas de la factura original (se documenta el pago del 100%)
       medioPago, // cómo se cobró: ['01'] efectivo, ['02'] tarjeta, ['03'] cheque, ['04'] transferencia, etc.
       emisorNombre,
+      montoPago, // opcional: monto cobrado en este pago (pago parcial). Sin esto se documenta el 100%
+      totalOriginal, // total de la factura original (para calcular la proporción del pago parcial)
     } = req.body || {}
 
     const uid = await verificarIdToken(idToken)
@@ -313,7 +318,22 @@ export default async function handler(req, res) {
     const secuencia = await obtenerSiguienteSecuencia(uid, 'reciboPago')
 
     // ── 3. Totales — se documenta el pago del 100% de la factura original ──
-    const lineasNormalizadas = lineas.map(normalizarLinea)
+    let lineasBase = lineas
+    const montoPagoNum = Number(montoPago)
+    const totalOrigNum = Number(totalOriginal)
+    if (montoPago !== undefined && montoPago !== null && montoPago !== '') {
+      if (!(montoPagoNum > 0) || !(totalOrigNum > 0) || montoPagoNum > totalOrigNum + 0.005) {
+        res.status(400).json({ error: 'El monto del pago debe ser mayor que 0 y no puede superar el total de la factura.' })
+        return
+      }
+      if (montoPagoNum < totalOrigNum - 0.005) {
+        // Pago parcial: se escala el precio de cada línea por la proporción
+        // pagada, así el IVA queda proporcional al monto cobrado.
+        const proporcion = montoPagoNum / totalOrigNum
+        lineasBase = lineas.map((l) => ({ ...l, precioUnitario: Math.round(Number(l.precioUnitario) * proporcion * 100000) / 100000 }))
+      }
+    }
+    const lineasNormalizadas = lineasBase.map(normalizarLinea)
     const lineasCalculadas = lineasNormalizadas.map(calculateLineItemTotals)
     const resumen = calculateInvoiceSummary(lineasCalculadas)
 
@@ -340,7 +360,7 @@ export default async function handler(req, res) {
     // Ver el comentario largo arriba del archivo: "07" es el único código
     // que buildClave() deja usar — puede no ser el "10" que menciona la
     // documentación del SDK. Probar en sandbox antes de usar en producción.
-    const clave = buildClave({
+    const claveSdk = buildClave({
       date: new Date(),
       taxpayerId: cedulaLimpia,
       documentType: DocumentType.RECIBO_ELECTRONICO_PAGO,
@@ -348,6 +368,13 @@ export default async function handler(req, res) {
       situation: Situation.NORMAL,
     })
     const numeroConsecutivo = SUCURSAL + TERMINAL + CODIGO_TIPO_REP + String(secuencia).padStart(10, '0')
+    // El consecutivo ocupa las posiciones 21–40 de la clave; se reemplaza
+    // por el nuestro (con tipo "10") y se conserva el resto tal cual.
+    const clave = claveSdk.slice(0, 21) + numeroConsecutivo + claveSdk.slice(41)
+    if (clave.length !== 50) {
+      res.status(500).json({ error: 'No se pudo armar la clave del recibo de pago.' })
+      return
+    }
 
     // ── 5. Armar el documento, con la referencia a la factura cobrada ──
     const emisor = {
