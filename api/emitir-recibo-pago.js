@@ -3,7 +3,7 @@
  *
  * Emite un Recibo Electrónico de Pago (REP) REAL — el comprobante que
  * Hacienda exige cuando se cobra efectivamente una factura que se había
- * emitido "a crédito" (condicionVenta "02"). Es casi gemelo de
+ * emitido "a crédito" (condicionVenta "02" o "10"; el esquema oficial v4.4 define 10 como «Venta a crédito en IVA hasta 90 días, Art. 27 LIVA»). Es casi gemelo de
  * emitir-nota-credito.js / emitir-nota-debito.js en todo lo de
  * certificado, firma y envío, pero:
  *
