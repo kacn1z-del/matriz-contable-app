@@ -72,54 +72,81 @@
   #btnAyuda { min-width: 34px; }
   #app { display: flex; flex-direction: column; height: 100%; }
 
+  /* ── Barra superior y menú "Inicio" desplegable ── */
   #ribbonTrigger {
-    display: flex; align-items: center; padding: 6px 8px; background: #217346; flex-shrink: 0;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15); gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    display: flex; align-items: center; padding: 8px 10px; flex-shrink: 0; gap: 7px;
+    background: linear-gradient(135deg, #14532d 0%, #1f7a44 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,.22); overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   #ribbonTrigger::-webkit-scrollbar { display: none; }
   #ribbonToggle {
-    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
-    padding: 7px 12px; font-size: 12.5px; font-weight: 700; flex-shrink: 0;
+    background: #fff !important; color: #14532d !important; border: none; border-radius: 999px;
+    padding: 8px 16px; font-size: 13px; font-weight: 800; flex-shrink: 0; letter-spacing: .2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
   }
-  #ribbonTrigger button {
-    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
-    padding: 7px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
+  #ribbonTrigger button:not(#ribbonToggle) {
+    background: rgba(255,255,255,.16) !important; color: #fff; border: 1px solid rgba(255,255,255,.28); border-radius: 999px;
+    padding: 7px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
   }
-  #ribbonTrigger button:active { background: #103b23; }
+  #ribbonTrigger button:not(#ribbonToggle):active { background: rgba(255,255,255,.32) !important; }
   #ribbonTrigger select {
-    background: #1a5c38; color: #fff; border: none; border-radius: 5px;
-    padding: 7px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0;
+    background: rgba(255,255,255,.16); color: #fff; border: 1px solid rgba(255,255,255,.28); border-radius: 999px;
+    padding: 7px 8px; font-size: 12px; font-weight: 600; flex-shrink: 0;
   }
+  #ribbonTrigger select option { color: #111; }
   #ribbonOverlay {
-    position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9700;
-    display: none; align-items: flex-end; justify-content: center;
+    position: fixed; inset: 0; background: rgba(8,24,14,.5); z-index: 9700;
+    display: none; align-items: flex-start; justify-content: center;
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
   }
   #ribbonOverlay.show { display: flex; }
+  #ribbonOverlay.show #ribbonModal { animation: rbBajar .22s ease-out; }
+  @keyframes rbBajar { from { transform: translateY(-14px); opacity: 0; } to { transform: none; opacity: 1; } }
   #ribbonModal {
-    background: #f3f2f1; border-radius: 14px 14px 0 0; width: 100%; max-width: 520px;
-    max-height: 78vh; display: flex; flex-direction: column; overflow: hidden;
+    background: #f6f8f5; border-radius: 0 0 22px 22px; width: 100%; max-width: 560px;
+    max-height: 86vh; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,.35);
   }
   #ribbonHead {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; background: #217346; flex-shrink: 0;
+    padding: 14px 18px; background: linear-gradient(135deg, #14532d, #1f7a44); flex-shrink: 0;
   }
-  #ribbonHead h3 { margin: 0; color: #fff; font-size: 15px; }
-  #ribbonHead button { background: none; border: none; color: #fff; font-size: 16px; padding: 4px 8px; }
-  #toolbar {
-    display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap;
-    padding: 10px; background: #f3f2f1; overflow-y: auto;
+  #ribbonHead h3 { margin: 0; color: #fff; font-size: 17px; font-weight: 800; letter-spacing: .3px; }
+  #ribbonHead button { background: rgba(255,255,255,.18); border: none; color: #fff; font-size: 15px; width: 32px; height: 32px; border-radius: 50%; padding: 0; }
+  #toolbar { display: block; padding: 10px 12px 18px; background: #f6f8f5; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  #rbBuscarWrap { position: sticky; top: -10px; z-index: 2; padding: 2px 0 10px; background: #f6f8f5; }
+  #rbBuscar {
+    width: 100%; box-sizing: border-box; border: 1px solid #d5ddd2; border-radius: 12px; background: #fff;
+    padding: 11px 14px; font-size: 14px; outline: none; color: #1f2937;
   }
-  #toolbar button {
-    background: #217346; color: #fff; border: none; border-radius: 5px;
-    padding: 8px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
+  #rbBuscar:focus { border-color: #1f7a44; box-shadow: 0 0 0 3px rgba(31,122,68,.18); }
+  .rbSec { background: #fff; border: 1px solid #e3e9e0; border-radius: 16px; margin-bottom: 9px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .rbSecHead { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; user-select: none; -webkit-user-select: none; border-left: 5px solid var(--rbc); }
+  .rbSecIco { font-size: 18px; }
+  .rbSecTit { flex: 1; font-size: 14px; font-weight: 800; color: #1f2937; }
+  .rbSecN { font-size: 11px; font-weight: 700; color: var(--rbc); background: #f1f5f0; border-radius: 999px; padding: 2px 8px; }
+  .rbChev { color: #94a3b8; transition: transform .2s; font-size: 13px; }
+  .rbSec.open .rbChev { transform: rotate(180deg); }
+  .rbGrid { display: none; grid-template-columns: repeat(3, 1fr); gap: 7px; padding: 4px 10px 12px; }
+  .rbSec.open .rbGrid { display: grid; }
+  #toolbar .rbGrid button {
+    background: #f6f8f5 !important; color: #1f2937 !important; border: 1px solid #e3e9e0; border-radius: 12px;
+    padding: 9px 4px; font-size: 11.5px; font-weight: 600; line-height: 1.25; white-space: normal; word-break: break-word;
+    min-height: 52px; display: flex; align-items: center; justify-content: center; text-align: center; box-shadow: none;
   }
-  #toolbar button:active { background: #14472b; }
-  #toolbar button:disabled { opacity: .4; }
-  #toolbar button.active { background: #2176d2; box-shadow: inset 0 0 0 2px #fff; }
-  #toolbar select {
-    background: #217346; color: #fff; border: none; border-radius: 5px;
-    padding: 8px 6px; font-size: 12px; font-weight: 600; flex-shrink: 0;
-  }
+  #toolbar .rbGrid button:active { background: var(--rbc) !important; color: #fff !important; border-color: var(--rbc); }
+  #toolbar .rbGrid button:disabled { opacity: .38; }
+  #toolbar .rbGrid button.active { background: #dbeafe !important; color: #1d4ed8 !important; border-color: #2563eb; box-shadow: inset 0 0 0 1px #2563eb; }
+  #toolbar .rbGrid button.danger { color: #b91c1c !important; }
+  .rbSec.rbOculta { display: none; }
+  #toolbar .rbGrid button.rbOculto { display: none; }
+  #rbVacio { display: none; text-align: center; color: #64748b; font-size: 13px; padding: 24px 10px; }
+  body.dark-mode #ribbonModal, body.dark-mode #toolbar, body.dark-mode #rbBuscarWrap { background: #1b1f1c; }
+  body.dark-mode .rbSec { background: #252a26; border-color: #343b35; }
+  body.dark-mode .rbSecTit { color: #e5e7eb; }
+  body.dark-mode .rbSecN { background: #1b1f1c; }
+  body.dark-mode #rbBuscar { background: #252a26; border-color: #343b35; color: #e5e7eb; }
+  body.dark-mode #toolbar .rbGrid button { background: #1b1f1c !important; color: #e5e7eb !important; border-color: #343b35; }
 
   #formulaBarRow {
     display: flex; align-items: center; gap: 8px; padding: 6px 10px;
@@ -219,6 +246,7 @@
   .enlaceFlag::after { content: '\2197'; }
   .errorFlag { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 9px 9px 0; border-color: transparent #dc2626 transparent transparent; cursor: pointer; z-index: 4; }
   .condIcon { margin-right: 3px; font-size: 11px; }
+  .cell.soloBarraDatos { color: transparent !important; }
   /* ── Autofiltro: la flechita que va EN la fila de encabezados de una
      tabla (no en la letra de columna A/B/C), igual que en Excel. ── */
   .filtroArrowBtn { position: absolute; right: 1px; bottom: 1px; width: 15px; height: 15px; line-height: 13px; font-size: 9px; border: 1px solid #a9c98a; background: #fff; color: #245f09; border-radius: 3px; cursor: pointer; padding: 0; z-index: 4; }
@@ -730,79 +758,113 @@
         <button id="ribbonClose">✕</button>
       </div>
   <div id="toolbar">
-    <button id="btnUndo" disabled>↶ Deshacer</button>
-    <button id="btnRedo" disabled>↷ Rehacer</button>
-    <button id="btnCut">✂️ Cortar</button>
-    <button id="btnCopy">⧉ Copiar</button>
-    <button id="btnPaste">📋 Pegar</button>
-    <button id="btnPasteEspecial">📋▾ Especial</button>
-    <button id="btnBold">N</button>
-    <button id="btnItalic">I</button>
-    <button id="btnCurrency">₡</button>
-    <button id="btnPercent">%</button>
-    <button id="btnFormat">🔢 Formato</button>
-    <button id="btnCondFormat">🎨 Cond.</button>
-    <button id="btnCondAvanzado">🌈 Cond. Avanzado</button>
-    <button id="btnValidacion">✅ Validación</button>
-    <button id="btnMerge">⛶ Combinar</button>
-    <button id="btnOrdenar">⇅ Ordenar</button>
-    <button id="btnQuitarDuplicados">🧹 Quitar duplicados</button>
-    <button id="btnFillColor" style="background:#c8960c;">🎨 Relleno</button>
-    <button id="btnFontColor" style="background:#333;">A Color</button>
-    <button id="btnFreeze">❄ Congelar</button>
-    <button id="btnMultiSel" title="Activá esto y luego tocá varias celdas o rangos salteados para seleccionarlos todos a la vez (como Ctrl+click en Excel)">🧷 Multi</button>
-    <button id="btnNote">📝 Nota</button>
-    <button id="btnChart">📊 Gráfico</button>
-    <button id="btnFormas">🔷 Formas</button>
-    <button id="btnOrtografia">🔤 Ortografía</button>
-    <button id="btnHistorialCelda">🕓 Historial</button>
-    <button id="btnInsertarTabla">🎨 +Tabla</button>
-    <button id="btnTotales">Σ Totales</button>
-    <button id="btnSibo">✦ Sibö</button>
-    <button id="btnBuscarReemplazar">🔎 Buscar</button>
-    <button id="btnFxLib">fx Funciones</button>
-    <button id="btnDiccionario">📖 Diccionario</button>
-    <button id="btnDarkMode">🌙</button>
-    <button id="btnAuditoria">🕐 Auditoría</button>
-    <button id="btnBackup">☁️ Backups</button>
-    <button id="btnRangos">📛 Rangos</button>
-    <button id="btnMacros">▶ Macros</button>
-    <button id="btnSegmentadores">🔘 Segmentadores</button>
-    <button id="btnTipoCambio">💱 Tipo Cambio</button>
-    <button id="btnPadronHacienda">🏛 Padrón Hacienda</button>
-    <button id="btnBuscarObjetivo">🎯 Buscar Objetivo</button>
-    <button id="btnTablaDatos">📊 Tabla de Datos</button>
-    <button id="btnPlanilla">👥 Planilla CCSS/ISR</button>
-    <button id="btnResumenIVA">🧾 Resumen IVA</button>
-    <button id="btnEscenarios">🧪 Escenarios</button>
-    <button id="btnVistas">📌 Vistas</button>
-    <button id="btnMostrarOcultos" style="display:none;">👁 Mostrar todo</button>
-    <button id="btnRecibo">📷 Recibo</button>
-    <button id="btnBuscarGlobal">🔍 Buscar en todo</button>
-    <input type="file" id="reciboFileInput" accept="image/*" capture="environment" style="display:none" />
-    <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
-    <button id="btnBalanceAuto">📊 Balance Auto</button>
-    <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
-    <button id="btnDashboard">📊 Dashboard</button>
-    <button id="btnComparativoMensual">📈 Comparativo Mensual</button>
-    <button id="btnProtegerHoja">🔓 Proteger Hoja</button>
-    <button id="btnTablaDinamica">📐 Tabla Dinámica</button>
-    <button id="btnCamposDinamica" style="display:none;">🧩 Campos Dinámica</button>
-    <button id="btnActualizarDinamica" style="display:none;">🔄 Actualizar Dinámica</button>
-    <button id="btnAutofiltro">🔽 Autofiltro</button>
-    <button id="btnVencimientos">🗓 Vencimientos</button>
-    <button id="btnD101">🇨🇷 D-101</button>
-    <button id="btnCSV">⬇ CSV</button>
-    <button id="btnPdfReporte">⬇ PDF Reporte</button>
-    <button id="btnExcelExport" title="Exporta todas las hojas en un solo archivo">⬇ Excel</button>
-    <button id="btnExcelImport">⬆ Importar Excel</button>
-    <button id="btnConciliacion">🏦 Conciliación</button>
-    <input type="file" id="excelFileInput" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,*/*" style="display:none" />
-    <input type="file" id="bankFileInput" accept=".csv,.txt,.xlsx,.xls,text/csv,text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*" style="display:none" />
-    <button id="btnAddRow">+Fila</button>
-    <button id="btnDelRow">-Fila</button>
-    <button id="btnAddCol">+Col</button>
-    <button id="btnClear">Borrar</button>
+    <div id="rbBuscarWrap"><input id="rbBuscar" type="search" placeholder="🔎 Buscar herramienta…" autocomplete="off" /></div>
+    <div class="rbSec open" style="--rbc:#2563eb;">
+      <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">✏️</span><span class="rbSecTit">Edición</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
+      <div class="rbGrid">
+        <button id="btnUndo" disabled>↶ Deshacer</button>
+        <button id="btnRedo" disabled>↷ Rehacer</button>
+        <button id="btnCut">✂️ Cortar</button>
+        <button id="btnCopy">⧉ Copiar</button>
+        <button id="btnPaste">📋 Pegar</button>
+        <button id="btnPasteEspecial">📋▾ Especial</button>
+        <button id="btnBuscarReemplazar">🔎 Buscar</button>
+        <button id="btnBuscarGlobal">🔍 Buscar en todo</button>
+        <button id="btnMultiSel" title="Activá esto y luego tocá varias celdas o rangos salteados para seleccionarlos todos a la vez (como Ctrl+click en Excel)">🧷 Multi</button>
+        <button id="btnClear">Borrar</button>
+      </div>
+    </div>
+    <div class="rbSec" style="--rbc:#c2410c;">
+      <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">🎨</span><span class="rbSecTit">Formato</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
+      <div class="rbGrid">
+        <button id="btnBold">N</button>
+        <button id="btnItalic">I</button>
+        <button id="btnCurrency">₡</button>
+        <button id="btnPercent">%</button>
+        <button id="btnFormat">🔢 Formato</button>
+        <button id="btnFillColor" style="background:#c8960c;">🎨 Relleno</button>
+        <button id="btnFontColor" style="background:#333;">A Color</button>
+        <button id="btnMerge">⛶ Combinar</button>
+        <button id="btnCondFormat">🎨 Cond.</button>
+        <button id="btnCondAvanzado">🌈 Cond. Avanzado</button>
+        <button id="btnValidacion">✅ Validación</button>
+        <button id="btnFreeze">❄ Congelar</button>
+        <button id="btnNote">📝 Nota</button>
+        <button id="btnInsertarTabla">🎨 +Tabla</button>
+        <button id="btnDarkMode">🌙</button>
+      </div>
+    </div>
+    <div class="rbSec" style="--rbc:#0f766e;">
+      <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">🗂</span><span class="rbSecTit">Datos y hoja</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
+      <div class="rbGrid">
+        <button id="btnOrdenar">⇅ Ordenar</button>
+        <button id="btnQuitarDuplicados">🧹 Quitar duplicados</button>
+        <button id="btnAutofiltro">🔽 Autofiltro</button>
+        <button id="btnTotales">Σ Totales</button>
+        <button id="btnSegmentadores">🔘 Segmentadores</button>
+        <button id="btnTablaDinamica">📐 Tabla Dinámica</button>
+        <button id="btnCamposDinamica" style="display:none;">🧩 Campos Dinámica</button>
+        <button id="btnActualizarDinamica" style="display:none;">🔄 Actualizar Dinámica</button>
+        <button id="btnTablaDatos">📊 Tabla de Datos</button>
+        <button id="btnRangos">📛 Rangos</button>
+        <button id="btnVistas">📌 Vistas</button>
+        <button id="btnMostrarOcultos" style="display:none;">👁 Mostrar todo</button>
+        <button id="btnAddRow">+Fila</button>
+        <button id="btnDelRow">-Fila</button>
+        <button id="btnAddCol">+Col</button>
+      </div>
+    </div>
+    <div class="rbSec" style="--rbc:#7c3aed;">
+      <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">📈</span><span class="rbSecTit">Gráficos y análisis</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
+      <div class="rbGrid">
+        <button id="btnChart">📊 Gráfico</button>
+        <button id="btnFormas">🔷 Formas</button>
+        <button id="btnDashboard">📊 Dashboard</button>
+        <button id="btnComparativoMensual">📈 Comparativo Mensual</button>
+        <button id="btnBuscarObjetivo">🎯 Buscar Objetivo</button>
+        <button id="btnEscenarios">🧪 Escenarios</button>
+        <button id="btnFxLib">fx Funciones</button>
+        <button id="btnMacros">▶ Macros</button>
+        <button id="btnSibo">✦ Sibö</button>
+        <button id="btnDiccionario">📖 Diccionario</button>
+        <button id="btnOrtografia">🔤 Ortografía</button>
+        <button id="btnHistorialCelda">🕓 Historial</button>
+        <button id="btnAuditoria">🕐 Auditoría</button>
+      </div>
+    </div>
+    <div class="rbSec" style="--rbc:#15803d;">
+      <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">🇨🇷</span><span class="rbSecTit">Contabilidad Costa Rica</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
+      <div class="rbGrid">
+        <button id="btnPlanilla">👥 Planilla CCSS/ISR</button>
+        <button id="btnResumenIVA">🧾 Resumen IVA</button>
+        <button id="btnTipoCambio">💱 Tipo Cambio</button>
+        <button id="btnPadronHacienda">🏛 Padrón Hacienda</button>
+        <button id="btnVencimientos">🗓 Vencimientos</button>
+        <button id="btnD101">🇨🇷 D-101</button>
+        <button id="btnConciliacion">🏦 Conciliación</button>
+        <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
+        <button id="btnBalanceAuto">📊 Balance Auto</button>
+        <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
+        <button id="btnRecibo">📷 Recibo</button>
+      </div>
+    </div>
+    <div class="rbSec" style="--rbc:#475569;">
+      <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">📁</span><span class="rbSecTit">Archivo y seguridad</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
+      <div class="rbGrid">
+        <button id="btnCSV">⬇ CSV</button>
+        <button id="btnPdfReporte">⬇ PDF Reporte</button>
+        <button id="btnExcelExport" title="Exporta todas las hojas en un solo archivo">⬇ Excel</button>
+        <button id="btnExcelImport">⬆ Importar Excel</button>
+        <button id="btnBackup">☁️ Backups</button>
+        <button id="btnProtegerHoja">🔓 Proteger Hoja</button>
+      </div>
+    </div>
+    <div style="display:none;">
+      <input type="file" id="reciboFileInput" accept="image/*" capture="environment" style="display:none" />
+      <input type="file" id="excelFileInput" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,*/*" style="display:none" />
+      <input type="file" id="bankFileInput" accept=".csv,.txt,.xlsx,.xls,text/csv,text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*" style="display:none" />
+    </div>
+    <div id="rbVacio">No se encontró ninguna herramienta con ese nombre.</div>
   </div>
     </div>
   </div>
@@ -824,6 +886,7 @@
       <button id="navBordeAbajo" title="Saltar al borde de datos hacia abajo (Ctrl+↓)">⤓</button>
       <button id="navBordeIzq" title="Saltar al borde de datos hacia la izquierda (Ctrl+←)">⇤</button>
       <button id="navBordeDer" title="Saltar al borde de datos hacia la derecha (Ctrl+→)">⇥</button>
+      <button id="btnAbsRef" title="Referencia absoluta: alterna B5 → $B$5 → B$5 → $B5">$</button>
     </div>
     <div style="flex:1;position:relative;">
       <!-- "formulaHighlight" muestra el mismo texto pero coloreado (función,
@@ -1108,6 +1171,19 @@
     <div id="caDatabarCampos">
       <span class="field-label">Color de la barra</span>
       <input id="caColorBarra" type="color" value="#5a9bd5" />
+      <span class="field-label">Color de valores negativos</span>
+      <input id="caColorBarraNeg" type="color" value="#e15759" />
+      <span class="field-label">Valor mínimo (la barra vacía)</span>
+      <div style="display:flex;gap:6px;">
+        <select id="caMinTipo"><option value="auto">Automático</option><option value="num">Número</option><option value="pct">Porcentaje</option></select>
+        <input id="caMinVal" type="number" step="any" placeholder="ej. 0" disabled style="flex:1;min-width:0;" />
+      </div>
+      <span class="field-label">Valor máximo (la barra llena)</span>
+      <div style="display:flex;gap:6px;">
+        <select id="caMaxTipo"><option value="auto">Automático</option><option value="num">Número</option><option value="pct">Porcentaje</option></select>
+        <input id="caMaxVal" type="number" step="any" placeholder="ej. 100" disabled style="flex:1;min-width:0;" />
+      </div>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;"><input id="caSoloBarra" type="checkbox" /> Mostrar solo la barra (ocultar el número)</label>
     </div>
     <div id="caColorscaleCampos" style="display:none;">
       <span class="field-label">Color — valor más bajo</span>
@@ -2216,7 +2292,8 @@ var MENSAJES_ERROR_CELDA = {
 function explicarErrorCelda(val) {
   return MENSAJES_ERROR_CELDA[val] || 'La fórmula de esta celda no se pudo calcular correctamente.';
 }
-function colLetter(i) { return String.fromCharCode(65 + i); }
+var MAX_COLUMNAS = 104; // hasta CZ
+function colLetter(i) { var t = ''; i = i + 1; while (i > 0) { var r = (i - 1) % 26; t = String.fromCharCode(65 + r) + t; i = Math.floor((i - 1) / 26); } return t; }
 function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i < s.length; i++) n = n * 26 + s.charCodeAt(i) - 64; return n - 1; }
 function cellId(r, c) { return colLetter(c) + (r + 1); }
 
@@ -2320,7 +2397,7 @@ function parseRefConHoja(token) {
 function partirRango(a) {
   a = (a || '').trim();
   var m = a.match(/^(?:'([^']+)'|([^'!]+))!(.+)$/);
-  var hoja = activeSheet, resto = a;
+  var hoja = hojaFormulaActual || activeSheet, resto = a;
   if (m && sheets.indexOf(m[1] || m[2]) !== -1) { hoja = m[1] || m[2]; resto = m[3]; }
   var p = resto.split(':');
   return { hoja: hoja, from: p[0], to: p[1] };
@@ -2592,6 +2669,33 @@ function splitArgs(s) {
   if (cur.trim()) args.push(cur.trim());
   return args;
 }
+function indiceEnRango(rangoTxt, fila, col) {
+  var t = String(rangoTxt || '').trim(), idx = t.lastIndexOf('!'), lado = (idx >= 0 ? t.slice(idx + 1) : t).replace(/\$/g, '').toUpperCase().split(':');
+  var a = /^([A-Z]+)(\d+)$/.exec(lado[0]), z = /^([A-Z]+)(\d+)$/.exec(lado[lado.length - 1]);
+  if (!a || !z) return '#REF!';
+  var nCols = colIndex(z[1]) - colIndex(a[1]) + 1, nFilas = parseInt(z[2], 10) - parseInt(a[2], 10) + 1;
+  if (!(fila >= 0) && !(col >= 0)) return '#VALOR!';
+  if (isNaN(fila)) fila = 0; if (isNaN(col)) col = 0;
+  if (nFilas === 1 && col === 0 && fila > 0) { col = fila; fila = 0; } // INDICE sobre una sola fila con un índice: es la columna
+  if (fila < 0 || col < 0 || fila >= nFilas || col >= nCols) return '#REF!';
+  var base = idx >= 0 ? t.slice(0, idx + 1) : '';
+  return String(resolveArg(base + colLetter(colIndex(a[1]) + col) + (parseInt(a[2], 10) + fila)));
+}
+// BUSCARV que entiende rangos de otras hojas (Hoja!A1:C9) y búsqueda aproximada (4.º argumento VERDADERO).
+function buscarVEnRango(buscado, rngTxt, colN, aprox) {
+  if (!isRange(rngTxt)) return '#N/A';
+  var info = partirRango(rngTxt);
+  if (!info.to) return '#N/A';
+  var fc = colIndex((info.from.match(/[A-Za-z]+/) || ['A'])[0]), fr = parseInt(info.from.match(/\d+/)[0], 10) - 1, tr = parseInt(info.to.match(/\d+/)[0], 10) - 1;
+  var sv = String(buscado).toLowerCase(), mejor = -1, nb = parseFloat(limpiaNum(buscado));
+  for (var ri = fr; ri <= tr; ri++) {
+    var v = computeValueEnHoja(info.hoja, cellId(ri, fc));
+    if (!aprox) { if (String(v).toLowerCase() === sv) return String(computeValueEnHoja(info.hoja, cellId(ri, fc + colN))); }
+    else { var nv = parseFloat(limpiaNum(v)); if (!isNaN(nv) && !isNaN(nb) && nv <= nb) mejor = ri; else if (!isNaN(nv) && nv > nb) break; }
+  }
+  return mejor >= 0 ? String(computeValueEnHoja(info.hoja, cellId(mejor, fc + colN))) : '#N/A';
+}
+function esVerdaderoArg(a) { if (a === undefined) return false; var t = String(resolveArg(a)).toUpperCase(); return t === 'VERDADERO' || t === 'TRUE' || t === '1'; }
 function isRange(a) { return /^(?:(?:'[^']+'|[^'!:]+)!)?[A-Za-z]+\d+:[A-Za-z]+\d+$/.test((a || '').trim()) || !!parseRef3D(a); }
 function getCells(from, to) {
   var fc = colIndex((from.match(/[A-Za-z]+/) || ['A'])[0]);
@@ -3082,18 +3186,7 @@ function computeExpr(expr) {
     }
     if ((inner = matchFn('BUSCARV|VLOOKUP')) !== null) {
       args = splitArgs(inner);
-      var sv = String(resolveArg(args[0])).toLowerCase();
-      var rng = args[1], colN = parseInt(resolveNum(args[2])) - 1;
-      if (isRange(rng)) {
-        var p = rng.trim().split(':');
-        var fc = colIndex(p[0].match(/[A-Za-z]+/)[0]);
-        var fr = parseInt(p[0].match(/\d+/)[0]) - 1;
-        var tr = parseInt(p[1].match(/\d+/)[0]) - 1;
-        for (var ri = fr; ri <= tr; ri++) {
-          if (String(computeValue(cellId(ri, fc))).toLowerCase() === sv) return String(computeValue(cellId(ri, fc + colN)));
-        }
-      }
-      return '#N/A';
+      return buscarVEnRango(resolveArg(args[0]), args[1], parseInt(resolveNum(args[2])) - 1, esVerdaderoArg(args[3]));
     }
     if ((inner = matchFn('BUSCARX|XLOOKUP')) !== null) {
       args = splitArgs(inner);
@@ -3114,14 +3207,7 @@ function computeExpr(expr) {
     }
     if ((inner = matchFn('INDICE|INDEX')) !== null) {
       args = splitArgs(inner);
-      var r10 = parseInt(resolveNum(args[1])) - 1, c10 = parseInt(resolveNum(args[2] || '1')) - 1;
-      if (isRange(args[0])) {
-        var p3 = args[0].trim().split(':');
-        var fc2 = colIndex(p3[0].match(/[A-Za-z]+/)[0]);
-        var fr2 = parseInt(p3[0].match(/\d+/)[0]) - 1;
-        return String(computeValue(cellId(fr2 + r10, fc2 + c10)));
-      }
-      return '#REF!';
+      return isRange(args[0]) ? indiceEnRango(args[0], parseInt(resolveNum(args[1])) - 1, args[2] ? parseInt(resolveNum(args[2])) - 1 : 0) : '#REF!';
     }
     if ((inner = matchFn('ELEGIR|CHOOSE')) !== null) { args = splitArgs(inner); var idxE = parseInt(resolveNum(args[0])); return args[idxE] ? String(resolveArg(args[idxE])) : '#VALOR!'; }
     if ((inner = matchFn('FILA|ROW')) !== null) { var rf = splitArgs(inner)[0]; if (rf) { var mF = rf.match(/\d+/); return mF ? mF[0] : ''; } return ''; }
@@ -3339,10 +3425,10 @@ if ((inner = matchFn('CONTAR\.SI|COUNTIF')) !== null) {
     }
 if ((inner = matchFn('SUMAR\.SI\.CONJUNTO|SUMIFS')) !== null) {
       args = splitArgs(inner); var sumR = isRange(args[0]) ? rangeNums(args[0]) : [];
-      var sumCrit = isRange(args[1]) ? rangeVals(args[1]) : [];
-      var critVal = String(resolveArg(args[2] || ''));
+      var pares = [];
+      for (var pi = 1; pi + 1 < args.length; pi += 2) pares.push({ rango: isRange(args[pi]) ? rangeVals(args[pi]) : [], crit: String(resolveArg(args[pi + 1] || '')) });
       var s3 = 0;
-      sumCrit.forEach(function(v, i7) { if (matchCrit(v, critVal)) s3 += sumR[i7] || 0; });
+      sumR.forEach(function(nv, i7) { var ok = pares.length > 0; for (var q7 = 0; q7 < pares.length && ok; q7++) { if (!matchCrit(pares[q7].rango[i7], pares[q7].crit)) ok = false; } if (ok) s3 += nv || 0; });
       return fmtNum(s3);
     }
 if ((inner = matchFn('SUMAR\.SI|SUMIF')) !== null) {
@@ -3582,20 +3668,8 @@ if ((inner = matchFn('SLN')) !== null) {
       args = splitArgs(inner); return fmtNum((resolveNum(args[0])-resolveNum(args[1]))/resolveNum(args[2]));
     }
 if ((inner = matchFn('BUSCARV|VLOOKUP')) !== null) {
-      args = splitArgs(inner); var sv2 = String(resolveArg(args[0])).toLowerCase();
-      var rng3 = args[1]; var colN2 = parseInt(resolveNum(args[2])) - 1;
-      if (isRange(rng3)) {
-        var parts2 = rng3.trim().split(':');
-        var fc3 = colIndex(parts2[0].match(/[A-Za-z]+/)[0].toUpperCase());
-        var fr2 = parseInt(parts2[0].match(/\d+/)[0]) - 1;
-        var tr3 = parseInt(parts2[1].match(/\d+/)[0]) - 1;
-        for (var ri2 = fr2; ri2 <= tr3; ri2++) {
-          if (String(computeValue(cellId(ri2, fc3))).toLowerCase() === sv2) {
-            return String(computeValue(cellId(ri2, fc3 + colN2)));
-          }
-        }
-      }
-      return '#N/A';
+      args = splitArgs(inner);
+      return buscarVEnRango(resolveArg(args[0]), args[1], parseInt(resolveNum(args[2])) - 1, esVerdaderoArg(args[3]));
     }
 if ((inner = matchFn('BUSCARX|XLOOKUP')) !== null) {
       args = splitArgs(inner); var sv3 = String(resolveArg(args[0])).toLowerCase();
@@ -3619,14 +3693,8 @@ if ((inner = matchFn('COINCIDIR|MATCH')) !== null) {
       return '#N/A';
     }
 if ((inner = matchFn('INDICE|INDEX')) !== null) {
-      args = splitArgs(inner); var r10 = parseInt(resolveNum(args[1]))-1, c10 = parseInt(resolveNum(args[2] || '1'))-1;
-      if (isRange(args[0])) {
-        var p3 = args[0].trim().split(':');
-        var fc4 = colIndex(p3[0].match(/[A-Za-z]+/)[0].toUpperCase());
-        var fr3 = parseInt(p3[0].match(/\d+/)[0]) - 1;
-        return String(computeValue(cellId(fr3 + r10, fc4 + c10)));
-      }
-      return '#REF!';
+      args = splitArgs(inner);
+      return isRange(args[0]) ? indiceEnRango(args[0], parseInt(resolveNum(args[1])) - 1, args[2] ? parseInt(resolveNum(args[2])) - 1 : 0) : '#REF!';
     }
 if ((inner = matchFn('DESREF|OFFSET')) !== null) {
       args = splitArgs(inner); var ref = args[0].trim();
@@ -3661,16 +3729,14 @@ if ((inner = matchFn('ES\.IMPAR|ISODD')) !== null) { return Math.abs(resolveNum(
 if ((inner = matchFn('N(?!OD|O\b|PERS|PER)')) !== null) { var v8 = resolveArg(splitArgs(inner)[0]); return fmtNum(parseFloat(v8)||0); }
 if ((inner = matchFn('BUSCARH|HLOOKUP')) !== null) {
       args = splitArgs(inner);
-      var sv = String(resolveArg(args[0])).toLowerCase();
-      var rng = args[1]; var rowN = parseInt(resolveNum(args[2])) - 1;
-      if (isRange(rng)) {
-        var p = rng.trim().split(':');
-        var fc2 = colIndex(p[0].match(/[A-Za-z]+/)[0]);
-        var fr2 = parseInt(p[0].match(/\d+/)[0]) - 1;
-        var tc2 = colIndex(p[1].match(/[A-Za-z]+/)[0]);
-        for (var ci = fc2; ci <= tc2; ci++) {
-          if (String(computeValue(cellId(fr2, ci))).toLowerCase() === sv)
-            return String(computeValue(cellId(fr2 + rowN, ci)));
+      var svH = String(resolveArg(args[0])).toLowerCase(), rowN = parseInt(resolveNum(args[2])) - 1;
+      if (isRange(args[1])) {
+        var infoH = partirRango(args[1]);
+        if (infoH.to) {
+          var fcH = colIndex(infoH.from.match(/[A-Za-z]+/)[0]), frH = parseInt(infoH.from.match(/\d+/)[0], 10) - 1, tcH = colIndex(infoH.to.match(/[A-Za-z]+/)[0]);
+          for (var ciH = fcH; ciH <= tcH; ciH++) {
+            if (String(computeValueEnHoja(infoH.hoja, cellId(frH, ciH))).toLowerCase() === svH) return String(computeValueEnHoja(infoH.hoja, cellId(frH + rowN, ciH)));
+          }
         }
       }
       return '#N/A';
@@ -7136,7 +7202,7 @@ function renderAllCellsInterno() {
   // valores del rango (nunca quedan guardados como algo fijo), por eso
   // se limpian todas las barras/íconos antes de volver a aplicarlos.
   document.querySelectorAll('.cell').forEach(function (el) {
-    el.style.backgroundImage = '';
+    el.style.backgroundImage = ''; el.classList.remove('soloBarraDatos');
     var iconoViejo = el.querySelector('.condIcon');
     if (iconoViejo) iconoViejo.remove();
   });
@@ -7154,6 +7220,7 @@ function renderAllCellsInterno() {
     var validos = valores.filter(function (v) { return v !== null; });
     if (!validos.length) return;
     var min = Math.min.apply(null, validos), max = Math.max.apply(null, validos);
+    var limitesBarra = limitesDeBarra(regla, min, max);
     ids.forEach(function (id, i) {
       var el = document.getElementById('cell_' + id);
       if (!el || document.activeElement === el) return;
@@ -7161,8 +7228,18 @@ function renderAllCellsInterno() {
       if (v === null) return;
       var pct = max === min ? 100 : ((v - min) / (max - min)) * 100;
       if (regla.type === 'databar') {
-        var p = Math.max(2, pct);
-        el.style.backgroundImage = 'linear-gradient(to right, ' + (regla.color || '#5a9bd5') + ' ' + p + '%, transparent ' + p + '%)';
+        var lo = limitesBarra.lo, hi = limitesBarra.hi;
+        var posBarra = function (x) { return hi === lo ? 100 : Math.max(0, Math.min(100, ((x - lo) / (hi - lo)) * 100)); };
+        var pv = posBarra(v);
+        if (lo < 0) {
+          // Hay valores negativos: eje en el cero; positivos hacia la derecha, negativos hacia la izquierda.
+          var z = posBarra(0), a = Math.min(pv, z), b2 = Math.max(pv, z), col = v < 0 ? (regla.colorNeg || '#e15759') : (regla.color || '#5a9bd5');
+          el.style.backgroundImage = 'linear-gradient(to right, transparent ' + a + '%, ' + col + ' ' + a + '%, ' + col + ' ' + b2 + '%, transparent ' + b2 + '%), linear-gradient(to right, transparent calc(' + z + '% - 0.5px), #64748b calc(' + z + '% - 0.5px), #64748b calc(' + z + '% + 0.5px), transparent calc(' + z + '% + 0.5px))';
+        } else {
+          var p = Math.max(2, pv);
+          el.style.backgroundImage = 'linear-gradient(to right, ' + (regla.color || '#5a9bd5') + ' ' + p + '%, transparent ' + p + '%)';
+        }
+        if (regla.soloBarra) el.classList.add('soloBarraDatos');
       } else if (regla.type === 'colorscale') {
         el.style.backgroundColor = interpolarColorEscala(pct, regla.colorMin, regla.colorMedio, regla.colorMax);
       } else if (regla.type === 'iconset') {
@@ -7177,6 +7254,14 @@ function renderAllCellsInterno() {
     });
   });
   renderizarGraficos();
+}
+// Mínimo y máximo de una barra de datos: automático (según los datos) o fijado a mano (número o porcentaje del rango de datos).
+function limitesDeBarra(regla, min, max) {
+  var lo = min, hi = max < 0 ? 0 : max;
+  if (regla.minTipo === 'num') lo = regla.minVal; else if (regla.minTipo === 'pct') lo = min + (max - min) * regla.minVal / 100;
+  if (regla.maxTipo === 'num') hi = regla.maxVal; else if (regla.maxTipo === 'pct') hi = min + (max - min) * regla.maxVal / 100;
+  if (hi <= lo) hi = lo + 1;
+  return { lo: lo, hi: hi };
 }
 function hexARgb(hex) {
   hex = String(hex || '#ffffff').replace('#', '');
@@ -7823,10 +7908,10 @@ function renderHistorialHacienda() {
   // Igual que con las notas de crédito: un set con las claves de las
   // facturas a crédito que YA tienen un Recibo Electrónico de Pago
   // encima, para no ofrecer "Marcar pagada" dos veces sobre la misma.
-  var clavesYaConRep = {};
+  var clavesPagado = {};
   historialHaciendaCache.forEach(function (h) {
     if (h.tipoDocumento === 'notaCredito' && h.claveReferenciada) clavesYaAnuladas[h.claveReferenciada] = true;
-    if (h.tipoDocumento === 'reciboPago' && h.claveReferenciada) clavesYaConRep[h.claveReferenciada] = true;
+    if (h.tipoDocumento === 'reciboPago' && h.claveReferenciada && h.estado !== 'rechazado') clavesPagado[h.claveReferenciada] = (clavesPagado[h.claveReferenciada] || 0) + Number(h.total || 0);
   });
 
   var html = '';
@@ -7838,7 +7923,8 @@ function renderHistorialHacienda() {
     var esMensajeReceptor = h.tipoDocumento === 'mensajeReceptor';
     var esReciboPago = h.tipoDocumento === 'reciboPago';
     var yaAnulada = clavesYaAnuladas[h.clave];
-    var yaConRep = clavesYaConRep[h.clave];
+    var yaConRep = (clavesPagado[h.clave] || 0) >= Number(h.total || 0) - 0.01 && (clavesPagado[h.clave] || 0) > 0;
+    h.saldoPendiente = Math.max(0, Number(h.total || 0) - (clavesPagado[h.clave] || 0));
     var etiquetaMensajeReceptor = h.mensajeReceptorTipo === '1' ? '📨 Aceptación enviada' : h.mensajeReceptorTipo === '2' ? '📨 Aceptación parcial enviada' : '📨 Rechazo enviado';
     var etiquetaTipo = esNotaCredito ? '🔴 Nota de crédito' : esNotaDebito ? '🟠 Nota de débito' : esMensajeReceptor ? etiquetaMensajeReceptor : esReciboPago ? '🧾 Recibo de pago' : (h.esTiquete ? 'Tiquete' : 'Factura');
     var puedeAnular = h.estado === 'aceptado' && !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaAnulada;
@@ -7852,7 +7938,7 @@ function renderHistorialHacienda() {
     // Solo se puede marcar como "pagada" (emitir el REP) una factura a
     // crédito ('02') ya aceptada por Hacienda, que no esté anulada y que
     // todavía no tenga su propio recibo de pago.
-    var puedeMarcarPagada = h.estado === 'aceptado' && h.condicionVenta === '02' &&
+    var puedeMarcarPagada = h.estado === 'aceptado' && (h.condicionVenta === '02' || h.condicionVenta === '10') &&
       !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaAnulada && !yaConRep;
 
     html += '<div class="feHistHItem">' +
@@ -7862,7 +7948,7 @@ function renderHistorialHacienda() {
       '<span class="fhhEstado ' + (h.estado || 'pendiente') + '">' + (h.estado === 'aceptado' ? 'Aceptada' : h.estado === 'rechazado' ? 'Rechazada' : 'Pendiente') + '</span>' +
       '</div>' +
       (yaAnulada ? '<div style="font-size:10.5px;color:#b02a2a;margin-top:2px;">⚠️ Ya tiene una nota de crédito aplicada</div>' : '') +
-      (h.condicionVenta === '02' && !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaConRep && h.estado === 'aceptado' ? '<div style="font-size:10.5px;color:#9a6700;margin-top:2px;">🕒 Venta a crédito — todavía sin cobrar</div>' : '') +
+      ((h.condicionVenta === '02' || h.condicionVenta === '10') && !esNotaCredito && !esNotaDebito && !esMensajeReceptor && !esReciboPago && !yaConRep && h.estado === 'aceptado' ? '<div style="font-size:10.5px;color:#9a6700;margin-top:2px;">🕒 Venta a crédito — todavía sin cobrar</div>' : '') +
       (yaConRep ? '<div style="font-size:10.5px;color:#1e7e34;margin-top:2px;">✓ Ya tiene un recibo de pago</div>' : '') +
       '<div class="fhhBtns">' +
       '<button data-idx="' + i + '" data-accion="cargar">📄 Cargar</button>' +
@@ -8200,9 +8286,21 @@ async function marcarFacturaComoPagada(registro) {
     return;
   }
 
+  var totalFactura = Number(registro.total || 0);
+  var saldo = registro.saldoPendiente > 0 ? registro.saldoPendiente : totalFactura;
+  var montoTxt = prompt(
+    'Monto cobrado en este pago (total de la factura: ₡' + totalFactura.toLocaleString('es-CR') + '; saldo pendiente: ₡' + saldo.toLocaleString('es-CR') + ').\n\nDejá el total si pagaron todo; poné un monto menor si es un pago parcial (se emite un recibo por cada pago).',
+    String(saldo)
+  );
+  if (montoTxt === null) return;
+  var montoPago = parseFloat(String(montoTxt).replace(/[^0-9.,]/g, '').replace(/\./g, '').replace(',', '.'));
+  if (!(montoPago > 0) || montoPago > saldo + 0.005) {
+    alert('Monto no válido: debe ser mayor que 0 y no mayor al saldo pendiente.');
+    return;
+  }
+
   if (!confirm(
-    '¿Confirmás marcar como PAGADA la factura ' + (registro.numeroConsecutivo || registro.clave) + ' por ₡' +
-    Number(registro.total || 0).toLocaleString('es-CR') + '?\n\nEsto emite un Recibo Electrónico de Pago REAL ante Hacienda — no se puede deshacer.\n\n⚠️ Nota: probá esto primero en modo sandbox si no estás seguro — hay un detalle del tipo de documento que todavía no se verificó contra Hacienda en producción (ver el comentario en el código del servidor).'
+    '¿Confirmás emitir el Recibo de Pago de ₡' + montoPago.toLocaleString('es-CR') + ' para la factura ' + (registro.numeroConsecutivo || registro.clave) + '?\n\nEsto emite un Recibo Electrónico de Pago REAL ante Hacienda con fecha de HOY — no se puede deshacer.\n\n⚠️ Probá primero en modo sandbox: el código de tipo (10) se basa en la estructura v4.4 y no se pudo verificar contra la documentación oficial desde aquí.'
   )) return;
 
   var statusEl = document.getElementById('saveStatus');
@@ -8224,6 +8322,8 @@ async function marcarFacturaComoPagada(registro) {
         } : undefined,
         lineas: registro.lineas || [],
         medioPago: [medioPago],
+        montoPago: montoPago,
+        totalOriginal: totalFactura,
         emisorNombre: registro.emisorNombre,
       }),
     });
@@ -8241,7 +8341,7 @@ async function marcarFacturaComoPagada(registro) {
       alert('⏳ ' + datos.mensajePendiente);
     } else {
       statusEl.textContent = '✗ Recibo de pago rechazado';
-      alert('❌ Hacienda rechazó el recibo de pago:\n\n' + (datos.motivoRechazo || 'motivo no especificado') + '\n\nSi el motivo menciona el tipo de documento, puede ser el detalle "07 vs 10" explicado en el código del servidor — avisale a soporte.');
+      alert('❌ Hacienda rechazó el recibo de pago:\n\n' + (datos.motivoRechazo || 'motivo no especificado') + '\n\nSi el motivo menciona el tipo de documento, puede ser el código de tipo de documento (10) — probalo en sandbox y avisale a soporte.');
     }
     cargarHistorialHacienda(); // refresca la lista para mostrar el resultado
   } catch (err) {
@@ -10089,7 +10189,7 @@ function insertarFilaEn(indice) {
 // Inserta una columna nueva ANTES de "indice" (0-based) en la hoja
 // activa — mismo mecanismo que insertarFilaEn pero en el otro eje.
 function insertarColumnaEn(indice) {
-  if (COLS >= 26) { alert('No se pueden agregar más columnas — esta hoja ya llegó al máximo (26, hasta la Z).'); return; }
+  if (COLS >= MAX_COLUMNAS) { alert('No se pueden agregar más columnas — esta hoja ya llegó al máximo (' + MAX_COLUMNAS + ', hasta la CZ).'); return; }
   snapshot();
   COLS += 1;
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
@@ -10827,6 +10927,49 @@ document.getElementById('formulaInput').addEventListener('keydown', function (e)
 document.getElementById('formulaInput').addEventListener('blur', function () {
   setTimeout(function () { document.getElementById('fnAutocomplete').classList.remove('show'); }, 150);
 });
+// ── Botón $: alterna la referencia absoluta bajo el cursor (o dentro de la selección) ──
+// B5 → $B$5 → B$5 → $B5 → B5. Si la referencia es un rango (A1:B3) se cambian las dos puntas juntas.
+function ciclarAbsolutaEnFormula(texto, ini, fin) {
+  if (typeof texto !== 'string' || texto.charAt(0) !== '=') return null;
+  var enTexto = [], dentro = false;
+  for (var i = 0; i < texto.length; i++) {
+    if (texto.charAt(i) === '"') { dentro = !dentro; enTexto.push(true); } else enTexto.push(dentro);
+  }
+  var REF = '\\$?[A-Za-z]{1,3}\\$?\\d+';
+  var re = new RegExp('(' + REF + ')(?::(' + REF + '))?', 'g'), m, tokens = [];
+  while ((m = re.exec(texto))) {
+    var a = m.index, b = a + m[0].length, antes = a > 0 ? texto.charAt(a - 1) : '', despues = b < texto.length ? texto.charAt(b) : '';
+    if (enTexto[a] || /[A-Za-z0-9_.]/.test(antes) || /[A-Za-z0-9_.(]/.test(despues)) continue;
+    tokens.push({ a: a, b: b, txt: m[0] });
+  }
+  if (ini > fin) { var t = ini; ini = fin; fin = t; }
+  var elegidos = tokens.filter(function (k) { return ini === fin ? (ini >= k.a && ini <= k.b) : (k.a < fin && k.b > ini); });
+  if (!elegidos.length) return null;
+  var estado = (function (txt) { var p = /^(\$?)[A-Za-z]{1,3}(\$?)\d+/.exec(txt); return (p[1] ? 1 : 0) + ',' + (p[2] ? 1 : 0); })(elegidos[0].txt);
+  var sig = { '0,0': [1, 1], '1,1': [0, 1], '0,1': [1, 0], '1,0': [0, 0] }[estado];
+  var salida = '', cursor = 0, nuevoIni = null, nuevoFin = 0;
+  elegidos.forEach(function (k) {
+    var nuevo = k.txt.replace(/\$?([A-Za-z]{1,3})\$?(\d+)/g, function (_, col, fila) { return (sig[0] ? '$' : '') + col + (sig[1] ? '$' : '') + fila; });
+    salida += texto.substring(cursor, k.a);
+    if (nuevoIni === null) nuevoIni = salida.length;
+    salida += nuevo; nuevoFin = salida.length; cursor = k.b;
+  });
+  salida += texto.substring(cursor);
+  return { texto: salida, ini: nuevoIni, fin: nuevoFin };
+}
+(function () {
+  var btn = document.getElementById('btnAbsRef');
+  // evita que el botón le quite el foco (y el teclado) a la barra de fórmulas
+  ['mousedown', 'touchstart'].forEach(function (ev) { btn.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false }); });
+  btn.addEventListener('click', function () {
+    var input = document.getElementById('formulaInput');
+    var r = ciclarAbsolutaEnFormula(input.value, input.selectionStart || 0, input.selectionEnd || 0);
+    if (!r) { document.getElementById('saveStatus').textContent = 'Poné el cursor sobre una referencia (ej. B5) de una fórmula'; return; }
+    input.value = r.texto;
+    try { input.setSelectionRange(r.ini, r.fin); } catch (e) {}
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+})();
 var _allFnNames = null;
 function getAllFnNames() {
   if (_allFnNames) return _allFnNames;
@@ -11106,7 +11249,7 @@ document.getElementById('btnClear').addEventListener('click', function () {
   renderAllCells(); autoSave();
 });
 document.getElementById('btnAddRow').addEventListener('click', function () { snapshot(); ROWS += 10; buildTable(); });
-document.getElementById('btnAddCol').addEventListener('click', function () { snapshot(); COLS = Math.min(26, COLS + 4); buildTable(); });
+document.getElementById('btnAddCol').addEventListener('click', function () { snapshot(); COLS = Math.min(MAX_COLUMNAS, COLS + 4); buildTable(); });
 
 document.getElementById('btnDelRow').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
@@ -11151,7 +11294,7 @@ document.getElementById('btnInsertarTabla').addEventListener('click', function (
   d[cellId(totalRow, startCol + 2)] = '=SUMA(' + cellId(startRow + 1, startCol + 2) + ':' + cellId(startRow + 3, startCol + 2) + ')';
   d[cellId(totalRow, startCol + 3)] = '=SUMA(' + cellId(startRow + 1, startCol + 3) + ':' + cellId(startRow + 3, startCol + 3) + ')';
   if (totalRow >= ROWS) ROWS = totalRow + 5;
-  if (startCol + headers.length > COLS) COLS = Math.min(26, startCol + headers.length + 2);
+  if (startCol + headers.length > COLS) COLS = Math.min(MAX_COLUMNAS, startCol + headers.length + 2);
   buildTable(); autoSave();
   var next = document.getElementById('cell_' + cellId(startRow, startCol));
   if (next) next.focus();
@@ -11203,6 +11346,7 @@ var TEMPLATES_GALERIA = [
   { tipo: 'flujocaja', icono: '💵', color: '#047857', titulo: 'Flujo de Caja', desc: 'Proyección de 12 meses con saldo acumulado' },
   { tipo: 'depreciacion', icono: '📉', color: '#6d28d9', titulo: 'Depreciación de Activo', desc: 'Línea recta y saldo decreciente por año' },
   { tipo: 'rentalucrativa', icono: '🧑‍💼', color: '#9a3412', titulo: 'Renta Persona Física', desc: 'Actividad lucrativa 2026: tramos, créditos y pagos parciales' },
+  { tipo: 'sistemacontable', icono: '📚', color: '#1e3a8a', titulo: 'Libros Contables Conectados', desc: 'Catálogo + Diario + Mayor por cuenta + Balanza, todo en vivo' },
   { tipo: 'prestamo', icono: '🏠', color: '#0e7490', titulo: 'Préstamo / Amortización', desc: 'Cuota, intereses y saldo mes a mes, con abonos extra' },
 ];
 
@@ -11223,7 +11367,7 @@ function renderizarTemplateGaleria() {
       document.getElementById('templateGalleryOverlay').classList.remove('show');
       document.getElementById('ribbonOverlay').classList.remove('show');
       snapshot();
-      loadTemplate(tipo);
+      if (tipo === 'sistemacontable') crearSistemaContable(); else loadTemplate(tipo);
     });
   });
 }
@@ -11234,6 +11378,110 @@ document.getElementById('btnTemplateGallery').addEventListener('click', function
 document.getElementById('templateGalleryClose').addEventListener('click', function () {
   document.getElementById('templateGalleryOverlay').classList.remove('show');
 });
+
+
+// ══════════════════════════════════════════════
+// LIBROS CONTABLES CONECTADOS: Catálogo + Diario + Mayor + Balanza (fórmulas en vivo)
+// ══════════════════════════════════════════════
+function crearSistemaContable() {
+  var FILAS_DIARIO = 200, FILAS_CAT = 58, FILAS_MAYOR = 60;
+  var nCat = crearHojaDestino('Catalogo'), nDia = crearHojaDestino('Diario'), nMay = crearHojaDestino('Mayor'), nBal = crearHojaDestino('Balanza');
+  var hoy = new Date().toLocaleDateString('es-CR');
+  var ctx = null;
+  function usar(nombre) {
+    activeSheet = nombre;
+    var d = sheetData[nombre], f = sheetFormats[nombre], m = sheetMerges[nombre];
+    ctx = {
+      d: d, f: f,
+      set: function (r, c, v, bold) { d[cellId(r, c)] = v; if (bold) f[cellId(r, c)] = Object.assign({}, f[cellId(r, c)], { bold: true }); },
+      st: function (r1, c1, r2, c2, o) { for (var rr = r1; rr <= r2; rr++) for (var cc = c1; cc <= c2; cc++) f[cellId(rr, cc)] = Object.assign({}, f[cellId(rr, cc)], o); },
+      titulo: function (texto, span, color) { d[cellId(0, 0)] = texto; this.st(0, 0, 0, span - 1, { bold: true, bgColor: color, fontColor: '#ffffff', fontSize: 14 }); m.push({ r1: 0, c1: 0, r2: 0, c2: span - 1 }); },
+      cab: function (fila, textos, color) { var self = this; textos.forEach(function (t, i) { self.set(fila, i, t, true); }); this.st(fila, 0, fila, textos.length - 1, { bold: true, bgColor: color, border: true }); }
+    };
+  }
+  var DINERO = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+  // ── Catálogo ──
+  usar(nCat);
+  ctx.titulo('📒 CATÁLOGO DE CUENTAS — escribí acá tus cuentas (el Diario las busca por código)', 3, '#1e3a8a');
+  ctx.cab(1, ['Código', 'Cuenta', 'Tipo'], '#dbeafe');
+  var cuentas = [['1.1.01', 'Caja', 'Activo'], ['1.1.02', 'Bancos', 'Activo'], ['1.1.03', 'Clientes (Cuentas por cobrar)', 'Activo'], ['1.1.04', 'IVA Crédito (soportado)', 'Activo'], ['1.1.05', 'Inventario', 'Activo'], ['1.2.01', 'Mobiliario y equipo', 'Activo'], ['1.2.02', 'Depreciación acumulada', 'Activo'],
+    ['2.1.01', 'Proveedores (Cuentas por pagar)', 'Pasivo'], ['2.1.02', 'IVA por pagar (cobrado)', 'Pasivo'], ['2.1.03', 'Cargas sociales por pagar', 'Pasivo'], ['2.1.04', 'Salarios por pagar', 'Pasivo'], ['2.2.01', 'Préstamos bancarios', 'Pasivo'],
+    ['3.1.01', 'Capital social', 'Patrimonio'], ['3.1.02', 'Utilidades acumuladas', 'Patrimonio'],
+    ['4.1.01', 'Ventas', 'Ingreso'], ['4.1.02', 'Otros ingresos', 'Ingreso'],
+    ['5.1.01', 'Costo de ventas', 'Gasto'], ['5.2.01', 'Salarios', 'Gasto'], ['5.2.02', 'Alquiler', 'Gasto'], ['5.2.03', 'Servicios públicos', 'Gasto'], ['5.2.04', 'Gasto por depreciación', 'Gasto'], ['5.2.05', 'Intereses', 'Gasto']];
+  cuentas.forEach(function (c, i) { c.forEach(function (v, j) { ctx.set(2 + i, j, v); }); });
+  ctx.st(2, 0, 1 + FILAS_CAT, 2, { border: true });
+  colWidths[nCat] = { 0: 80, 1: 260, 2: 100 };
+  // ── Diario ──
+  usar(nDia);
+  var D1 = 4, D2 = 3 + FILAS_DIARIO; // filas 4..203 en notación de hoja
+  ctx.titulo('📘 LIBRO DIARIO — un renglón por cuenta; el Asiento agrupa los renglones que suman Debe = Haber', 10, '#1d4ed8');
+  ctx.set(1, 4, 'TOTALES', true); ctx.d[cellId(1, 5)] = '=SUMA(F' + D1 + ':F' + D2 + ')'; ctx.d[cellId(1, 6)] = '=SUMA(G' + D1 + ':G' + D2 + ')';
+  ctx.d[cellId(1, 7)] = '=SI(ABS(F2-G2)<0.005;"✓ Cuadrado";"⚠ Descuadre: "&TEXTO(ABS(F2-G2);"#,##0.00"))';
+  ctx.st(1, 4, 1, 7, { bold: true, bgColor: '#bfdbfe', border: true }); ctx.st(1, 5, 1, 6, DINERO);
+  ctx.cab(2, ['Fecha', 'N° Asiento', 'Código', 'Cuenta', 'Descripción', 'Debe (₡)', 'Haber (₡)', 'Estado asiento', 'N° mov. (auto)', 'Fila (auto)'], '#dbeafe');
+  for (var i = 0; i < FILAS_DIARIO; i++) {
+    var r = 3 + i, n = r + 1;
+    ctx.d[cellId(r, 3)] = '=SI(C' + n + '="";"";SI.ERROR(BUSCARV(C' + n + ';Catalogo!$A$3:$B$' + (2 + FILAS_CAT) + ';2;FALSO);"¿Código?"))';
+    ctx.d[cellId(r, 7)] = '=SI(B' + n + '="";"";SI(ABS(SUMAR.SI($B$' + D1 + ':$B$' + D2 + ';B' + n + ';$F$' + D1 + ':$F$' + D2 + ')-SUMAR.SI($B$' + D1 + ':$B$' + D2 + ';B' + n + ';$G$' + D1 + ':$G$' + D2 + '))<0.005;"✓";"⚠ descuadrado"))';
+    ctx.d[cellId(r, 8)] = '=SI(C' + n + '="";"";CONTAR.SI($C$' + D1 + ':C' + n + ';C' + n + '))';
+    ctx.d[cellId(r, 9)] = String(i + 1);
+  }
+  var ej = [[hoy, '1', '1.1.02', 'Venta de contado F-001', '56500', ''], [hoy, '1', '4.1.01', 'Venta de contado F-001', '', '50000'], [hoy, '1', '2.1.02', 'Venta de contado F-001', '', '6500']];
+  ej.forEach(function (row, i) { ctx.set(3 + i, 0, row[0]); ctx.set(3 + i, 1, row[1]); ctx.set(3 + i, 2, row[2]); ctx.set(3 + i, 4, row[3]); ctx.set(3 + i, 5, row[4]); ctx.set(3 + i, 6, row[5]); });
+  ctx.st(3, 0, 2 + FILAS_DIARIO, 9, { border: true }); ctx.st(3, 5, 2 + FILAS_DIARIO, 6, DINERO); ctx.st(3, 8, 2 + FILAS_DIARIO, 9, { fontColor: '#9ca3af' });
+  colWidths[nDia] = { 0: 80, 1: 70, 2: 70, 3: 190, 4: 220, 5: 95, 6: 95, 7: 110, 8: 60, 9: 50 };
+  sheetFreeze[nDia] = { row: 3, col: 0 };
+  // ── Mayor (una cuenta a la vez, elegida en B2) ──
+  usar(nMay);
+  var R1 = 5, R2 = 4 + FILAS_MAYOR;
+  ctx.titulo('📗 LIBRO MAYOR — escribí el código de la cuenta en B2', 7, '#15803d');
+  ctx.set(1, 0, 'Código:', true); ctx.set(1, 1, '1.1.02', true); ctx.st(1, 1, 1, 1, { bgColor: '#fef9c3', border: true });
+  ctx.d[cellId(1, 2)] = '=SI.ERROR(BUSCARV(B2;Catalogo!$A$3:$B$' + (2 + FILAS_CAT) + ';2;FALSO);"¿Código?")'; ctx.st(1, 2, 1, 2, { bold: true });
+  ctx.set(2, 3, 'Saldo final', true); ctx.d[cellId(2, 5)] = '=SUMA(E' + R1 + ':E' + R2 + ')-SUMA(F' + R1 + ':F' + R2 + ')'; ctx.st(2, 3, 2, 5, { bold: true, bgColor: '#bbf7d0', border: true }); ctx.st(2, 5, 2, 5, DINERO);
+  ctx.cab(3, ['N°', 'Fecha', 'Asiento', 'Descripción', 'Debe (₡)', 'Haber (₡)', 'Saldo (₡)', 'Fila Diario (auto)'], '#dcfce7');
+  var CD = 'Diario!$C$' + D1 + ':$C$' + D2, ID = 'Diario!$I$' + D1 + ':$I$' + D2;
+  for (var k = 0; k < FILAS_MAYOR; k++) {
+    var rr2 = 4 + k, nn = rr2 + 1;
+    ctx.d[cellId(rr2, 0)] = String(k + 1);
+    ctx.d[cellId(rr2, 7)] = '=SUMAR.SI.CONJUNTO(Diario!$J$' + D1 + ':$J$' + D2 + ';' + CD + ';$B$2;' + ID + ';A' + nn + ')';
+    ctx.d[cellId(rr2, 1)] = '=SI(H' + nn + '=0;"";INDICE(Diario!$A$' + D1 + ':$A$' + D2 + ';H' + nn + '))';
+    ctx.d[cellId(rr2, 2)] = '=SI(H' + nn + '=0;"";INDICE(Diario!$B$' + D1 + ':$B$' + D2 + ';H' + nn + '))';
+    ctx.d[cellId(rr2, 3)] = '=SI(H' + nn + '=0;"";INDICE(Diario!$E$' + D1 + ':$E$' + D2 + ';H' + nn + '))';
+    ctx.d[cellId(rr2, 4)] = '=SI(H' + nn + '=0;"";SUMAR.SI.CONJUNTO(Diario!$F$' + D1 + ':$F$' + D2 + ';' + CD + ';$B$2;' + ID + ';A' + nn + '))';
+    ctx.d[cellId(rr2, 5)] = '=SI(H' + nn + '=0;"";SUMAR.SI.CONJUNTO(Diario!$G$' + D1 + ':$G$' + D2 + ';' + CD + ';$B$2;' + ID + ';A' + nn + '))';
+    ctx.d[cellId(rr2, 6)] = '=SI(H' + nn + '=0;"";SUMA($E$' + R1 + ':E' + nn + ')-SUMA($F$' + R1 + ':F' + nn + '))';
+  }
+  ctx.st(4, 0, 3 + FILAS_MAYOR, 7, { border: true }); ctx.st(4, 4, 3 + FILAS_MAYOR, 6, DINERO); ctx.st(4, 7, 3 + FILAS_MAYOR, 7, { fontColor: '#9ca3af' });
+  colWidths[nMay] = { 0: 45, 1: 80, 2: 70, 3: 230, 4: 95, 5: 95, 6: 100, 7: 60 };
+  sheetFreeze[nMay] = { row: 4, col: 0 };
+  // ── Balanza de comprobación ──
+  usar(nBal);
+  var B1 = 4, B2 = 3 + FILAS_CAT;
+  ctx.titulo('📊 BALANZA DE COMPROBACIÓN — se arma sola con el Diario', 6, '#6d28d9');
+  ctx.set(1, 0, 'TOTALES', true);
+  [0, 1, 2, 3].forEach(function (i) { var L = String.fromCharCode(67 + i); ctx.d[cellId(1, 2 + i)] = '=SUMA(' + L + B1 + ':' + L + B2 + ')'; });
+  ctx.d[cellId(1, 6)] = '=SI(ABS(C2-D2)<0.005;"✓ Cuadrada";"⚠ Diferencia")';
+  ctx.st(1, 0, 1, 6, { bold: true, bgColor: '#ddd6fe', border: true }); ctx.st(1, 2, 1, 5, DINERO);
+  ctx.cab(2, ['Código', 'Cuenta', 'Débitos (₡)', 'Créditos (₡)', 'Saldo deudor (₡)', 'Saldo acreedor (₡)'], '#ede9fe');
+  for (var q = 0; q < FILAS_CAT; q++) {
+    var rb = 3 + q, nb = rb + 1, nc = 3 + q;
+    ctx.d[cellId(rb, 0)] = '=SI(Catalogo!A' + nc + '="";"";Catalogo!A' + nc + ')';
+    ctx.d[cellId(rb, 1)] = '=SI(Catalogo!B' + nc + '="";"";Catalogo!B' + nc + ')';
+    ctx.d[cellId(rb, 2)] = '=SI(A' + nb + '="";"";SUMAR.SI(Diario!$C$' + D1 + ':$C$' + D2 + ';A' + nb + ';Diario!$F$' + D1 + ':$F$' + D2 + '))';
+    ctx.d[cellId(rb, 3)] = '=SI(A' + nb + '="";"";SUMAR.SI(Diario!$C$' + D1 + ':$C$' + D2 + ';A' + nb + ';Diario!$G$' + D1 + ':$G$' + D2 + '))';
+    ctx.d[cellId(rb, 4)] = '=SI(A' + nb + '="";"";SI(C' + nb + '-D' + nb + '>0;C' + nb + '-D' + nb + ';0))';
+    ctx.d[cellId(rb, 5)] = '=SI(A' + nb + '="";"";SI(D' + nb + '-C' + nb + '>0;D' + nb + '-C' + nb + ';0))';
+  }
+  ctx.st(3, 0, 2 + FILAS_CAT, 5, { border: true }); ctx.st(3, 2, 2 + FILAS_CAT, 5, DINERO);
+  colWidths[nBal] = { 0: 80, 1: 250, 2: 110, 3: 110, 4: 120, 5: 120 };
+  sheetFreeze[nBal] = { row: 3, col: 0 };
+  var maxFilas = 3 + FILAS_DIARIO + 5; if (ROWS < maxFilas) ROWS = maxFilas;
+  if (COLS < 10) COLS = 10;
+  activeSheet = nDia;
+  buildTable(); renderTabs(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Libros contables creados: Catalogo, Diario, Mayor y Balanza';
+}
 
 function loadTemplate(tipo) {
   var hoy = new Date().toLocaleDateString('es-CR');
@@ -11653,6 +11901,13 @@ function leerHojaParaModulos() {
   });
   if (!Object.keys(src).length) return { rows: [] };
   var headerRow = 0;
+  // La fila de encabezados puede no ser la primera (ej. plantillas con barra de título): se busca
+  // en las primeras filas la que trae a la vez "Debe" y "Haber".
+  for (var hr = 0; hr <= Math.min(maxRow, 9); hr++) {
+    var hayDebe = false, hayHaber = false;
+    for (var hc = 0; hc <= maxCol; hc++) { var tc = String(computeValue(cellId(hr, hc)) || '').toLowerCase().trim(); if (tc.length > 22) continue; if (/debe|d[eé]bito/.test(tc)) hayDebe = true; if (/haber|cr[eé]dito/.test(tc)) hayHaber = true; }
+    if (hayDebe && hayHaber) { headerRow = hr; break; }
+  }
   for (var c0 = 0; c0 <= maxCol; c0++) {
     var v = computeValue(cellId(headerRow, c0));
     if (v) headers[c0] = String(v).toLowerCase().trim();
@@ -11679,6 +11934,7 @@ function leerHojaParaModulos() {
     }
     if (!hasData) continue;
     if (String(raw[colMap.cuenta] || '').toUpperCase().indexOf('TOTAL') === 0) continue;
+    if (!String(raw[colMap.cuenta] || '').trim() && !toNum(raw[colMap.debe]) && !toNum(raw[colMap.haber])) continue;
     rows.push({
       fecha: colMap.fecha >= 0 ? raw[colMap.fecha] || '' : '',
       cuenta: colMap.cuenta >= 0 ? raw[colMap.cuenta] || '' : '',
@@ -12297,7 +12553,7 @@ function renderCARulesList() {
   var rules = sheetCondFormatsAvanzado[activeSheet] || [];
   if (!rules.length) { wrap.innerHTML = '<div style="font-size:11.5px;color:#888;">Sin reglas en esta hoja todavía.</div>'; return; }
   wrap.innerHTML = rules.map(function (r, i) {
-    var desc = r.type === 'databar' ? 'Barra de datos' : r.type === 'iconset' ? ('Conjunto de íconos (' + (r.iconStyle === 'flechas' ? 'flechas' : 'semáforo') + ')') : 'Escala de color';
+    var desc = r.type === 'databar' ? ('Barra de datos' + (r.minTipo && r.minTipo !== 'auto' ? ' · mín ' + r.minVal + (r.minTipo === 'pct' ? '%' : '') : '') + (r.maxTipo && r.maxTipo !== 'auto' ? ' · máx ' + r.maxVal + (r.maxTipo === 'pct' ? '%' : '') : '')) : r.type === 'iconset' ? ('Conjunto de íconos (' + (r.iconStyle === 'flechas' ? 'flechas' : 'semáforo') + ')') : 'Escala de color';
     var marcador = r.type === 'iconset'
       ? '<span style="margin-right:6px;">' + (r.iconStyle === 'flechas' ? '🔻➡️🔺' : '🔴🟡🟢') + '</span>'
       : '<span class="condSwatch" style="background:' + (r.type === 'databar' ? r.color : r.colorMax) + '"></span>';
@@ -12327,6 +12583,11 @@ document.getElementById('caTipo').addEventListener('change', function () {
   document.getElementById('caColorscaleCampos').style.display = esEscala ? '' : 'none';
   document.getElementById('caIconsetCampos').style.display = esIconos ? '' : 'none';
 });
+['caMinTipo', 'caMaxTipo'].forEach(function (idSel) {
+  document.getElementById(idSel).addEventListener('change', function () {
+    document.getElementById(idSel === 'caMinTipo' ? 'caMinVal' : 'caMaxVal').disabled = this.value === 'auto';
+  });
+});
 document.getElementById('caUsarMedio').addEventListener('change', function () {
   document.getElementById('caColorMedio').disabled = !this.checked;
 });
@@ -12337,7 +12598,12 @@ document.getElementById('caAddBtn').addEventListener('click', function () {
   snapshot();
   if (!sheetCondFormatsAvanzado[activeSheet]) sheetCondFormatsAvanzado[activeSheet] = [];
   if (tipo === 'databar') {
-    sheetCondFormatsAvanzado[activeSheet].push({ range: range, type: 'databar', color: document.getElementById('caColorBarra').value });
+    var minTipo = document.getElementById('caMinTipo').value, maxTipo = document.getElementById('caMaxTipo').value;
+    var minVal = parseFloat(document.getElementById('caMinVal').value), maxVal = parseFloat(document.getElementById('caMaxVal').value);
+    if ((minTipo !== 'auto' && isNaN(minVal)) || (maxTipo !== 'auto' && isNaN(maxVal))) { alert('Escribí el valor mínimo y/o máximo, o dejalos en Automático.'); return; }
+    if (minTipo !== 'auto' && maxTipo !== 'auto' && minVal >= maxVal) { alert('El mínimo tiene que ser menor que el máximo.'); return; }
+    sheetCondFormatsAvanzado[activeSheet].push({ range: range, type: 'databar', color: document.getElementById('caColorBarra').value, colorNeg: document.getElementById('caColorBarraNeg').value,
+      minTipo: minTipo, minVal: minTipo === 'auto' ? null : minVal, maxTipo: maxTipo, maxVal: maxTipo === 'auto' ? null : maxVal, soloBarra: document.getElementById('caSoloBarra').checked });
   } else if (tipo === 'iconset') {
     sheetCondFormatsAvanzado[activeSheet].push({ range: range, type: 'iconset', iconStyle: document.getElementById('caIconStyle').value });
   } else {
@@ -12439,6 +12705,11 @@ document.getElementById('btnChart').addEventListener('click', function () {
   document.getElementById('chartOverlay').classList.add('show');
 });
 document.getElementById('chartCancel').addEventListener('click', function () { document.getElementById('chartOverlay').classList.remove('show'); });
+document.getElementById('chartType').addEventListener('change', function () {
+  var ph = { scatter: 'Rango del eje Y (el de arriba es el eje X)', bubble: 'Rango del tamaño de las burbujas (opcional)' };
+  document.getElementById('chartRange2').placeholder = ph[this.value] || 'Rango serie 2 (opcional, para agrupadas/dobles/mixto)';
+  document.getElementById('chartRange').placeholder = this.value === 'scatter' ? 'Rango del eje X, ej: B2:B6' : (this.value === 'bubble' ? 'Rango del eje Y, ej: B2:B6' : 'Rango de datos, ej: B2:B6');
+});
 document.getElementById('chartInsert').addEventListener('click', function () {
   var type = document.getElementById('chartType').value;
   var range = document.getElementById('chartRange').value;
@@ -12705,11 +12976,11 @@ function drawChart(canvasId, type, title, labels, values, values2) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   var cW = W - padL - padR, cH = H - padT - padB;
   var maxAll = values.concat(values2 || []);
-  var max = Math.max.apply(null, maxAll) || 1;
+  var max = Math.max.apply(null, type === 'bubble' ? values : maxAll) || 1;
   var colors = ['#5abf2a', '#3a9e10', '#1d4ed8', '#dc2626', '#d97706', '#7c3aed', '#0891b2'];
   ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
   // Eje de valores (0, mitad, máximo) con líneas guía, para los gráficos con ejes.
-  if (['bar', 'line', 'area', 'step', 'bar_grouped', 'line_double', 'mixed', 'waterfall', 'scatter', 'bubble'].indexOf(type) !== -1) {
+  if (['bar', 'line', 'area', 'step', 'bar_grouped', 'line_double', 'mixed', 'waterfall', 'scatter', 'bubble'].indexOf(type) !== -1 && !(type === 'scatter' && values2 && values2.length)) {
     function fmtCorto(n) {
       var a = Math.abs(n);
       if (a >= 1e6) return (n / 1e6).toFixed(a >= 1e7 ? 0 : 1) + 'M';
@@ -12814,8 +13085,12 @@ function drawChart(canvasId, type, title, labels, values, values2) {
     });
     ctx.closePath(); ctx.fill(); ctx.stroke();
   } else if (type === 'scatter') {
+    var parXY = !!(values2 && values2.length);
+    var xMax = parXY ? (Math.max.apply(null, values) || 1) : (values.length - 1 || 1), yMax = parXY ? (Math.max.apply(null, values2) || 1) : max;
+    if (parXY) { ctx.fillStyle = '#6b8f48'; ctx.font = '8px sans-serif'; ctx.textAlign = 'right'; ctx.fillText(String(Math.round(yMax * 100) / 100), padL - 3, padT + 8); ctx.fillText('0', padL - 3, padT + cH); ctx.textAlign = 'right'; ctx.fillText(String(Math.round(xMax * 100) / 100), W - padR, H - 8); }
     values.forEach(function (v, i4) {
-      var x6 = padL + (i4 / (values.length - 1 || 1)) * cW, y6 = padT + cH - (v / max) * cH;
+      var xv = parXY ? v : i4, yv = parXY ? (values2[i4] || 0) : v;
+      var x6 = padL + (xv / xMax) * cW, y6 = padT + cH - (yv / yMax) * cH;
       ctx.beginPath(); ctx.arc(x6, y6, 4, 0, Math.PI * 2);
       ctx.fillStyle = colors[i4 % colors.length]; ctx.globalAlpha = 0.75; ctx.fill(); ctx.globalAlpha = 1;
     });
@@ -12869,7 +13144,8 @@ function drawChart(canvasId, type, title, labels, values, values2) {
   } else if (type === 'bubble') {
     values.forEach(function (v, i11) {
       var x12 = padL + (i11 / (values.length - 1 || 1)) * cW, y12 = padT + cH - (v / max) * cH;
-      var r3 = Math.sqrt(v / max) * 12 + 3;
+      var tamB = (values2 && values2.length) ? (values2[i11] || 0) : v, tamMax = (values2 && values2.length) ? (Math.max.apply(null, values2) || 1) : max;
+      var r3 = Math.sqrt(Math.max(0, tamB) / tamMax) * 12 + 3;
       ctx.beginPath(); ctx.arc(x12, y12, r3, 0, Math.PI * 2);
       ctx.fillStyle = colors[i11 % colors.length]; ctx.globalAlpha = 0.6; ctx.fill();
       ctx.globalAlpha = 1; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
@@ -13481,7 +13757,110 @@ function pngDeFormaCanvas(g) {
   return bytesDePngUrl(cv.toDataURL('image/png'));
 }
 // Devuelve [{hoja, imagenes:[{png,x,y,w,h}]}] con coordenadas en píxeles desde la celda A1.
-function recolectarImagenesExcel() {
+
+// ── Formato condicional avanzado → Excel nativo ──
+function reglasCondicionalesExcel(nombre) {
+  var reglas = sheetCondFormatsAvanzado[nombre] || [], xml = '', prio = 1;
+  function hex(c, def) { return 'FF' + String(c || def).replace('#', '').toUpperCase(); }
+  reglas.forEach(function (rg) {
+    var rango = String(rg.range || '').replace(/\$/g, '').toUpperCase();
+    if (!/^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(rango)) return;
+    var cuerpo = '';
+    if (rg.type === 'databar') {
+      var cvo = function (tipo, val, porDefecto) { return tipo === 'num' ? '<cfvo type="num" val="' + val + '"/>' : (tipo === 'pct' ? '<cfvo type="percent" val="' + val + '"/>' : '<cfvo type="' + porDefecto + '"/>'); };
+      cuerpo = '<cfRule type="dataBar" priority="' + (prio++) + '"><dataBar>' + cvo(rg.minTipo, rg.minVal, 'min') + cvo(rg.maxTipo, rg.maxVal, 'max') + '<color rgb="' + hex(rg.color, '#5a9bd5') + '"/></dataBar></cfRule>';
+    } else if (rg.type === 'colorscale') {
+      if (rg.colorMedio) cuerpo = '<cfRule type="colorScale" priority="' + (prio++) + '"><colorScale><cfvo type="min"/><cfvo type="percentile" val="50"/><cfvo type="max"/><color rgb="' + hex(rg.colorMin, '#f8696b') + '"/><color rgb="' + hex(rg.colorMedio, '#ffeb84') + '"/><color rgb="' + hex(rg.colorMax, '#63be7b') + '"/></colorScale></cfRule>';
+      else cuerpo = '<cfRule type="colorScale" priority="' + (prio++) + '"><colorScale><cfvo type="min"/><cfvo type="max"/><color rgb="' + hex(rg.colorMin, '#f8696b') + '"/><color rgb="' + hex(rg.colorMax, '#63be7b') + '"/></colorScale></cfRule>';
+    } else if (rg.type === 'iconset') {
+      var set = rg.iconStyle === 'flechas' ? '3Arrows' : '3TrafficLights1';
+      cuerpo = '<cfRule type="iconSet" priority="' + (prio++) + '"><iconSet iconSet="' + set + '"><cfvo type="percent" val="0"/><cfvo type="percent" val="33"/><cfvo type="percent" val="67"/></iconSet></cfRule>';
+    }
+    if (cuerpo) xml += '<conditionalFormatting sqref="' + rango.replace(':', ':') + '">' + cuerpo + '</conditionalFormatting>';
+  });
+  return xml;
+}
+function escXml(t) { return String(t === undefined || t === null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function refAbsolutaExcel(nombreExport, rango) {
+  var r = String(rango || '').trim().replace(/\$/g, '');
+  if (r.indexOf('!') !== -1) { var i = r.lastIndexOf('!'); nombreExport = r.slice(0, i).replace(/^'|'$/g, '').replace(/''/g, "'"); r = r.slice(i + 1); }
+  var partes = r.toUpperCase().split(':').map(function (c) { var m = /^([A-Z]+)(\d+)$/.exec(c); return m ? '$' + m[1] + '$' + m[2] : null; });
+  if (partes.indexOf(null) !== -1) return null;
+  return "'" + String(nombreExport).replace(/'/g, "''") + "'!" + partes.join(':');
+}
+var TIPOS_GRAFICO_NATIVO = { bar: 'bar', bar_grouped: 'bar', line: 'line', line_double: 'line', area: 'area', pie: 'pie', scatter: 'scatter', bubble: 'bubble' };
+// Arma el XML de un gráfico nativo de Excel a partir de un gráfico de la hoja.
+// Dispersión y burbuja nativas. Dispersión: "rango de datos" = eje X y "serie 2" = eje Y (sin serie 2: X = 1, 2, 3…).
+// Burbuja: "rango de datos" = eje Y (X = 1, 2, 3…) y "serie 2" = tamaño de la burbuja (sin serie 2: tamaño = valor).
+function xmlGraficoXY(g, d, nombreExport, clase) {
+  var f = g.fuente || null, n = d.values.length, idx = [];
+  for (var i = 0; i < n; i++) idx.push(i + 1);
+  var tiene2 = !!(d.values2 && d.values2.length);
+  var xs, ys, tam = null, refX = null, refY = null, refT = null;
+  if (clase === 'scatter') {
+    if (tiene2) { xs = d.values; ys = d.values2.slice(0, n); refX = f ? f.rango : null; refY = f ? f.rango2 : null; }
+    else { xs = idx; ys = d.values; refY = f ? f.rango : null; }
+  } else {
+    xs = idx; ys = d.values; tam = tiene2 ? d.values2.slice(0, n) : d.values; refY = f ? f.rango : null; refT = f ? (tiene2 ? f.rango2 : f.rango) : null;
+  }
+  function serie(tag, vals, rango) {
+    var ref = rango ? refAbsolutaExcel(nombreExport, rango) : null;
+    var pts = vals.map(function (v, k) { return '<c:pt idx="' + k + '"><c:v>' + (isFinite(v) ? v : 0) + '</c:v></c:pt>'; }).join('');
+    if (ref) return '<c:' + tag + '><c:numRef><c:f>' + escXml(ref) + '</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="' + vals.length + '"/>' + pts + '</c:numCache></c:numRef></c:' + tag + '>';
+    return '<c:' + tag + '><c:numLit><c:formatCode>General</c:formatCode><c:ptCount val="' + vals.length + '"/>' + pts + '</c:numLit></c:' + tag + '>';
+  }
+  var ser, grafico;
+  if (clase === 'scatter') {
+    ser = '<c:ser><c:idx val="0"/><c:order val="0"/><c:tx><c:v>Serie 1</c:v></c:tx><c:spPr><a:ln w="19050"><a:noFill/></a:ln></c:spPr><c:marker><c:symbol val="circle"/><c:size val="7"/><c:spPr><a:solidFill><a:srgbClr val="5ABF2A"/></a:solidFill></c:spPr></c:marker>' + serie('xVal', xs, refX) + serie('yVal', ys, refY) + '<c:smooth val="0"/></c:ser>';
+    grafico = '<c:scatterChart><c:scatterStyle val="lineMarker"/><c:varyColors val="0"/>' + ser + '<c:axId val="50010"/><c:axId val="50020"/></c:scatterChart>';
+  } else {
+    ser = '<c:ser><c:idx val="0"/><c:order val="0"/><c:tx><c:v>Serie 1</c:v></c:tx><c:spPr><a:solidFill><a:srgbClr val="1D4ED8"><a:alpha val="60000"/></a:srgbClr></a:solidFill></c:spPr><c:invertIfNegative val="0"/>' + serie('xVal', xs, null) + serie('yVal', ys, refY) + serie('bubbleSize', tam, refT) + '<c:bubble3D val="0"/></c:ser>';
+    grafico = '<c:bubbleChart><c:varyColors val="0"/>' + ser + '<c:bubbleScale val="100"/><c:showNegBubbles val="0"/><c:axId val="50010"/><c:axId val="50020"/></c:bubbleChart>';
+  }
+  var ejes = '<c:valAx><c:axId val="50010"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="b"/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="out"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="50020"/><c:crosses val="autoZero"/><c:crossBetween val="midCat"/></c:valAx>' +
+    '<c:valAx><c:axId val="50020"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="out"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="50010"/><c:crosses val="autoZero"/><c:crossBetween val="midCat"/></c:valAx>';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><c:roundedCorners val="0"/><c:chart>' +
+    '<c:title><c:tx><c:rich><a:bodyPr/><a:p><a:r><a:rPr lang="es-CR" sz="1200" b="1"/><a:t>' + escXml(g.titulo || '') + '</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title><c:autoTitleDeleted val="0"/>' +
+    '<c:plotArea><c:layout/>' + grafico + ejes + '</c:plotArea><c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart></c:chartSpace>';
+}
+function xmlGraficoNativo(g, d, nombreExport) {
+  var clase = TIPOS_GRAFICO_NATIVO[g.tipo];
+  if (!clase || !d.values.length) return null;
+  var colores = ['5ABF2A', '1D4ED8', 'DC2626', 'D97706', '7C3AED', '0891B2'];
+  var f = g.fuente || null;
+  if (clase === 'scatter' || clase === 'bubble') return xmlGraficoXY(g, d, nombreExport, clase);
+  function numCache(vals) { return '<c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="' + vals.length + '"/>' + vals.map(function (v, i) { return '<c:pt idx="' + i + '"><c:v>' + (isFinite(v) ? v : 0) + '</c:v></c:pt>'; }).join('') + '</c:numCache>'; }
+  function strCache(labs) { return '<c:strCache><c:ptCount val="' + labs.length + '"/>' + labs.map(function (v, i) { return '<c:pt idx="' + i + '"><c:v>' + escXml(v) + '</c:v></c:pt>'; }).join('') + '</c:strCache>'; }
+  var catRef = f && f.rangoEtiquetas ? refAbsolutaExcel(nombreExport, f.rangoEtiquetas) : null;
+  var catXml = catRef ? '<c:cat><c:strRef><c:f>' + escXml(catRef) + '</c:f>' + strCache(d.labels) + '</c:strRef></c:cat>' : '<c:cat><c:strLit><c:ptCount val="' + d.labels.length + '"/>' + d.labels.map(function (v, i) { return '<c:pt idx="' + i + '"><c:v>' + escXml(v) + '</c:v></c:pt>'; }).join('') + '</c:strLit></c:cat>';
+  var series = [{ nombre: g.fuente ? 'Serie 1' : 'Serie 1', vals: d.values, rango: f ? f.rango : null }];
+  if (d.values2 && clase !== 'pie') series.push({ nombre: 'Serie 2', vals: d.values2, rango: f ? f.rango2 : null });
+  var serXml = series.map(function (se, i) {
+    var ref = se.rango ? refAbsolutaExcel(nombreExport, se.rango) : null;
+    var valXml = ref ? '<c:val><c:numRef><c:f>' + escXml(ref) + '</c:f>' + numCache(se.vals) + '</c:numRef></c:val>' : '<c:val><c:numLit><c:formatCode>General</c:formatCode><c:ptCount val="' + se.vals.length + '"/>' + se.vals.map(function (v, k) { return '<c:pt idx="' + k + '"><c:v>' + (isFinite(v) ? v : 0) + '</c:v></c:pt>'; }).join('') + '</c:numLit></c:val>';
+    var col = colores[i % colores.length];
+    var sp = clase === 'line' ? '<c:spPr><a:ln w="28575"><a:solidFill><a:srgbClr val="' + col + '"/></a:solidFill></a:ln></c:spPr>' : (clase === 'pie' ? '' : '<c:spPr><a:solidFill><a:srgbClr val="' + col + '"/></a:solidFill></c:spPr>');
+    var cuerpo = '<c:idx val="' + i + '"/><c:order val="' + i + '"/><c:tx><c:v>' + escXml(se.nombre) + '</c:v></c:tx>' + sp;
+    if (clase === 'bar') cuerpo += '<c:invertIfNegative val="0"/>';
+    if (clase === 'line') cuerpo += '<c:marker><c:symbol val="circle"/><c:size val="5"/></c:marker>';
+    cuerpo += catXml + valXml;
+    if (clase === 'line') cuerpo += '<c:smooth val="0"/>';
+    return '<c:ser>' + cuerpo + '</c:ser>';
+  }).join('');
+  var ejes = '<c:axId val="50010"/><c:axId val="50020"/>', grafico;
+  if (clase === 'bar') grafico = '<c:barChart><c:barDir val="col"/><c:grouping val="clustered"/><c:varyColors val="0"/>' + serXml + '<c:gapWidth val="150"/>' + ejes + '</c:barChart>';
+  else if (clase === 'line') grafico = '<c:lineChart><c:grouping val="standard"/><c:varyColors val="0"/>' + serXml + '<c:marker val="1"/>' + ejes + '</c:lineChart>';
+  else if (clase === 'area') grafico = '<c:areaChart><c:grouping val="standard"/><c:varyColors val="0"/>' + serXml + ejes + '</c:areaChart>';
+  else grafico = '<c:pieChart><c:varyColors val="1"/>' + serXml + '<c:firstSliceAng val="0"/></c:pieChart>';
+  var ejesXml = clase === 'pie' ? '' :
+    '<c:catAx><c:axId val="50010"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="b"/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="out"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="50020"/><c:crosses val="autoZero"/><c:auto val="1"/><c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/></c:catAx>' +
+    '<c:valAx><c:axId val="50020"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="out"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="50010"/><c:crosses val="autoZero"/><c:crossBetween val="between"/></c:valAx>';
+  var leyenda = (series.length > 1 || clase === 'pie') ? '<c:legend><c:legendPos val="b"/><c:overlay val="0"/></c:legend>' : '';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><c:roundedCorners val="0"/><c:chart>' +
+    '<c:title><c:tx><c:rich><a:bodyPr/><a:p><a:r><a:rPr lang="es-CR" sz="1200" b="1"/><a:t>' + escXml(g.titulo || '') + '</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title><c:autoTitleDeleted val="0"/>' +
+    '<c:plotArea><c:layout/>' + grafico + ejesXml + '</c:plotArea>' + leyenda + '<c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart></c:chartSpace>';
+}
+function recolectarImagenesExcel(nombresExport) {
   var res = [], original = activeSheet;
   var td = document.getElementById('cell_A1'); td = td && td.closest ? td.closest('td') : null;
   var ox = td ? td.offsetLeft : 0, oy = td ? td.offsetTop : 0;
@@ -13496,6 +13875,9 @@ function recolectarImagenesExcel() {
           imgs.push({ png: pngDeFormaCanvas(g), x: Math.max(0, g.x - ox), y: Math.max(0, g.y - oy), w: g.w, h: g.h });
         } else {
           var W = Math.max(150, g.w - 20), H = Math.max(100, g.h - 52), d = datosDeGrafico(g);
+          var xmlNativo = null;
+          try { xmlNativo = xmlGraficoNativo(g, d, (nombresExport && nombresExport[nombre]) || nombre); } catch (eN) { xmlNativo = null; }
+          if (xmlNativo) { imgs.push({ chartXml: xmlNativo, x: Math.max(0, g.x - ox), y: Math.max(0, g.y - oy), w: g.w, h: g.h }); return; }
           var cv = document.createElement('canvas'); cv.id = 'expTmpCanvas'; cv.dataset.w = W; cv.dataset.h = H;
           cv.style.cssText = 'position:fixed;left:-9999px;top:0;';
           document.body.appendChild(cv);
@@ -13531,18 +13913,32 @@ function xlsxBase64ConImagenes(wb, hojas) {
   var tipos = leer('[Content_Types].xml') || '';
   var extra = '';
   if (tipos.indexOf('Extension="png"') === -1) extra += '<Default Extension="png" ContentType="image/png"/>';
-  var nImg = 0;
+  var nImg = 0, nChart = 0;
   hojas.forEach(function (h, k) {
     var nd = k + 1, rutaHoja = 'xl/worksheets/sheet' + h.indice + '.xml';
     var xmlHoja = leer(rutaHoja);
     if (!xmlHoja) return;
     var dib = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="' + NS_REL + '">';
     var relsDib = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+    if (h.cond) {
+      var candC = ['<dataValidations', '<hyperlinks', '<printOptions', '<pageMargins', '<pageSetup', '<headerFooter', '<rowBreaks', '<colBreaks', '<customProperties', '<cellWatches', '<ignoredErrors', '<smartTags', '<drawing', '<legacyDrawing', '<tableParts', '<extLst', '</worksheet>'], corteC = -1;
+      for (var qc = 0; qc < candC.length; qc++) { var ixc = xmlHoja.indexOf(candC[qc]); if (ixc !== -1) { corteC = ixc; break; } }
+      if (corteC !== -1) { xmlHoja = xmlHoja.slice(0, corteC) + h.cond + xmlHoja.slice(corteC); escribir(rutaHoja, xmlHoja); }
+    }
+    if (!h.imagenes || !h.imagenes.length) return;
     h.imagenes.forEach(function (im, j) {
+      var X = Math.round(im.x * 9525), Y = Math.round(im.y * 9525), CX = Math.round(im.w * 9525), CY = Math.round(im.h * 9525);
+      if (im.chartXml) {
+        nChart++;
+        escribir('xl/charts/chart' + nChart + '.xml', im.chartXml);
+        extra += '<Override PartName="/xl/charts/chart' + nChart + '.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+        relsDib += '<Relationship Id="rId' + (j + 1) + '" Type="' + NS_REL + '/chart" Target="../charts/chart' + nChart + '.xml"/>';
+        dib += '<xdr:absoluteAnchor><xdr:pos x="' + X + '" y="' + Y + '"/><xdr:ext cx="' + CX + '" cy="' + CY + '"/><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="' + (j + 2) + '" name="Gráfico ' + nChart + '"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="rId' + (j + 1) + '"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:absoluteAnchor>';
+        return;
+      }
       nImg++;
       escribir('xl/media/image' + nImg + '.png', im.png);
       relsDib += '<Relationship Id="rId' + (j + 1) + '" Type="' + NS_REL + '/image" Target="../media/image' + nImg + '.png"/>';
-      var X = Math.round(im.x * 9525), Y = Math.round(im.y * 9525), CX = Math.round(im.w * 9525), CY = Math.round(im.h * 9525);
       dib += '<xdr:absoluteAnchor><xdr:pos x="' + X + '" y="' + Y + '"/><xdr:ext cx="' + CX + '" cy="' + CY + '"/>' +
         '<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="' + (j + 2) + '" name="Imagen ' + nImg + '"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr>' +
         '<xdr:blipFill><a:blip r:embed="rId' + (j + 1) + '"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill>' +
@@ -13577,7 +13973,7 @@ function exportarExcelInterno() {
   var originalSheet = activeSheet;
   var huboDatos = false;
   var usedNames = {};
-  var ordenExport = [];
+  var ordenExport = [], nombresExport = {};
   sheets.forEach(function (sheetName) {
     var data = sheetData[sheetName] || {};
     if (!Object.keys(data).length) return;
@@ -13648,17 +14044,27 @@ function exportarExcelInterno() {
     usedNames[uniqueName] = true;
     XLSX.utils.book_append_sheet(wb, ws, uniqueName);
     ordenExport.push(sheetName);
+    nombresExport[sheetName] = uniqueName;
   });
   activeSheet = originalSheet;
   if (!huboDatos) { alert('No hay datos para exportar en ninguna hoja.'); return; }
-  var wbout = null, conImagenes = 0;
+  var wbout = null, conImagenes = 0, nNativos = 0, nCond = 0;
   try {
-    var imgHojas = recolectarImagenesExcel().map(function (h) { return { indice: ordenExport.indexOf(h.hoja) + 1, imagenes: h.imagenes }; }).filter(function (h) { return h.indice > 0; });
-    if (imgHojas.length && XLSX.CFB) { wbout = xlsxBase64ConImagenes(wb, imgHojas); imgHojas.forEach(function (h) { conImagenes += h.imagenes.length; }); }
-  } catch (eImg) { wbout = null; conImagenes = 0; }
+    var porHoja = {};
+    recolectarImagenesExcel(nombresExport).forEach(function (h) { porHoja[h.hoja] = { imagenes: h.imagenes }; });
+    ordenExport.forEach(function (nombreH) {
+      var cx = reglasCondicionalesExcel(nombreH);
+      if (cx) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].cond = cx; nCond += (cx.match(/<conditionalFormatting/g) || []).length; }
+    });
+    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '' }; }).filter(function (h) { return h.indice > 0; });
+    if (imgHojas.length && XLSX.CFB) {
+      wbout = xlsxBase64ConImagenes(wb, imgHojas);
+      imgHojas.forEach(function (h) { h.imagenes.forEach(function (im) { if (im.chartXml) nNativos++; else conImagenes++; }); });
+    }
+  } catch (eImg) { wbout = null; conImagenes = 0; nNativos = 0; nCond = 0; }
   if (!wbout) wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
   guardarArchivoNativo('MatrizContableCR.xlsx', wbout, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  document.getElementById('saveStatus').textContent = 'Excel exportado (' + sheets.length + ' hojas' + (conImagenes ? ', ' + conImagenes + ' gráficos/formas como imagen' : '') + ')';
+  document.getElementById('saveStatus').textContent = 'Excel exportado (' + sheets.length + ' hojas' + (nNativos ? ', ' + nNativos + ' gráficos nativos' : '') + (conImagenes ? ', ' + conImagenes + ' gráficos/formas como imagen' : '') + (nCond ? ', ' + nCond + ' reglas de formato' : '') + ')';
 }
 
 document.getElementById('btnExcelImport').addEventListener('click', function () {
@@ -13864,7 +14270,7 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
   reader.onload = function (ev) {
     try {
       var wb = XLSX.read(ev.target.result, { type: 'binary', cellNF: true, cellStyles: true });
-      var MAX_FILAS = 1000, MAX_COLS = 26;
+      var MAX_FILAS = 1000, MAX_COLS = MAX_COLUMNAS;
       var estilosXlsx = {};
       try { estilosXlsx = leerEstilosXlsx(ev.target.result); } catch (eEst) { estilosXlsx = {}; }
       snapshot();
@@ -14797,6 +15203,40 @@ document.getElementById('btnDarkMode').addEventListener('click', function () {
 document.getElementById('ribbonToggle').addEventListener('click', function () {
   document.getElementById('ribbonOverlay').classList.add('show');
 });
+
+// ── Menú "Inicio": secciones desplegables y buscador de herramientas ──
+(function () {
+  var toolbar = document.getElementById('toolbar'), buscador = document.getElementById('rbBuscar');
+  function contar() {
+    toolbar.querySelectorAll('.rbSec').forEach(function (sec) {
+      var n = 0; sec.querySelectorAll('.rbGrid button').forEach(function (b) { if (b.style.display !== 'none') n++; });
+      sec.querySelector('.rbSecN').textContent = n;
+    });
+  }
+  contar();
+  toolbar.querySelectorAll('.rbSecHead').forEach(function (h) {
+    function alternar() { h.parentNode.classList.toggle('open'); }
+    h.addEventListener('click', alternar);
+    h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); } });
+  });
+  buscador.addEventListener('input', function () {
+    var q = buscador.value.trim().toLowerCase(), hay = false;
+    toolbar.querySelectorAll('.rbSec').forEach(function (sec) {
+      var coincide = 0;
+      sec.querySelectorAll('.rbGrid button').forEach(function (b) {
+        var ok = !q || (b.textContent + ' ' + (b.title || '')).toLowerCase().indexOf(q) !== -1;
+        b.classList.toggle('rbOculto', !ok);
+        if (ok && b.style.display !== 'none') coincide++;
+      });
+      sec.classList.toggle('rbOculta', !!q && !coincide);
+      if (q && coincide) { sec.classList.add('open'); hay = true; }
+    });
+    document.getElementById('rbVacio').style.display = q && !hay ? 'block' : 'none';
+  });
+  document.getElementById('ribbonToggle').addEventListener('click', function () {
+    buscador.value = ''; buscador.dispatchEvent(new Event('input')); contar();
+  });
+})();
 document.getElementById('ribbonClose').addEventListener('click', function () {
   document.getElementById('ribbonOverlay').classList.remove('show');
 });
@@ -15022,7 +15462,7 @@ document.getElementById('backupArchivoInput').addEventListener('change', functio
     try {
       snapshot();
       if (paquete.filas && paquete.filas > 0) ROWS = Math.min(Math.max(parseInt(paquete.filas, 10) || ROWS, 1), 5000);
-      if (paquete.columnas && paquete.columnas > 0) COLS = Math.min(Math.max(parseInt(paquete.columnas, 10) || COLS, 1), 26);
+      if (paquete.columnas && paquete.columnas > 0) COLS = Math.min(Math.max(parseInt(paquete.columnas, 10) || COLS, 1), MAX_COLUMNAS);
       cargarEstadoDesdeObjeto(estado);
       renderTabs(); autoSave();
       document.getElementById('backupOverlay').classList.remove('show');
