@@ -1,9 +1,8 @@
 name: EAS Build - Matriz Contable CR
 
 on:
-  push:
-    branches:
-      - main
+  # Solo manual: el plan gratis de Expo da pocos builds al mes y cada push a main gastaba uno.
+  # Para compilar: pestaña Actions → "EAS Build" → Run workflow.
   workflow_dispatch:
     inputs:
       platform:
@@ -63,14 +62,7 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Compilar (push a main → android preview automático)
-        if: github.event_name == 'push'
-        run: eas build --platform android --profile preview --non-interactive --no-wait
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
       - name: Compilar (disparo manual con plataforma/perfil elegidos)
-        if: github.event_name == 'workflow_dispatch'
         run: eas build --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.profile }} --non-interactive --no-wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
