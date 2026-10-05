@@ -1367,7 +1367,8 @@
         <div class="feField"><label>Condición de venta</label>
           <select id="fe-condicion-venta">
             <option value="01">Contado</option>
-            <option value="02">Crédito</option>
+            <option value="02">Crédito (normal)</option>
+            <option value="10">Crédito con IVA diferido (Art. 27, hasta 90 días)</option>
           </select>
         </div>
         <div class="feField" id="fe-plazo-credito-wrap" style="display:none;"><label>Plazo de crédito (días)</label><input id="fe-plazo-credito" type="number" min="1" step="1" value="30"></div>
@@ -8534,7 +8535,8 @@ document.getElementById('btnFactura').addEventListener('click', function () {
 document.getElementById('feClose').addEventListener('click', function () { document.getElementById('feOverlay').classList.remove('show'); });
 document.getElementById('feAddLineaBtn').addEventListener('click', agregarLineaFactura);
 document.getElementById('fe-condicion-venta').addEventListener('change', function () {
-  document.getElementById('fe-plazo-credito-wrap').style.display = this.value === '02' ? '' : 'none';
+  document.getElementById('fe-plazo-credito-wrap').style.display = (this.value === '02' || this.value === '10') ? '' : 'none';
+  if (this.value === '10') { var pz = document.getElementById('fe-plazo-credito'); if (parseInt(pz.value, 10) > 90) pz.value = 90; }
 });
 document.getElementById('fe-iva-rate').addEventListener('change', recalcularFactura);
 document.getElementById('feBtnClear').addEventListener('click', function () {
@@ -8738,12 +8740,17 @@ document.getElementById('feBtnHacienda').addEventListener('click', async functio
 
   var condicionVentaElegida = gv('fe-condicion-venta') || '01';
   var plazoCreditoElegido = gv('fe-plazo-credito').replace(/[^0-9]/g, '');
-  if (condicionVentaElegida === '02' && !cedulaReceptorLimpia) {
+  var esCredito = condicionVentaElegida === '02' || condicionVentaElegida === '10';
+  if (esCredito && !cedulaReceptorLimpia) {
     alert('Para facturar a crédito hace falta la cédula del receptor (una venta a crédito no puede ser un Tiquete sin receptor).');
     return;
   }
-  if (condicionVentaElegida === '02' && !plazoCreditoElegido) {
+  if (esCredito && !plazoCreditoElegido) {
     alert('Para facturar a crédito hace falta indicar el plazo de crédito en días.');
+    return;
+  }
+  if (condicionVentaElegida === '10' && parseInt(plazoCreditoElegido, 10) > 90) {
+    alert('El crédito con IVA diferido (Art. 27) permite un plazo máximo de 90 días.');
     return;
   }
 
@@ -8768,7 +8775,7 @@ document.getElementById('feBtnHacienda').addEventListener('click', async functio
       },
       lineas: lineas,
       condicionVenta: condicionVentaElegida,
-      plazoCredito: condicionVentaElegida === '02' ? plazoCreditoElegido : undefined,
+      plazoCredito: esCredito ? plazoCreditoElegido : undefined,
       medioPago: ['01'],
       esTiquete: !cedulaReceptorLimpia,
     }),
