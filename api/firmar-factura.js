@@ -149,7 +149,14 @@ async function obtenerAccessToken(entorno, usuario, password) {
 }
 
 // ─── Le pide al Worker el próximo número de secuencia del cliente ─
-async function obtenerSiguienteSecuencia(uid, tipoDocumento) {
+// Multi-emisor: cédula del emisor dentro de una clave de 50 dígitos (posiciones 10–21, con ceros a la izquierda).
+// El Worker compara ignorando ceros a la izquierda y verifica que esa cédula pertenezca al negocio del usuario.
+function cedulaDeClave(clave) {
+  const d = String(clave || '').replace(/[^0-9]/g, '')
+  return d.length === 50 ? d.substr(9, 12) : ''
+}
+
+async function obtenerSiguienteSecuencia(uid, tipoDocumento, cedulaEmisor) {
   const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/siguiente-secuencia', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -157,6 +164,7 @@ async function obtenerSiguienteSecuencia(uid, tipoDocumento) {
       uid: uid,
       secreto: process.env.FIRMA_SERVICE_SECRET,
       tipoDocumento: tipoDocumento,
+      cedulaEmisor: cedulaEmisor || undefined, // multi-emisor: cada cédula lleva su propia numeración
     }),
   })
   const datos = await leerJsonSeguro(respuesta)
@@ -353,6 +361,7 @@ export default async function handler(req, res) {
       medioPago, // array, ej: ['01'] (default ['01'] efectivo)
       esTiquete, // true => Tiquete Electrónico (04) en vez de Factura (01)
       emisorNombre, // opcional: nombre / razón social del emisor
+      cedulaEmisor: cedulaEmisorElegida, // multi-emisor: con qué cédula emitir (sin esto, el emisor principal)
     } = req.body || {}
 
     const uid = await verificarIdToken(idToken)
@@ -399,7 +408,7 @@ export default async function handler(req, res) {
     const respCert = await fetch(CERTIFICADOS_WORKER_URL + '/obtener-certificado-firma', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ uid: uid, secreto: process.env.FIRMA_SERVICE_SECRET }),
+      body: JSON.stringify({ uid: uid, secreto: process.env.FIRMA_SERVICE_SECRET, cedulaEmisor: (String(cedulaEmisorElegida || '').replace(/[^0-9]/g, '')) || undefined }),
     })
     const datosCert = await leerJsonSeguro(respCert)
     if (!respCert.ok) {
@@ -446,7 +455,7 @@ export default async function handler(req, res) {
     const tipoIdEmisor = tipoIdentificacionEmisor(cedulaLimpia)
 
     // ── 2. Pedirle al Worker el próximo número de secuencia de ESTE cliente ──
-    const secuencia = await obtenerSiguienteSecuencia(uid, esTiquete ? 'tiquete' : 'factura')
+    const secuencia = await obtenerSiguienteSecuencia(uid, esTiquete ? 'tiquete' : 'factura', cedulaLimpia)
 
     // ── 3. Calcular totales de cada línea y el resumen de la factura ──
     const lineasNormalizadas = lineas.map(normalizarLinea)
