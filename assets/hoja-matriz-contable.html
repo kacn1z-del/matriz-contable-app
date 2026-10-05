@@ -846,6 +846,12 @@
         <button id="btnBalanceAuto">📊 Balance Auto</button>
         <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
         <button id="btnRecibo">📷 Recibo</button>
+        <button id="btnCatalogoNegocio">📒 Catálogo por negocio</button>
+        <button id="btnCierreMensual">🗓 Cierre mensual</button>
+        <button id="btnCuentasCobrar">⏳ Cuentas por cobrar</button>
+        <button id="btnEstadosFinancieros">📈 Estados financieros</button>
+        <button id="btnAsientosFacturas">🧮 Asientos de facturas</button>
+        <button id="btnRegistrarCompra">🛒 Registrar compra</button>
       </div>
     </div>
     <div class="rbSec" style="--rbc:#475569;">
@@ -1376,6 +1382,7 @@
 
       <div class="feCard">
         <div class="feCardTitle">EMISOR</div>
+        <div class="feField" id="fe-emisor-sel-wrap" style="display:none;"><label>Emitir con (cédula del emisor)</label><select id="fe-emisor-sel"></select></div>
         <div class="feField"><label>Nombre / Razón Social</label><input id="fe-emisor-nombre" placeholder="Mi Empresa S.A." /></div>
         <div class="feField"><label>Cédula Jurídica</label><input id="fe-emisor-cedula" placeholder="3-101-000000" /></div>
         <div class="feRow2">
@@ -2905,13 +2912,18 @@ function quitarDolaresDeRefs(f) {
   }
   return partes.join('"');
 }
+var REGEX_FUNCIONES = {};
 function computeExpr(expr) {
   expr = quitarDolaresDeRefs(expr);
   expr = sustituirRangosNombrados(expr);
   var exprUp = expr.toUpperCase().trim();
   try {
+    // Atajo: si la expresión no empieza con "NOMBRE(" y termina en ")", ninguna función puede coincidir
+    // (así una fórmula como =A1*2 no prueba las ~500 funciones). Las regex se guardan para no recrearlas.
+    var puedeSerFuncion = exprUp.charAt(exprUp.length - 1) === ')' && /^[A-ZÁÉÍÓÚÑ_][A-ZÁÉÍÓÚÑ0-9_.]*\(/.test(exprUp);
     function matchFn(names) {
-      var re = new RegExp('^(' + names + ')\\((.*)\\)$', 'i');
+      if (!puedeSerFuncion) return null;
+      var re = REGEX_FUNCIONES[names] || (REGEX_FUNCIONES[names] = new RegExp('^(' + names + ')\\((.*)\\)$', 'i'));
       var m = exprUp.match(re);
       if (!m) return null;
       var open = expr.indexOf('(');
@@ -2923,6 +2935,63 @@ function computeExpr(expr) {
       return expr.substring(open + 1, end);
     }
     var inner, args;
+    // ── LAMBDA(x;y;cuerpo)(a;b): se llama en el acto; se traduce a LET(x;a;y;b;cuerpo) ──
+    if (/^LAMBDA\(/.test(exprUp)) {
+      var abreL = expr.indexOf('('), profL = 0, cierraL = -1;
+      for (var il = abreL; il < expr.length; il++) {
+        if (expr[il] === '"') { il++; while (il < expr.length && expr[il] !== '"') il++; continue; }
+        if (expr[il] === '(') profL++;
+        else if (expr[il] === ')') { profL--; if (profL === 0) { cierraL = il; break; } }
+      }
+      var restoL = cierraL > 0 ? expr.substring(cierraL + 1).trim() : '';
+      if (cierraL > 0 && restoL.charAt(0) === '(' && restoL.charAt(restoL.length - 1) === ')') {
+        var defL = splitArgs(expr.substring(abreL + 1, cierraL)), valsL = splitArgs(restoL.slice(1, -1));
+        var parL = defL.slice(0, -1);
+        if (parL.length === valsL.length && parL.length > 0) {
+          var partesLet = [];
+          parL.forEach(function (nm, ix) { partesLet.push(nm.trim(), valsL[ix].trim()); });
+          return String(computeExpr('LET(' + partesLet.join(';') + ';' + defL[defL.length - 1].trim() + ')'));
+        }
+        return '#VALOR!';
+      }
+      return '#NOMBRE?';
+    }
+    // ── LET(nombre; valor; ...; resultado): se evalúa en orden y se sustituyen los nombres en el resultado ──
+    if ((inner = matchFn('LET')) !== null) {
+      var letArgs = splitArgs(inner);
+      if (letArgs.length >= 3 && letArgs.length % 2 === 1) {
+        var enlaces = [];
+        function sustituirNombres(texto) {
+          var partes = texto.split(/("(?:[^"]|"")*")/);
+          return partes.map(function (seg, ix) {
+            if (ix % 2 === 1) return seg;
+            enlaces.forEach(function (en) { seg = seg.replace(new RegExp('(^|[^A-Za-z0-9_.!$\'])' + en.nombre + '(?![A-Za-z0-9_(])', 'gi'), function (m0, pre) { return pre + en.valor; }); });
+            return seg;
+          }).join('');
+        }
+        for (var li = 0; li < letArgs.length - 1; li += 2) {
+          var nombreLet = letArgs[li].trim();
+          if (!/^[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_]*$/.test(nombreLet) || /^[A-Za-z]{1,3}\d+$/.test(nombreLet)) return '#NOMBRE?';
+          var valLet = String(computeExpr(sustituirNombres(letArgs[li + 1].trim())));
+          var numLet = parseFloat(limpiaNum(valLet));
+          enlaces.push({ nombre: nombreLet, valor: (!isNaN(numLet) && /^[-+]?[\d\s.,]+$/.test(valLet.trim())) ? '(' + numLet + ')' : '"' + valLet.replace(/"/g, '""') + '"' });
+        }
+        return String(computeExpr(sustituirNombres(letArgs[letArgs.length - 1].trim())));
+      }
+    }
+    // ── Texto literal ("hola") y concatenación con & (A1&" "&B1) ──
+    var eTrim = expr.trim();
+    if (/^"(?:[^"]|"")*"$/.test(eTrim)) return eTrim.slice(1, -1).replace(/""/g, '"');
+    var cortes = [], profAmp = 0, enCad = false, iniAmp = 0, hayComparador = false;
+    for (var qa = 0; qa < eTrim.length; qa++) {
+      var chA = eTrim.charAt(qa);
+      if (chA === '"') { enCad = !enCad; continue; }
+      if (enCad) continue;
+      if (chA === '(') profAmp++; else if (chA === ')') profAmp--;
+      else if (profAmp === 0 && chA === '&') { cortes.push(eTrim.slice(iniAmp, qa)); iniAmp = qa + 1; }
+      else if (profAmp === 0 && (chA === '<' || chA === '>' || chA === '=')) hayComparador = true;
+    }
+    if (cortes.length && !hayComparador) { cortes.push(eTrim.slice(iniAmp)); return cortes.map(function (pz) { return String(resolveArg(pz.trim())); }).join(''); }
     var mezclada = evaluarOperacionMezclada(expr);
     if (mezclada !== undefined) return mezclada;
 
@@ -6944,7 +7013,7 @@ function renderAllCellsInterno() {
   var data = sheetData[activeSheet] || {};
   var formats = sheetFormats[activeSheet] || {};
   var notes = sheetNotes[activeSheet] || {};
-  document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-note'); });
+  document.querySelectorAll('.cell.has-note').forEach(function (el) { el.classList.remove('has-note'); });
   // Triangulito rojo de error: se limpia y se vuelve a calcular en cada
   // render (igual que las notas/validaciones), así una celda que se arregla
   // pierde la marca y una que empieza a fallar la recibe.
@@ -7041,7 +7110,7 @@ function renderAllCellsInterno() {
     var el = document.getElementById('cell_' + id);
     if (el && notes[id]) el.classList.add('has-note');
   });
-  document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-attachment'); });
+  document.querySelectorAll('.cell.has-attachment').forEach(function (el) { el.classList.remove('has-attachment'); });
   var attachments = sheetAttachments[activeSheet] || {};
   Object.keys(attachments).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -7061,7 +7130,7 @@ function renderAllCellsInterno() {
   }
 
   // ── Validación de datos: marcar celdas con lista desplegable ──
-  document.querySelectorAll('.cell').forEach(function (el) { el.classList.remove('has-validation'); });
+  document.querySelectorAll('.cell.has-validation').forEach(function (el) { el.classList.remove('has-validation'); });
   var validations = sheetValidations[activeSheet] || {};
   Object.keys(validations).forEach(function (range) {
     condRangeToIds(range).forEach(function (id) {
@@ -7202,11 +7271,11 @@ function renderAllCellsInterno() {
   // íconos ── Se recalculan siempre según el mínimo/máximo ACTUAL de los
   // valores del rango (nunca quedan guardados como algo fijo), por eso
   // se limpian todas las barras/íconos antes de volver a aplicarlos.
-  document.querySelectorAll('.cell').forEach(function (el) {
+  // (solo se tocan las celdas que de verdad traen barra/ícono: recorrer las 26 000 celdas era lo más lento)
+  document.querySelectorAll('.cell[style*="background-image"], .cell.soloBarraDatos').forEach(function (el) {
     el.style.backgroundImage = ''; el.classList.remove('soloBarraDatos');
-    var iconoViejo = el.querySelector('.condIcon');
-    if (iconoViejo) iconoViejo.remove();
   });
+  document.querySelectorAll('.cell > .condIcon').forEach(function (iconoViejo) { iconoViejo.remove(); });
   var ICONOS_CONDICIONALES = {
     semaforo: ['🔴', '🟡', '🟢'],
     flechas: ['🔻', '➡️', '🔺'],
@@ -8235,6 +8304,7 @@ document.getElementById('mrEnviar').addEventListener('click', async function () 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idToken: idToken,
+        cedulaEmisor: ((document.getElementById('fe-emisor-sel') || {}).value) || undefined, // multi-emisor: cuál de tus cédulas responde
         claveRecibida: claveLimpia,
         cedulaEmisorRecibido: cedulaEmisorLimpia,
         fechaEmisionRecibida: fecha ? new Date(fecha).toISOString() : undefined,
@@ -8519,7 +8589,42 @@ function siguienteConsecutivo() {
   return partes[0] + '-' + partes[1] + '-' + String(siguiente).padStart(8, '0');
 }
 
+// ── Multi-emisor: si el negocio tiene más de una cédula configurada, se muestra un selector
+// "Emitir con". Con una sola cédula (lo normal) no se muestra nada y todo funciona igual que antes. ──
+var emisoresHacienda = [];
+async function cargarEmisoresHacienda() {
+  var wrap = document.getElementById('fe-emisor-sel-wrap'), sel = document.getElementById('fe-emisor-sel');
+  if (!wrap || !sel || !currentUser) return;
+  try {
+    var idTokenEm = await currentUser.getIdToken();
+    var respEm = await fetchViaXHR(LISTAR_EMISORES_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: idTokenEm }),
+    });
+    var datosEm = await respEm.json();
+    if (!respEm.ok) return;
+    emisoresHacienda = datosEm.emisores || [];
+    var previo = sel.value;
+    if (emisoresHacienda.length < 2) { sel.innerHTML = ''; wrap.style.display = 'none'; return; }
+    sel.innerHTML = emisoresHacienda.map(function (e) {
+      return '<option value="' + e.cedula + '">' + e.cedula + (e.nombre ? ' — ' + e.nombre.replace(/</g, '') : '') + (e.esPrincipal ? ' (principal)' : '') + (e.ambiente === 'production' ? '' : ' · pruebas') + '</option>';
+    }).join('');
+    if (previo && emisoresHacienda.some(function (e) { return e.cedula === previo; })) sel.value = previo;
+    wrap.style.display = '';
+    aplicarEmisorElegido();
+  } catch (e) { /* sin red o sin sesión: se factura con el emisor principal */ }
+}
+function aplicarEmisorElegido() {
+  var sel = document.getElementById('fe-emisor-sel');
+  var em = emisoresHacienda.filter(function (e) { return e.cedula === (sel && sel.value); })[0];
+  if (!em) return;
+  var ced = document.getElementById('fe-emisor-cedula');
+  if (ced) ced.value = em.cedula;
+  var nom = document.getElementById('fe-emisor-nombre');
+  if (nom && em.nombre) nom.value = em.nombre;
+}
+document.getElementById('fe-emisor-sel').addEventListener('change', aplicarEmisorElegido);
 document.getElementById('btnFactura').addEventListener('click', function () {
+  cargarEmisoresHacienda();
   if (!document.getElementById('fe-lineas-body').children.length) {
     if (!document.getElementById('fe-fecha').value) {
       document.getElementById('fe-fecha').value = new Date().toISOString().split('T')[0];
@@ -8584,6 +8689,7 @@ var VALIDAR_CEDULA_URL = 'https://matriz-certificados.kacn1z.workers.dev/validar
 var GUARDAR_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/guardar-plantillas';
 var OBTENER_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/obtener-plantillas';
 var LISTAR_HISTORIAL_URL = 'https://matriz-certificados.kacn1z.workers.dev/listar-historial';
+var LISTAR_EMISORES_URL = 'https://matriz-certificados.kacn1z.workers.dev/listar-emisores';
 var BUSCAR_CABYS_URL = 'https://matriz-certificados.kacn1z.workers.dev/buscar-cabys';
 
 // En este WebView, las peticiones de red salientes (fetch y XMLHttpRequest
@@ -8768,6 +8874,7 @@ document.getElementById('feBtnHacienda').addEventListener('click', async functio
       idToken: idTokenFactura,
       emisorNombre: gv('fe-emisor-nombre'),
       emisorCorreo: gv('fe-emisor-email'),
+      cedulaEmisor: gv('fe-emisor-sel') || undefined, // multi-emisor (vacío = emisor principal)
       receptor: {
         nombre: gv('fe-receptor-nombre'),
         identificacion: { tipo: tipoIdReceptor, numero: cedulaReceptorLimpia },
@@ -10017,6 +10124,16 @@ function posicionarManijaRelleno() {
     fillOrigenBounds = currentRangeBounds();
     fillDestinoBounds = null;
     fillEjeBloqueado = null;
+    // Doble toque en la manija: rellena hacia abajo hasta donde llegan los datos de la columna vecina (como Excel).
+    var ahora = Date.now();
+    if (ahora - (posicionarManijaRelleno.ultimoToque || 0) < 400 && fillOrigenBounds) {
+      var o = fillOrigenBounds, dat = sheetData[activeSheet] || {};
+      function llena(r, c) { return c >= 0 && c < COLS && String(dat[cellId(r, c)] === undefined ? '' : dat[cellId(r, c)]).trim() !== ''; }
+      var colVecina = o.minC > 0 && llena(o.maxR, o.minC - 1) ? o.minC - 1 : (llena(o.maxR, o.maxC + 1) ? o.maxC + 1 : -1), ultima = o.maxR;
+      if (colVecina >= 0) { while (ultima + 1 < ROWS && llena(ultima + 1, colVecina)) ultima++; }
+      if (ultima > o.maxR) fillDestinoBounds = { minR: o.minR, maxR: ultima, minC: o.minC, maxC: o.maxC };
+      posicionarManijaRelleno.ultimoToque = 0;
+    } else posicionarManijaRelleno.ultimoToque = ahora;
   });
 }
 
@@ -10797,6 +10914,12 @@ function commitCell(el) {
     alert('🔒 Esta hoja está protegida. Tocá "🔒 Proteger Hoja" para desbloquearla antes de editar (o marcá esta celda como "Permitir editar" desde una hoja sin proteger).');
     return;
   }
+  if (activeSheet === 'Diario' && edicionEnMesCerrado(id, el.textContent.trim())) {
+    el.textContent = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
+    el.classList.remove('selected');
+    alert('🔒 Ese asiento pertenece a un mes ya CERRADO. Para modificarlo, reabrí el mes desde "Cierre mensual" (o borrá el mes en la columna E de la hoja Catalogo).');
+    return;
+  }
   var val = el.textContent.trim();
   var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
@@ -11391,7 +11514,7 @@ document.getElementById('templateGalleryClose').addEventListener('click', functi
 // LIBROS CONTABLES CONECTADOS: Catálogo + Diario + Mayor + Balanza (fórmulas en vivo)
 // ══════════════════════════════════════════════
 function crearSistemaContable() {
-  var FILAS_DIARIO = 200, FILAS_CAT = 58, FILAS_MAYOR = 60;
+  var FILAS_DIARIO = 500, FILAS_CAT = 58, FILAS_MAYOR = 100;
   var nCat = crearHojaDestino('Catalogo'), nDia = crearHojaDestino('Diario'), nMay = crearHojaDestino('Mayor'), nBal = crearHojaDestino('Balanza');
   var hoy = new Date().toLocaleDateString('es-CR');
   var ctx = null;
@@ -11412,21 +11535,21 @@ function crearSistemaContable() {
   ctx.titulo('📒 CATÁLOGO DE CUENTAS — escribí acá tus cuentas (el Diario las busca por código)', 3, '#1e3a8a');
   ctx.cab(1, ['Código', 'Cuenta', 'Tipo'], '#dbeafe');
   var cuentas = [['1.1.01', 'Caja', 'Activo'], ['1.1.02', 'Bancos', 'Activo'], ['1.1.03', 'Clientes (Cuentas por cobrar)', 'Activo'], ['1.1.04', 'IVA Crédito (soportado)', 'Activo'], ['1.1.05', 'Inventario', 'Activo'], ['1.2.01', 'Mobiliario y equipo', 'Activo'], ['1.2.02', 'Depreciación acumulada', 'Activo'],
-    ['2.1.01', 'Proveedores (Cuentas por pagar)', 'Pasivo'], ['2.1.02', 'IVA por pagar (cobrado)', 'Pasivo'], ['2.1.03', 'Cargas sociales por pagar', 'Pasivo'], ['2.1.04', 'Salarios por pagar', 'Pasivo'], ['2.2.01', 'Préstamos bancarios', 'Pasivo'],
+    ['2.1.01', 'Proveedores (Cuentas por pagar)', 'Pasivo'], ['2.1.02', 'IVA por pagar (cobrado)', 'Pasivo'], ['2.1.03', 'Cargas sociales por pagar', 'Pasivo'], ['2.1.04', 'Salarios por pagar', 'Pasivo'], ['2.1.05', 'IVA diferido (Art. 27)', 'Pasivo'], ['2.2.01', 'Préstamos bancarios', 'Pasivo'],
     ['3.1.01', 'Capital social', 'Patrimonio'], ['3.1.02', 'Utilidades acumuladas', 'Patrimonio'],
     ['4.1.01', 'Ventas', 'Ingreso'], ['4.1.02', 'Otros ingresos', 'Ingreso'],
-    ['5.1.01', 'Costo de ventas', 'Gasto'], ['5.2.01', 'Salarios', 'Gasto'], ['5.2.02', 'Alquiler', 'Gasto'], ['5.2.03', 'Servicios públicos', 'Gasto'], ['5.2.04', 'Gasto por depreciación', 'Gasto'], ['5.2.05', 'Intereses', 'Gasto']];
+    ['5.1.01', 'Costo de ventas', 'Costo'], ['5.2.01', 'Salarios', 'Gasto'], ['5.2.02', 'Alquiler', 'Gasto'], ['5.2.03', 'Servicios públicos', 'Gasto'], ['5.2.04', 'Gasto por depreciación', 'Gasto'], ['5.2.05', 'Intereses', 'Gasto']];
   cuentas.forEach(function (c, i) { c.forEach(function (v, j) { ctx.set(2 + i, j, v); }); });
   ctx.st(2, 0, 1 + FILAS_CAT, 2, { border: true });
   colWidths[nCat] = { 0: 80, 1: 260, 2: 100 };
   // ── Diario ──
   usar(nDia);
   var D1 = 4, D2 = 3 + FILAS_DIARIO; // filas 4..203 en notación de hoja
-  ctx.titulo('📘 LIBRO DIARIO — un renglón por cuenta; el Asiento agrupa los renglones que suman Debe = Haber', 10, '#1d4ed8');
+  ctx.titulo('📘 LIBRO DIARIO — un renglón por cuenta; el Asiento agrupa los renglones que suman Debe = Haber', 11, '#1d4ed8');
   ctx.set(1, 4, 'TOTALES', true); ctx.d[cellId(1, 5)] = '=SUMA(F' + D1 + ':F' + D2 + ')'; ctx.d[cellId(1, 6)] = '=SUMA(G' + D1 + ':G' + D2 + ')';
   ctx.d[cellId(1, 7)] = '=SI(ABS(F2-G2)<0.005;"✓ Cuadrado";"⚠ Descuadre: "&TEXTO(ABS(F2-G2);"#,##0.00"))';
   ctx.st(1, 4, 1, 7, { bold: true, bgColor: '#bfdbfe', border: true }); ctx.st(1, 5, 1, 6, DINERO);
-  ctx.cab(2, ['Fecha', 'N° Asiento', 'Código', 'Cuenta', 'Descripción', 'Debe (₡)', 'Haber (₡)', 'Estado asiento', 'N° mov. (auto)', 'Fila (auto)'], '#dbeafe');
+  ctx.cab(2, ['Fecha', 'N° Asiento', 'Código', 'Cuenta', 'Descripción', 'Debe (₡)', 'Haber (₡)', 'Estado asiento', 'N° mov. (auto)', 'Fila (auto)', 'Origen (auto)'], '#dbeafe');
   for (var i = 0; i < FILAS_DIARIO; i++) {
     var r = 3 + i, n = r + 1;
     ctx.d[cellId(r, 3)] = '=SI(C' + n + '="";"";SI.ERROR(BUSCARV(C' + n + ';Catalogo!$A$3:$B$' + (2 + FILAS_CAT) + ';2;FALSO);"¿Código?"))';
@@ -11434,10 +11557,9 @@ function crearSistemaContable() {
     ctx.d[cellId(r, 8)] = '=SI(C' + n + '="";"";CONTAR.SI($C$' + D1 + ':C' + n + ';C' + n + '))';
     ctx.d[cellId(r, 9)] = String(i + 1);
   }
-  var ej = [[hoy, '1', '1.1.02', 'Venta de contado F-001', '56500', ''], [hoy, '1', '4.1.01', 'Venta de contado F-001', '', '50000'], [hoy, '1', '2.1.02', 'Venta de contado F-001', '', '6500']];
-  ej.forEach(function (row, i) { ctx.set(3 + i, 0, row[0]); ctx.set(3 + i, 1, row[1]); ctx.set(3 + i, 2, row[2]); ctx.set(3 + i, 4, row[3]); ctx.set(3 + i, 5, row[4]); ctx.set(3 + i, 6, row[5]); });
-  ctx.st(3, 0, 2 + FILAS_DIARIO, 9, { border: true }); ctx.st(3, 5, 2 + FILAS_DIARIO, 6, DINERO); ctx.st(3, 8, 2 + FILAS_DIARIO, 9, { fontColor: '#9ca3af' });
-  colWidths[nDia] = { 0: 80, 1: 70, 2: 70, 3: 190, 4: 220, 5: 95, 6: 95, 7: 110, 8: 60, 9: 50 };
+  // El Diario nace vacío para no ensuciar los libros reales con asientos de ejemplo.
+  ctx.st(3, 0, 2 + FILAS_DIARIO, 10, { border: true }); ctx.st(3, 5, 2 + FILAS_DIARIO, 6, DINERO); ctx.st(3, 8, 2 + FILAS_DIARIO, 10, { fontColor: '#9ca3af' });
+  colWidths[nDia] = { 0: 80, 1: 70, 2: 70, 3: 190, 4: 220, 5: 95, 6: 95, 7: 110, 8: 60, 9: 50, 10: 90 };
   sheetFreeze[nDia] = { row: 3, col: 0 };
   // ── Mayor (una cuenta a la vez, elegida en B2) ──
   usar(nMay);
@@ -11481,14 +11603,570 @@ function crearSistemaContable() {
     ctx.d[cellId(rb, 5)] = '=SI(A' + nb + '="";"";SI(D' + nb + '-C' + nb + '>0;D' + nb + '-C' + nb + ';0))';
   }
   ctx.st(3, 0, 2 + FILAS_CAT, 5, { border: true }); ctx.st(3, 2, 2 + FILAS_CAT, 5, DINERO);
-  colWidths[nBal] = { 0: 80, 1: 250, 2: 110, 3: 110, 4: 120, 5: 120 };
+  colWidths[nBal] = { 0: 80, 1: 250, 2: 110, 3: 110, 4: 120, 5: 120, 7: 80, 8: 60, 9: 50 };
+  prepararAuxiliaresBalanza(nBal, FILAS_CAT);
   sheetFreeze[nBal] = { row: 3, col: 0 };
   var maxFilas = 3 + FILAS_DIARIO + 5; if (ROWS < maxFilas) ROWS = maxFilas;
-  if (COLS < 10) COLS = 10;
+  if (COLS < 11) COLS = 11;
+  crearEstadosFinancieros(true);
   activeSheet = nDia;
   buildTable(); renderTabs(); autoSave();
-  document.getElementById('saveStatus').textContent = '✓ Libros contables creados: Catalogo, Diario, Mayor y Balanza';
+  document.getElementById('saveStatus').textContent = '✓ Libros contables creados: Catalogo, Diario, Mayor, Balanza y estados financieros';
 }
+
+// ══════════════════════════════════════════════
+// PANELES GENERALES (reutilizables) Y ASIENTOS AUTOMÁTICOS
+// ══════════════════════════════════════════════
+(function () {
+  var st = document.createElement('style');
+  st.textContent = '#mcrPanelOv{position:fixed;inset:0;background:rgba(8,24,14,.55);z-index:9800;display:none;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}' +
+    '#mcrPanelOv.show{display:flex}#mcrPanel{background:#fff;border-radius:18px;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.35)}' +
+    '#mcrPanelHead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(135deg,#14532d,#1f7a44);color:#fff}#mcrPanelHead h3{margin:0;font-size:16px}' +
+    '#mcrPanelHead button{background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:14px}' +
+    '#mcrPanelBody{padding:14px 16px;overflow-y:auto;font-size:13px;color:#1f2937}#mcrPanelFoot{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid #e5e7eb}' +
+    '#mcrPanelFoot button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:13px;background:#e5e7eb;color:#1f2937}#mcrPanelFoot button.ok{background:#1f7a44;color:#fff}' +
+    '.mcrF{display:block;font-size:11.5px;font-weight:700;color:#4b5563;margin:9px 0 3px}.mcrI{width:100%;box-sizing:border-box;padding:10px;border:1px solid #d1d5db;border-radius:9px;font-size:14px;background:#fff;color:#111}' +
+    '.mcrFila{display:flex;gap:8px}.mcrFila>*{flex:1;min-width:0}.mcrTabla{width:100%;border-collapse:collapse;font-size:12px}.mcrTabla th{background:#f1f5f0;text-align:left;padding:6px}.mcrTabla td{padding:6px;border-bottom:1px solid #eef2ee}.mcrTabla td.n,.mcrTabla th.n{text-align:right}' +
+    '.mcrNota{font-size:11.5px;color:#6b7280;margin-top:8px;line-height:1.4}.mcrOk{color:#15803d;font-weight:700}.mcrMal{color:#b91c1c;font-weight:700}' +
+    'body.dark-mode #mcrPanel{background:#1f2420;color:#e5e7eb}body.dark-mode .mcrI{background:#2a302b;color:#e5e7eb;border-color:#3b443d}body.dark-mode .mcrF{color:#9ca3af}body.dark-mode #mcrPanelBody{color:#e5e7eb}body.dark-mode #mcrPanelFoot{border-color:#343b35}body.dark-mode #mcrPanelFoot button{background:#2a302b;color:#e5e7eb}body.dark-mode #mcrPanelFoot button.ok{background:#1f7a44;color:#fff}body.dark-mode .mcrTabla th{background:#2a302b}body.dark-mode .mcrTabla td{border-color:#343b35}';
+  document.head.appendChild(st);
+  var ov = document.createElement('div');
+  ov.id = 'mcrPanelOv';
+  ov.innerHTML = '<div id="mcrPanel"><div id="mcrPanelHead"><h3 id="mcrPanelTitulo"></h3><button id="mcrPanelX">✕</button></div><div id="mcrPanelBody"></div><div id="mcrPanelFoot"></div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('show'); });
+  document.getElementById('mcrPanelX').addEventListener('click', function () { ov.classList.remove('show'); });
+})();
+// Abre un panel con título, HTML y botones [{texto, ok, accion}]. Si accion devuelve false el panel no se cierra.
+function abrirPanel(titulo, html, botones) {
+  document.getElementById('mcrPanelTitulo').textContent = titulo;
+  document.getElementById('mcrPanelBody').innerHTML = html;
+  var foot = document.getElementById('mcrPanelFoot'); foot.innerHTML = '';
+  (botones || [{ texto: 'Cerrar' }]).forEach(function (b) {
+    var el = document.createElement('button'); el.textContent = b.texto; if (b.ok) el.className = 'ok';
+    el.addEventListener('click', function () { var r = b.accion ? b.accion() : undefined; if (r !== false) document.getElementById('mcrPanelOv').classList.remove('show'); });
+    foot.appendChild(el);
+  });
+  document.getElementById('mcrPanelOv').classList.add('show');
+  document.getElementById('mcrPanelBody').scrollTop = 0;
+}
+function cerrarPanel() { document.getElementById('mcrPanelOv').classList.remove('show'); }
+
+var CUENTAS_AUTO = {
+  caja: ['1.1.01', 'Caja', 'Activo'], bancos: ['1.1.02', 'Bancos', 'Activo'], clientes: ['1.1.03', 'Clientes (Cuentas por cobrar)', 'Activo'],
+  ivaCredito: ['1.1.04', 'IVA Crédito (soportado)', 'Activo'], proveedores: ['2.1.01', 'Proveedores (Cuentas por pagar)', 'Pasivo'],
+  ivaPagar: ['2.1.02', 'IVA por pagar (cobrado)', 'Pasivo'], ivaDiferido: ['2.1.05', 'IVA diferido (Art. 27)', 'Pasivo'], ventas: ['4.1.01', 'Ventas', 'Ingreso']
+};
+function r2c(x) { return Math.round((Number(x) || 0) * 100) / 100; }
+// Se asegura de que existan las hojas Catalogo y Diario; si no, ofrece crearlas.
+function asegurarSistemaContable() {
+  if (sheets.indexOf('Catalogo') !== -1 && sheets.indexOf('Diario') !== -1) return true;
+  if (!confirm('Para llevar los asientos hacen falta las hojas Catalogo, Diario, Mayor y Balanza. ¿Las creo ahora?')) return false;
+  crearSistemaContable();
+  return true;
+}
+// Devuelve el código de cuenta; si el código no está en el Catálogo, lo agrega en la primera fila libre.
+function asegurarCuentaEnCatalogo(def) {
+  var cat = sheetData.Catalogo || (sheetData.Catalogo = {});
+  for (var r = 2; r < 60; r++) {
+    var a = String(cat[cellId(r, 0)] || '').trim();
+    if (a === def[0]) return def[0];
+    if (!a) { cat[cellId(r, 0)] = def[0]; cat[cellId(r, 1)] = def[1]; cat[cellId(r, 2)] = def[2]; return def[0]; }
+  }
+  return def[0];
+}
+function primeraFilaLibreDiario() {
+  var d = sheetData.Diario || {};
+  for (var r = 3; r < ROWS + 600; r++) {
+    if (d[cellId(r, 9)] === undefined) return -1; // se acabaron las filas preparadas
+    if (!String(d[cellId(r, 2)] || '').trim() && !String(d[cellId(r, 1)] || '').trim() && !String(d[cellId(r, 5)] || '').trim() && !String(d[cellId(r, 6)] || '').trim()) return r;
+  }
+  return -1;
+}
+function siguienteNumeroAsiento() {
+  var d = sheetData.Diario || {}, max = 0;
+  for (var r = 3; r < ROWS + 600; r++) { if (d[cellId(r, 9)] === undefined) break; var n = parseInt(d[cellId(r, 1)], 10); if (!isNaN(n) && n > max) max = n; }
+  return max + 1;
+}
+function origenesEnDiario() {
+  var d = sheetData.Diario || {}, set = {};
+  for (var r = 3; r < ROWS + 600; r++) { if (d[cellId(r, 9)] === undefined) break; var o = d[cellId(r, 10)]; if (o) set[o] = true; }
+  return set;
+}
+// Escribe un asiento (varias líneas) en el Diario. lineas: [{codigo, debe, haber}]. Devuelve false si no hay espacio.
+function escribirAsientoEnDiario(fecha, descripcion, lineas, origen) {
+  var fmes = fechaDe(String(fecha)); if (!isNaN(fmes.getTime()) && mesesCerrados()[claveMes(fmes)]) { escribirAsientoEnDiario.cerrado = (escribirAsientoEnDiario.cerrado || 0) + 1; return false; }
+  var libres = [], d = sheetData.Diario;
+  var filaTemp = primeraFilaLibreDiario();
+  if (filaTemp < 0) return false;
+  var r0 = filaTemp, cuantas = lineas.length;
+  for (var k = 0; k < cuantas; k++) {
+    var rr = r0 + k;
+    if (d[cellId(rr, 9)] === undefined) return false;
+    if (String(d[cellId(rr, 2)] || '').trim() || String(d[cellId(rr, 5)] || '').trim() || String(d[cellId(rr, 6)] || '').trim()) return false;
+  }
+  var num = String(siguienteNumeroAsiento());
+  lineas.forEach(function (l, k) {
+    var rr = r0 + k;
+    d[cellId(rr, 0)] = fecha; d[cellId(rr, 1)] = num; d[cellId(rr, 2)] = l.codigo; d[cellId(rr, 4)] = descripcion;
+    if (l.debe) d[cellId(rr, 5)] = String(r2c(l.debe)); else delete d[cellId(rr, 5)];
+    if (l.haber) d[cellId(rr, 6)] = String(r2c(l.haber)); else delete d[cellId(rr, 6)];
+    if (origen) d[cellId(rr, 10)] = origen;
+  });
+  return true;
+}
+function desgloseDeRegistro(h) {
+  var base = 0, iva = 0;
+  (h.lineas || []).forEach(function (l) {
+    var b = (Number(l.cantidad) || 1) * (Number(l.precioUnitario) || 0), t = l.impuesto && l.impuesto.length ? Number(l.impuesto[0].tarifa) || 0 : 0;
+    base += b; iva += b * t / 100;
+  });
+  var total = Number(h.total) || (base + iva), bruto = base + iva;
+  if (!bruto) return { base: total, iva: 0, total: total };
+  var f = total / bruto;
+  var ivaR = r2c(iva * f);
+  return { base: r2c(total - ivaR), iva: ivaR, total: r2c(total) };
+}
+function cuentaDeCobro(h) {
+  var m = (h.medioPago && h.medioPago[0]) || '01';
+  return m === '01' ? CUENTAS_AUTO.caja : CUENTAS_AUTO.bancos;
+}
+// Líneas contables de un comprobante del historial. Devuelve null si ese comprobante no genera asiento.
+function lineasAsientoDeRegistro(h, porClave) {
+  var dg = desgloseDeRegistro(h), L = [], tipo = h.tipoDocumento || (h.esTiquete ? 'tiquete' : 'factura');
+  function add(def, debe, haber) { if (debe || haber) L.push({ def: def, debe: r2c(debe), haber: r2c(haber) }); }
+  var original = h.claveReferenciada ? porClave[h.claveReferenciada] : null;
+  var origDiferido = original && original.condicionVenta === '10';
+  if (tipo === 'factura' || tipo === 'tiquete' || tipo === 'notaDebito') {
+    var cond = h.condicionVenta || '01', credito = cond === '02' || cond === '10';
+    add(credito ? CUENTAS_AUTO.clientes : cuentaDeCobro(h), dg.total, 0);
+    add(CUENTAS_AUTO.ventas, 0, dg.base);
+    add(cond === '10' ? CUENTAS_AUTO.ivaDiferido : CUENTAS_AUTO.ivaPagar, 0, dg.iva);
+  } else if (tipo === 'notaCredito') {
+    var credOrig = original ? (original.condicionVenta === '02' || original.condicionVenta === '10') : (h.condicionVenta === '02' || h.condicionVenta === '10');
+    add(CUENTAS_AUTO.ventas, dg.base, 0);
+    add(origDiferido ? CUENTAS_AUTO.ivaDiferido : CUENTAS_AUTO.ivaPagar, dg.iva, 0);
+    add(credOrig ? CUENTAS_AUTO.clientes : cuentaDeCobro(h), 0, dg.total);
+  } else if (tipo === 'reciboPago') {
+    add(cuentaDeCobro(h), dg.total, 0);
+    add(CUENTAS_AUTO.clientes, 0, dg.total);
+    if (origDiferido && dg.iva) { add(CUENTAS_AUTO.ivaDiferido, dg.iva, 0); add(CUENTAS_AUTO.ivaPagar, 0, dg.iva); }
+  } else return null;
+  return L.length ? L : null;
+}
+function etiquetaRegistro(h) {
+  var t = { notaCredito: 'Nota de crédito', notaDebito: 'Nota de débito', reciboPago: 'Recibo de pago' }[h.tipoDocumento] || (h.esTiquete ? 'Tiquete' : 'Factura');
+  var corto = String(h.numeroConsecutivo || '').slice(-10).replace(/^0+/, '') || '?';
+  return t + ' ' + corto + (h.receptorNombre ? ' — ' + h.receptorNombre : '');
+}
+// Genera asientos a partir de los comprobantes aceptados. opciones.incluirPruebas: también los del ambiente sandbox.
+function generarAsientosDeHistorial(registros, opciones) {
+  opciones = opciones || {};
+  var origenes = origenesEnDiario(), porClave = {}, res = { nuevos: 0, yaEstaban: 0, pruebas: 0, pendientes: 0, sinEspacio: 0, otros: 0 };
+  registros.forEach(function (h) { porClave[h.clave] = h; });
+  var ordenados = registros.slice().sort(function (a, b) { return String(a.fecha).localeCompare(String(b.fecha)); });
+  ordenados.forEach(function (h) {
+    if (h.tipoDocumento === 'mensajeReceptor') { res.otros++; return; }
+    if (h.estado !== 'aceptado') { res.pendientes++; return; }
+    if (h.ambiente === 'sandbox' && !opciones.incluirPruebas) { res.pruebas++; return; }
+    if (origenes[h.clave]) { res.yaEstaban++; return; }
+    var lineas = lineasAsientoDeRegistro(h, porClave);
+    if (!lineas) { res.otros++; return; }
+    var cuentas = lineas.map(function (l) { return { codigo: asegurarCuentaEnCatalogo(l.def), debe: l.debe, haber: l.haber }; });
+    var fecha = h.fecha ? new Date(h.fecha).toLocaleDateString('es-CR') : new Date().toLocaleDateString('es-CR');
+    var antesCerrado = escribirAsientoEnDiario.cerrado || 0;
+    if (escribirAsientoEnDiario(fecha, etiquetaRegistro(h), cuentas, h.clave)) { res.nuevos++; origenes[h.clave] = true; } else if ((escribirAsientoEnDiario.cerrado || 0) > antesCerrado) res.mesCerrado = (res.mesCerrado || 0) + 1; else res.sinEspacio++;
+  });
+  return res;
+}
+async function accionAsientosDeFacturas() {
+  if (!asegurarSistemaContable()) return;
+  if (!currentUser) { alert('Iniciá sesión para leer tus comprobantes de Hacienda.'); return; }
+  document.getElementById('saveStatus').textContent = 'Leyendo comprobantes…';
+  try { await cargarHistorialHacienda(); } catch (e) {}
+  var regs = historialHaciendaCache || [];
+  if (!regs.length) { alert('No hay comprobantes en tu historial de Hacienda todavía.'); document.getElementById('saveStatus').textContent = 'Listo'; return; }
+  var hayPruebas = regs.some(function (h) { return h.ambiente === 'sandbox' && h.estado === 'aceptado'; });
+  var incluir = hayPruebas ? confirm('Hay comprobantes del ambiente de PRUEBAS (sandbox).\n\nAceptar = incluirlos también.\nCancelar = solo los de producción (recomendado para tus libros reales).') : false;
+  var actual = activeSheet;
+  snapshot();
+  var r = generarAsientosDeHistorial(regs, { incluirPruebas: incluir });
+  activeSheet = 'Diario'; buildTable(); renderTabs(); autoSave();
+  var partes = [r.nuevos + ' asiento(s) nuevo(s)'];
+  if (r.yaEstaban) partes.push(r.yaEstaban + ' ya estaban');
+  if (r.pruebas) partes.push(r.pruebas + ' de pruebas omitido(s)');
+  if (r.pendientes) partes.push(r.pendientes + ' sin aceptar omitido(s)');
+  if (r.sinEspacio) partes.push('⚠ ' + r.sinEspacio + ' sin espacio en el Diario');
+  if (r.mesCerrado) partes.push('🔒 ' + r.mesCerrado + ' de un mes cerrado (no se tocaron)');
+  document.getElementById('saveStatus').textContent = '✓ ' + partes.join(' · ');
+  abrirPanel('🧮 Asientos de tus facturas', '<div class="mcrNota" style="font-size:13px;color:#1f2937;">' + partes.map(escHtml).join('<br>') + '</div><div class="mcrNota">Cada asiento queda marcado en la columna K del Diario con la clave del comprobante, así que volver a ejecutar esto nunca duplica nada. Facturas, tiquetes y notas de débito suman a Ventas; las notas de crédito las revierten; los recibos de pago cobran la cuenta por cobrar.</div>', [{ texto: 'Entendido', ok: true }]);
+}
+document.getElementById('btnAsientosFacturas').addEventListener('click', accionAsientosDeFacturas);
+
+// ── Registrar una compra (factura recibida) como asiento ──
+function abrirPanelCompra() {
+  if (!asegurarSistemaContable()) return;
+  var cat = sheetData.Catalogo || {}, opcionesGasto = '';
+  for (var r = 2; r < 60; r++) { var cod = String(cat[cellId(r, 0)] || '').trim(); if (cod && /^5/.test(cod)) opcionesGasto += '<option value="' + escHtml(cod) + '">' + escHtml(cod + ' — ' + (cat[cellId(r, 1)] || '')) + '</option>'; }
+  if (!opcionesGasto) opcionesGasto = '<option value="5.2.03">5.2.03 — Servicios públicos</option>';
+  var hoyISO = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  abrirPanel('🛒 Registrar compra / gasto',
+    '<label class="mcrF">Fecha</label><input id="cpFecha" class="mcrI" type="date" value="' + hoyISO + '">' +
+    '<label class="mcrF">Proveedor y detalle</label><input id="cpDetalle" class="mcrI" placeholder="Ej: Ferretería López — materiales">' +
+    '<div class="mcrFila"><div><label class="mcrF">Monto sin IVA (₡)</label><input id="cpBase" class="mcrI" type="number" inputmode="decimal" step="any"></div>' +
+    '<div><label class="mcrF">Tarifa IVA</label><select id="cpTarifa" class="mcrI"><option value="13">13%</option><option value="4">4%</option><option value="2">2%</option><option value="1">1%</option><option value="0">Exento / 0%</option></select></div></div>' +
+    '<label class="mcrF">Cuenta de gasto o compra</label><select id="cpCuenta" class="mcrI">' + opcionesGasto + '</select>' +
+    '<label class="mcrF">Forma de pago</label><select id="cpPago" class="mcrI"><option value="caja">Contado — Caja</option><option value="bancos">Contado — Bancos / transferencia / tarjeta</option><option value="prov">A crédito — Proveedores</option></select>' +
+    '<div class="mcrNota">Genera: Debe gasto + IVA crédito · Haber caja, bancos o proveedores. El IVA crédito (1.1.04) alimenta tu D-104.</div>',
+    [{ texto: 'Cancelar' }, { texto: 'Guardar asiento', ok: true, accion: function () {
+      var base = parseFloat(document.getElementById('cpBase').value), tarifa = parseFloat(document.getElementById('cpTarifa').value) || 0;
+      if (!(base > 0)) { alert('Escribí el monto sin IVA.'); return false; }
+      var iva = r2c(base * tarifa / 100), total = r2c(base + iva), pago = document.getElementById('cpPago').value;
+      var f = document.getElementById('cpFecha').value, partes = f.split('-'), fecha = f ? new Date(+partes[0], +partes[1] - 1, +partes[2]).toLocaleDateString('es-CR') : new Date().toLocaleDateString('es-CR');
+      var gasto = document.getElementById('cpCuenta').value, desc = 'Compra — ' + (document.getElementById('cpDetalle').value.trim() || 'sin detalle');
+      var lineas = [{ codigo: gasto, debe: base, haber: 0 }];
+      if (iva) lineas.push({ codigo: asegurarCuentaEnCatalogo(CUENTAS_AUTO.ivaCredito), debe: iva, haber: 0 });
+      lineas.push({ codigo: asegurarCuentaEnCatalogo(pago === 'caja' ? CUENTAS_AUTO.caja : pago === 'bancos' ? CUENTAS_AUTO.bancos : CUENTAS_AUTO.proveedores), debe: 0, haber: total });
+      snapshot();
+      var antesC = escribirAsientoEnDiario.cerrado || 0;
+      if (!escribirAsientoEnDiario(fecha, desc, lineas, 'compra-manual')) { alert((escribirAsientoEnDiario.cerrado || 0) > antesC ? 'Esa fecha pertenece a un mes ya cerrado. Reabrilo desde "Cierre mensual" si necesitás agregar este asiento.' : 'El Diario no tiene espacio libre para este asiento.'); return false; }
+      activeSheet = 'Diario'; buildTable(); renderTabs(); autoSave();
+      document.getElementById('saveStatus').textContent = '✓ Compra registrada en el Diario';
+    } }]);
+}
+document.getElementById('btnRegistrarCompra').addEventListener('click', abrirPanelCompra);
+
+// Columnas auxiliares (H: tipo de cuenta, I: n.º dentro del tipo, J: fila) que usan los estados financieros.
+function prepararAuxiliaresBalanza(nombreBal, filasCat) {
+  var d = sheetData[nombreBal], f = sheetFormats[nombreBal];
+  if (!d) return;
+  d[cellId(2, 7)] = 'Tipo (auto)'; d[cellId(2, 8)] = 'N° en tipo'; d[cellId(2, 9)] = 'Fila';
+  for (var q = 0; q < filasCat; q++) {
+    var rb = 3 + q, nb = rb + 1, nc = 3 + q;
+    d[cellId(rb, 7)] = '=SI(Catalogo!C' + nc + '="";"";Catalogo!C' + nc + ')';
+    d[cellId(rb, 8)] = '=SI(H' + nb + '="";"";CONTAR.SI($H$4:H' + nb + ';H' + nb + '))';
+    d[cellId(rb, 9)] = String(q + 1);
+  }
+  for (var c = 7; c <= 9; c++) for (var r = 2; r < 3 + filasCat; r++) f[cellId(r, c)] = Object.assign({}, f[cellId(r, c)], { fontColor: '#9ca3af' });
+  if (COLS < 10) COLS = 10;
+}
+// Estado de resultados + Balance general en vivo, armados con la Balanza y el tipo de cuenta del Catálogo.
+function crearEstadosFinancieros(silencioso) {
+  if (sheets.indexOf('Balanza') === -1 || sheets.indexOf('Catalogo') === -1) { alert('Primero hay que crear los Libros Contables Conectados (Plantillas).'); return; }
+  var FILAS_CAT = 58, B1 = 4, B2 = 3 + FILAS_CAT;
+  var bal = sheetData.Balanza;
+  if (!bal[cellId(3, 7)]) prepararAuxiliaresBalanza('Balanza', FILAS_CAT);
+  function rango(col) { return 'Balanza!$' + col + '$' + B1 + ':$' + col + '$' + B2; }
+  var DINERO = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+  var previa = activeSheet, nombres = {};
+  ['EstadoResultados', 'BalanceGeneral'].forEach(function (n) { nombres[n] = sheets.indexOf(n) !== -1 ? n : crearHojaDestino(n); });
+  function preparar(nombre) { activeSheet = nombre; sheetData[nombre] = {}; sheetFormats[nombre] = {}; sheetMerges[nombre] = []; return { d: sheetData[nombre], f: sheetFormats[nombre], m: sheetMerges[nombre], r: 0 }; }
+  function celdaSt(X, r, c, o) { X.f[cellId(r, c)] = Object.assign({}, X.f[cellId(r, c)], o); }
+  function titulo(X, texto, color, span) { X.d[cellId(0, 0)] = texto; for (var c = 0; c < span; c++) celdaSt(X, 0, c, { bold: true, bgColor: color, fontColor: '#ffffff', fontSize: 14 }); X.m.push({ r1: 0, c1: 0, r2: 0, c2: span - 1 }); X.r = 2; }
+  function seccion(X, texto, color, span) { X.d[cellId(X.r, 0)] = texto; for (var c = 0; c < span; c++) celdaSt(X, X.r, c, { bold: true, bgColor: color, fontColor: '#ffffff' }); X.r++; }
+  // Bloque de cuentas de un tipo: devuelve { primera, ultima, totalFila } (filas de la hoja, 1-based)
+  function bloque(X, tipo, slots, natural, signo, colMonto) {
+    var primera = X.r + 1;
+    for (var k = 1; k <= slots; k++) {
+      var n = X.r + 1, idx = 'SUMAR.SI.CONJUNTO(' + rango('J') + ';' + rango('H') + ';"' + tipo + '";' + rango('I') + ';' + k + ')';
+      X.d[cellId(X.r, 0)] = '=SI(' + idx + '=0;"";INDICE(' + rango('B') + ';' + idx + '))';
+      var deu = 'INDICE(' + rango('E') + ';' + idx + ')', acr = 'INDICE(' + rango('F') + ';' + idx + ')';
+      X.d[cellId(X.r, 1)] = '=SI(' + idx + '=0;"";' + (natural === 'acreedor' ? acr + '-' + deu : deu + '-' + acr) + ')';
+      celdaSt(X, X.r, 1, DINERO); X.r++;
+    }
+    var ultima = X.r;
+    var totDirecto = natural === 'acreedor' ? 'SUMAR.SI(' + rango('H') + ';"' + tipo + '";' + rango('F') + ')-SUMAR.SI(' + rango('H') + ';"' + tipo + '";' + rango('E') + ')' : 'SUMAR.SI(' + rango('H') + ';"' + tipo + '";' + rango('E') + ')-SUMAR.SI(' + rango('H') + ';"' + tipo + '";' + rango('F') + ')';
+    // "Otras cuentas": lo que existe en el tipo pero no cabe en las filas de arriba
+    X.d[cellId(X.r, 0)] = '=SI(ABS(' + totDirecto + '-SUMA(B' + primera + ':B' + ultima + '))<0.005;"";"Otras cuentas (no caben arriba)")';
+    X.d[cellId(X.r, 1)] = '=SI(ABS(' + totDirecto + '-SUMA(B' + primera + ':B' + ultima + '))<0.005;"";' + totDirecto + '-SUMA(B' + primera + ':B' + ultima + '))';
+    celdaSt(X, X.r, 1, DINERO); X.r++;
+    return { primera: primera, ultima: X.r, directo: totDirecto };
+  }
+  function total(X, texto, formula, color) { X.d[cellId(X.r, 0)] = texto; X.d[cellId(X.r, 1)] = formula; for (var c = 0; c < 3; c++) celdaSt(X, X.r, c, { bold: true, bgColor: color, border: true }); celdaSt(X, X.r, 1, DINERO); X.r++; return X.r; }
+  // ── Estado de resultados ──
+  var E = preparar(nombres.EstadoResultados);
+  titulo(E, '📈 ESTADO DE RESULTADOS — se arma solo con el Diario', '#0f766e', 3);
+  E.d[cellId(1, 0)] = 'Incluye todo lo registrado en el Diario. Las cuentas se clasifican por el Tipo del Catálogo (Ingreso, Costo, Gasto).'; celdaSt(E, 1, 0, { fontColor: '#6b7280', fontSize: 11 });
+  seccion(E, 'INGRESOS', '#15803d', 3);
+  var bi = bloque(E, 'Ingreso', 6, 'acreedor');
+  var filaIng = total(E, 'Total ingresos', '=SUMA(B' + bi.primera + ':B' + bi.ultima + ')', '#bbf7d0');
+  seccion(E, 'COSTO DE VENTAS', '#b45309', 3);
+  var bc = bloque(E, 'Costo', 4, 'deudor');
+  var filaCosto = total(E, 'Total costo de ventas', '=SUMA(B' + bc.primera + ':B' + bc.ultima + ')', '#fde68a');
+  var filaBruta = total(E, 'UTILIDAD BRUTA', '=B' + filaIng + '-B' + filaCosto, '#d1fae5');
+  seccion(E, 'GASTOS', '#b91c1c', 3);
+  var bg = bloque(E, 'Gasto', 14, 'deudor');
+  var filaGastos = total(E, 'Total gastos', '=SUMA(B' + bg.primera + ':B' + bg.ultima + ')', '#fecaca');
+  var filaNeta = total(E, 'UTILIDAD (PÉRDIDA) NETA', '=B' + filaBruta + '-B' + filaGastos, '#a7f3d0');
+  for (var rr = 2; rr < E.r; rr++) { var nn = rr + 1; if (E.d[cellId(rr, 1)] !== undefined) { E.d[cellId(rr, 2)] = '=SI(OR($B$' + filaIng + '=0;B' + nn + '="");"";B' + nn + '/$B$' + filaIng + ')'; celdaSt(E, rr, 2, { numFormat: { type: 'percent', decimals: 1 } }); } }
+  E.d[cellId(2, 1)] = 'Monto (₡)'; E.d[cellId(2, 2)] = '% de ingresos';
+  colWidths[nombres.EstadoResultados] = { 0: 260, 1: 120, 2: 100 };
+  // ── Balance general ──
+  var G = preparar(nombres.BalanceGeneral);
+  titulo(G, '🏛 BALANCE GENERAL — se arma solo con el Diario', '#1e3a8a', 3);
+  G.d[cellId(1, 0)] = 'Activo = Pasivo + Patrimonio. La utilidad del período viene del Estado de Resultados.'; celdaSt(G, 1, 0, { fontColor: '#6b7280', fontSize: 11 });
+  seccion(G, 'ACTIVOS', '#1d4ed8', 3);
+  var ba = bloque(G, 'Activo', 12, 'deudor');
+  var filaAct = total(G, 'TOTAL ACTIVOS', '=SUMA(B' + ba.primera + ':B' + ba.ultima + ')', '#bfdbfe');
+  seccion(G, 'PASIVOS', '#b91c1c', 3);
+  var bp = bloque(G, 'Pasivo', 10, 'acreedor');
+  var filaPas = total(G, 'Total pasivos', '=SUMA(B' + bp.primera + ':B' + bp.ultima + ')', '#fecaca');
+  seccion(G, 'PATRIMONIO', '#7c3aed', 3);
+  var bt = bloque(G, 'Patrimonio', 5, 'acreedor');
+  G.d[cellId(G.r, 0)] = 'Utilidad (pérdida) del período'; G.d[cellId(G.r, 1)] = '=EstadoResultados!B' + filaNeta; celdaSt(G, G.r, 1, DINERO); var filaUt = G.r + 1; G.r++;
+  var filaPat = total(G, 'Total patrimonio', '=SUMA(B' + bt.primera + ':B' + bt.ultima + ')+B' + filaUt, '#ddd6fe');
+  var filaPP = total(G, 'TOTAL PASIVO + PATRIMONIO', '=B' + filaPas + '+B' + filaPat, '#e9d5ff');
+  G.d[cellId(G.r, 0)] = '=SI(ABS(B' + filaAct + '-B' + filaPP + ')<0.005;"✓ El balance cuadra";"⚠ No cuadra — diferencia: "&TEXTO(ABS(B' + filaAct + '-B' + filaPP + ');"#,##0.00"))'; celdaSt(G, G.r, 0, { bold: true }); G.r++;
+  G.d[cellId(2, 1)] = 'Monto (₡)';
+  colWidths[nombres.BalanceGeneral] = { 0: 260, 1: 120, 2: 30 };
+  if (ROWS < 70) ROWS = 70;
+  activeSheet = silencioso ? previa : nombres.EstadoResultados;
+  if (!silencioso) { buildTable(); renderTabs(); autoSave(); document.getElementById('saveStatus').textContent = '✓ Estados financieros actualizados'; }
+}
+document.getElementById('btnEstadosFinancieros').addEventListener('click', function () { snapshot(); crearEstadosFinancieros(false); });
+
+// ══════════════════════════════════════════════
+// CUENTAS POR COBRAR CON ANTIGÜEDAD (30 / 60 / 90 días)
+// ══════════════════════════════════════════════
+var TRAMOS_CXC = ['Al día', '1-30 días', '31-60 días', '61-90 días', 'Más de 90 días'];
+function tramoDeDias(dias) { return dias <= 0 ? TRAMOS_CXC[0] : dias <= 30 ? TRAMOS_CXC[1] : dias <= 60 ? TRAMOS_CXC[2] : dias <= 90 ? TRAMOS_CXC[3] : TRAMOS_CXC[4]; }
+// Facturas a crédito aceptadas con saldo pendiente = total − recibos de pago − notas de crédito.
+function calcularCuentasPorCobrar(registros, hoy, incluirPruebas) {
+  var pagado = {}, acreditado = {}, filas = [];
+  registros.forEach(function (h) {
+    if (h.estado !== 'aceptado' || !h.claveReferenciada) return;
+    if (h.tipoDocumento === 'reciboPago') pagado[h.claveReferenciada] = (pagado[h.claveReferenciada] || 0) + (Number(h.total) || 0);
+    if (h.tipoDocumento === 'notaCredito') acreditado[h.claveReferenciada] = (acreditado[h.claveReferenciada] || 0) + (Number(h.total) || 0);
+  });
+  registros.forEach(function (h) {
+    if (h.tipoDocumento || h.estado !== 'aceptado') return;
+    if (h.condicionVenta !== '02' && h.condicionVenta !== '10') return;
+    if (h.ambiente === 'sandbox' && !incluirPruebas) return;
+    var total = Number(h.total) || 0, cobrado = (pagado[h.clave] || 0) + (acreditado[h.clave] || 0), saldo = r2c(total - cobrado);
+    if (saldo <= 0.005) return;
+    var emision = new Date(h.fecha), plazo = parseInt(h.plazoCredito, 10) || 30, vence = new Date(emision.getTime() + plazo * 86400000);
+    var dias = Math.floor((hoy.getTime() - vence.getTime()) / 86400000);
+    filas.push({ cliente: h.receptorNombre || '(sin nombre)', cedula: h.receptorCedula || '', factura: String(h.numeroConsecutivo || '').slice(-10).replace(/^0+/, '') || '?',
+      emision: emision, vence: vence, total: r2c(total), cobrado: r2c(cobrado), saldo: saldo, dias: dias, tramo: tramoDeDias(dias), diferido: h.condicionVenta === '10' });
+  });
+  filas.sort(function (a, b) { return b.dias - a.dias; });
+  return filas;
+}
+function volcarCuentasPorCobrar(filas, hoy) {
+  var nombre = sheets.indexOf('CuentasPorCobrar') !== -1 ? 'CuentasPorCobrar' : crearHojaDestino('CuentasPorCobrar');
+  activeSheet = nombre; sheetData[nombre] = {}; sheetFormats[nombre] = {}; sheetMerges[nombre] = [];
+  var d = sheetData[nombre], f = sheetFormats[nombre], m = sheetMerges[nombre];
+  var DIN = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+  function st(r, c, o) { f[cellId(r, c)] = Object.assign({}, f[cellId(r, c)], o); }
+  d.A1 = '⏳ CUENTAS POR COBRAR — antigüedad de saldos al ' + hoy.toLocaleDateString('es-CR');
+  for (var c = 0; c < 10; c++) st(0, c, { bold: true, bgColor: '#b45309', fontColor: '#ffffff', fontSize: 14 });
+  m.push({ r1: 0, c1: 0, r2: 0, c2: 9 });
+  var FILA0 = 11, ult = FILA0 + 1 + Math.max(filas.length, 1); // FILA0 = encabezado (0-based); datos desde la fila FILA0+2 de la hoja
+  d.A3 = 'Resumen por antigüedad'; st(2, 0, { bold: true });
+  ['Tramo', 'Saldo (₡)', 'Facturas'].forEach(function (t, i) { d[cellId(3, i)] = t; st(3, i, { bold: true, bgColor: '#fde68a', border: true }); });
+  TRAMOS_CXC.forEach(function (t, i) {
+    var r = 4 + i;
+    d[cellId(r, 0)] = t; d[cellId(r, 1)] = '=SUMAR.SI($J$' + (FILA0 + 2) + ':$J$' + ult + ';A' + (r + 1) + ';$H$' + (FILA0 + 2) + ':$H$' + ult + ')'; d[cellId(r, 2)] = '=CONTAR.SI($J$' + (FILA0 + 2) + ':$J$' + ult + ';A' + (r + 1) + ')';
+    for (var cc = 0; cc < 3; cc++) st(r, cc, { border: true }); st(r, 1, DIN);
+    if (i >= 3) st(r, 0, { fontColor: '#b91c1c', bold: true });
+  });
+  d.A10 = 'TOTAL POR COBRAR'; d.B10 = '=SUMA(B5:B9)'; d.C10 = '=SUMA(C5:C9)'; for (var c2 = 0; c2 < 3; c2++) st(9, c2, { bold: true, bgColor: '#fef3c7', border: true }); st(9, 1, DIN);
+  ['Cliente', 'Cédula', 'Factura', 'Emisión', 'Vence', 'Total (₡)', 'Cobrado/acreditado (₡)', 'Saldo (₡)', 'Días de atraso', 'Tramo'].forEach(function (t, i) { d[cellId(FILA0, i)] = t; st(FILA0, i, { bold: true, bgColor: '#fef3c7', border: true }); });
+  // Las columnas se reordenan para que el Tramo (J) y el Saldo (H) sean las que usa el resumen
+  filas.forEach(function (x, i) {
+    var r = FILA0 + 1 + i;
+    d[cellId(r, 0)] = x.cliente + (x.diferido ? ' (IVA diferido)' : ''); d[cellId(r, 1)] = x.cedula; d[cellId(r, 2)] = x.factura; d[cellId(r, 3)] = x.emision.toLocaleDateString('es-CR'); d[cellId(r, 4)] = x.vence.toLocaleDateString('es-CR');
+    d[cellId(r, 5)] = String(x.total); d[cellId(r, 6)] = String(x.cobrado); d[cellId(r, 7)] = String(x.saldo); d[cellId(r, 8)] = String(Math.max(0, x.dias)); d[cellId(r, 9)] = x.tramo;
+    for (var cc = 0; cc < 10; cc++) st(r, cc, { border: true }); st(r, 5, DIN); st(r, 6, DIN); st(r, 7, DIN);
+    if (x.dias > 60) st(r, 9, { fontColor: '#b91c1c', bold: true });
+  });
+  if (!filas.length) d[cellId(FILA0 + 1, 0)] = 'No hay facturas a crédito con saldo pendiente. 🎉';
+  colWidths[nombre] = { 0: 190, 1: 100, 2: 70, 3: 85, 4: 85, 5: 100, 6: 120, 7: 100, 8: 80, 9: 110 };
+  if (ROWS < ult + 5) ROWS = ult + 5; if (COLS < 10) COLS = 10;
+  return nombre;
+}
+async function accionCuentasPorCobrar() {
+  if (!currentUser) { alert('Iniciá sesión para leer tus facturas de Hacienda.'); return; }
+  document.getElementById('saveStatus').textContent = 'Leyendo comprobantes…';
+  try { await cargarHistorialHacienda(); } catch (e) {}
+  var regs = historialHaciendaCache || [];
+  if (!regs.length) { alert('No hay comprobantes en tu historial de Hacienda todavía.'); document.getElementById('saveStatus').textContent = 'Listo'; return; }
+  var hayPruebas = regs.some(function (h) { return h.ambiente === 'sandbox' && h.estado === 'aceptado'; });
+  var incluir = hayPruebas ? confirm('Hay facturas del ambiente de PRUEBAS (sandbox).\n\nAceptar = incluirlas.\nCancelar = solo producción.') : false;
+  var hoy = new Date(), filas = calcularCuentasPorCobrar(regs, hoy, incluir);
+  snapshot(); volcarCuentasPorCobrar(filas, hoy); buildTable(); renderTabs(); autoSave();
+  var total = filas.reduce(function (a, x) { return a + x.saldo; }, 0);
+  document.getElementById('saveStatus').textContent = '✓ ' + filas.length + ' factura(s) por cobrar · ₡' + fmtNum(total);
+}
+document.getElementById('btnCuentasCobrar').addEventListener('click', accionCuentasPorCobrar);
+
+// ══════════════════════════════════════════════
+// CIERRE MENSUAL GUIADO
+// ══════════════════════════════════════════════
+// Los meses cerrados viven en la hoja Catalogo, columna E (formato AAAA-MM), a la vista del usuario.
+function mesesCerrados() {
+  var cat = sheetData.Catalogo || {}, out = {};
+  for (var r = 2; r < 80; r++) { var v = String(cat[cellId(r, 4)] || '').trim(); if (/^\d{4}-\d{2}$/.test(v)) out[v] = true; }
+  return out;
+}
+function claveMes(fecha) { return fecha && !isNaN(fecha.getTime()) ? fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0') : null; }
+function fechaFilaDiario(r) { var v = (sheetData.Diario || {})[cellId(r, 0)]; if (!v) return null; var f = fechaDe(String(v)); return isNaN(f.getTime()) ? null : f; }
+function edicionEnMesCerrado(id, nuevoValor) {
+  var cerrados = mesesCerrados(); if (!Object.keys(cerrados).length) return false;
+  var m = /^([A-Z]+)(\d+)$/.exec(id); if (!m) return false;
+  var r = parseInt(m[2], 10) - 1; if (r < 3) return false;
+  var mesFila = claveMes(fechaFilaDiario(r));
+  if (mesFila && cerrados[mesFila]) return true;
+  if (m[1] === 'A' && nuevoValor) { var f = fechaDe(nuevoValor); if (!isNaN(f.getTime()) && cerrados[claveMes(f)]) return true; }
+  return false;
+}
+function cerrarMes(clave, cerrar) {
+  var cat = sheetData.Catalogo; if (!cat) return;
+  cat[cellId(1, 4)] = 'Meses cerrados (AAAA-MM)';
+  var hallado = -1, libre = -1;
+  for (var r = 2; r < 80; r++) { var v = String(cat[cellId(r, 4)] || '').trim(); if (v === clave) hallado = r; if (!v && libre < 0) libre = r; }
+  if (cerrar && hallado < 0 && libre >= 0) cat[cellId(libre, 4)] = clave;
+  if (!cerrar && hallado >= 0) delete cat[cellId(hallado, 4)];
+}
+// Calcula las cifras de un mes (AAAA-MM) a partir del Diario y el Catálogo.
+function resumenDelMes(clave) {
+  var d = sheetData.Diario || {}, cat = sheetData.Catalogo || {}, tipoDe = {}, nombreDe = {};
+  for (var q = 2; q < 60; q++) { var cd = String(cat[cellId(q, 0)] || '').trim(); if (cd) { tipoDe[cd] = String(cat[cellId(q, 2)] || ''); nombreDe[cd] = String(cat[cellId(q, 1)] || ''); } }
+  var res = { filas: 0, debe: 0, haber: 0, asientos: {}, descuadrados: [], sinCodigo: 0, ventas: 0, ivaCobrado: 0, ivaSoportado: 0, ivaDiferidoMov: 0, compras: 0 };
+  for (var r = 3; r < ROWS + 600; r++) {
+    if (d[cellId(r, 9)] === undefined) break;
+    var cod = String(d[cellId(r, 2)] || '').trim(), deb = parseFloat(d[cellId(r, 5)]) || 0, hab = parseFloat(d[cellId(r, 6)]) || 0;
+    if (!cod && !deb && !hab) continue;
+    if (claveMes(fechaFilaDiario(r)) !== clave) continue;
+    res.filas++; res.debe += deb; res.haber += hab;
+    var as = String(d[cellId(r, 1)] || '(sin n°)'); res.asientos[as] = (res.asientos[as] || 0) + deb - hab;
+    if (!cod || !tipoDe[cod]) res.sinCodigo++;
+    var t = tipoDe[cod];
+    if (t === 'Ingreso') res.ventas += hab - deb;
+    if (cod === CUENTAS_AUTO.ivaPagar[0]) res.ivaCobrado += hab - deb;
+    if (cod === CUENTAS_AUTO.ivaCredito[0]) res.ivaSoportado += deb - hab;
+    if (cod === CUENTAS_AUTO.ivaDiferido[0]) res.ivaDiferidoMov += hab - deb;
+    if (t === 'Gasto' || t === 'Costo') res.compras += deb - hab;
+  }
+  Object.keys(res.asientos).forEach(function (k) { if (Math.abs(res.asientos[k]) > 0.005) res.descuadrados.push(k); });
+  ['debe', 'haber', 'ventas', 'ivaCobrado', 'ivaSoportado', 'ivaDiferidoMov', 'compras'].forEach(function (k) { res[k] = r2c(res[k]); });
+  res.saldoIVA = r2c(res.ivaCobrado - res.ivaSoportado);
+  return res;
+}
+function registrosSinAsiento(clave) {
+  var regs = historialHaciendaCache || [], orig = origenesEnDiario(), n = 0;
+  regs.forEach(function (h) {
+    if (h.estado !== 'aceptado' || h.ambiente === 'sandbox' || h.tipoDocumento === 'mensajeReceptor') return;
+    if (claveMes(new Date(h.fecha)) !== clave) return;
+    if (!orig[h.clave]) n++;
+  });
+  return n;
+}
+function crearHojaCierre(clave, R, pasos) {
+  var nombre = 'Cierre-' + clave;
+  if (sheets.indexOf(nombre) === -1) crearHojaDestino(nombre);
+  activeSheet = nombre; sheetData[nombre] = {}; sheetFormats[nombre] = {}; sheetMerges[nombre] = [];
+  var d = sheetData[nombre], f = sheetFormats[nombre], m = sheetMerges[nombre], DIN = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+  function st(r, c, o) { f[cellId(r, c)] = Object.assign({}, f[cellId(r, c)], o); }
+  d.A1 = '🗓 CIERRE MENSUAL ' + clave; for (var c = 0; c < 3; c++) st(0, c, { bold: true, bgColor: '#1e3a8a', fontColor: '#ffffff', fontSize: 14 }); m.push({ r1: 0, c1: 0, r2: 0, c2: 2 });
+  d.A3 = 'Revisión'; st(2, 0, { bold: true });
+  pasos.forEach(function (p, i) { d[cellId(3 + i, 0)] = p.texto; d[cellId(3 + i, 1)] = p.ok ? '✓' : '⚠'; d[cellId(3 + i, 2)] = p.detalle || ''; for (var c = 0; c < 3; c++) st(3 + i, c, { border: true }); st(3 + i, 1, { bold: true, fontColor: p.ok ? '#15803d' : '#b91c1c' }); });
+  var r0 = 4 + pasos.length;
+  d[cellId(r0, 0)] = 'Cifras del mes (según el Diario)'; st(r0, 0, { bold: true });
+  var cifras = [['Ventas (ingresos del mes)', R.ventas], ['Compras y gastos del mes', R.compras], ['Resultado del mes', r2c(R.ventas - R.compras)], ['IVA cobrado (débito fiscal)', R.ivaCobrado], ['IVA soportado (crédito fiscal)', R.ivaSoportado], ['SALDO DE IVA: a pagar (+) / a favor (−)', R.saldoIVA], ['IVA diferido causado en el mes (Art. 27)', R.ivaDiferidoMov], ['Total Debe del Diario', R.debe], ['Total Haber del Diario', R.haber]];
+  cifras.forEach(function (x, i) { d[cellId(r0 + 1 + i, 0)] = x[0]; d[cellId(r0 + 1 + i, 1)] = String(x[1]); for (var c = 0; c < 2; c++) st(r0 + 1 + i, c, { border: true }); st(r0 + 1 + i, 1, DIN); if (i === 5) { st(r0 + 1 + i, 0, { bold: true, bgColor: '#fde68a' }); st(r0 + 1 + i, 1, { bold: true, bgColor: '#fde68a' }); } });
+  d[cellId(r0 + 11, 0)] = 'El D-104 se presenta y paga a más tardar el día 15 del mes siguiente. Estas cifras salen del Diario; revisalas contra tu declaración.'; st(r0 + 11, 0, { fontColor: '#6b7280', fontSize: 11 });
+  colWidths[nombre] = { 0: 320, 1: 120, 2: 260 };
+  if (ROWS < r0 + 16) ROWS = r0 + 16;
+  return nombre;
+}
+function abrirCierreMensual(claveInicial) {
+  if (sheets.indexOf('Diario') === -1 || sheets.indexOf('Catalogo') === -1) { if (!asegurarSistemaContable()) return; }
+  var hoy = new Date(), previo = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1);
+  var clave = claveInicial || claveMes(previo);
+  var meses = '';
+  for (var i = 0; i < 14; i++) { var f = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1), k = claveMes(f); meses += '<option value="' + k + '"' + (k === clave ? ' selected' : '') + '>' + MESES_ES[f.getMonth()].charAt(0).toUpperCase() + MESES_ES[f.getMonth()].slice(1) + ' ' + f.getFullYear() + '</option>'; }
+  function pintar(c) {
+    var R = resumenDelMes(c), cerrados = mesesCerrados(), estaCerrado = !!cerrados[c], sinAsiento = currentUser ? registrosSinAsiento(c) : null;
+    var pasos = [
+      { texto: 'El mes tiene movimientos en el Diario', ok: R.filas > 0, detalle: R.filas + ' línea(s)' },
+      { texto: 'Todos los asientos cuadran (Debe = Haber)', ok: R.descuadrados.length === 0, detalle: R.descuadrados.length ? 'Revisar asiento(s): ' + R.descuadrados.slice(0, 6).join(', ') : '' },
+      { texto: 'Todas las líneas tienen una cuenta válida del Catálogo', ok: R.sinCodigo === 0, detalle: R.sinCodigo ? R.sinCodigo + ' línea(s) sin cuenta' : '' },
+      { texto: 'Comprobantes de Hacienda del mes registrados', ok: sinAsiento === null ? true : sinAsiento === 0, detalle: sinAsiento === null ? 'No verificado (iniciá sesión)' : (sinAsiento ? sinAsiento + ' sin asiento — usá "Asientos de facturas"' : '') }
+    ];
+    var todoOk = pasos.every(function (p) { return p.ok; });
+    var html = '<label class="mcrF">Mes a cerrar</label><select id="cmMes" class="mcrI">' + meses.replace(' selected', '').replace('value="' + c + '"', 'value="' + c + '" selected') + '</select>' +
+      '<div style="margin-top:10px;">' + pasos.map(function (p) { return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #eef2ee;"><span class="' + (p.ok ? 'mcrOk' : 'mcrMal') + '">' + (p.ok ? '✓' : '⚠') + '</span><div><div>' + escHtml(p.texto) + '</div>' + (p.detalle ? '<div class="mcrNota" style="margin:0">' + escHtml(p.detalle) + '</div>' : '') + '</div></div>'; }).join('') + '</div>' +
+      '<table class="mcrTabla" style="margin-top:10px;"><tr><td>Ventas</td><td class="n">₡' + fmtNum(R.ventas) + '</td></tr><tr><td>Compras y gastos</td><td class="n">₡' + fmtNum(R.compras) + '</td></tr><tr><td>IVA cobrado</td><td class="n">₡' + fmtNum(R.ivaCobrado) + '</td></tr><tr><td>IVA soportado</td><td class="n">₡' + fmtNum(R.ivaSoportado) + '</td></tr><tr><td><b>Saldo de IVA</b> (' + (R.saldoIVA >= 0 ? 'a pagar' : 'a favor') + ')</td><td class="n"><b>₡' + fmtNum(Math.abs(R.saldoIVA)) + '</b></td></tr></table>' +
+      '<div class="mcrNota">' + (estaCerrado ? '🔒 Este mes está <b>cerrado</b>: no se pueden editar sus asientos en el Diario.' : 'Al cerrar el mes, sus asientos quedan bloqueados contra ediciones accidentales.') + '</div>';
+    abrirPanel('🗓 Cierre mensual', html, [
+      { texto: 'Cerrar', accion: function () {} },
+      { texto: 'Crear hoja del cierre', accion: function () { snapshot(); var n = crearHojaCierre(c, R, pasos); buildTable(); renderTabs(); autoSave(); document.getElementById('saveStatus').textContent = '✓ Hoja ' + n + ' creada'; } },
+      { texto: estaCerrado ? '🔓 Reabrir mes' : '🔒 Cerrar mes', ok: true, accion: function () {
+        if (!estaCerrado && !todoOk && !confirm('Hay puntos pendientes en la revisión. ¿Cerrar el mes de todos modos?')) return false;
+        snapshot(); cerrarMes(c, !estaCerrado); autoSave();
+        document.getElementById('saveStatus').textContent = estaCerrado ? '🔓 Mes reabierto' : '🔒 Mes ' + c + ' cerrado';
+      } }
+    ]);
+    document.getElementById('cmMes').addEventListener('change', function () { pintar(this.value); });
+  }
+  pintar(clave);
+}
+document.getElementById('btnCierreMensual').addEventListener('click', function () { abrirCierreMensual(); });
+
+// ══════════════════════════════════════════════
+// CATÁLOGOS DE CUENTAS POR TIPO DE NEGOCIO
+// ══════════════════════════════════════════════
+var CATALOGOS_NEGOCIO = {
+  comercio: { nombre: '🛍 Comercio / Tienda', cuentas: [
+    ['1.1.06', 'Mercadería en tránsito', 'Activo'], ['1.1.07', 'Anticipos a proveedores', 'Activo'], ['1.2.03', 'Vehículos', 'Activo'], ['1.2.04', 'Equipo de cómputo', 'Activo'],
+    ['2.1.06', 'Tarjetas de crédito por pagar', 'Pasivo'], ['4.1.03', 'Descuentos sobre ventas', 'Ingreso'], ['4.1.04', 'Devoluciones sobre ventas', 'Ingreso'],
+    ['5.1.02', 'Compras de mercadería', 'Costo'], ['5.1.03', 'Fletes sobre compras', 'Costo'], ['5.2.06', 'Publicidad y mercadeo', 'Gasto'], ['5.2.07', 'Comisiones por ventas con tarjeta', 'Gasto'], ['5.2.08', 'Mermas y faltantes de inventario', 'Gasto'] ] },
+  servicios: { nombre: '💼 Servicios profesionales', cuentas: [
+    ['1.1.08', 'Gastos pagados por anticipado', 'Activo'], ['1.2.04', 'Equipo de cómputo', 'Activo'], ['2.1.07', 'Retenciones de renta por pagar', 'Pasivo'], ['2.1.08', 'Pagos parciales de renta por pagar', 'Pasivo'],
+    ['4.1.02', 'Honorarios profesionales', 'Ingreso'], ['4.1.05', 'Servicios de consultoría', 'Ingreso'], ['5.2.06', 'Software y suscripciones', 'Gasto'], ['5.2.07', 'Colegio profesional y cuotas', 'Gasto'], ['5.2.08', 'Capacitación', 'Gasto'], ['5.2.09', 'Transporte y viáticos', 'Gasto'], ['5.2.10', 'Internet y telefonía', 'Gasto'], ['5.2.11', 'Póliza de riesgos del trabajo', 'Gasto'] ] },
+  restaurante: { nombre: '🍽 Restaurante / Soda', cuentas: [
+    ['1.1.05', 'Inventario de alimentos y bebidas', 'Activo'], ['1.2.03', 'Equipo de cocina', 'Activo'], ['2.1.06', 'Propinas por pagar', 'Pasivo'], ['4.1.01', 'Ventas de alimentos', 'Ingreso'], ['4.1.03', 'Ventas de bebidas', 'Ingreso'], ['4.1.04', 'Servicio a domicilio', 'Ingreso'],
+    ['5.1.01', 'Costo de alimentos', 'Costo'], ['5.1.02', 'Costo de bebidas', 'Costo'], ['5.2.06', 'Gas y combustibles', 'Gasto'], ['5.2.07', 'Empaques y desechables', 'Gasto'], ['5.2.08', 'Mantenimiento de equipo', 'Gasto'], ['5.2.09', 'Plataformas de entrega (comisiones)', 'Gasto'] ] },
+  agro: { nombre: '🌱 Agro / Agropecuario', cuentas: [
+    ['1.1.05', 'Insumos agrícolas', 'Activo'], ['1.1.06', 'Cosechas en proceso', 'Activo'], ['1.2.03', 'Maquinaria agrícola', 'Activo'], ['1.2.04', 'Terrenos', 'Activo'], ['1.2.05', 'Plantaciones y ganado', 'Activo'],
+    ['2.2.02', 'Créditos de la cooperativa', 'Pasivo'], ['4.1.01', 'Venta de producción', 'Ingreso'], ['4.1.03', 'Subsidios y apoyos', 'Ingreso'], ['5.1.01', 'Costo de producción', 'Costo'], ['5.1.02', 'Semillas y fertilizantes', 'Costo'], ['5.2.06', 'Jornales (mano de obra)', 'Gasto'], ['5.2.07', 'Combustible y transporte de cosecha', 'Gasto'] ] },
+  construccion: { nombre: '🏗 Construcción / Oficios', cuentas: [
+    ['1.1.05', 'Materiales en bodega', 'Activo'], ['1.1.06', 'Obras en proceso', 'Activo'], ['1.2.03', 'Herramientas y equipo pesado', 'Activo'], ['1.2.04', 'Vehículos', 'Activo'],
+    ['2.1.06', 'Anticipos de clientes', 'Pasivo'], ['2.1.07', 'Retenciones de garantía', 'Pasivo'], ['4.1.01', 'Ingresos por obras', 'Ingreso'], ['4.1.03', 'Ingresos por mano de obra', 'Ingreso'],
+    ['5.1.01', 'Materiales de obra', 'Costo'], ['5.1.02', 'Subcontratos', 'Costo'], ['5.2.06', 'Alquiler de equipo', 'Gasto'], ['5.2.07', 'Pólizas y permisos', 'Gasto'] ] }
+};
+function aplicarCatalogoNegocio(clave) {
+  var def = CATALOGOS_NEGOCIO[clave], cat = sheetData.Catalogo; if (!def || !cat) return { nuevas: 0, existentes: 0, reasignadas: 0, sinEspacio: 0 };
+  var res = { nuevas: 0, existentes: 0, reasignadas: 0, sinEspacio: 0 }, codigos = {}, nombres = {};
+  for (var r = 2; r < 60; r++) { var a = String(cat[cellId(r, 0)] || '').trim(); if (a) { codigos[a] = true; nombres[String(cat[cellId(r, 1)] || '').trim().toLowerCase()] = true; } }
+  function codigoLibre(base) { // mismo grupo (ej. 5.2.xx), siguiente número libre
+    var partes = base.split('.'), pref = partes.slice(0, -1).join('.'), n = parseInt(partes[partes.length - 1], 10) || 1;
+    while (codigos[pref + '.' + String(n).padStart(2, '0')]) n++;
+    return pref + '.' + String(n).padStart(2, '0');
+  }
+  def.cuentas.forEach(function (c) {
+    if (nombres[c[1].toLowerCase()]) { res.existentes++; return; } // esa cuenta ya existe (por nombre)
+    var codigo = c[0]; if (codigos[codigo]) { codigo = codigoLibre(codigo); res.reasignadas++; }
+    for (var r2 = 2; r2 < 60; r2++) { if (!String(cat[cellId(r2, 0)] || '').trim()) { cat[cellId(r2, 0)] = codigo; cat[cellId(r2, 1)] = c[1]; cat[cellId(r2, 2)] = c[2]; codigos[codigo] = true; nombres[c[1].toLowerCase()] = true; res.nuevas++; return; } }
+    if (codigo !== c[0]) res.reasignadas--; res.sinEspacio++;
+  });
+  return res;
+}
+function abrirCatalogosNegocio() {
+  if (sheets.indexOf('Catalogo') === -1) { if (!asegurarSistemaContable()) return; }
+  var html = '<div class="mcrNota" style="margin:0 0 8px;">Elegí tu tipo de negocio y se <b>agregan</b> las cuentas típicas a tu Catálogo. Tus cuentas actuales no se borran ni se cambian.</div>' +
+    Object.keys(CATALOGOS_NEGOCIO).map(function (k) { return '<button class="mcrCatBtn" data-k="' + k + '" style="display:block;width:100%;text-align:left;padding:12px;margin:6px 0;border:1px solid #d1d5db;border-radius:12px;background:#f9fafb;font-size:14px;font-weight:700;color:#1f2937;">' + CATALOGOS_NEGOCIO[k].nombre + '<div style="font-weight:400;font-size:11.5px;color:#6b7280;margin-top:3px;">' + CATALOGOS_NEGOCIO[k].cuentas.length + ' cuentas</div></button>'; }).join('');
+  abrirPanel('📒 Catálogo por tipo de negocio', html, [{ texto: 'Cerrar' }]);
+  document.querySelectorAll('.mcrCatBtn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      snapshot(); var r = aplicarCatalogoNegocio(b.dataset.k); autoSave();
+      var partes = [r.nuevas + ' cuenta(s) agregada(s)']; if (r.existentes) partes.push(r.existentes + ' ya estaban'); if (r.reasignadas) partes.push(r.reasignadas + ' recibieron otro código porque el original ya lo usa una cuenta tuya'); if (r.sinEspacio) partes.push('⚠ ' + r.sinEspacio + ' sin espacio (el Catálogo admite 58)');
+      abrirPanel('📒 ' + CATALOGOS_NEGOCIO[b.dataset.k].nombre, '<div style="font-size:13px;">' + partes.map(escHtml).join('<br>') + '</div><div class="mcrNota">Mirá la hoja Catalogo para ver o ajustar los nombres. El Estado de Resultados y el Balance se actualizan solos.</div>', [{ texto: 'Listo', ok: true, accion: function () { if (sheets.indexOf('Catalogo') !== -1) { activeSheet = 'Catalogo'; buildTable(); renderTabs(); } } }]);
+    });
+  });
+}
+document.getElementById('btnCatalogoNegocio').addEventListener('click', abrirCatalogosNegocio);
 
 function loadTemplate(tipo) {
   var hoy = new Date().toLocaleDateString('es-CR');
@@ -12224,34 +12902,30 @@ document.getElementById('btnProtegerHoja').addEventListener('click', function ()
 });
 
 document.getElementById('btnVencimientos').addEventListener('click', function () {
-  var hoy = new Date();
+  var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
   function proximaFecha(dia, mesesLista) {
-    var y = hoy.getFullYear();
-    var candidatos = [];
-    mesesLista.forEach(function (mes) {
-      var d = new Date(y, mes, dia);
-      if (d < hoy) d = new Date(y + 1, mes, dia);
-      candidatos.push(d);
-    });
+    var y = hoy.getFullYear(), candidatos = [];
+    mesesLista.forEach(function (mes) { var d = new Date(y, mes, dia); if (d < hoy) d = new Date(y + 1, mes, dia); candidatos.push(d); });
     candidatos.sort(function (a, b) { return a - b; });
     return candidatos[0];
   }
   var todosMeses = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  var pp = [proximaFecha(30, [5, 8]), proximaFecha(31, [11])].sort(function (a, b) { return a - b; })[0];
   var items = [
-    { nombre: 'IVA (D-104) mensual', fecha: proximaFecha(15, todosMeses) },
+    { nombre: 'Cierre del mes anterior (revisión contable)', fecha: proximaFecha(3, todosMeses), nota: 'Usá "Cierre mensual" del menú.' },
     { nombre: 'Planilla CCSS mensual', fecha: proximaFecha(5, todosMeses) },
+    { nombre: 'IVA (D-104) mensual', fecha: proximaFecha(15, todosMeses), nota: 'Declaración y pago, a más tardar el día 15.' },
+    { nombre: 'Pago parcial de renta', fecha: pp, nota: '30 jun, 30 sep y 31 dic (actividad lucrativa).' },
     { nombre: 'D-151 (Declaración informativa) anual', fecha: proximaFecha(28, [1]) },
-    { nombre: 'Renta / D-101 anual', fecha: proximaFecha(15, [2]) },
+    { nombre: 'Renta / D-101 anual', fecha: proximaFecha(15, [2]) }
   ];
-  items.forEach(function (it) {
-    var dias = Math.ceil((it.fecha - hoy) / 86400000);
-    it.dias = dias;
-  });
+  items.forEach(function (it) { it.dias = Math.round((it.fecha - hoy) / 86400000); });
   items.sort(function (a, b) { return a.dias - b.dias; });
-  var texto = '🗓 PRÓXIMOS VENCIMIENTOS FISCALES CR\n\n' + items.map(function (it) {
-    return it.nombre + ': ' + it.fecha.toLocaleDateString('es-CR') + ' (en ' + it.dias + ' días)';
-  }).join('\n') + '\n\nNota: fechas aproximadas según el calendario típico de Hacienda/CCSS — verificá siempre las fechas exactas vigentes en hacienda.go.cr y ccss.sa.cr, ya que pueden variar.';
-  alert(texto);
+  var filas = items.map(function (it) {
+    var color = it.dias <= 3 ? '#b91c1c' : it.dias <= 10 ? '#b45309' : '#15803d';
+    return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #eef2ee;"><div style="min-width:62px;text-align:center;border-radius:10px;padding:6px 4px;background:' + color + '1a;color:' + color + ';font-weight:800;"><div style="font-size:18px;line-height:1">' + (it.dias === 0 ? 'HOY' : it.dias) + '</div><div style="font-size:10px;">' + (it.dias === 0 ? '' : (it.dias === 1 ? 'día' : 'días')) + '</div></div><div><div style="font-weight:700;">' + escHtml(it.nombre) + '</div><div class="mcrNota" style="margin:2px 0 0;">' + it.fecha.toLocaleDateString('es-CR') + (it.nota ? ' · ' + escHtml(it.nota) : '') + '</div></div></div>';
+  }).join('');
+  abrirPanel('🗓 Próximos vencimientos', filas + '<div class="mcrNota">En la app del teléfono recibís un aviso 3 días antes y otro el mismo día (si diste permiso de notificaciones). Las fechas son las habituales: verificá siempre las vigentes en hacienda.go.cr y ccss.sa.cr.</div>', [{ texto: 'Cerrar', ok: true }]);
 });
 
 document.getElementById('btnD101').addEventListener('click', function () {
