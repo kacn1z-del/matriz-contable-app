@@ -102,11 +102,18 @@ async function obtenerAccessToken(entorno, usuario, password) {
   return datos.access_token
 }
 
-async function obtenerSiguienteSecuencia(uid, tipoDocumento) {
+// Multi-emisor: cédula del emisor dentro de una clave de 50 dígitos (posiciones 10–21, con ceros a la izquierda).
+// El Worker compara ignorando ceros a la izquierda y verifica que esa cédula pertenezca al negocio del usuario.
+function cedulaDeClave(clave) {
+  const d = String(clave || '').replace(/[^0-9]/g, '')
+  return d.length === 50 ? d.substr(9, 12) : ''
+}
+
+async function obtenerSiguienteSecuencia(uid, tipoDocumento, cedulaEmisor) {
   const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/siguiente-secuencia', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET, tipoDocumento }),
+    body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET, tipoDocumento, cedulaEmisor: cedulaEmisor || undefined }),
   })
   const datos = await leerJsonSeguro(respuesta)
   if (!respuesta.ok || !datos.secuencia) {
@@ -232,6 +239,7 @@ export default async function handler(req, res) {
       montoTotalImpuestoRecibido, // monto total de IVA de ese comprobante (opcional, 0 si no aplica)
       mensaje, // "1" acepta todo, "2" acepta parcial, "3" rechaza
       detalleMensaje, // motivo / detalle libre (recomendado si no es aceptación total)
+      cedulaEmisor: cedulaEmisorBody, // multi-emisor: cuál de tus cédulas responde el comprobante
     } = req.body || {}
 
     const uid = await verificarIdToken(idToken)
@@ -263,7 +271,7 @@ export default async function handler(req, res) {
     const respCert = await fetch(CERTIFICADOS_WORKER_URL + '/obtener-certificado-firma', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET }),
+      body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET, cedulaEmisor: (String(cedulaEmisorBody || '').replace(/[^0-9]/g, '')) || undefined }),
     })
     const datosCert = await leerJsonSeguro(respCert)
     if (!respCert.ok) {
@@ -286,7 +294,7 @@ export default async function handler(req, res) {
     const tipoIdPropio = tipoIdentificacionEmisor(cedulaLimpia)
 
     // ── 2. Secuencia propia por tipo de mensaje (05/06/07 tienen cada uno su contador) ──
-    const secuencia = await obtenerSiguienteSecuencia(uid, 'mensajeReceptor-' + codigoConsecutivo)
+    const secuencia = await obtenerSiguienteSecuencia(uid, 'mensajeReceptor-' + codigoConsecutivo, cedulaLimpia)
     const numeroConsecutivoReceptor = SUCURSAL + TERMINAL + codigoConsecutivo + String(secuencia).padStart(10, '0')
 
     // ── 3. Armar y firmar el Mensaje Receptor ──
