@@ -153,6 +153,26 @@
     background: #fff; border-bottom: 1px solid #d4d4d4; flex-shrink: 0;
   }
   #cellRef { font-size: 12px; font-weight: 700; color: #217346; min-width: 34px; }
+  /* Barra de fórmulas en 2 renglones en pantallas angostas: arriba la celda, deshacer/rehacer,
+     saltos y estado; abajo la fórmula a todo el ancho (antes quedaba una columna angosta y vertical). */
+  #formulaBarRow { flex-wrap: wrap; row-gap: 6px; }
+  #formulaWrap { position: relative; flex: 1 1 100%; order: 10; min-width: 0; }
+  #saveStatus { margin-left: auto; }
+  #quickBar { display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px 10px; background: #f4f9ee; border-bottom: 1px solid #d4d4d4; flex-shrink: 0; }
+  #quickBarList { display: flex; gap: 6px; overflow-x: auto; flex: 1; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  #quickBarList::-webkit-scrollbar { display: none; }
+  #quickBarList button { flex-shrink: 0; white-space: nowrap; padding: 5px 10px; font-size: 12px; font-weight: 700; border: 1px solid #cce9ae; border-radius: 14px; background: #fff; color: #245f09; }
+  #quickBarList .qbVacio { font-size: 11.5px; color: #6b8f48; white-space: nowrap; }
+  #quickBarEdit { flex-shrink: 0; width: 30px; height: 28px; padding: 0; border: 1px solid #cce9ae; border-radius: 14px; background: #fff; font-size: 14px; }
+  body.dark-mode #quickBar { background: #1b1f1c; border-color: #343b35; }
+  body.dark-mode #quickBarList button, body.dark-mode #quickBarEdit { background: #252a26; color: #e5e7eb; border-color: #343b35; }
+  #undoRedoQuick { display: flex; gap: 2px; flex-shrink: 0; }
+  #undoRedoQuick button {
+    width: 30px; height: 26px; padding: 0; font-size: 16px; line-height: 1; font-weight: 700;
+    border: 1px solid #cce9ae; border-radius: 4px; background: #f7fbf0; color: #245f09;
+  }
+  #undoRedoQuick button:disabled { opacity: .35; }
+  @media (min-width: 700px) { #formulaWrap { flex: 1 1 320px; order: 0; } }
   /* Saltar al borde de los datos (equivalente táctil de Ctrl+flecha de
      Excel): como en celular no hay teclado físico la mayoría de las veces,
      estos 4 botones hacen lo mismo con un toque. */
@@ -676,7 +696,7 @@
   #siboInputRow input { flex: 1; padding: 9px 10px; border: 1px solid #cce9ae; border-radius: 20px; font-size: 13px; }
   #siboInputRow button { background: #2d7a0c; color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; flex-shrink: 0; }
   @media print {
-    #toolbar, #ribbonTrigger, #ribbonOverlay, #formulaBarRow, #rangeActionsBar, #statusBar, #tabsBar, #offlineBanner,
+    #toolbar, #ribbonTrigger, #ribbonOverlay, #formulaBarRow, #quickBar, #rangeActionsBar, #statusBar, #tabsBar, #offlineBanner,
     #onboardingOverlay, #dictOverlay, #contactosOverlay, #buscarGlobalOverlay, #pivoteOverlay,
     #auditOverlay, #backupOverlay, #reciboOverlay, #fnOverlay, #feOverlay, #feHistOverlay,
     #brOverlay, #matricesOverlay, #authOverlay, #shareOverlay, #chartOverlay,
@@ -762,6 +782,7 @@
     <div class="rbSec open" style="--rbc:#2563eb;">
       <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">✏️</span><span class="rbSecTit">Edición</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
       <div class="rbGrid">
+        <button id="btnAutoSum">∑ Autosuma</button>
         <button id="btnUndo" disabled>↶ Deshacer</button>
         <button id="btnRedo" disabled>↷ Rehacer</button>
         <button id="btnCut">✂️ Cortar</button>
@@ -842,16 +863,22 @@
         <button id="btnVencimientos">🗓 Vencimientos</button>
         <button id="btnD101">🇨🇷 D-101</button>
         <button id="btnConciliacion">🏦 Conciliación</button>
+        <button id="btnConcDiario">🏦 Conciliar Bancos vs Diario</button>
         <button id="btnLibroMayorAuto">📗 Mayor Auto</button>
         <button id="btnBalanceAuto">📊 Balance Auto</button>
         <button id="btnFlujoAuto">💧 Flujo Efectivo</button>
         <button id="btnRecibo">📷 Recibo</button>
         <button id="btnCatalogoNegocio">📒 Catálogo por negocio</button>
         <button id="btnCierreMensual">🗓 Cierre mensual</button>
+        <button id="btnReporteContador">📑 Reporte para el contador</button>
         <button id="btnCuentasCobrar">⏳ Cuentas por cobrar</button>
         <button id="btnEstadosFinancieros">📈 Estados financieros</button>
         <button id="btnAsientosFacturas">🧮 Asientos de facturas</button>
         <button id="btnRegistrarCompra">🛒 Registrar compra</button>
+        <button id="btnLeerXml">📄 Leer XML de compras</button>
+        <button id="btnPresupuesto">🎯 Presupuesto vs real</button>
+        <button id="btnRecurrentes">🔁 Facturas recurrentes</button>
+        <button id="btnCobros">📲 Cobrar por WhatsApp</button>
       </div>
     </div>
     <div class="rbSec" style="--rbc:#475569;">
@@ -861,7 +888,7 @@
         <button id="btnPdfReporte">⬇ PDF Reporte</button>
         <button id="btnExcelExport" title="Exporta todas las hojas en un solo archivo">⬇ Excel</button>
         <button id="btnExcelImport">⬆ Importar Excel</button>
-        <button id="btnBackup">☁️ Backups</button>
+        <button id="btnBackup" title="Historial de versiones: ver qué cambió y restaurar">🕘 Versiones y backups</button>
         <button id="btnProtegerHoja">🔓 Proteger Hoja</button>
       </div>
     </div>
@@ -887,6 +914,10 @@
 
   <div id="formulaBarRow" style="position:relative;">
     <span id="cellRef">A1</span>
+    <div id="undoRedoQuick">
+      <button id="qUndo" title="Deshacer" aria-label="Deshacer" disabled>↶</button>
+      <button id="qRedo" title="Rehacer" aria-label="Rehacer" disabled>↷</button>
+    </div>
     <div id="navBordeGroup">
       <button id="navBordeArriba" title="Saltar al borde de datos hacia arriba (Ctrl+↑)">⤒</button>
       <button id="navBordeAbajo" title="Saltar al borde de datos hacia abajo (Ctrl+↓)">⤓</button>
@@ -894,7 +925,7 @@
       <button id="navBordeDer" title="Saltar al borde de datos hacia la derecha (Ctrl+→)">⇥</button>
       <button id="btnAbsRef" title="Referencia absoluta: alterna B5 → $B$5 → B$5 → $B5">$</button>
     </div>
-    <div style="flex:1;position:relative;">
+    <div id="formulaWrap">
       <!-- "formulaHighlight" muestra el mismo texto pero coloreado (función,
            texto, número, referencia de celda) y vive JUSTO DEBAJO del
            textarea real, que queda con el texto transparente — por eso
@@ -908,6 +939,8 @@
     </div>
     <span id="saveStatus">Listo</span>
   </div>
+
+  <div id="quickBar"><div id="quickBarList"></div><button id="quickBarEdit" title="Elegir botones favoritos" aria-label="Elegir botones favoritos">⭐</button></div>
 
   <div id="macroGrabandoBar">
     <span>⏺ Grabando macro: <b id="macroGrabandoNombre"></b></span>
@@ -2084,6 +2117,7 @@ function celdaDesbloqueada(hoja, id) {
 // hoja (una vista puede apuntar a cualquier hoja del libro), así que viven
 // en una sola lista para todo el libro.
 var vistasGuardadas = [];
+var facturasRecurrentes = []; // plantillas de factura mensual (ver "Facturas recurrentes")
 var colWidths = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetMerges = { Hoja1: [], Hoja2: [], Hoja3: [] };
 var sheetFreeze = { Hoja1: { row: 0, col: 0 }, Hoja2: { row: 0, col: 0 }, Hoja3: { row: 0, col: 0 } };
@@ -2306,7 +2340,7 @@ function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i
 function cellId(r, c) { return colLetter(c) + (r + 1); }
 
 function estadoActualComoJSON() {
-  return JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetGraficos: sheetGraficos, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS });
+  return JSON.stringify({ sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, colWidths: colWidths, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetGraficos: sheetGraficos, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, activeSheet: activeSheet, ROWS: ROWS, COLS: COLS });
 }
 function snapshot() {
   var json = estadoActualComoJSON();
@@ -2342,6 +2376,7 @@ function undo() {
   sheetAutoFiltro = prev.sheetAutoFiltro || sheetAutoFiltro;
   sheetCeldasDesbloqueadas = prev.sheetCeldasDesbloqueadas || sheetCeldasDesbloqueadas;
   vistasGuardadas = prev.vistasGuardadas || vistasGuardadas;
+  sheetMerges = prev.sheetMerges || sheetMerges; sheetFreeze = prev.sheetFreeze || sheetFreeze;
   buildTable(); autoSave();
   if (!undoStack.length) document.getElementById('btnUndo').disabled = true;
   document.getElementById('btnRedo').disabled = false;
@@ -2367,6 +2402,7 @@ function redo() {
   sheetAutoFiltro = next.sheetAutoFiltro || sheetAutoFiltro;
   sheetCeldasDesbloqueadas = next.sheetCeldasDesbloqueadas || sheetCeldasDesbloqueadas;
   vistasGuardadas = next.vistasGuardadas || vistasGuardadas;
+  sheetMerges = next.sheetMerges || sheetMerges; sheetFreeze = next.sheetFreeze || sheetFreeze;
   buildTable(); autoSave();
   document.getElementById('btnUndo').disabled = false;
   if (!redoStack.length) document.getElementById('btnRedo').disabled = true;
@@ -6923,6 +6959,7 @@ document.getElementById('btnFreeze').addEventListener('click', function () {
   var mm = idRef.match(/([A-Za-z]+)(\d+)/);
   if (!mm) return;
   var col = colIndex(mm[1]), row = parseInt(mm[2]) - 1;
+  snapshot();
   if (!sheetFreeze[activeSheet]) sheetFreeze[activeSheet] = { row: 0, col: 0 };
   var fr = sheetFreeze[activeSheet];
   if (fr.row === row && fr.col === col) { fr.row = 0; fr.col = 0; }
@@ -9042,12 +9079,35 @@ function enviarCorreoFacturaAceptada(datosFactura, statusEl) {
 // botón "⬇ PDF" (guarda/comparte el archivo) como "🖨️ Imprimir" (lo manda
 // directo al diálogo de impresión nativo), así el diseño queda idéntico
 // en los dos casos y no hay que mantener el mismo código dos veces.
+// La fuente estándar de jsPDF (Helvetica) no trae el símbolo ₡ ni ✓/⚠: salían como "¡" y comillas. Se traducen a texto plano.
+function textoPdfSeguro(t) {
+  return String(t).replace(/₡\s?/g, 'CRC ').replace(/[✓✔]\s?/g, '').replace(/[⚠]\uFE0F?\s?/g, 'ATENCIÓN: ').replace(/[−–]/g, '-');
+}
+function pdfSeguro(doc) {
+  var orig = doc.text.bind(doc);
+  doc.text = function (t) {
+    var args = Array.prototype.slice.call(arguments);
+    args[0] = Array.isArray(t) ? t.map(textoPdfSeguro) : (typeof t === 'string' || typeof t === 'number' ? textoPdfSeguro(t) : t);
+    return orig.apply(doc, args);
+  };
+  return doc;
+}
+// Dibuja el logo del negocio respetando su proporción. Devuelve el ancho usado (0 si no hay logo o no se pudo dibujar).
+function dibujarLogoPdf(doc, x, y, altoMax, anchoMax) {
+  if (!logoPdfDataUrl) return 0;
+  try {
+    var w = altoMax, h = altoMax;
+    try { var pr = doc.getImageProperties(logoPdfDataUrl); if (pr && pr.width && pr.height) { h = altoMax; w = h * pr.width / pr.height; if (w > anchoMax) { w = anchoMax; h = w * pr.height / pr.width; } } } catch (e0) {}
+    doc.addImage(logoPdfDataUrl, x, y + (altoMax - h) / 2, w, h);
+    return w;
+  } catch (e) { return 0; }
+}
 function construirFacturaPdf() {
   var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
   if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return null; }
   function gv(id) { var e = document.getElementById(id); return e ? (e.value || e.textContent || '') : ''; }
 
-  var doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var doc = pdfSeguro(new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' }));
   var fecha = gv('fe-fecha') || new Date().toLocaleDateString('es-CR');
   var emisor = gv('fe-emisor-nombre') || 'Emisor';
   var cedEmisor = gv('fe-emisor-cedula') || '—';
@@ -9069,10 +9129,11 @@ function construirFacturaPdf() {
   doc.setFillColor(g3[0], g3[1], g3[2]);
   doc.rect(0, 0, 210, 28, 'F');
   doc.setTextColor(255, 255, 255);
+  var anchoLogoFe = dibujarLogoPdf(doc, 12, 4, 20, 40), xTitulo = anchoLogoFe ? 12 + anchoLogoFe + 5 : 14;
   doc.setFontSize(18); doc.setFont('helvetica', 'bold');
-  doc.text('FACTURA ELECTRÓNICA', 14, 14);
+  doc.text('FACTURA ELECTRÓNICA', xTitulo, 14);
   doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-  doc.text('Costa Rica · Versión 4.4', 14, 21);
+  doc.text('Costa Rica · Versión 4.4', xTitulo, 21);
   doc.text('N° ' + num, 196, 10, { align: 'right' });
   doc.text('Fecha: ' + fecha, 196, 17, { align: 'right' });
 
@@ -10665,7 +10726,10 @@ function marcarEncabezadoActivo(id) {
 }
 
 function attachCellEvents() {
-  document.querySelectorAll('.cell').forEach(function (el) {
+  // Los eventos de cada celda se ligan de forma perezosa (la primera vez que se toca/enfoca):
+  // con miles de celdas, ligar todas al construir la tabla era lo más lento.
+  function ligarCelda(el) {
+    if (el._ligada) return; el._ligada = true;
     el.addEventListener('focus', function () {
       document.querySelectorAll('.cell.selected').forEach(function (e) { e.classList.remove('selected'); });
       el.classList.add('selected');
@@ -10749,8 +10813,8 @@ function attachCellEvents() {
       }
     }, { passive: true });
     el.addEventListener('touchend', function () { clearTimeout(cmPressTimer); }, { passive: true });
-  });
-  document.addEventListener('pointerup', function () {
+  }
+  if (!attachCellEvents._pointerup) { attachCellEvents._pointerup = true; document.addEventListener('pointerup', function () {
     isSelecting = false;
     if (isFilling) {
       isFilling = false;
@@ -10758,7 +10822,17 @@ function attachCellEvents() {
       if (fillOrigenBounds && fillDestinoBounds) ejecutarRelleno(fillOrigenBounds, fillDestinoBounds);
       fillOrigenBounds = null; fillDestinoBounds = null; fillEjeBloqueado = null;
     }
-  });
+  }); }
+  var tabla = document.getElementById('sheetTable');
+  if (tabla && !tabla._delegadoCeldas) {
+    tabla._delegadoCeldas = true;
+    ['focus', 'pointerdown', 'pointerenter', 'touchstart', 'contextmenu', 'keydown'].forEach(function (ev) {
+      tabla.addEventListener(ev, function (e) {
+        var t = e.target, el = t && t.classList && (t.classList.contains('cell') ? t : (t.closest ? t.closest('.cell') : null));
+        if (el) ligarCelda(el);
+      }, true);
+    });
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -11138,6 +11212,20 @@ function updateFormulaAutocomplete() {
 }
 
 document.getElementById('btnUndo').addEventListener('click', undo);
+// Deshacer/rehacer siempre visibles (los del menú quedan escondidos cuando el menú está plegado):
+// los botones rápidos hacen lo mismo y copian el estado habilitado/deshabilitado de los originales.
+(function () {
+  var qU = document.getElementById('qUndo'), qR = document.getElementById('qRedo');
+  var bU = document.getElementById('btnUndo'), bR = document.getElementById('btnRedo');
+  if (!qU || !qR || !bU || !bR) return;
+  function sync() { qU.disabled = bU.disabled; qR.disabled = bR.disabled; }
+  qU.addEventListener('click', function () { undo(); sync(); });
+  qR.addEventListener('click', function () { redo(); sync(); });
+  var obs = new MutationObserver(sync);
+  obs.observe(bU, { attributes: true, attributeFilter: ['disabled'] });
+  obs.observe(bR, { attributes: true, attributeFilter: ['disabled'] });
+  sync();
+})();
 document.getElementById('btnRedo').addEventListener('click', redo);
 
 // ── Copiar/Cortar/Pegar (y Pegado especial) ──
@@ -14061,7 +14149,7 @@ function generarYCompartirPdfReporte(paraImprimir, orientacion, rango) {
   });
 
   var g3 = [45, 122, 12], bg = [238, 248, 228], border = [204, 233, 174];
-  var doc = new jsPDFLib({ orientation: orientacion, unit: 'mm', format: 'a4' });
+  var doc = pdfSeguro(new jsPDFLib({ orientation: orientacion, unit: 'mm', format: 'a4' }));
   var pageW = orientacion === 'landscape' ? 297 : 210;
   var pageH = orientacion === 'landscape' ? 210 : 297;
   var marginX = 12, usableW = pageW - marginX * 2;
@@ -14079,13 +14167,8 @@ function generarYCompartirPdfReporte(paraImprimir, orientacion, rango) {
     // hoja se recorren hacia la derecha para no tapárselo; si no hay logo,
     // se usa el texto fijo de siempre ("MATRIZ CONTABLE CR").
     var textoInicioX = marginX;
-    if (logoPdfDataUrl) {
-      try {
-        var altoLogo = 16, anchoLogo = altoLogo; // cuadrado por simplicidad; jsPDF reescala la imagen a este tamaño sin deformar demasiado los logos típicos
-        doc.addImage(logoPdfDataUrl, marginX, 4, anchoLogo, altoLogo);
-        textoInicioX = marginX + anchoLogo + 4;
-      } catch (e) { /* si el logo no se puede dibujar (formato raro), se sigue sin él */ }
-    }
+    var anchoLogo = dibujarLogoPdf(doc, marginX, 4, 16, 40);
+    if (anchoLogo) textoInicioX = marginX + anchoLogo + 4;
     doc.setFontSize(15); doc.setFont('helvetica', 'bold');
     doc.text((pdfEncabezadoTexto && pdfEncabezadoTexto.trim()) ? pdfEncabezadoTexto.trim() : 'MATRIZ CONTABLE CR', textoInicioX, 11);
     doc.setFontSize(10); doc.setFont('helvetica', 'normal');
@@ -15251,9 +15334,71 @@ document.getElementById('btnConciliacion').addEventListener('click', function ()
 document.getElementById('conciliacionClose').addEventListener('click', function () {
   document.getElementById('conciliacionOverlay').classList.remove('show');
 });
+document.getElementById('btnConcDiario').addEventListener('click', iniciarConciliacionDiario);
 document.getElementById('concElegirBtn').addEventListener('click', function () {
   document.getElementById('bankFileInput').click();
 });
+var conciliarContraDiario = false;
+// Movimientos de las cuentas de Bancos del Diario contable (Debe = entra al banco, Haber = sale).
+function movimientosBancoDelDiario() {
+  var cat = sheetData.Catalogo || {}, codigosBanco = {};
+  codigosBanco[CUENTAS_AUTO.bancos[0]] = true;
+  for (var r = 2; r < 60; r++) {
+    var cod = String(cat[cellId(r, 0)] || '').trim(), nom = String(cat[cellId(r, 1)] || '');
+    if (cod && /^1/.test(cod) && /banco/i.test(nom)) codigosBanco[cod] = true;
+  }
+  var d = sheetData.Diario || {}, out = [];
+  for (var i = 3; i < ROWS + 600; i++) {
+    if (d[cellId(i, 9)] === undefined) break;
+    if (!codigosBanco[String(d[cellId(i, 2)] || '').trim()]) continue;
+    var f = fechaFilaDiario(i), debe = parseFloat(limpiaNum(computeValueEnHoja('Diario', cellId(i, 5)))) || 0, haber = parseFloat(limpiaNum(computeValueEnHoja('Diario', cellId(i, 6)))) || 0;
+    var monto = r2c(debe - haber); if (!monto) continue;
+    out.push({ ts: f ? f.getTime() : null, fechaTxt: f ? f.toLocaleDateString('es-CR') : String(d[cellId(i, 0)] || ''), desc: String(d[cellId(i, 4)] || d[cellId(i, 3)] || ''), monto: monto });
+  }
+  return out;
+}
+function iniciarConciliacionDiario() {
+  if (!asegurarSistemaContable()) return;
+  conciliarContraDiario = true;
+  document.getElementById('bankFileInput').click();
+}
+// Tras conciliar: ofrece registrar en el Diario lo que solo aparece en el banco (comisiones, intereses, depósitos).
+function ofrecerRegistrarSoloBanco(filas) {
+  var soloBanco = filas.filter(function (x) { return x.estado === 'Solo en banco' && x.banco; });
+  if (!soloBanco.length) { abrirPanel('🏦 Conciliación', '<p>✅ Todo lo del banco ya está en tu Diario.</p><div class="mcrNota">El detalle quedó en la hoja “Conciliación”.</div>', [{ texto: 'Cerrar', ok: true, accion: cerrarPanel }]); return; }
+  var cat = sheetData.Catalogo || {}, opG = '', opI = '';
+  for (var r = 2; r < 60; r++) {
+    var cod = String(cat[cellId(r, 0)] || '').trim(), nom = String(cat[cellId(r, 1)] || '');
+    if (/^5/.test(cod)) opG += '<option value="' + escHtml(cod) + '"' + (/bancari|comisi|financ/i.test(nom) ? ' selected' : '') + '>' + escHtml(cod + ' — ' + nom) + '</option>';
+    if (/^4/.test(cod)) opI += '<option value="' + escHtml(cod) + '"' + (/interes|interés|financ/i.test(nom) ? ' selected' : '') + '>' + escHtml(cod + ' — ' + nom) + '</option>';
+  }
+  if (!opG) opG = '<option value="5.2.03">5.2.03 — Gastos</option>';
+  if (!opI) opI = '<option value="4.1.01">4.1.01 — Ventas</option>';
+  var html = '<div class="mcrNota">' + soloBanco.length + ' movimiento(s) del banco no están en tu Diario. Marcá los que querés registrar:</div>' +
+    '<label class="mcrF">Cuenta para salidas (comisiones, cargos…)</label><select id="cbGasto" class="mcrI">' + opG + '</select>' +
+    '<label class="mcrF">Cuenta para entradas (intereses, depósitos…)</label><select id="cbIngreso" class="mcrI">' + opI + '</select><div style="margin-top:8px">';
+  soloBanco.forEach(function (x, i) {
+    var m = x.banco.monto;
+    html += '<label style="display:block;border:1px solid #e2e8f0;border-radius:8px;padding:6px;margin-bottom:6px;font-size:13px"><input type="checkbox" class="cbSel" data-i="' + i + '" checked> ' +
+      escHtml(x.banco.fechaTxt) + ' · ' + escHtml(x.banco.desc || '') + '<br><b style="color:' + (m < 0 ? '#b91c1c' : '#15803d') + '">' + (m < 0 ? '−' : '+') + '₡' + fmtNum(Math.abs(m)) + '</b></label>';
+  });
+  html += '</div><div class="mcrNota">Se registran contra la cuenta de Bancos. Sin IVA; si lleva IVA usá “Registrar compra”.</div>';
+  abrirPanel('🏦 Registrar movimientos del banco', html, [{ texto: 'Ahora no' }, { texto: 'Registrar seleccionados', ok: true, accion: function () {
+    var gasto = document.getElementById('cbGasto').value, ingreso = document.getElementById('cbIngreso').value, n = 0, fallo = 0, origenes = origenesEnDiario();
+    snapshot();
+    document.querySelectorAll('#mcrPanelBody .cbSel:checked').forEach(function (cb) {
+      var b = soloBanco[parseInt(cb.getAttribute('data-i'), 10)].banco, monto = r2c(Math.abs(b.monto)), entrada = b.monto > 0;
+      var origen = 'banco-' + (b.ts || b.fechaTxt) + '-' + b.monto + '-' + String(b.desc || '').slice(0, 20);
+      if (origenes[origen]) return;
+      var cuentaBanco = asegurarCuentaEnCatalogo(CUENTAS_AUTO.bancos);
+      var L = entrada ? [{ codigo: cuentaBanco, debe: monto, haber: 0 }, { codigo: ingreso, debe: 0, haber: monto }] : [{ codigo: gasto, debe: monto, haber: 0 }, { codigo: cuentaBanco, debe: 0, haber: monto }];
+      var f = b.ts ? new Date(b.ts) : new Date();
+      if (escribirAsientoEnDiario(f.toLocaleDateString('es-CR'), 'Banco — ' + (b.desc || 'movimiento'), L, origen)) { n++; origenes[origen] = true; } else fallo++;
+    });
+    activeSheet = 'Diario'; buildTable(); renderTabs(); autoSave();
+    document.getElementById('saveStatus').textContent = '✓ ' + n + ' movimiento(s) del banco registrados en el Diario' + (fallo ? ' · ⚠ ' + fallo + ' no se pudieron' : '');
+  } }]);
+}
 function crearHojaConciliacion(filas, saldoBanco) {
   var name = crearHojaDestino('Conciliación');
   var d = sheetData[name], f = sheetFormats[name];
@@ -15315,11 +15460,16 @@ document.getElementById('bankFileInput').addEventListener('change', function (e)
     } catch (err) { alert('No se pudo leer el archivo del banco.'); document.getElementById('bankFileInput').value = ''; return; }
     document.getElementById('bankFileInput').value = '';
     if (!lectura.movs.length) { alert('No se detectaron movimientos en el archivo. Se espera: Fecha, Descripción y Monto (o Débito y Crédito) en cada fila.'); return; }
-    var libros = leerHojaParaModulos();
-    var movLibros = libros.rows.map(function (row) {
-      var ts = parsearFechaFlexible(row.fecha);
-      return { ts: ts, fechaTxt: fechaTexto(ts, row.fecha), desc: row.cuenta || '', monto: row.debe - row.haber };
-    }).filter(function (m) { return m.monto !== 0; });
+    var modoDiario = conciliarContraDiario; conciliarContraDiario = false;
+    var movLibros;
+    if (modoDiario) movLibros = movimientosBancoDelDiario();
+    else {
+      var libros = leerHojaParaModulos();
+      movLibros = libros.rows.map(function (row) {
+        var ts = parsearFechaFlexible(row.fecha);
+        return { ts: ts, fechaTxt: fechaTexto(ts, row.fecha), desc: row.cuenta || '', monto: row.debe - row.haber };
+      }).filter(function (m) { return m.monto !== 0; });
+    }
     var filas = conciliarMovimientos(lectura.movs, movLibros, {
       tolDias: Math.max(0, Math.floor(leerNumeroCampo('concTolDias'))),
       tolMonto: Math.max(0, leerNumeroCampo('concTolMonto'))
@@ -15332,6 +15482,7 @@ document.getElementById('bankFileInput').addEventListener('change', function (e)
     var conc = filas.filter(function (x) { return /^Conciliado|^Agrupado/.test(x.estado); }).length;
     var rev = filas.filter(function (x) { return /^Revisar/.test(x.estado); }).length;
     document.getElementById('saveStatus').textContent = '✓ Conciliación: ' + conc + ' conciliados, ' + rev + ' por revisar, ' + (filas.length - conc - rev) + ' sin pareja';
+    if (modoDiario) { if (!movLibros.length) alert('El archivo del banco se leyó, pero el Diario no tiene movimientos en cuentas de Bancos todavía.'); ofrecerRegistrarSoloBanco(filas); return; }
     if (!movLibros.length) alert('El archivo del banco se leyó, pero la hoja activa no tiene movimientos de libros (columnas Fecha, Cuenta, Debe, Haber). Abrí primero la hoja de tu libro diario y volvé a conciliar.');
   };
   if (esExcel) reader.readAsBinaryString(file); else reader.readAsText(file);
@@ -15449,7 +15600,7 @@ document.getElementById('authLogoutBtn').addEventListener('click', function () {
 });
 
 function estadoActualComoObjeto() {
-  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, sheetProtegidaHash: sheetProtegidaHash, sheetPivoteConfig: sheetPivoteConfig, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetGraficos: sheetGraficos, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, zoomLevel: zoomLevel, logoPdfDataUrl: logoPdfDataUrl, pdfEncabezadoTexto: pdfEncabezadoTexto, pdfPiePaginaTexto: pdfPiePaginaTexto };
+  return { sheets: sheets, sheetData: sheetData, sheetFormats: sheetFormats, sheetNotes: sheetNotes, sheetAttachments: sheetAttachments, sheetProtegida: sheetProtegida, sheetProtegidaHash: sheetProtegidaHash, sheetPivoteConfig: sheetPivoteConfig, colWidths: colWidths, sheetMerges: sheetMerges, sheetFreeze: sheetFreeze, sheetCondFormats: sheetCondFormats, sheetValidations: sheetValidations, rangosNombrados: rangosNombrados, sheetHiddenRows: sheetHiddenRows, sheetHiddenCols: sheetHiddenCols, sheetGroupsRow: sheetGroupsRow, sheetGroupsCol: sheetGroupsCol, macros: macros, sheetSparklines: sheetSparklines, sheetGraficos: sheetGraficos, sheetSlicers: sheetSlicers, sheetEscenarios: sheetEscenarios, sheetCondFormatsAvanzado: sheetCondFormatsAvanzado, sheetControles: sheetControles, sheetValidacionNativa: sheetValidacionNativa, sheetAutoFiltro: sheetAutoFiltro, sheetCeldasDesbloqueadas: sheetCeldasDesbloqueadas, vistasGuardadas: vistasGuardadas, facturasRecurrentes: facturasRecurrentes, zoomLevel: zoomLevel, logoPdfDataUrl: logoPdfDataUrl, pdfEncabezadoTexto: pdfEncabezadoTexto, pdfPiePaginaTexto: pdfPiePaginaTexto };
 }
 function cargarEstadoDesdeObjeto(obj) {
   applyingRemote = true;
@@ -15482,6 +15633,7 @@ function cargarEstadoDesdeObjeto(obj) {
   sheetAutoFiltro = obj.sheetAutoFiltro || {};
   sheetCeldasDesbloqueadas = obj.sheetCeldasDesbloqueadas || {};
   vistasGuardadas = obj.vistasGuardadas || [];
+  facturasRecurrentes = obj.facturasRecurrentes || [];
   zoomLevel = obj.zoomLevel || 100;
   logoPdfDataUrl = obj.logoPdfDataUrl || null;
   pdfEncabezadoTexto = obj.pdfEncabezadoTexto || '';
@@ -15786,6 +15938,7 @@ function autoSave() {
     localStorage.setItem('mcr_autofiltro_v6', JSON.stringify(sheetAutoFiltro));
     localStorage.setItem('mcr_celdasdesbloq_v6', JSON.stringify(sheetCeldasDesbloqueadas));
     localStorage.setItem('mcr_vistas_v6', JSON.stringify(vistasGuardadas));
+    localStorage.setItem('mcr_recurrentes_v6', JSON.stringify(facturasRecurrentes));
     localStorage.setItem('mcr_zoom_v6', String(zoomLevel));
     localStorage.setItem('mcr_active_v6', activeSheet);
     if (logoPdfDataUrl) localStorage.setItem('mcr_logopdf_v6', logoPdfDataUrl); else localStorage.removeItem('mcr_logopdf_v6');
@@ -15829,6 +15982,7 @@ function restore() {
     var atf = localStorage.getItem('mcr_autofiltro_v6');
     var cde = localStorage.getItem('mcr_celdasdesbloq_v6');
     var vst = localStorage.getItem('mcr_vistas_v6');
+    var rcr = localStorage.getItem('mcr_recurrentes_v6');
     var zm = localStorage.getItem('mcr_zoom_v6');
     var a = localStorage.getItem('mcr_active_v6');
     var lg = localStorage.getItem('mcr_logopdf_v6');
@@ -15863,6 +16017,7 @@ function restore() {
     if (atf) sheetAutoFiltro = JSON.parse(atf);
     if (cde) sheetCeldasDesbloqueadas = JSON.parse(cde);
     if (vst) vistasGuardadas = JSON.parse(vst);
+    if (rcr) facturasRecurrentes = JSON.parse(rcr);
     if (zm) zoomLevel = parseInt(zm) || 100;
     if (a && sheets.indexOf(a) >= 0) activeSheet = a;
     if (lg) logoPdfDataUrl = lg;
@@ -17798,10 +17953,10 @@ document.getElementById('reciboEliminarBtn').addEventListener('click', function 
   renderAllCells(); autoSave();
   document.getElementById('reciboOverlay').classList.remove('show');
 });
-// Backup automático: una vez al día como máximo, si hay una matriz abierta
+// Backup automático (versión del historial): cada 6 horas como máximo, si hay una matriz abierta
 try {
   var ultimoBackup = parseInt(localStorage.getItem('kcn_ultimo_backup') || '0', 10);
-  if (Date.now() - ultimoBackup > 24 * 60 * 60 * 1000) {
+  if (Date.now() - ultimoBackup > 6 * 60 * 60 * 1000) { // cada 6 horas como máximo (antes 24)
     setTimeout(function () { crearBackup(true); }, 4000);
   }
 } catch (e) {}
@@ -17913,6 +18068,570 @@ document.addEventListener('keydown', function (e) {
     return;
   }
 });
+
+// ══════════════════════════════════════════════
+// BARRA DE ACCESO RÁPIDO: botones favoritos siempre visibles (se eligen con ⭐)
+// ══════════════════════════════════════════════
+var QB_PREDETERMINADOS = ['btnAutoSum', 'btnBold', 'btnCurrency', 'btnFormat', 'btnCopy', 'btnPaste'];
+function qbLeer() {
+  try { var j = localStorage.getItem('kcn_quickbar'); var a = j ? JSON.parse(j) : null; if (Array.isArray(a)) return a; } catch (e) {}
+  return QB_PREDETERMINADOS.slice();
+}
+function qbGuardar(a) { try { localStorage.setItem('kcn_quickbar', JSON.stringify(a)); } catch (e) {} }
+function qbRender() {
+  var lista = document.getElementById('quickBarList'); if (!lista) return;
+  lista.innerHTML = '';
+  qbLeer().forEach(function (id) {
+    var orig = document.getElementById(id); if (!orig) return;
+    var b = document.createElement('button');
+    b.textContent = (orig.textContent || '').trim(); b.title = orig.title || b.textContent;
+    b.addEventListener('click', function () { if (!orig.disabled) orig.click(); });
+    lista.appendChild(b);
+  });
+  if (!lista.children.length) { var v = document.createElement('span'); v.className = 'qbVacio'; v.textContent = 'Tocá ⭐ para elegir tus botones favoritos'; lista.appendChild(v); }
+}
+function qbEditar() {
+  var favs = qbLeer(), html = '<input id="qbFiltro" type="search" placeholder="🔎 Buscar herramienta…" style="width:100%;box-sizing:border-box;padding:8px;border:1px solid #cce9ae;border-radius:8px;margin-bottom:8px;">';
+  html += '<div style="font-size:11.5px;color:#6b8f48;margin-bottom:6px;">Marcá los botones que querés ver siempre a mano, debajo de la barra de fórmulas.</div><div id="qbOpciones">';
+  document.querySelectorAll('#toolbar .rbSec').forEach(function (sec) {
+    var tit = sec.querySelector('.rbSecTit'); var botones = sec.querySelectorAll('.rbGrid button[id]'); if (!botones.length) return;
+    html += '<div class="qbGrupo"><div style="font-weight:800;font-size:12px;margin:8px 0 4px;color:#245f09;">' + (tit ? tit.textContent : '') + '</div>';
+    botones.forEach(function (bt) {
+      var t = (bt.textContent || '').trim();
+      html += '<label class="qbOp" style="display:flex;gap:8px;align-items:center;padding:5px 2px;font-size:13px;"><input type="checkbox" value="' + bt.id + '"' + (favs.indexOf(bt.id) !== -1 ? ' checked' : '') + '> <span>' + t.replace(/</g, '&lt;') + '</span></label>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  abrirPanel('⭐ Barra rápida', html, [
+    { texto: 'Restablecer', accion: function () { qbGuardar(QB_PREDETERMINADOS.slice()); qbRender(); } },
+    { texto: 'Guardar', ok: true, accion: function () {
+      var marcados = {}; document.querySelectorAll('#qbOpciones input:checked').forEach(function (c) { marcados[c.value] = true; });
+      var nuevos = favs.filter(function (id) { return marcados[id]; });
+      Object.keys(marcados).forEach(function (id) { if (nuevos.indexOf(id) === -1) nuevos.push(id); });
+      qbGuardar(nuevos); qbRender();
+    } }
+  ]);
+  var f = document.getElementById('qbFiltro');
+  f.addEventListener('input', function () {
+    var q = f.value.trim().toLowerCase();
+    document.querySelectorAll('#qbOpciones .qbOp').forEach(function (l) { l.style.display = !q || l.textContent.toLowerCase().indexOf(q) !== -1 ? 'flex' : 'none'; });
+  });
+}
+document.getElementById('quickBarEdit').addEventListener('click', qbEditar);
+qbRender();
+
+// ══════════════════════════════════════════════
+// AUTOSUMA ∑: suma la columna de arriba (o la fila de la izquierda) con un toque
+// ══════════════════════════════════════════════
+function autoSumar() {
+  function esNum(r, c) {
+    if (r < 0 || c < 0) return false;
+    var v = computeValue(cellId(r, c));
+    return v !== '' && v !== null && v !== undefined && !isNaN(parseFloat(limpiaNum(String(v)))) && !esValorError(String(v));
+  }
+  var datos = sheetData[activeSheet] || (sheetData[activeSheet] = {});
+  var b = currentRangeBounds();
+  if (!b) { var m = (document.getElementById('cellRef').textContent || '').match(/^([A-Za-z]+)(\d+)$/); if (!m) return; b = { minR: +m[2] - 1, maxR: +m[2] - 1, minC: colIndex(m[1]), maxC: colIndex(m[1]) }; }
+  var escritos = [];
+  function poner(r, c, f) { if (r >= ROWS) ROWS = r + 3; if (c >= COLS) COLS = c + 1; datos[cellId(r, c)] = f; escritos.push(cellId(r, c)); }
+  var unaCelda = b.minR === b.maxR && b.minC === b.maxC;
+  if (!unaCelda) {
+    // Rango seleccionado: una fila ancha suma hacia la derecha; si no, un total por columna en la fila de abajo.
+    if (b.minR === b.maxR) {
+      if (!esNum(b.minR, b.minC)) { alert('El rango seleccionado no tiene números para sumar.'); return; }
+      snapshot(); poner(b.minR, b.maxC + 1, '=SUMA(' + cellId(b.minR, b.minC) + ':' + cellId(b.minR, b.maxC) + ')');
+    } else {
+      var hubo = false; snapshot();
+      for (var c = b.minC; c <= b.maxC; c++) {
+        var alguno = false; for (var r = b.minR; r <= b.maxR; r++) if (esNum(r, c)) { alguno = true; break; }
+        if (!alguno) continue;
+        poner(b.maxR + 1, c, '=SUMA(' + cellId(b.minR, c) + ':' + cellId(b.maxR, c) + ')'); hubo = true;
+      }
+      if (!hubo) { undoStack.pop(); alert('El rango seleccionado no tiene números para sumar.'); return; }
+    }
+  } else {
+    var R = b.minR, C = b.minC, n = 0;
+    while (esNum(R - n - 1, C)) n++;
+    if (n > 0) { snapshot(); poner(R, C, '=SUMA(' + cellId(R - n, C) + ':' + cellId(R - 1, C) + ')'); }
+    else {
+      var k = 0; while (esNum(R, C - k - 1)) k++;
+      if (k === 0) { alert('No hay números arriba ni a la izquierda de esta celda. Seleccioná el rango que querés sumar y tocá ∑ de nuevo.'); return; }
+      snapshot(); poner(R, C, '=SUMA(' + cellId(R, C - k) + ':' + cellId(R, C - 1) + ')');
+    }
+  }
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '∑ ' + escritos[0] + ' = ' + (datos[escritos[0]] || '');
+}
+document.getElementById('btnAutoSum').addEventListener('click', autoSumar);
+
+// ══════════════════════════════════════════════
+// PRESUPUESTO vs REAL: presupuesto mensual por cuenta comparado con lo registrado en el Diario
+// ══════════════════════════════════════════════
+function realPorCuentaDelMes(mes) { // mes = 'AAAA-MM' → { codigo: { debe, haber } }
+  var out = {}, hoja = sheetData.Diario || {};
+  for (var r = 3; r < ROWS + 600; r++) {
+    var cod = String(computeValueEnHoja('Diario', cellId(r, 2)) || '').trim();
+    if (!cod) { if (hoja[cellId(r, 9)] === undefined && r > ROWS) break; continue; }
+    var f = fechaDe(String(computeValueEnHoja('Diario', cellId(r, 0)) || ''));
+    if (isNaN(f.getTime())) continue;
+    if (claveMes(f) !== mes) continue;
+    var d = parseFloat(limpiaNum(String(computeValueEnHoja('Diario', cellId(r, 5)) || '0'))) || 0, h = parseFloat(limpiaNum(String(computeValueEnHoja('Diario', cellId(r, 6)) || '0'))) || 0;
+    var o = out[cod] || (out[cod] = { debe: 0, haber: 0 }); o.debe += d; o.haber += h;
+  }
+  return out;
+}
+function crearPresupuesto(mes) {
+  if (!asegurarSistemaContable()) return false;
+  var cat = sheetData.Catalogo || {}, cuentas = [];
+  ['Ingreso', 'Costo', 'Gasto'].forEach(function (tipo) {
+    for (var r = 2; r < 60; r++) {
+      var cod = String(cat[cellId(r, 0)] || '').trim(), t = String(cat[cellId(r, 2)] || '').trim();
+      if (cod && t === tipo) cuentas.push({ cod: cod, nombre: String(cat[cellId(r, 1)] || ''), tipo: tipo });
+    }
+  });
+  if (!cuentas.length) { alert('El Catálogo todavía no tiene cuentas de Ingreso, Costo o Gasto. Agregalas en la hoja Catalogo (o usá "Catálogo por negocio").'); return false; }
+  var nombre = sheets.indexOf('Presupuesto') !== -1 ? 'Presupuesto' : crearHojaDestino('Presupuesto');
+  // Se conserva lo que ya escribiste como presupuesto (por código de cuenta)
+  var viejo = {}, ant = sheetData[nombre] || {};
+  for (var q = 4; q < 4 + 120; q++) { var cq = String(ant[cellId(q, 0)] || '').trim(); if (cq && ant[cellId(q, 3)] !== undefined && ant[cellId(q, 3)] !== '') viejo[cq] = ant[cellId(q, 3)]; }
+  var real = realPorCuentaDelMes(mes), previa = activeSheet;
+  activeSheet = nombre; var d = sheetData[nombre] = {}, f = sheetFormats[nombre] = {}, m = sheetMerges[nombre] = [];
+  function st(r, c, o) { f[cellId(r, c)] = Object.assign({}, f[cellId(r, c)], o); }
+  var DINERO = { numFormat: { type: 'number', decimals: 2, thousands: true } }, PCT = { numFormat: { type: 'percent', decimals: 0, thousands: false } };
+  d.A1 = '🎯 PRESUPUESTO vs REAL — ' + mes; for (var c = 0; c < 8; c++) st(0, c, { bold: true, bgColor: '#7c3aed', fontColor: '#ffffff', fontSize: 14 }); m.push({ r1: 0, c1: 0, r2: 0, c2: 7 });
+  d.A2 = 'Escribí el presupuesto del mes en la columna D (celdas amarillas). "Real" sale del Diario. Para cambiar de mes o actualizar, tocá 🎯 Presupuesto vs real.'; st(1, 0, { fontColor: '#6b7280', fontSize: 11 });
+  ['Código', 'Cuenta', 'Tipo', 'Presupuesto (₡)', 'Real del mes (₡)', 'Diferencia (₡)', '% ejecutado', 'Estado'].forEach(function (t, i) { d[cellId(3, i)] = t; st(3, i, { bold: true, bgColor: '#ddd6fe', border: true }); });
+  var R0 = 4;
+  cuentas.forEach(function (x, i) {
+    var r = R0 + i, n = r + 1, o = real[x.cod] || { debe: 0, haber: 0 };
+    d[cellId(r, 0)] = x.cod; d[cellId(r, 1)] = x.nombre; d[cellId(r, 2)] = x.tipo;
+    if (viejo[x.cod] !== undefined) d[cellId(r, 3)] = String(viejo[x.cod]);
+    d[cellId(r, 4)] = String(r2c(x.tipo === 'Ingreso' ? o.haber - o.debe : o.debe - o.haber));
+    d[cellId(r, 5)] = x.tipo === 'Ingreso' ? '=E' + n + '-D' + n : '=D' + n + '-E' + n;
+    d[cellId(r, 6)] = '=SI(D' + n + '=0;"";E' + n + '/D' + n + ')';
+    d[cellId(r, 7)] = x.tipo === 'Ingreso'
+      ? '=SI(D' + n + '=0;"";SI(G' + n + '>=1;"🟢 Meta lograda";SI(G' + n + '>=0.9;"🟡 Cerca";"🔴 Por debajo")))'
+      : '=SI(D' + n + '=0;"";SI(G' + n + '>1;"🔴 Excedido";SI(G' + n + '>=0.9;"🟡 Cerca del límite";"🟢 En rango")))';
+    st(r, 3, Object.assign({ bgColor: '#fef9c3', border: true }, DINERO)); st(r, 4, DINERO); st(r, 5, DINERO); st(r, 6, PCT);
+  });
+  var U = R0 + cuentas.length, a = R0 + 1, z = U; // filas 1-based de datos: a..z
+  function tot(fila, texto, fD, fE, color) {
+    d[cellId(fila, 1)] = texto; d[cellId(fila, 3)] = fD; d[cellId(fila, 4)] = fE;
+    for (var c2 = 0; c2 < 8; c2++) st(fila, c2, { bold: true, bgColor: color, border: true }); st(fila, 3, DINERO); st(fila, 4, DINERO);
+  }
+  function suma(tipo, col) { return 'SUMAR.SI(C' + a + ':C' + z + ';"' + tipo + '";' + col + a + ':' + col + z + ')'; }
+  tot(U + 1, 'TOTAL INGRESOS', '=' + suma('Ingreso', 'D'), '=' + suma('Ingreso', 'E'), '#bbf7d0');
+  tot(U + 2, 'TOTAL COSTOS Y GASTOS', '=' + suma('Costo', 'D') + '+' + suma('Gasto', 'D'), '=' + suma('Costo', 'E') + '+' + suma('Gasto', 'E'), '#fecaca');
+  tot(U + 3, 'RESULTADO (Ingresos − Costos y gastos)', '=D' + (U + 2) + '-D' + (U + 3), '=E' + (U + 2) + '-E' + (U + 3), '#e9d5ff');
+  colWidths[nombre] = { 0: 70, 1: 210, 2: 70, 3: 120, 4: 120, 5: 110, 6: 90, 7: 150 };
+  if (ROWS < U + 8) ROWS = U + 8; if (COLS < 8) COLS = 8;
+  buildTable(); renderTabs(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Presupuesto vs real — ' + mes;
+  return true;
+}
+document.getElementById('btnPresupuesto').addEventListener('click', function () {
+  var hoy = new Date(), porDefecto = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+  abrirPanel('🎯 Presupuesto vs real',
+    '<div style="font-size:12.5px;color:#4b5563;margin-bottom:10px;">Compará lo que presupuestaste por cuenta (ingresos, costos y gastos) contra lo que ya está en el Diario. Lo que escribas como presupuesto se conserva cada vez que actualices.</div>' +
+    '<label style="font-size:12px;font-weight:700;">Mes a comparar</label><input id="presMes" type="month" value="' + porDefecto + '" style="width:100%;box-sizing:border-box;padding:9px;border:1px solid #cce9ae;border-radius:8px;margin-top:4px;">' +
+    '<div style="font-size:11.5px;color:#6b8f48;margin-top:8px;">🟢 hasta 90% · 🟡 90–100% · 🔴 más del 100% del presupuesto de gastos. En ingresos es al revés: 🟢 si llegaste a la meta.</div>',
+    [{ texto: 'Cancelar' }, { texto: 'Generar / actualizar', ok: true, accion: function () {
+      var mes = (document.getElementById('presMes').value || '').trim();
+      if (!/^\d{4}-\d{2}$/.test(mes)) { alert('Elegí un mes válido.'); return false; }
+      snapshot(); if (crearPresupuesto(mes) === false) { undoStack.pop(); }
+    } }]);
+});
+
+// ══════════════════════════════════════════════
+// FACTURAS RECURRENTES: plantillas mensuales (alquiler, cuotas, minutas…) que se preparan solas.
+// Nunca se envían solas a Hacienda: se cargan en el panel de Factura y vos confirmás el envío.
+// ══════════════════════════════════════════════
+function mesActualClave() { var h = new Date(); return h.getFullYear() + '-' + String(h.getMonth() + 1).padStart(2, '0'); }
+function leerFormularioFactura() {
+  function gv(id) { var e = document.getElementById(id); return e ? (e.value || '') : ''; }
+  var lineas = [];
+  document.querySelectorAll('#fe-lineas-body tr').forEach(function (row) {
+    lineas.push({
+      cantidad: parseFloat((row.querySelector('.feQty') || {}).value) || 1, detalle: (row.querySelector('.feDesc') || {}).value || '',
+      cabys: (row.querySelector('.feCabys') || {}).value || '', iva: (row.querySelector('.feIva') || {}).value || '13', precio: parseFloat((row.querySelector('.fePrice') || {}).value) || 0
+    });
+  });
+  return { receptor: { nombre: gv('fe-receptor-nombre'), cedula: gv('fe-receptor-cedula'), email: gv('fe-receptor-email'), telefono: gv('fe-receptor-telefono') }, lineas: lineas,
+    condicionVenta: gv('fe-condicion-venta') || '01', plazoCredito: gv('fe-plazo-credito') || '30', cedulaEmisor: gv('fe-emisor-sel') || '' };
+}
+function totalAproxRecurrente(p) { var t = 0; (p.lineas || []).forEach(function (l) { t += (l.cantidad || 1) * (l.precio || 0) * (1 + (parseFloat(l.iva) || 0) / 100); }); return t; }
+function cargarRecurrenteEnFactura(p) {
+  document.getElementById('btnFactura').click();
+  function sv(id, v) { var e = document.getElementById(id); if (e) e.value = v == null ? '' : v; }
+  document.getElementById('fe-lineas-body').innerHTML = '';
+  (p.lineas || []).forEach(function (l) {
+    agregarLineaFactura();
+    var row = document.querySelector('#fe-lineas-body tr:last-child');
+    row.querySelector('.feQty').value = l.cantidad; row.querySelector('.feDesc').value = l.detalle; row.querySelector('.feCabys').value = l.cabys;
+    row.querySelector('.feIva').value = String(l.iva); row.querySelector('.fePrice').value = l.precio;
+  });
+  if (!p.lineas || !p.lineas.length) agregarLineaFactura();
+  sv('fe-receptor-nombre', p.receptor.nombre); sv('fe-receptor-cedula', p.receptor.cedula); sv('fe-receptor-email', p.receptor.email); sv('fe-receptor-telefono', p.receptor.telefono);
+  var cond = document.getElementById('fe-condicion-venta'); if (cond) { cond.value = p.condicionVenta || '01'; cond.dispatchEvent(new Event('change')); }
+  sv('fe-plazo-credito', p.plazoCredito || '30');
+  var fecha = new Date(); sv('fe-fecha', fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0') + '-' + String(fecha.getDate()).padStart(2, '0'));
+  var sel = document.getElementById('fe-emisor-sel'); if (sel && p.cedulaEmisor && [].some.call(sel.options, function (o) { return o.value === p.cedulaEmisor; })) { sel.value = p.cedulaEmisor; sel.dispatchEvent(new Event('change')); }
+  if (typeof recalcularFactura === 'function') recalcularFactura();
+}
+function recurrentesPendientes() {
+  var mes = mesActualClave(), dia = new Date().getDate();
+  return facturasRecurrentes.filter(function (p) { return p.ultimaPreparada !== mes && dia >= (p.dia || 1); });
+}
+function abrirRecurrentes() {
+  var mes = mesActualClave(), hoy = new Date().getDate();
+  var html = '<div style="font-size:12.5px;color:#4b5563;margin-bottom:8px;">Guardá la factura que tengas armada como plantilla mensual. Cuando llegue el día, la preparás con un toque y confirmás el envío a Hacienda (nunca se envía sola).</div>';
+  html += '<button id="recGuardarBtn" style="width:100%;padding:10px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;font-weight:700;margin-bottom:10px;">➕ Guardar la factura armada como recurrente</button>';
+  if (!facturasRecurrentes.length) html += '<div style="padding:10px;color:#888;">Todavía no tenés facturas recurrentes.</div>';
+  facturasRecurrentes.forEach(function (p) {
+    var lista = p.ultimaPreparada === mes, toca = !lista && hoy >= (p.dia || 1);
+    html += '<div style="padding:9px 0;border-bottom:1px solid #eee;"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;"><div><b>' + escHtml(p.nombre) + '</b><div style="font-size:11.5px;color:#6b7280;">' + escHtml(p.receptor.nombre || 'Sin cliente') + ' · día ' + (p.dia || 1) + ' · ≈ ₡' + totalAproxRecurrente(p).toLocaleString('es-CR', { maximumFractionDigits: 0 }) + '</div>' +
+      '<div style="font-size:11.5px;margin-top:2px;">' + (lista ? '✅ Preparada este mes' : (toca ? '⏳ Toca prepararla' : '🕒 Pendiente (día ' + (p.dia || 1) + ')')) + '</div></div>' +
+      '<div style="display:flex;gap:6px;flex-shrink:0;"><button class="recPrepBtn" data-id="' + p.id + '" style="padding:7px 10px;border-radius:8px;background:#2d7a0c;color:#fff;border:none;">Preparar</button><button class="recDelBtn" data-id="' + p.id + '" style="padding:7px 9px;border-radius:8px;background:#fff;color:#c0392b;border:1px solid #f1c0bb;">🗑</button></div></div></div>';
+  });
+  abrirPanel('🔁 Facturas recurrentes', html, [{ texto: 'Cerrar' }]);
+  var body = document.getElementById('mcrPanelBody');
+  body.querySelector('#recGuardarBtn').addEventListener('click', function () {
+    var datos = leerFormularioFactura();
+    var buenas = datos.lineas.filter(function (l) { return l.precio > 0 && l.detalle; });
+    if (!buenas.length || !datos.receptor.nombre) { alert('Primero armá la factura en 🧾 Factura (cliente y al menos una línea con precio) y volvé acá para guardarla como recurrente.'); return; }
+    var nombre = prompt('Nombre de esta factura recurrente (ej: Alquiler local 3):', datos.receptor.nombre); if (nombre === null) return;
+    var dia = parseInt(prompt('¿Qué día del mes toca? (1 a 28)', '1'), 10); if (!(dia >= 1 && dia <= 28)) { alert('El día tiene que estar entre 1 y 28.'); return; }
+    datos.lineas = buenas; datos.id = 'rec_' + Date.now(); datos.nombre = (nombre || '').trim() || datos.receptor.nombre; datos.dia = dia; datos.ultimaPreparada = '';
+    facturasRecurrentes.push(datos); autoSave(); abrirRecurrentes();
+  });
+  body.querySelectorAll('.recPrepBtn').forEach(function (b) { b.addEventListener('click', function () {
+    var p = facturasRecurrentes.filter(function (x) { return x.id === b.dataset.id; })[0]; if (!p) return;
+    p.ultimaPreparada = mesActualClave(); autoSave(); cerrarPanel(); cargarRecurrenteEnFactura(p);
+    document.getElementById('saveStatus').textContent = '🔁 "' + p.nombre + '" lista: revisá y enviá a Hacienda';
+  }); });
+  body.querySelectorAll('.recDelBtn').forEach(function (b) { b.addEventListener('click', function () {
+    if (!confirm('¿Eliminar esta factura recurrente?')) return;
+    facturasRecurrentes = facturasRecurrentes.filter(function (x) { return x.id !== b.dataset.id; }); autoSave(); abrirRecurrentes();
+  }); });
+}
+document.getElementById('btnRecurrentes').addEventListener('click', abrirRecurrentes);
+// ══════════════════════════════════════════════
+// COBROS POR WHATSAPP
+// ══════════════════════════════════════════════
+function telefonoWhatsApp(t) {
+  var d = String(t || '').replace(/\D/g, '');
+  if (d.length === 8) d = '506' + d;
+  return d.length >= 10 ? d : '';
+}
+function telefonoDeCliente(cedula, regs) {
+  var ced = String(cedula || '').replace(/\D/g, '');
+  for (var i = 0; i < (contactosCache || []).length; i++) {
+    var c = contactosCache[i];
+    if (ced && String(c.cedula || '').replace(/\D/g, '') === ced && telefonoWhatsApp(c.telefono)) return telefonoWhatsApp(c.telefono);
+  }
+  for (var j = 0; j < regs.length; j++) {
+    var h = regs[j];
+    if (ced && String(h.receptorCedula || '').replace(/\D/g, '') === ced && telefonoWhatsApp(h.receptorTelefono)) return telefonoWhatsApp(h.receptorTelefono);
+  }
+  return '';
+}
+function mensajeCobro(cliente, facturas, emisor) {
+  var total = facturas.reduce(function (a, x) { return a + x.saldo; }, 0);
+  var lineas = facturas.map(function (x) {
+    return '• Factura ' + x.factura + ' (vence ' + x.vence.toLocaleDateString('es-CR') + '): ₡' + fmtNum(x.saldo) + (x.dias > 0 ? ' — ' + x.dias + ' día(s) de atraso' : '');
+  });
+  return 'Hola ' + cliente + ', le saludamos de ' + (emisor || 'nuestra empresa') + '. Le recordamos cordialmente que tiene ' +
+    (facturas.length > 1 ? 'facturas pendientes' : 'una factura pendiente') + ' de pago:\n' + lineas.join('\n') +
+    '\nTotal pendiente: ₡' + fmtNum(total) + '.\nSi ya realizó el pago, por favor ignore este mensaje y envíenos el comprobante. ¡Muchas gracias!';
+}
+async function abrirCobros() {
+  if (!currentUser) { alert('Iniciá sesión para leer tus facturas de Hacienda.'); return; }
+  document.getElementById('saveStatus').textContent = 'Buscando facturas vencidas…';
+  try { await cargarHistorialHacienda(); } catch (e) {}
+  try { if (!contactosCache.length) contactosCargar(); } catch (e) {}
+  var regs = historialHaciendaCache || [];
+  var hayPruebas = regs.some(function (h) { return h.ambiente === 'sandbox' && h.estado === 'aceptado'; });
+  var incluir = hayPruebas ? confirm('Hay facturas del ambiente de PRUEBAS.\n\nAceptar = incluirlas.\nCancelar = solo producción.') : false;
+  var filas = calcularCuentasPorCobrar(regs, new Date(), incluir).filter(function (x) { return x.dias > 0; });
+  document.getElementById('saveStatus').textContent = 'Listo';
+  if (!filas.length) { abrirPanel('📲 Cobrar por WhatsApp', '<p>🎉 No tenés facturas a crédito vencidas.</p>', [{ texto: 'Cerrar', ok: true, accion: cerrarPanel }]); return; }
+  var grupos = {}, orden = [];
+  filas.forEach(function (x) { var k = x.cedula || x.cliente; if (!grupos[k]) { grupos[k] = { cliente: x.cliente, cedula: x.cedula, facturas: [] }; orden.push(k); } grupos[k].facturas.push(x); });
+  var emisor = (document.getElementById('fe-emisor-nombre') || {}).value || '';
+  var html = '<p style="margin:0 0 8px;font-size:13px;color:#64748b">Clientes con facturas vencidas. El mensaje se abre en WhatsApp para que lo revisés antes de enviarlo.</p>';
+  orden.forEach(function (k, i) {
+    var g = grupos[k], tel = telefonoDeCliente(g.cedula, regs), total = g.facturas.reduce(function (a, x) { return a + x.saldo; }, 0);
+    g.tel = tel;
+    html += '<div style="border:1px solid #e2e8f0;border-radius:8px;padding:8px;margin-bottom:8px">' +
+      '<b>' + escHtml(g.cliente) + '</b> · ' + g.facturas.length + ' factura(s) · <b>₡' + fmtNum(total) + '</b><br>' +
+      '<span style="font-size:12px;color:#64748b">Mayor atraso: ' + g.facturas[0].dias + ' días · ' + (tel ? '+' + tel : 'sin teléfono') + '</span><br>' +
+      (tel ? '<button class="cobroBtn" data-i="' + i + '" style="margin-top:6px">📲 Enviar recordatorio</button>'
+           : '<input class="cobroTel" data-i="' + i + '" placeholder="Teléfono (8 dígitos)" style="margin-top:6px;width:150px"> <button class="cobroBtn" data-i="' + i + '">📲 Enviar</button>') + '</div>';
+  });
+  abrirPanel('📲 Cobrar por WhatsApp', html, [{ texto: 'Cerrar', ok: true, accion: cerrarPanel }]);
+  document.querySelectorAll('#mcrPanelBody .cobroBtn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = parseInt(b.getAttribute('data-i'), 10), g = grupos[orden[i]], tel = g.tel;
+      if (!tel) { var inp = document.querySelector('#mcrPanelBody .cobroTel[data-i="' + i + '"]'); tel = telefonoWhatsApp(inp && inp.value); }
+      if (!tel) { alert('Escribí un teléfono válido de 8 dígitos.'); return; }
+      window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(mensajeCobro(g.cliente, g.facturas, emisor)), '_blank');
+    });
+  });
+}
+document.getElementById('btnCobros').addEventListener('click', abrirCobros);
+// ══════════════════════════════════════════════
+// LECTOR DE XML DE FACTURAS RECIBIDAS
+// ══════════════════════════════════════════════
+function mrEnviadosLeer() { try { return JSON.parse(localStorage.getItem('kcn_mr_enviados') || '{}'); } catch (e) { return {}; } }
+function mrEnviadosMarcar(clave) { try { var m = mrEnviadosLeer(); m[clave] = Date.now(); localStorage.setItem('kcn_mr_enviados', JSON.stringify(m)); } catch (e) {} }
+// Envía un Mensaje Receptor a Hacienda sin pasar por el formulario. Devuelve {estado:'aceptado'|'pendiente'|'rechazado'|'error', texto}.
+async function enviarMensajeReceptorDirecto(c, mensaje, detalle) {
+  try {
+    var idToken = await currentUser.getIdToken();
+    var respuesta = await fetchViaXHR(MENSAJE_RECEPTOR_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      idToken: idToken, cedulaEmisor: ((document.getElementById('fe-emisor-sel') || {}).value) || undefined,
+      claveRecibida: c.clave, cedulaEmisorRecibido: String(c.cedula || '').replace(/\D/g, ''),
+      fechaEmisionRecibida: c.fecha ? new Date(c.fecha).toISOString() : undefined,
+      totalFacturaRecibida: c.totalOrig, montoTotalImpuestoRecibido: c.ivaOrig, mensaje: mensaje || '1', detalleMensaje: detalle || '' }) });
+    var datos = await respuesta.json();
+    if (!respuesta.ok) return { estado: 'error', texto: datos.error || 'error desconocido' };
+    if (datos.aceptado === true) { mrEnviadosMarcar(c.clave); return { estado: 'aceptado', texto: '' }; }
+    if (datos.pendiente) { mrEnviadosMarcar(c.clave); return { estado: 'pendiente', texto: datos.mensajePendiente || '' }; }
+    return { estado: 'rechazado', texto: datos.motivoRechazo || 'motivo no especificado' };
+  } catch (e) { return { estado: 'error', texto: e.message }; }
+}
+function parsearXmlComprobante(texto) {
+  var doc = new DOMParser().parseFromString(texto, 'application/xml');
+  if (doc.getElementsByTagName('parsererror').length) return null;
+  var raiz = doc.documentElement; if (!raiz) return null;
+  function t(padre, nombre) { var n = padre.getElementsByTagNameNS('*', nombre)[0]; return n ? n.textContent.trim() : ''; }
+  var tipo = raiz.localName;
+  if (!/Factura|Tiquete|NotaCredito|NotaDebito/i.test(tipo)) return null;
+  var emisor = raiz.getElementsByTagNameNS('*', 'Emisor')[0], res = raiz.getElementsByTagNameNS('*', 'ResumenFactura')[0];
+  if (!emisor || !res) return null;
+  var ident = emisor.getElementsByTagNameNS('*', 'Identificacion')[0];
+  var total = parseFloat(t(res, 'TotalComprobante')) || 0, iva = parseFloat(t(res, 'TotalImpuesto')) || 0;
+  var imp = parseFloat(t(res, 'TotalImpuesto')) || 0, cond = t(raiz, 'CondicionVenta');
+  var tarifas = []; Array.prototype.forEach.call(raiz.getElementsByTagNameNS('*', 'Tarifa'), function (n) { var v = parseFloat(n.textContent); if (!isNaN(v) && tarifas.indexOf(v) === -1) tarifas.push(v); });
+  var moneda = t(res, 'CodigoMoneda') || 'CRC', tc = parseFloat(t(res, 'TipoCambio')) || 0;
+  var factor = (moneda !== 'CRC' && tc > 0) ? tc : 1, ivaO = r2c(imp || iva);
+  return { tipo: tipo, esNC: /NotaCredito/i.test(tipo), clave: t(raiz, 'Clave'), fecha: t(raiz, 'FechaEmision'), proveedor: t(emisor, 'Nombre'),
+    cedula: ident ? t(ident, 'Numero') : '', total: r2c(total * factor), iva: r2c(ivaO * factor), base: r2c((total - ivaO) * factor), condicion: cond, tarifas: tarifas,
+    moneda: moneda, tipoCambio: factor !== 1 ? tc : 0, totalOrig: r2c(total), ivaOrig: ivaO, convertida: factor !== 1, sinTipoCambio: moneda !== 'CRC' && !(tc > 0) };
+}
+function leerArchivoTexto(file) {
+  return new Promise(function (ok, no) { var r = new FileReader(); r.onload = function () { ok(String(r.result)); }; r.onerror = no; r.readAsText(file); });
+}
+function abrirLectorXml() {
+  if (!asegurarSistemaContable()) return;
+  var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.xml,text/xml,application/xml'; inp.multiple = true;
+  inp.onchange = async function () {
+    var comp = [], malos = [];
+    for (var i = 0; i < inp.files.length; i++) {
+      try { var c = parsearXmlComprobante(await leerArchivoTexto(inp.files[i])); if (c && c.clave) comp.push(c); else malos.push(inp.files[i].name); } catch (e) { malos.push(inp.files[i].name); }
+    }
+    mostrarComprasXml(comp, malos);
+  };
+  inp.click();
+}
+function mostrarComprasXml(comp, malos) {
+  var origenes = origenesEnDiario(), cat = sheetData.Catalogo || {}, opc = '';
+  for (var r = 2; r < 60; r++) { var cod = String(cat[cellId(r, 0)] || '').trim(); if (cod && /^5/.test(cod)) opc += '<option value="' + escHtml(cod) + '">' + escHtml(cod + ' — ' + (cat[cellId(r, 1)] || '')) + '</option>'; }
+  if (!opc) opc = '<option value="5.2.03">5.2.03 — Servicios públicos</option>';
+  var html = '';
+  if (malos.length) html += '<div class="mcrNota" style="color:#b91c1c">No se pudieron leer: ' + escHtml(malos.join(', ')) + '</div>';
+  if (!comp.length) { abrirPanel('📄 Facturas recibidas (XML)', html + '<p>No se encontró ninguna factura válida.</p>', [{ texto: 'Cerrar', ok: true, accion: cerrarPanel }]); return; }
+  html += '<label class="mcrF">Cuenta de gasto/compra (para todas)</label><select id="xmlCuenta" class="mcrI">' + opc + '</select>' +
+    '<label style="display:block;margin:8px 0;font-size:13px"><input type="checkbox" id="xmlMrAuto"> 📨 Enviar también <b>Aceptación</b> a Hacienda (Mensaje Receptor) de las facturas seleccionadas</label>' +
+    '<label class="mcrF">Forma de pago (para todas)</label><select id="xmlPago" class="mcrI"><option value="auto">Según la factura (contado→Bancos / crédito→Proveedores)</option><option value="caja">Contado — Caja</option><option value="bancos">Contado — Bancos</option><option value="prov">A crédito — Proveedores</option></select><div style="margin-top:8px">';
+  comp.forEach(function (c, i) {
+    var dup = !!origenes['xml-' + c.clave];
+    html += '<label style="display:block;border:1px solid #e2e8f0;border-radius:8px;padding:6px;margin-bottom:6px;font-size:13px"><input type="checkbox" class="xmlSel" data-i="' + i + '" ' + (dup || c.sinTipoCambio ? '' : 'checked') + ' ' + (dup ? 'disabled' : '') + '> <b>' + escHtml(c.proveedor || '(sin nombre)') + '</b> · ' + escHtml(c.fecha.slice(0, 10)) +
+      '<br>' + (c.esNC ? 'Nota de crédito · ' : '') + 'Base ₡' + fmtNum(c.base) + ' · IVA ₡' + fmtNum(c.iva) + ' · <b>Total ₡' + fmtNum(c.total) + '</b>' +
+      (dup ? '<br><i>Ya está registrada en el Diario</i>' : '') + (c.convertida ? '<br><i>' + escHtml(c.moneda) + ' ' + fmtNum(c.totalOrig) + ' × tipo de cambio ' + c.tipoCambio + ' (del XML)</i>' : '') +
+      (c.sinTipoCambio ? '<br><i>Moneda ' + escHtml(c.moneda) + ' sin tipo de cambio en el XML: registrala manualmente</i>' : '') +
+      '<br><button type="button" class="xmlMrBtn" data-i="' + i + '" style="margin-top:4px;font-size:12px">📨 Responder a Hacienda (Mensaje Receptor)</button></label>';
+  });
+  html += '</div><div class="mcrNota">Cada asiento queda con la clave del comprobante para no duplicarse. Los XML se leen en tu dispositivo; no se suben a ningún lado.</div>';
+  abrirPanel('📄 Facturas recibidas (XML)', html, [{ texto: 'Cancelar' }, { texto: 'Registrar seleccionadas', ok: true, accion: function () {
+    var cuenta = document.getElementById('xmlCuenta').value, pago = document.getElementById('xmlPago').value, n = 0, fallo = 0;
+    var enviarMr = !!document.getElementById('xmlMrAuto').checked, paraMr = [], yaMr = mrEnviadosLeer();
+    if (enviarMr) {
+      if (!currentUser) { alert('Iniciá sesión para enviar mensajes a Hacienda.'); return false; }
+      var nSel = document.querySelectorAll('#mcrPanelBody .xmlSel:checked').length;
+      if (!confirm('Además de registrar las compras, se enviará a Hacienda la ACEPTACIÓN de ' + nSel + ' comprobante(s), firmada con tu certificado real. Esto no se puede deshacer. ¿Continuar?')) return false;
+    }
+    snapshot();
+    document.querySelectorAll('#mcrPanelBody .xmlSel:checked').forEach(function (cb) {
+      var c = comp[parseInt(cb.getAttribute('data-i'), 10)]; if (enviarMr && !yaMr[c.clave] && !c.sinTipoCambio) paraMr.push(c);
+      var p = pago === 'auto' ? (c.condicion === '01' ? 'bancos' : 'prov') : pago;
+      var def = p === 'caja' ? CUENTAS_AUTO.caja : p === 'bancos' ? CUENTAS_AUTO.bancos : CUENTAS_AUTO.proveedores;
+      var L = [{ codigo: cuenta, debe: c.base, haber: 0 }];
+      if (c.iva) L.push({ codigo: asegurarCuentaEnCatalogo(CUENTAS_AUTO.ivaCredito), debe: c.iva, haber: 0 });
+      L.push({ codigo: asegurarCuentaEnCatalogo(def), debe: 0, haber: c.total });
+      if (c.esNC) L.forEach(function (l) { var d = l.debe; l.debe = l.haber; l.haber = d; });
+      var f = new Date(c.fecha), fecha = (isNaN(f.getTime()) ? new Date() : f).toLocaleDateString('es-CR');
+      if (escribirAsientoEnDiario(fecha, (c.esNC ? 'NC recibida — ' : 'Compra — ') + (c.proveedor || 'proveedor'), L, 'xml-' + c.clave)) n++; else fallo++;
+    });
+    activeSheet = 'Diario'; buildTable(); renderTabs(); autoSave();
+    var resumen = '✓ ' + n + ' compra(s) registrada(s) desde XML' + (fallo ? ' · ⚠ ' + fallo + ' no se pudieron (mes cerrado o Diario lleno)' : '');
+    document.getElementById('saveStatus').textContent = resumen;
+    if (paraMr.length) {
+      (async function () {
+        var ok = 0, pend = 0, errores = [];
+        for (var k = 0; k < paraMr.length; k++) {
+          document.getElementById('saveStatus').textContent = 'Enviando aceptación ' + (k + 1) + '/' + paraMr.length + '…';
+          var rs = await enviarMensajeReceptorDirecto(paraMr[k], '1', '');
+          if (rs.estado === 'aceptado') ok++; else if (rs.estado === 'pendiente') pend++; else errores.push((paraMr[k].proveedor || paraMr[k].clave.slice(0, 10)) + ': ' + rs.texto);
+        }
+        document.getElementById('saveStatus').textContent = resumen + ' · 📨 ' + ok + ' aceptada(s)' + (pend ? ', ' + pend + ' pendiente(s)' : '') + (errores.length ? ', ' + errores.length + ' con error' : '');
+        if (errores.length) alert('No se pudo enviar la aceptación de:\n\n' + errores.join('\n'));
+        try { cargarHistorialHacienda(); } catch (e) {}
+      })();
+    }
+  } }]);
+  document.querySelectorAll('#mcrPanelBody .xmlMrBtn').forEach(function (btn) {
+    btn.addEventListener('click', function (ev) {
+      ev.preventDefault(); ev.stopPropagation();
+      var c = comp[parseInt(btn.getAttribute('data-i'), 10)];
+      cerrarPanel();
+      document.getElementById('mrClave').value = c.clave;
+      document.getElementById('mrCedulaEmisor').value = c.cedula;
+      document.getElementById('mrFecha').value = String(c.fecha).slice(0, 10);
+      document.getElementById('mrTotal').value = c.totalOrig;
+      document.getElementById('mrImpuesto').value = c.ivaOrig;
+      document.getElementById('mrMensaje').value = '1';
+      document.getElementById('mrDetalle').value = '';
+      document.getElementById('mensajeReceptorOverlay').classList.add('show');
+    });
+  });
+}
+document.getElementById('btnLeerXml').addEventListener('click', abrirLectorXml);
+// ══════════════════════════════════════════════
+// REPORTE MENSUAL PARA EL CONTADOR (PDF)
+// ══════════════════════════════════════════════
+function nombreMesLargo(clave) {
+  var m = /^(\d{4})-(\d{2})$/.exec(clave); if (!m) return clave;
+  var meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
+  return meses[parseInt(m[2], 10) - 1] + ' ' + m[1];
+}
+function datosReporteContador(clave) {
+  var cat = sheetData.Catalogo || {}, nombreDe = {}, tipoDe = {};
+  for (var q = 2; q < 60; q++) { var cd = String(cat[cellId(q, 0)] || '').trim(); if (cd) { nombreDe[cd] = String(cat[cellId(q, 1)] || ''); tipoDe[cd] = String(cat[cellId(q, 2)] || ''); } }
+  var R = resumenDelMes(clave), real = realPorCuentaDelMes(clave), codigos = Object.keys(real).sort();
+  var ingresos = [], gastos = [], balanza = [];
+  codigos.forEach(function (cod) {
+    var o = real[cod], debe = r2c(o.debe), haber = r2c(o.haber), t = tipoDe[cod] || '';
+    balanza.push({ cod: cod, nombre: nombreDe[cod] || '(no está en el Catálogo)', debe: debe, haber: haber, saldo: r2c(debe - haber) });
+    if (t === 'Ingreso') ingresos.push({ cod: cod, nombre: nombreDe[cod] || '', monto: r2c(haber - debe) });
+    else if (t === 'Gasto' || t === 'Costo') gastos.push({ cod: cod, nombre: nombreDe[cod] || '', monto: r2c(debe - haber), costo: t === 'Costo' });
+  });
+  return { R: R, ingresos: ingresos, gastos: gastos, balanza: balanza, sinAsiento: registrosSinAsiento(clave) };
+}
+function construirReporteContadorPdf(clave, opciones) {
+  var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
+  if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return null; }
+  opciones = opciones || {};
+  var D = datosReporteContador(clave), R = D.R;
+  var doc = pdfSeguro(new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' }));
+  var negocio = (pdfEncabezadoTexto || (document.getElementById('fe-emisor-nombre') || {}).value || 'Mi negocio').trim();
+  var cedula = ((document.getElementById('fe-emisor-cedula') || {}).value || '').trim();
+  var AZUL = [30, 58, 138], GRIS = [100, 110, 120], y = 0, MX = 14, ANCHO = 182;
+  function cabecera() {
+    doc.setFillColor(AZUL[0], AZUL[1], AZUL[2]); doc.rect(0, 0, 210, 26, 'F');
+    var wl = dibujarLogoPdf(doc, MX, 3, 20, 40), x0 = wl ? MX + wl + 4 : MX;
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.text('Reporte mensual para el contador', x0, 12);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text(negocio.substring(0, 50) + (cedula ? ' · Céd. ' + cedula : ''), x0, 19);
+    doc.text(nombreMesLargo(clave).toUpperCase(), 196, 12, { align: 'right' });
+    doc.setTextColor(0, 0, 0); y = 34;
+  }
+  function espacio(n) { if (y + n > 280) { doc.addPage(); cabecera(); } }
+  function titulo(t) { espacio(18); doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(AZUL[0], AZUL[1], AZUL[2]); doc.text(t, MX, y); doc.setDrawColor(AZUL[0], AZUL[1], AZUL[2]); doc.line(MX, y + 1.5, MX + ANCHO, y + 1.5); doc.setTextColor(0, 0, 0); y += 8; }
+  function fila(cols, negrita, relleno) {
+    espacio(7); if (relleno) { doc.setFillColor(238, 242, 250); doc.rect(MX, y - 4.5, ANCHO, 6.5, 'F'); }
+    doc.setFont('helvetica', negrita ? 'bold' : 'normal'); doc.setFontSize(9.5);
+    cols.forEach(function (c) { var t = String(c.t); if (c.max) t = t.substring(0, c.max); doc.text(t, c.x, y, c.der ? { align: 'right' } : undefined); });
+    y += 6.5;
+  }
+  function nota(t) { doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(GRIS[0], GRIS[1], GRIS[2]); var ls = doc.splitTextToSize(t, ANCHO); espacio(ls.length * 4 + 2); doc.text(ls, MX, y); y += ls.length * 4 + 2; doc.setTextColor(0, 0, 0); }
+  var M = function (n) { return '₡' + fmtNum(n); };
+  cabecera();
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(GRIS[0], GRIS[1], GRIS[2]); doc.text('Generado el ' + new Date().toLocaleDateString('es-CR') + ' con Matriz Contable CR', MX, y - 2); doc.setTextColor(0, 0, 0); y += 6;
+  titulo('1. Resumen del mes');
+  [['Ventas (ingresos)', R.ventas], ['Compras y gastos', R.compras], ['Resultado del mes', r2c(R.ventas - R.compras)]].forEach(function (x, i) { fila([{ t: x[0], x: MX + 2 }, { t: M(x[1]), x: MX + ANCHO - 2, der: true }], i === 2, i === 2); });
+  y += 2;
+  titulo('2. IVA del mes (para el D-104)');
+  fila([{ t: 'IVA cobrado (débito fiscal)', x: MX + 2 }, { t: M(R.ivaCobrado), x: MX + ANCHO - 2, der: true }]);
+  fila([{ t: 'IVA soportado (crédito fiscal)', x: MX + 2 }, { t: M(R.ivaSoportado), x: MX + ANCHO - 2, der: true }]);
+  fila([{ t: R.saldoIVA >= 0 ? 'IVA por pagar' : 'Saldo a favor', x: MX + 2 }, { t: M(Math.abs(R.saldoIVA)), x: MX + ANCHO - 2, der: true }], true, true);
+  if (R.ivaDiferidoMov) fila([{ t: 'IVA diferido (Art. 27) movido en el mes', x: MX + 2 }, { t: M(R.ivaDiferidoMov), x: MX + ANCHO - 2, der: true }]);
+  nota('El D-104 se presenta y paga a más tardar el día 15 del mes siguiente. Cifras tomadas del Diario; contrastar con la declaración.');
+  y += 2;
+  titulo('3. Estado de resultados del mes');
+  if (!D.ingresos.length && !D.gastos.length) nota('No hay movimientos de ingresos ni gastos en este mes.');
+  if (D.ingresos.length) { fila([{ t: 'INGRESOS', x: MX + 2 }], true, true); D.ingresos.forEach(function (x) { fila([{ t: x.cod, x: MX + 2 }, { t: x.nombre, x: MX + 28, max: 55 }, { t: M(x.monto), x: MX + ANCHO - 2, der: true }]); }); }
+  if (D.gastos.length) { fila([{ t: 'COSTOS Y GASTOS', x: MX + 2 }], true, true); D.gastos.forEach(function (x) { fila([{ t: x.cod, x: MX + 2 }, { t: x.nombre, x: MX + 28, max: 55 }, { t: M(x.monto), x: MX + ANCHO - 2, der: true }]); }); }
+  fila([{ t: 'RESULTADO DEL MES', x: MX + 2 }, { t: M(r2c(R.ventas - R.compras)), x: MX + ANCHO - 2, der: true }], true, true);
+  y += 2;
+  titulo('4. Movimientos por cuenta (balanza del mes)');
+  fila([{ t: 'Código', x: MX + 2 }, { t: 'Cuenta', x: MX + 24 }, { t: 'Debe', x: MX + 128, der: true }, { t: 'Haber', x: MX + 154, der: true }, { t: 'Saldo', x: MX + ANCHO - 2, der: true }], true, true);
+  D.balanza.forEach(function (x) { fila([{ t: x.cod, x: MX + 2 }, { t: x.nombre, x: MX + 24, max: 34 }, { t: fmtNum(x.debe), x: MX + 128, der: true }, { t: fmtNum(x.haber), x: MX + 154, der: true }, { t: fmtNum(x.saldo), x: MX + ANCHO - 2, der: true }]); });
+  fila([{ t: 'TOTALES', x: MX + 2 }, { t: fmtNum(R.debe), x: MX + 128, der: true }, { t: fmtNum(R.haber), x: MX + 154, der: true }, { t: fmtNum(r2c(R.debe - R.haber)), x: MX + ANCHO - 2, der: true }], true, true);
+  y += 2;
+  var cxc = opciones.cxc || [];
+  if (cxc.length) {
+    titulo('5. Cuentas por cobrar vencidas');
+    fila([{ t: 'Cliente', x: MX + 2 }, { t: 'Factura', x: MX + 90 }, { t: 'Días', x: MX + 122, der: true }, { t: 'Saldo', x: MX + ANCHO - 2, der: true }], true, true);
+    cxc.forEach(function (x) { fila([{ t: x.cliente, x: MX + 2, max: 42 }, { t: x.factura, x: MX + 90 }, { t: String(x.dias), x: MX + 122, der: true }, { t: M(x.saldo), x: MX + ANCHO - 2, der: true }]); });
+    fila([{ t: 'TOTAL VENCIDO', x: MX + 2 }, { t: M(r2c(cxc.reduce(function (a, x) { return a + x.saldo; }, 0))), x: MX + ANCHO - 2, der: true }], true, true);
+    y += 2;
+  }
+  titulo((cxc.length ? '6' : '5') + '. Puntos a revisar');
+  var alertas = [];
+  if (R.descuadrados.length) alertas.push('⚠ Asientos descuadrados: ' + R.descuadrados.slice(0, 8).join(', ') + (R.descuadrados.length > 8 ? '…' : ''));
+  if (R.sinCodigo) alertas.push('⚠ ' + R.sinCodigo + ' línea(s) del Diario sin código de cuenta válido');
+  if (D.sinAsiento) alertas.push('⚠ ' + D.sinAsiento + ' comprobante(s) aceptado(s) por Hacienda sin asiento en el Diario');
+  if (Math.abs(R.debe - R.haber) > 0.005) alertas.push('⚠ El Diario del mes no cuadra: Debe ' + M(R.debe) + ' vs Haber ' + M(R.haber));
+  if (!alertas.length) alertas.push('✓ Sin observaciones: asientos cuadrados, cuentas válidas y comprobantes registrados.');
+  alertas.forEach(function (a) { fila([{ t: a, x: MX + 2 }]); });
+  var total = doc.getNumberOfPages();
+  for (var p = 1; p <= total; p++) { doc.setPage(p); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(GRIS[0], GRIS[1], GRIS[2]); doc.text(negocio.substring(0, 40) + ' · ' + nombreMesLargo(clave), MX, 291); doc.text('Página ' + p + ' de ' + total, 196, 291, { align: 'right' }); }
+  return doc;
+}
+async function abrirReporteContador() {
+  if (!asegurarSistemaContable()) return;
+  var hoy = new Date(), previo = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1), clave = claveMes(previo);
+  abrirPanel('📑 Reporte para el contador',
+    '<label class="mcrF">Mes del reporte</label><input id="rcMes" class="mcrI" type="month" value="' + clave + '">' +
+    '<label style="display:block;margin:8px 0;font-size:13px"><input type="checkbox" id="rcCxc" checked> Incluir cuentas por cobrar vencidas (lee tus facturas de Hacienda)</label>' +
+    '<div class="mcrNota">Genera un PDF con resumen, IVA para el D-104, estado de resultados, balanza del mes y puntos a revisar. Lleva tu logo y el nombre del negocio si los configuraste en “PDF Reporte”.</div>',
+    [{ texto: 'Cancelar' }, { texto: 'Generar PDF', ok: true, accion: function () {
+      var mes = document.getElementById('rcMes').value, conCxc = document.getElementById('rcCxc').checked;
+      if (!/^\d{4}-\d{2}$/.test(mes)) { alert('Elegí un mes.'); return false; }
+      (async function () {
+        var cxc = [];
+        if (conCxc && currentUser) { try { await cargarHistorialHacienda(); cxc = calcularCuentasPorCobrar(historialHaciendaCache || [], new Date(), false).filter(function (x) { return x.dias > 0; }); } catch (e) {} }
+        var doc = construirReporteContadorPdf(mes, { cxc: cxc }); if (!doc) return;
+        guardarArchivoNativo('reporte-contador-' + mes + '.pdf', doc.output('datauristring').split(',')[1], 'application/pdf');
+        document.getElementById('saveStatus').textContent = '✓ Reporte de ' + nombreMesLargo(mes) + ' generado';
+      })();
+    } }]);
+}
+document.getElementById('btnReporteContador').addEventListener('click', abrirReporteContador);
+
+
+
+// Aviso una vez al día si hay facturas recurrentes que ya tocan
+setTimeout(function () {
+  try {
+    var pend = recurrentesPendientes(), hoyClave = new Date().toDateString();
+    if (!pend.length || localStorage.getItem('kcn_rec_aviso') === hoyClave) return;
+    localStorage.setItem('kcn_rec_aviso', hoyClave);
+    document.getElementById('saveStatus').textContent = '🔁 ' + pend.length + ' factura' + (pend.length === 1 ? '' : 's') + ' recurrente' + (pend.length === 1 ? '' : 's') + ' por preparar';
+    if (confirm('Tenés ' + pend.length + ' factura' + (pend.length === 1 ? '' : 's') + ' recurrente' + (pend.length === 1 ? '' : 's') + ' que ya toca preparar este mes. ¿Verlas ahora?')) abrirRecurrentes();
+  } catch (e) {}
+}, 3500);
 
 restore();
 buildTable();
