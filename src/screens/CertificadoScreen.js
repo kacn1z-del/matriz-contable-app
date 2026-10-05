@@ -35,6 +35,10 @@ export default function CertificadoScreen({ navigation }) {
   const [revisando, setRevisando] = useState(true)
   const [tieneCertificado, setTieneCertificado] = useState(false)
 
+  // ─── Multi-emisor: varias cédulas/certificados en la misma cuenta ─
+  const [emisores, setEmisores] = useState([]) // [{ cedula, nombre, ambiente, esPrincipal }]
+  const [agregandoEmisor, setAgregandoEmisor] = useState(false)
+
   // ─── Multi-usuario por negocio ──────────────────────────
   const [negocioInfo, setNegocioInfo] = useState(null) // { negocioId, esPropio }
   const [codigoParaUnirse, setCodigoParaUnirse] = useState('')
@@ -61,6 +65,15 @@ export default function CertificadoScreen({ navigation }) {
       })
       const datos = await respuesta.json()
       setTieneCertificado(!!datos.tieneCertificado)
+      if (datos.tieneCertificado) {
+        const respEm = await fetch(`${WORKER_URL}/listar-emisores`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+        })
+        const datosEm = await respEm.json()
+        if (respEm.ok) setEmisores(datosEm.emisores || [])
+      }
     } catch (error) {
       // Si falla la consulta, no bloqueamos al usuario — solo no sabemos el estado.
       console.log('Error revisando certificado:', error.message)
@@ -253,6 +266,7 @@ export default function CertificadoScreen({ navigation }) {
           canton,
           distrito,
           otrasSenas,
+          agregarEmisor: agregandoEmisor ? true : undefined,
         }),
       })
 
@@ -262,7 +276,9 @@ export default function CertificadoScreen({ navigation }) {
         throw new Error(datos.error || 'Error desconocido')
       }
 
-      Alert.alert('Listo', 'Tu llave criptográfica y tus datos de Hacienda quedaron guardados de forma segura.')
+      Alert.alert('Listo', agregandoEmisor
+        ? 'El emisor adicional quedó guardado de forma segura. Ya podés elegirlo al facturar.'
+        : 'Tu llave criptográfica y tus datos de Hacienda quedaron guardados de forma segura.')
       setArchivo(null)
       setBase64Pegado('')
       setContrasena('')
@@ -271,11 +287,43 @@ export default function CertificadoScreen({ navigation }) {
       setPasswordHacienda('')
       setActividadEconomica('')
       setTieneCertificado(true)
+      setAgregandoEmisor(false)
+      revisarEstado()
     } catch (error) {
       Alert.alert('No se pudo guardar', error.message)
     } finally {
       setSubiendo(false)
     }
+  }
+
+  // ─── Quitar un emisor adicional (el principal se reemplaza con "Eliminar y reemplazar") ─
+  function eliminarEmisor(cedula) {
+    Alert.alert(
+      '¿Quitar este emisor?',
+      'Se borra el certificado y las credenciales de la cédula ' + cedula + '. Las demás cédulas no se tocan.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Quitar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const idToken = await auth.currentUser.getIdToken()
+              const respuesta = await fetch(`${WORKER_URL}/eliminar-certificado`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken, cedulaEmisor: cedula }),
+              })
+              const datos = await respuesta.json()
+              if (!respuesta.ok) throw new Error(datos.error || 'Error desconocido')
+              revisarEstado()
+            } catch (error) {
+              Alert.alert('Error', 'No se pudo quitar: ' + error.message)
+            }
+          },
+        },
+      ]
+    )
   }
 
   async function eliminarCertificado() {
@@ -372,7 +420,7 @@ export default function CertificadoScreen({ navigation }) {
           <View style={styles.cargando}>
             <ActivityIndicator color="#2d7a0c" />
           </View>
-        ) : tieneCertificado ? (
+        ) : tieneCertificado && !agregandoEmisor ? (
           // ─── Estado: ya tiene certificado guardado ─────────
           <View style={styles.card}>
             <Text style={styles.emoji}>✅</Text>
@@ -381,6 +429,28 @@ export default function CertificadoScreen({ navigation }) {
               Ya tenés tu certificado y tus datos de Hacienda listos para emitir facturas electrónicas firmadas de verdad.
             </Text>
 
+            {emisores.length > 0 && (
+              <View style={{ alignSelf: 'stretch', marginTop: 12 }}>
+                <Text style={styles.separador}>Emisores configurados</Text>
+                {emisores.map((e) => (
+                  <View key={e.cedula} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 }}>
+                    <Text style={styles.textoSecundarioIzq}>
+                      {e.cedula}{e.nombre ? ' — ' + e.nombre : ''}{e.esPrincipal ? ' (principal)' : ''}{e.ambiente === 'production' ? '' : ' · pruebas'}
+                    </Text>
+                    {!e.esPrincipal && (
+                      <TouchableOpacity onPress={() => eliminarEmisor(e.cedula)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                        <Text style={styles.botonSecundarioTexto}>Quitar</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            <TouchableOpacity style={styles.botonSecundarioVerde} onPress={() => setAgregandoEmisor(true)}>
+              <Text style={styles.botonSecundarioTextoVerde}>➕ Agregar otro emisor (otra cédula)</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.botonSecundario} onPress={eliminarCertificado}>
               <Text style={styles.botonSecundarioTexto}>Eliminar y reemplazar</Text>
             </TouchableOpacity>
@@ -388,7 +458,13 @@ export default function CertificadoScreen({ navigation }) {
         ) : (
           // ─── Estado: falta subir el certificado y los datos ────
           <View style={styles.card}>
-            <Text style={styles.tituloCard}>Configurá tu firma electrónica</Text>
+            <Text style={styles.tituloCard}>{agregandoEmisor ? 'Agregar otro emisor' : 'Configurá tu firma electrónica'}</Text>
+            {agregandoEmisor && (
+              <Text style={styles.textoSecundario}>
+                Subí el certificado y los datos de Hacienda de la otra cédula. Tu emisor actual no se toca; al facturar
+                vas a poder elegir con cuál emitir, y cada cédula lleva su propia numeración.
+              </Text>
+            )}
             <Text style={styles.textoSecundario}>
               Necesitás el archivo .p12 o .pfx que te entregó el Ministerio de Hacienda (ATV), junto con su contraseña,
               y tus credenciales de acceso a la API de Hacienda. Estos datos son personales de tu negocio: cada cliente
@@ -576,6 +652,12 @@ export default function CertificadoScreen({ navigation }) {
                 <Text style={styles.botonPrincipalTexto}>Guardar de forma segura</Text>
               )}
             </TouchableOpacity>
+
+            {agregandoEmisor && (
+              <TouchableOpacity style={styles.botonSecundario} onPress={() => setAgregandoEmisor(false)}>
+                <Text style={styles.botonSecundarioTexto}>Cancelar</Text>
+              </TouchableOpacity>
+            )}
 
             <Text style={styles.notaSeguridad}>
               🔒 Todo se guarda cifrado. Nunca se comparte ni se muestra en la app.
