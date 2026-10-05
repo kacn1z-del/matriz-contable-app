@@ -117,11 +117,18 @@ async function obtenerAccessToken(entorno, usuario, password) {
   return datos.access_token
 }
 
-async function obtenerSiguienteSecuencia(uid, tipoDocumento) {
+// Multi-emisor: cédula del emisor dentro de una clave de 50 dígitos (posiciones 10–21, con ceros a la izquierda).
+// El Worker compara ignorando ceros a la izquierda y verifica que esa cédula pertenezca al negocio del usuario.
+function cedulaDeClave(clave) {
+  const d = String(clave || '').replace(/[^0-9]/g, '')
+  return d.length === 50 ? d.substr(9, 12) : ''
+}
+
+async function obtenerSiguienteSecuencia(uid, tipoDocumento, cedulaEmisor) {
   const respuesta = await fetch(CERTIFICADOS_WORKER_URL + '/siguiente-secuencia', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET, tipoDocumento }),
+    body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET, tipoDocumento, cedulaEmisor: cedulaEmisor || undefined }),
   })
   const datos = await leerJsonSeguro(respuesta)
   if (!respuesta.ok || !datos.secuencia) {
@@ -249,6 +256,7 @@ export default async function handler(req, res) {
       medioPago,
       esTiquete, // si el documento original era un tiquete (sin receptor obligatorio)
       emisorNombre,
+      cedulaEmisor: cedulaEmisorBody, // multi-emisor: con qué cédula emitir (si no viene, la que va dentro de la clave original)
     } = req.body || {}
 
     const uid = await verificarIdToken(idToken)
@@ -279,7 +287,7 @@ export default async function handler(req, res) {
     const respCert = await fetch(CERTIFICADOS_WORKER_URL + '/obtener-certificado-firma', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET }),
+      body: JSON.stringify({ uid, secreto: process.env.FIRMA_SERVICE_SECRET, cedulaEmisor: (String(cedulaEmisorBody || '').replace(/[^0-9]/g, '') || cedulaDeClave(claveOriginal)) || undefined }),
     })
     const datosCert = await leerJsonSeguro(respCert)
     if (!respCert.ok) {
@@ -306,7 +314,7 @@ export default async function handler(req, res) {
     const claveOriginalLimpia = soloDigitos(claveOriginal)
 
     // ── 2. Secuencia propia para notas de débito (contador separado) ──
-    const secuencia = await obtenerSiguienteSecuencia(uid, 'notaDebito')
+    const secuencia = await obtenerSiguienteSecuencia(uid, 'notaDebito', cedulaLimpia)
 
     // ── 3. Totales — se calculan solo sobre las líneas NUEVAS del cargo
     //       adicional (a diferencia de la nota de crédito, aquí no se
