@@ -11,7 +11,7 @@ import ProfileScreen from './src/screens/ProfileScreen'
 import SiboScreen from './src/screens/SiboScreen'
 import SheetEditor from './src/components/SheetEditor'
 import PantallaBloqueo from './src/components/PantallaBloqueo'
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, AppState } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, AppState, useWindowDimensions } from 'react-native'
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './src/services/firebase'
@@ -24,10 +24,13 @@ function SheetScreen({ navigation, route }) {
   const { t } = useLang()
   const template = route.params?.template ?? 'default'
   const insets = useSafeAreaInsets()
+  // En horizontal la pantalla es muy baja: se compacta la barra superior para dejarle más lugar a la hoja.
+  const { width, height } = useWindowDimensions()
+  const horizontal = width > height
 
   return (
     <View style={{ flex: 1, backgroundColor: '#e6f0e6' }}>
-      <View style={[styles.toolbar, { paddingTop: insets.top + 10 }]}>
+      <View style={[styles.toolbar, horizontal ? { paddingTop: Math.min(insets.top, 8) + 2, paddingBottom: 4 } : { paddingTop: insets.top + 10 }]}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <Text style={styles.backBtn}>← {t('menu.inicio')}</Text>
         </TouchableOpacity>
