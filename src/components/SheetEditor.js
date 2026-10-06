@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, Alert, ActivityIndicator, Text } from 'react-native'
+import { View, StyleSheet, Alert, ActivityIndicator, Text, Linking } from 'react-native'
 import { WebView } from 'react-native-webview'
 import * as Notifications from 'expo-notifications'
 import * as FileSystem from 'expo-file-system'
@@ -7,6 +7,7 @@ import * as Sharing from 'expo-sharing'
 import * as Print from 'expo-print'
 import Constants from 'expo-constants'
 import { Asset } from 'expo-asset'
+import { useLang } from '../context/LangContext'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -59,7 +60,9 @@ async function programarNotificacionesVencimientos() {
   await Notifications.cancelAllScheduledNotificationsAsync()
   const todosMeses = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
   const items = [
+    { nombre: 'Cierre del mes anterior (revisión contable)', fecha: proximaFechaNativa(3, todosMeses) },
     { nombre: 'IVA (D-104) mensual', fecha: proximaFechaNativa(15, todosMeses) },
+    { nombre: 'Pago parcial de renta (30 jun / 30 sep / 31 dic)', fecha: [proximaFechaNativa(30, [5, 8]), proximaFechaNativa(31, [11])].sort(function (x, y) { return x - y })[0] },
     { nombre: 'Planilla CCSS mensual', fecha: proximaFechaNativa(5, todosMeses) },
     { nombre: 'D-151 (Declaración informativa) anual', fecha: proximaFechaNativa(28, [1]) },
     { nombre: 'Renta / D-101 anual', fecha: proximaFechaNativa(15, [2]) },
@@ -144,6 +147,14 @@ async function manejarArchivoDesdeWebView(base64, filename, mime) {
 
 export default function SheetEditor({ userId, sheetId }) {
   const webViewRef = useRef(null)
+  // Idioma de la app → la hoja se traduce sola (español/inglés). Los demás idiomas dejan la hoja en español.
+  const { lang } = useLang()
+  const idiomaHoja = lang === 'en' ? 'en' : 'es'
+  useEffect(() => {
+    webViewRef.current && webViewRef.current.injectJavaScript(
+      `try { window.cambiarIdiomaNativo && window.cambiarIdiomaNativo(${JSON.stringify(idiomaHoja)}); } catch (e) {} true;`
+    )
+  }, [idiomaHoja])
   const [rutaHojaLista, setRutaHojaLista] = useState(null)
   const [errorPreparandoHoja, setErrorPreparandoHoja] = useState(false)
 
@@ -272,6 +283,7 @@ export default function SheetEditor({ userId, sheetId }) {
         ref={webViewRef}
         originWhitelist={['*']}
         source={{ uri: rutaHojaLista }}
+        injectedJavaScriptBeforeContentLoaded={`try { localStorage.setItem('kcn_idioma', ${JSON.stringify(idiomaHoja)}); } catch (e) {} true;`}
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
@@ -291,6 +303,14 @@ export default function SheetEditor({ userId, sheetId }) {
             }
             if (msg && msg.tipo === 'llamarNativo') {
               manejarLlamadaNativa(msg.id, msg.url, msg.opciones)
+            }
+            if (msg && msg.tipo === 'abrirEnlace' && typeof msg.url === 'string') {
+              // Solo se abren direcciones web, correo o teléfono.
+              if (/^(https?:|mailto:|tel:)/i.test(msg.url)) {
+                Linking.openURL(msg.url).catch(() => {
+                  Alert.alert('No se pudo abrir el enlace', msg.url)
+                })
+              }
             }
             if (msg && msg.tipo === 'diagnosticoErrorHoja') {
               Alert.alert('Diagnóstico del error', msg.detalle || '(sin detalle)')
