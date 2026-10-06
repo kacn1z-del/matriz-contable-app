@@ -8,12 +8,12 @@ on:
       platform:
         description: 'Plataforma a compilar'
         required: true
-        default: 'all'
+        default: 'android'
         type: choice
         options:
-          - all
           - android
           - ios
+          - all
       profile:
         description: 'Perfil de build (eas.json)'
         required: true
