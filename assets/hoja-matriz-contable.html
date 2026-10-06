@@ -9447,6 +9447,8 @@ function i18nRestaurar() {
   i18nTocados = [];
 }
 function i18nAplicarIdioma(lang) {
+  // Si se llama antes de que el motor termine de definirse (idioma guardado al arrancar), se ignora: más abajo se vuelve a aplicar.
+  if (typeof i18nTocados === 'undefined' || !i18nTocados) return;
   var nuevo = lang === 'en' ? 'en' : 'es';
   if (nuevo === i18nLang) return;
   i18nLang = nuevo; document.documentElement.lang = nuevo;
