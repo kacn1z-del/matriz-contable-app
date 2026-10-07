@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "builds": [
-    { "src": "api/webproxy.js", "use": "@vercel/node" },
-    { "src": "api/sibo-chat.js", "use": "@vercel/node" }
-  ]
-}
