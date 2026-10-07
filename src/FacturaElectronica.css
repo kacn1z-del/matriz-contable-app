@@ -1,0 +1,393 @@
+/* Factura Electrónica Styles */
+
+:root {
+  --primary: #2196F3;
+  --success: #4CAF50;
+  --warning: #FF9800;
+  --error: #F44336;
+  --bg-light: #F5F5F5;
+  --bg-white: #FFFFFF;
+  --text-dark: #333333;
+  --text-light: #666666;
+  --border-color: #E0E0E0;
+  --hacienda: #1565C0;
+}
+
+.factura-electronica {
+  width: 100%;
+  padding: 20px;
+}
+
+.header-factura {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--hacienda);
+}
+
+.header-factura h1 {
+  font-size: 28px;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+}
+
+.header-factura p {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.alerta {
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.alerta-exito {
+  background: #E8F5E9;
+  border-left: 4px solid var(--success);
+  color: #1B5E20;
+}
+
+.alerta-error {
+  background: #FFEBEE;
+  border-left: 4px solid var(--error);
+  color: #B71C1C;
+}
+
+.tabs-factura {
+  display: flex;
+  gap: 0;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-white);
+  padding: 0;
+  border-radius: 8px 8px 0 0;
+}
+
+.tab {
+  padding: 15px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  color: var(--primary);
+}
+
+.tab.activo {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.seccion-formulario {
+  background: var(--bg-white);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.seccion-formulario h2 {
+  font-size: 18px;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+.form-section {
+  margin-bottom: 25px;
+}
+
+.form-section h3 {
+  font-size: 14px;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.tabla-detalles {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 15px 0;
+}
+
+.tabla-detalles thead {
+  background: var(--bg-light);
+}
+
+.tabla-detalles th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tabla-detalles td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tabla-detalles input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.tabla-detalles tbody tr:hover {
+  background: var(--bg-light);
+}
+
+.subtotal {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.btn-eliminar {
+  background: var(--error);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-eliminar:hover {
+  background: #D32F2F;
+}
+
+.btn-agregar {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.btn-agregar:hover {
+  background: #388E3C;
+}
+
+.btn-emitir {
+  background: var(--hacienda);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.btn-emitir:hover {
+  background: #0D47A1;
+}
+
+.btn-emitir:disabled {
+  background: #CCCCCC;
+  cursor: not-allowed;
+}
+
+.seccion-listado {
+  background: var(--bg-white);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.seccion-listado h2 {
+  font-size: 18px;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+.tabla-comprobantes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.tabla-comprobantes thead {
+  background: var(--bg-light);
+}
+
+.tabla-comprobantes th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tabla-comprobantes td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tabla-comprobantes tbody tr:hover {
+  background: var(--bg-light);
+}
+
+.clave {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.total {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-aceptado {
+  background: #E8F5E9;
+  color: var(--success);
+}
+
+.badge-rechazado {
+  background: #FFEBEE;
+  color: var(--error);
+}
+
+.badge-pendiente {
+  background: #FFF3E0;
+  color: var(--warning);
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.acciones button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  transition: transform 0.2s;
+}
+
+.acciones button:hover {
+  transform: scale(1.2);
+}
+
+.sin-datos {
+  text-align: center;
+  color: var(--text-light);
+  padding: 40px 20px;
+}
+
+.seccion-notas {
+  background: var(--bg-white);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.seccion-notas h2 {
+  font-size: 18px;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+.seccion-recibos {
+  background: var(--bg-white);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.seccion-recibos h2 {
+  font-size: 18px;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs-factura {
+    overflow-x: auto;
+  }
+
+  .tabla-detalles {
+    font-size: 11px;
+  }
+
+  .tabla-detalles th,
+  .tabla-detalles td {
+    padding: 8px;
+  }
+
+  .seccion-formulario {
+    padding: 15px;
+  }
+}
