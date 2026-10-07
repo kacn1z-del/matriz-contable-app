@@ -1,243 +1,189 @@
-/**
- * Matriz Contable CR - App Principal
- * Versión: v39.5 COMPLETA
- *
- * Aplicación React integrada con todos los módulos:
- * - Contabilidad Básica v39
- * - Derivados Avanzados v39.2
- * - Gestión de Riesgos v40
- * - M&A Accounting v41
- * - Integraciones v42
- * - Google Sheets v43
- * - Dashboard PRO
- */
+import React, { useState } from 'react';
+import './styles/App.css';
 
-import React, { useState, useEffect } from 'react';
+// Componentes Originales
 import ContabilidadBasica from './components/ContabilidadBasica';
+import DashboardPRO from './components/DashboardPRO';
 import DerivadosAvanzados from './components/DerivadosAvanzados';
 import GestionRiesgos from './components/GestionRiesgos';
-import MAAccounting from './components/MAAccounting';
-import Integraciones from './components/Integraciones';
 import GoogleSheetsImporter from './components/GoogleSheetsImporter';
-import DashboardPRO from './components/DashboardPRO';
-import './App.css';
+import Integraciones from './components/Integraciones';
+import MAAccounting from './components/MAAccounting';
 
-export default function App() {
-  const [moduloActivo, setModuloActivo] = useState('dashboard');
-  const [temaOscuro, setTemaOscuro] = useState(false);
-  const [notificaciones, setNotificaciones] = useState([]);
-  const [usuario, setUsuario] = useState(null);
+// Componentes Nuevos - Factura Electrónica, Sibo y Fórmulas
+import FacturaElectronica from './components/FacturaElectronica';
+import SiboModule from './components/SiboModule';
+import FormulasModule from './components/FormulasModule';
 
-  // Inicializar usuario
-  useEffect(() => {
-    // Simular carga de usuario
-    setUsuario({
-      nombre: 'Usuario Matriz Contable',
-      email: 'usuario@matrizcontable.cr',
-      rol: 'Administrador'
-    });
-  }, []);
+// Sistema de idiomas mock (conecta con tu translations.json)
+const i18n = {
+  t: (key) => key,
+  lang: 'es'
+};
 
-  // Agregar notificación
-  const agregarNotificacion = (mensaje, tipo = 'info') => {
-    const id = Date.now();
-    const notif = { id, mensaje, tipo };
-    setNotificaciones([...notificaciones, notif]);
-
-    // Auto-remover después de 5 segundos
-    setTimeout(() => {
-      setNotificaciones(prev => prev.filter(n => n.id !== id));
-    }, 5000);
-  };
-
-  // Remover notificación
-  const removerNotificacion = (id) => {
-    setNotificaciones(notificaciones.filter(n => n.id !== id));
-  };
-
-  // Módulos disponibles
-  const modulos = [
-    { id: 'dashboard', nombre: '📊 Dashboard', icono: '📊' },
-    { id: 'contabilidad', nombre: '💼 Contabilidad Básica', icono: '💼' },
-    { id: 'derivados', nombre: '📈 Derivados v39.2', icono: '📈' },
-    { id: 'riesgos', nombre: '⚠️ Gestión Riesgos v40', icono: '⚠️' },
-    { id: 'ma', nombre: '🤝 M&A Accounting v41', icono: '🤝' },
-    { id: 'integraciones', nombre: '🔌 Integraciones v42', icono: '🔌' },
-    { id: 'sheets', nombre: '🔗 Google Sheets v43', icono: '🔗' }
-  ];
-
-  // Renderizar módulo activo
-  const renderModulo = () => {
-    switch (moduloActivo) {
-      case 'dashboard':
-        return <DashboardPRO />;
-      case 'contabilidad':
-        return <ContabilidadBasica />;
-      case 'derivados':
-        return <DerivadosAvanzados />;
-      case 'riesgos':
-        return <GestionRiesgos />;
-      case 'ma':
-        return <MAAccounting />;
-      case 'integraciones':
-        return <Integraciones />;
-      case 'sheets':
-        return <GoogleSheetsImporter />;
-      default:
-        return <DashboardPRO />;
-    }
-  };
+function App() {
+  const [activePage, setActivePage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className={`app-contenedor ${temaOscuro ? 'tema-oscuro' : 'tema-claro'}`}>
+    <div className="app-container">
       {/* HEADER */}
-      <header className="header-app">
-        <div className="header-izquierda">
-          <h1 className="logo">🧮 Matriz Contable CR v39.5</h1>
-          <p className="subtitulo">Plataforma integral de contabilidad y gestión financiera</p>
-        </div>
-
-        <div className="header-derecha">
-          {usuario && (
-            <div className="info-usuario">
-              <span className="usuario-nombre">{usuario.nombre}</span>
-              <span className="usuario-rol">{usuario.rol}</span>
-            </div>
-          )}
-
+      <header className="app-header">
+        <div className="header-left">
           <button
-            className="btn-tema"
-            onClick={() => setTemaOscuro(!temaOscuro)}
-            title={temaOscuro ? 'Modo Claro' : 'Modo Oscuro'}
+            className="btn-toggle-sidebar"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            {temaOscuro ? '☀️' : '🌙'}
+            ☰
           </button>
-
-          <button className="btn-notificaciones" title="Notificaciones">
-            🔔
-            {notificaciones.length > 0 && <span className="badge">{notificaciones.length}</span>}
-          </button>
-
-          <button className="btn-configuracion" title="Configuración">
-            ⚙️
-          </button>
+          <h1 className="app-title">📊 Matriz Contable CR v39.5+</h1>
+        </div>
+        <div className="header-right">
+          <span className="user-info">👤 Usuario</span>
         </div>
       </header>
 
-      {/* SIDEBAR NAVEGACIÓN */}
-      <aside className="sidebar">
-        <nav className="nav-modulos">
-          <h2 className="nav-titulo">Módulos</h2>
-          <ul className="lista-modulos">
-            {modulos.map(modulo => (
-              <li key={modulo.id}>
-                <button
-                  className={`btn-modulo ${moduloActivo === modulo.id ? 'activo' : ''}`}
-                  onClick={() => setModuloActivo(modulo.id)}
-                  title={modulo.nombre}
-                >
-                  <span className="icono-modulo">{modulo.icono}</span>
-                  <span className="nombre-modulo">{modulo.nombre}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+      <div className="app-layout">
+        {/* SIDEBAR */}
+        <nav className={`app-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+          <div className="nav-section">
+            <h3 className="nav-title">📈 Análisis</h3>
+            <button
+              className={`nav-btn ${activePage === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setActivePage('dashboard')}
+            >
+              Dashboard PRO
+            </button>
+            <button
+              className={`nav-btn ${activePage === 'contabilidad' ? 'active' : ''}`}
+              onClick={() => setActivePage('contabilidad')}
+            >
+              Contabilidad Básica
+            </button>
+            <button
+              className={`nav-btn ${activePage === 'derivados' ? 'active' : ''}`}
+              onClick={() => setActivePage('derivados')}
+            >
+              Derivados Avanzados
+            </button>
+          </div>
+
+          <div className="nav-section">
+            <h3 className="nav-title">💼 Finanzas</h3>
+            <button
+              className={`nav-btn ${activePage === 'factura' ? 'active' : ''}`}
+              onClick={() => setActivePage('factura')}
+            >
+              📄 Factura Electrónica
+            </button>
+            <button
+              className={`nav-btn ${activePage === 'ma-accounting' ? 'active' : ''}`}
+              onClick={() => setActivePage('ma-accounting')}
+            >
+              M&A Accounting
+            </button>
+            <button
+              className={`nav-btn ${activePage === 'riesgos' ? 'active' : ''}`}
+              onClick={() => setActivePage('riesgos')}
+            >
+              Gestión de Riesgos
+            </button>
+          </div>
+
+          <div className="nav-section">
+            <h3 className="nav-title">🎯 Costa Rica</h3>
+            <button
+              className={`nav-btn ${activePage === 'sibo' ? 'active' : ''}`}
+              onClick={() => setActivePage('sibo')}
+            >
+              📊 Sibo (Bienes Omitidos)
+            </button>
+            <button
+              className={`nav-btn ${activePage === 'integraciones' ? 'active' : ''}`}
+              onClick={() => setActivePage('integraciones')}
+            >
+              🔗 Integraciones
+            </button>
+          </div>
+
+          <div className="nav-section">
+            <h3 className="nav-title">🛠️ Herramientas</h3>
+            <button
+              className={`nav-btn ${activePage === 'formulas' ? 'active' : ''}`}
+              onClick={() => setActivePage('formulas')}
+            >
+              📐 510+ Fórmulas
+            </button>
+            <button
+              className={`nav-btn ${activePage === 'sheets' ? 'active' : ''}`}
+              onClick={() => setActivePage('sheets')}
+            >
+              📑 Google Sheets
+            </button>
+          </div>
         </nav>
 
-        <div className="seccion-ayuda">
-          <h3>📚 Recursos</h3>
-          <ul>
-            <li><a href="#" className="link-ayuda">📖 Documentación</a></li>
-            <li><a href="#" className="link-ayuda">🎓 Tutoriales</a></li>
-            <li><a href="#" className="link-ayuda">❓ FAQ</a></li>
-            <li><a href="#" className="link-ayuda">💬 Soporte</a></li>
-          </ul>
-        </div>
+        {/* MAIN CONTENT */}
+        <main className="app-main">
+          {/* Dashboard PRO */}
+          {activePage === 'dashboard' && (
+            <DashboardPRO i18n={i18n} />
+          )}
 
-        <div className="version-info">
-          <p className="version">v39.5 COMPLETA</p>
-          <p className="fecha">Octubre 2026</p>
-          <button className="btn-check-updates">🔄 Verificar actualizaciones</button>
-        </div>
-      </aside>
+          {/* Contabilidad Básica */}
+          {activePage === 'contabilidad' && (
+            <ContabilidadBasica i18n={i18n} />
+          )}
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="contenido-principal">
-        {/* NOTIFICACIONES */}
-        {notificaciones.length > 0 && (
-          <div className="contenedor-notificaciones">
-            {notificaciones.map(notif => (
-              <div key={notif.id} className={`notificacion notificacion-${notif.tipo}`}>
-                <span>{notif.mensaje}</span>
-                <button
-                  className="btn-cerrar"
-                  onClick={() => removerNotificacion(notif.id)}
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+          {/* Derivados Avanzados */}
+          {activePage === 'derivados' && (
+            <DerivadosAvanzados i18n={i18n} />
+          )}
 
-        {/* MÓDULO ACTIVO */}
-        <div className="modulo-contenedor">
-          {renderModulo()}
-        </div>
-      </main>
+          {/* Factura Electrónica ✨ NUEVO */}
+          {activePage === 'factura' && (
+            <FacturaElectronica i18n={i18n} />
+          )}
+
+          {/* M&A Accounting */}
+          {activePage === 'ma-accounting' && (
+            <MAAccounting i18n={i18n} />
+          )}
+
+          {/* Gestión de Riesgos */}
+          {activePage === 'riesgos' && (
+            <GestionRiesgos i18n={i18n} />
+          )}
+
+          {/* Sibo ✨ NUEVO */}
+          {activePage === 'sibo' && (
+            <SiboModule i18n={i18n} />
+          )}
+
+          {/* Integraciones */}
+          {activePage === 'integraciones' && (
+            <Integraciones i18n={i18n} />
+          )}
+
+          {/* 510+ Fórmulas ✨ NUEVO */}
+          {activePage === 'formulas' && (
+            <FormulasModule i18n={i18n} />
+          )}
+
+          {/* Google Sheets Importer */}
+          {activePage === 'sheets' && (
+            <GoogleSheetsImporter i18n={i18n} />
+          )}
+        </main>
+      </div>
 
       {/* FOOTER */}
-      <footer className="footer-app">
-        <div className="footer-contenido">
-          <div className="footer-seccion">
-            <h4>Matriz Contable CR</h4>
-            <p>Solución integral para contabilidad y gestión financiera empresarial</p>
-          </div>
-
-          <div className="footer-seccion">
-            <h4>Características</h4>
-            <ul>
-              <li>✅ Contabilidad completa IFRS</li>
-              <li>✅ Gestión de derivados financieros</li>
-              <li>✅ Análisis de riesgos avanzado</li>
-              <li>✅ M&A accounting automatizado</li>
-              <li>✅ Integraciones con 100+ sistemas</li>
-              <li>✅ Google Sheets integration OAuth2</li>
-            </ul>
-          </div>
-
-          <div className="footer-seccion">
-            <h4>Seguridad & Compliance</h4>
-            <ul>
-              <li>🔒 Encriptación AES-256</li>
-              <li>🛡️ GDPR & CCPA Compliant</li>
-              <li>✅ IFRS 3 Certified</li>
-              <li>📋 Audit Trail completo</li>
-              <li>🔐 OAuth 2.0 Authentication</li>
-            </ul>
-          </div>
-
-          <div className="footer-seccion">
-            <h4>Contacto</h4>
-            <ul>
-              <li>📧 Email: soporte@matrizcontable.cr</li>
-              <li>📱 WhatsApp: +506 8735-9034</li>
-              <li>🌐 Web: matrizcontable.cr</li>
-              <li>📍 San José, Costa Rica</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p className="copyright">© 2026 Matriz Contable CR. Todos los derechos reservados.</p>
-          <div className="footer-links">
-            <a href="#">Privacidad</a>
-            <a href="#">Términos de Servicio</a>
-            <a href="#">Compliance</a>
-            <a href="#">API Docs</a>
-          </div>
-        </div>
+      <footer className="app-footer">
+        <p>© 2026 Matriz Contable CR | Desarrollado con React v39.5+</p>
+        <p>Última actualización: Octubre 7, 2026</p>
       </footer>
     </div>
   );
 }
+
+export default App;
