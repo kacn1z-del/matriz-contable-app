@@ -1020,6 +1020,9 @@
         <button id="btnD104" title="Calcula IVA para formulario D-104 de Hacienda">📋 Reporte D-104</button>
         <button id="btnRatios" title="Calcula índices financieros (liquidez, rentabilidad, endeudamiento)">📊 Ratios</button>
         <button id="btnHistorico" title="Registra todos los cambios en el Diario">📜 Histórico</button>
+        <button id="btnAlertas" title="Verifica cuentas inactivas y desbalances">🚨 Alertas</button>
+        <button id="btnComparativo" title="Compara dos períodos cualesquiera">📊 Comparativo</button>
+        <button id="btnFlujo" title="Resumen de ingresos, gastos y neto">📈 Flujo</button>
         <button id="btnBalanceComp" title="Compara saldos del mes actual vs anterior">📊 Balance comparativo</button>
         <button id="btnBusqueda" title="Busca movimientos por fecha, cuenta, monto o descripción">🔍 Búsqueda</button>
         <button id="btnXmlHacienda" title="Importa facturas electrónicas XML de Hacienda">📄 Importar XML</button>
@@ -20130,7 +20133,7 @@ var RB_MAPA = {};
   m('vista', 'btnSaltoPagina btnZoomSel btnZoom100');
   m('archivo', 'btnSello btnVersiones');
   m('datos', 'btnAnalizarDatos btnCombinar btnRelacionar');
-  m('contabilidad', 'btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
+  m('contabilidad', 'btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
   m('insertar', 'btnVinculo btnAdminVinculos');
   m('formulas', 'btnMisFunciones btnAdminNombres btnInspeccion btnRevisarErrores btnEvaluarFormula btnCalculoModo btnCalcularAhora btnAutoSum btnFxLib btnVerFormulas btnRastrearPrec btnRastrearDep btnQuitarRastreo btnRangos btnMacros btnSibo');
@@ -23077,6 +23080,77 @@ function abrirBalanceComparativo(){
 
 if(document.getElementById("btnHistorico"))document.getElementById("btnHistorico").addEventListener("click",verHistoricoChangios);
 if(document.getElementById("btnBalanceComp"))document.getElementById("btnBalanceComp").addEventListener("click",abrirBalanceComparativo);
+
+function verificarAlertasAutomaticas(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),hoy=new Date(),alertas=[];
+  var cuentasVistas={},diasSinMov={};
+  diario.slice(3).forEach((f,i)=>{
+    var cod=f[2].trim(),fec=f[0].trim();
+    if(!cod)return;
+    if(!cuentasVistas[cod])cuentasVistas[cod]={};
+    cuentasVistas[cod].ultima=fec;
+  });
+  Object.keys(cuentasVistas).forEach(cod=>{
+    var dias=Math.floor((hoy-new Date(cuentasVistas[cod].ultima))/(1000*60*60*24));
+    if(dias>30)alertas.push({tipo:'⚠️ Inactiva',cuenta:cod,info:dias+' días sin movimiento'});
+  });
+  var debe=0,haber=0;
+  diario.slice(3).forEach(f=>{debe+=toNum(f[5]);haber+=toNum(f[6]);});
+  if(Math.abs(debe-haber)>0.01)alertas.push({tipo:'❌ Desbalance',cuenta:'-',info:'Debe: '+Math.round(debe*100)/100+' ≠ Haber: '+Math.round(haber*100)/100});
+  var html='<div class="mcrNota">'+alertas.length+' alertas encontradas</div><div style="max-height:400px;overflow:auto;">'+
+    alertas.map(a=>'<div style="padding:8px;border-left:4px solid #f97316;background:#fef2f2;margin:4px 0;"><b>'+a.tipo+'</b><br><small>'+a.cuenta+'</small><br>'+a.info+'</div>').join('')+
+    '</div>';
+  abrirPanel('🚨 Alertas',html,[{texto:'Cerrar'}]);
+}
+
+
+function compararPeriodos(){
+  var p1=prompt('Período 1 (ej: 2025-10):');
+  var p2=prompt('Período 2 (ej: 2025-09):');
+  if(!p1||!p2)return;
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),saldos={p1:{},p2:{}};
+  diario.slice(3).forEach(f=>{
+    var cod=f[2].trim(),fec=f[0].trim(),mov=toNum(f[5])-toNum(f[6]);
+    if(!cod)return;
+    if(fec.startsWith(p1))saldos.p1[cod]=(saldos.p1[cod]||0)+mov;
+    if(fec.startsWith(p2))saldos.p2[cod]=(saldos.p2[cod]||0)+mov;
+  });
+  var filas=[['Cuenta',p1,p2,'Cambio','%Cambio']];
+  var cods=new Set([...Object.keys(saldos.p1),...Object.keys(saldos.p2)]);
+  cods.forEach(cod=>{
+    var s1=saldos.p1[cod]||0,s2=saldos.p2[cod]||0,delta=s1-s2,pct=s2!==0?Math.round((delta/Math.abs(s2))*100):0;
+    filas.push([cod,String(Math.round(s1*100)/100),String(Math.round(s2*100)/100),String(Math.round(delta*100)/100),String(pct)+'%']);
+  });
+  snapshot();var r=escribirTablaEnHojaNueva(filas);
+  document.getElementById('saveStatus').textContent='📊 Comparativo '+p1+' vs '+p2+': '+r.filas+' cuentas';
+}
+
+
+function analizarFlujo(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),tipo={ingresos:0,gastos:0,transfer:0,otros:0};
+  diario.slice(3).forEach(f=>{
+    var cod=f[2].trim(),desc=f[3].trim().toLowerCase(),debe=toNum(f[5]),haber=toNum(f[6]);
+    if(!cod)return;
+    if(cod.startsWith('4'))tipo.ingresos+=haber-debe;
+    else if(cod.startsWith('5'))tipo.gastos+=debe-haber;
+    else if(desc.includes('transfer'))tipo.transfer+=Math.max(debe,haber);
+    else tipo.otros+=(debe+haber)/2;
+  });
+  var neto=tipo.ingresos-tipo.gastos;
+  var html='<div class="mcrNota">Resumen de Flujo</div><div style="padding:12px;">'+
+    '<div>💰 Ingresos: ₡'+Math.round(tipo.ingresos*100)/100+'</div>'+
+    '<div>📉 Gastos: ₡'+Math.round(tipo.gastos*100)/100+'</div>'+
+    '<div style="border-top:2px solid #ccc;margin-top:8px;padding-top:8px;"><b>📊 Neto: ₡'+Math.round(neto*100)/100+'</b></div>'+
+    '</div>';
+  abrirPanel('📈 Flujo de Efectivo',html,[{texto:'Cerrar'}]);
+}
+
+if(document.getElementById("btnAlertas"))document.getElementById("btnAlertas").addEventListener("click",verificarAlertasAutomaticas);
+if(document.getElementById("btnComparativo"))document.getElementById("btnComparativo").addEventListener("click",compararPeriodos);
+if(document.getElementById("btnFlujo"))document.getElementById("btnFlujo").addEventListener("click",analizarFlujo);
 </script>
 </body>
 </html>
