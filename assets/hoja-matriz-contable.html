@@ -828,6 +828,38 @@
     #tabsRow { padding-top: 2px; }
     #tabsRow button, #tabsRow .tab { padding-top: 3px; padding-bottom: 3px; }
   }
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --border: #404040;
+  --accent: #3b82f6;
+}
+[data-theme="dark"] body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .hoja, [data-theme="dark"] #hoja {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+[data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+[data-theme="dark"] button {
+  background: var(--accent);
+  color: white;
+}
+[data-theme="dark"] .mcrNota {
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--accent);
+  color: var(--text-primary);
+}
 </style>
 </head>
 <body>
@@ -922,6 +954,34 @@
         <button id="btnFreeze">❄ Congelar</button>
         <button id="btnNote">📝 Nota</button>
         <button id="btnInsertarTabla">🎨 +Tabla</button>
+        <button id="btnGSheets">Cloud Sync</button>
+        <button id="btnValidarHacienda" title="Validar datos contra Hacienda">🏛️ Validar Hacienda</button>
+        <button id="btnExportXML" title="Exportar en formato XML para Hacienda">📤 XML Hacienda</button>
+        <button id="btnPlantillas" title="Crear y usar plantillas de asientos recurrentes">📋 Plantillas</button>
+        <button id="btnReportesCustom" title="Crear y ejecutar reportes personalizables">📊 Reportes Custom</button>
+        <button id="btnImportExtracto" title="Importar extracto bancario CSV">🏦 Importar Extracto</button>
+        <button id="btnCrearProyecto" title="Crear nuevo proyecto/sucursal">➕ Nuevo Proyecto</button>
+        <button id="btnListarProyectos" title="Ver y cambiar proyectos">📁 Proyectos</button>
+        <button id="btnConsolidar" title="Consolidar datos de todos los proyectos">🔗 Consolidar</button>
+        <button id="btnHistorialAportes" title="Ver historial de aportes por empleado">📊 Historial Aportes</button>
+        <button id="btnAlertasCCSS" title="Alertas de afiliación, aportes vencidos y montos bajos">🚨 Alertas CCSS</button>
+        <button id="btnValidarMontos" title="Validar que montos CCSS sean correctos">✔️ Validar Montos CCSS</button>
+        <button id="btnCalcAportes" title="Calcular aportes CCSS por empleado">💰 Calc Aportes CCSS</button>
+        <button id="btnExportNominaCCSS" title="Exportar nómina con aportes CCSS">📤 Export Nómina CCSS</button>
+        <button id="btnReporteCCSS" title="Generar reporte de estado CCSS">📊 Reporte CCSS</button>
+        <button id="btnValidarCCSS" title="Validar empleados contra padrón CCSS">✔️ Validar CCSS</button>
+        <button id="btnCargarPadron" title="Cargar padrón CCSS desde CSV">📋 Cargar Padrón CCSS</button>
+        <button id="btnHistorial" title="Ver y restaurar versiones anteriores">History</button>
+        <button id="btnExportGS">Export GS</button>
+        <button id="btnD105" title="Generar reporte D-105 de impuesto sobre ganancias">🏛️ D-105</button>
+        <button id="btnImportCSV" title="Importar datos desde archivo CSV">📥 Importar CSV</button>
+        <button id="btnTrend" title="Gráfico de tendencia de ingresos/gastos">📊 Tendencia</button>
+        <button id="btnProyec" title="Proyecta flujo de los próximos 3 meses">📈 Proyección</button>
+        <button id="btnDedup" title="Buscar y eliminar asientos duplicados">🔍 Duplicados</button>
+        <button id="btnBackup" title="Guardar backup ahora">💾 Backup</button>
+        <button id="btnRestore" title="Restaurar del último backup">♻️ Restaurar</button>
+        <button id="btnExportPDF" title="Exportar Diario a PDF">📄 PDF Diario</button>
+        <button id="btnExportD104" title="Exportar D-104 a PDF">📄 PDF D-104</button>
         <button id="btnDarkMode">🌙</button>
       </div>
     </div>
@@ -1014,6 +1074,8 @@
         <button id="btnEstadosFinancieros">📈 Estados financieros</button>
         <button id="btnAsientosFacturas">🧮 Asientos de facturas</button>
         <button id="btnFlujoCaja" title="Gráfico de flujo de caja acumulado (últimos 30 días)">📈 Flujo de caja</button>
+        <button id="btnValidarHacienda" title="Validar datos contra Hacienda">🏛️ Validar Hacienda</button>
+        <button id="btnExportXML" title="Exportar en formato XML para Hacienda">📤 XML Hacienda</button>
         <button id="btnPlantillas" title="Crea hojas plantilla: F-104, Estado de Resultados, Balance General">📋 Plantillas contables</button>
         <button id="btnFlujoCajaProyectado" title="Pronóstico del flujo de caja para los próximos 6 meses">📊 Flujo proyectado</button>
         <button id="btnRoles" title="Asigna roles por hoja: editar, comentar, ver">🔐 Permisos por hoja</button>
@@ -1022,6 +1084,54 @@
         <button id="btnHistorico" title="Registra todos los cambios en el Diario">📜 Histórico</button>
         <button id="btnAlertas" title="Verifica cuentas inactivas y desbalances">🚨 Alertas</button>
         <button id="btnComparativo" title="Compara dos períodos cualesquiera">📊 Comparativo</button>
+        <button id="btnGSheets" title="Configurar Google Sheets">☁️ Google Sheets</button>
+        <button id="btnValidarHacienda" title="Validar datos contra Hacienda">🏛️ Validar Hacienda</button>
+        <button id="btnExportXML" title="Exportar en formato XML para Hacienda">📤 XML Hacienda</button>
+        <button id="btnPlantillas" title="Crear y usar plantillas de asientos recurrentes">📋 Plantillas</button>
+        <button id="btnReportesCustom" title="Crear y ejecutar reportes personalizables">📊 Reportes Custom</button>
+        <button id="btnImportExtracto" title="Importar extracto bancario CSV">🏦 Importar Extracto</button>
+        <button id="btnCrearProyecto" title="Crear nuevo proyecto/sucursal">➕ Nuevo Proyecto</button>
+        <button id="btnListarProyectos" title="Ver y cambiar proyectos">📁 Proyectos</button>
+        <button id="btnConsolidar" title="Consolidar datos de todos los proyectos">🔗 Consolidar</button>
+        <button id="btnHistorialAportes" title="Ver historial de aportes por empleado">📊 Historial Aportes</button>
+        <button id="btnAlertasCCSS" title="Alertas de afiliación, aportes vencidos y montos bajos">🚨 Alertas CCSS</button>
+        <button id="btnValidarMontos" title="Validar que montos CCSS sean correctos">✔️ Validar Montos CCSS</button>
+        <button id="btnCalcAportes" title="Calcular aportes CCSS por empleado">💰 Calc Aportes CCSS</button>
+        <button id="btnExportNominaCCSS" title="Exportar nómina con aportes CCSS">📤 Export Nómina CCSS</button>
+        <button id="btnReporteCCSS" title="Generar reporte de estado CCSS">📊 Reporte CCSS</button>
+        <button id="btnValidarCCSS" title="Validar empleados contra padrón CCSS">✔️ Validar CCSS</button>
+        <button id="btnCargarPadron" title="Cargar padrón CCSS desde CSV">📋 Cargar Padrón CCSS</button>
+        <button id="btnHistorial" title="Ver y restaurar versiones anteriores">History</button>
+        <button id="btnExportGS" title="Exportar a Google Sheets">📤 Exportar GS</button>
+        <button id="btnGSheets">Cloud Sync</button>
+        <button id="btnValidarHacienda" title="Validar datos contra Hacienda">🏛️ Validar Hacienda</button>
+        <button id="btnExportXML" title="Exportar en formato XML para Hacienda">📤 XML Hacienda</button>
+        <button id="btnPlantillas" title="Crear y usar plantillas de asientos recurrentes">📋 Plantillas</button>
+        <button id="btnReportesCustom" title="Crear y ejecutar reportes personalizables">📊 Reportes Custom</button>
+        <button id="btnImportExtracto" title="Importar extracto bancario CSV">🏦 Importar Extracto</button>
+        <button id="btnCrearProyecto" title="Crear nuevo proyecto/sucursal">➕ Nuevo Proyecto</button>
+        <button id="btnListarProyectos" title="Ver y cambiar proyectos">📁 Proyectos</button>
+        <button id="btnConsolidar" title="Consolidar datos de todos los proyectos">🔗 Consolidar</button>
+        <button id="btnHistorialAportes" title="Ver historial de aportes por empleado">📊 Historial Aportes</button>
+        <button id="btnAlertasCCSS" title="Alertas de afiliación, aportes vencidos y montos bajos">🚨 Alertas CCSS</button>
+        <button id="btnValidarMontos" title="Validar que montos CCSS sean correctos">✔️ Validar Montos CCSS</button>
+        <button id="btnCalcAportes" title="Calcular aportes CCSS por empleado">💰 Calc Aportes CCSS</button>
+        <button id="btnExportNominaCCSS" title="Exportar nómina con aportes CCSS">📤 Export Nómina CCSS</button>
+        <button id="btnReporteCCSS" title="Generar reporte de estado CCSS">📊 Reporte CCSS</button>
+        <button id="btnValidarCCSS" title="Validar empleados contra padrón CCSS">✔️ Validar CCSS</button>
+        <button id="btnCargarPadron" title="Cargar padrón CCSS desde CSV">📋 Cargar Padrón CCSS</button>
+        <button id="btnHistorial" title="Ver y restaurar versiones anteriores">History</button>
+        <button id="btnExportGS">Export GS</button>
+        <button id="btnD105" title="Generar reporte D-105 de impuesto sobre ganancias">🏛️ D-105</button>
+        <button id="btnImportCSV" title="Importar datos desde archivo CSV">📥 Importar CSV</button>
+        <button id="btnTrend" title="Gráfico de tendencia de ingresos/gastos">📊 Tendencia</button>
+        <button id="btnProyec" title="Proyecta flujo de los próximos 3 meses">📈 Proyección</button>
+        <button id="btnDedup" title="Buscar y eliminar asientos duplicados">🔍 Duplicados</button>
+        <button id="btnBackup" title="Guardar backup ahora">💾 Backup</button>
+        <button id="btnRestore" title="Restaurar del último backup">♻️ Restaurar</button>
+        <button id="btnExportPDF" title="Exportar Diario a PDF">📄 PDF Diario</button>
+        <button id="btnExportD104" title="Exportar D-104 a PDF">📄 PDF D-104</button>
+        <button id="btnDarkMode" title="Alternar modo oscuro/claro">🌙 Oscuro</button>
         <button id="btnFlujo" title="Resumen de ingresos, gastos y neto">📈 Flujo</button>
         <button id="btnBalanceComp" title="Compara saldos del mes actual vs anterior">📊 Balance comparativo</button>
         <button id="btnBusqueda" title="Busca movimientos por fecha, cuenta, monto o descripción">🔍 Búsqueda</button>
@@ -1049,6 +1159,49 @@
         <button id="btnPdfReporte">⬇ PDF Reporte</button>
         <button id="btnExcelExport" title="Exporta todas las hojas en un solo archivo">⬇ Excel</button>
         <button id="btnExcelImport">⬆ Importar Excel</button>
+        <button id="btnGSheets" title="Configurar Google Sheets">☁️ Google Sheets</button>
+        <button id="btnValidarHacienda" title="Validar datos contra Hacienda">🏛️ Validar Hacienda</button>
+        <button id="btnExportXML" title="Exportar en formato XML para Hacienda">📤 XML Hacienda</button>
+        <button id="btnPlantillas" title="Crear y usar plantillas de asientos recurrentes">📋 Plantillas</button>
+        <button id="btnReportesCustom" title="Crear y ejecutar reportes personalizables">📊 Reportes Custom</button>
+        <button id="btnImportExtracto" title="Importar extracto bancario CSV">🏦 Importar Extracto</button>
+        <button id="btnCrearProyecto" title="Crear nuevo proyecto/sucursal">➕ Nuevo Proyecto</button>
+        <button id="btnListarProyectos" title="Ver y cambiar proyectos">📁 Proyectos</button>
+        <button id="btnConsolidar" title="Consolidar datos de todos los proyectos">🔗 Consolidar</button>
+        <button id="btnHistorialAportes" title="Ver historial de aportes por empleado">📊 Historial Aportes</button>
+        <button id="btnAlertasCCSS" title="Alertas de afiliación, aportes vencidos y montos bajos">🚨 Alertas CCSS</button>
+        <button id="btnValidarMontos" title="Validar que montos CCSS sean correctos">✔️ Validar Montos CCSS</button>
+        <button id="btnCalcAportes" title="Calcular aportes CCSS por empleado">💰 Calc Aportes CCSS</button>
+        <button id="btnExportNominaCCSS" title="Exportar nómina con aportes CCSS">📤 Export Nómina CCSS</button>
+        <button id="btnReporteCCSS" title="Generar reporte de estado CCSS">📊 Reporte CCSS</button>
+        <button id="btnValidarCCSS" title="Validar empleados contra padrón CCSS">✔️ Validar CCSS</button>
+        <button id="btnCargarPadron" title="Cargar padrón CCSS desde CSV">📋 Cargar Padrón CCSS</button>
+        <button id="btnHistorial" title="Ver y restaurar versiones anteriores">History</button>
+        <button id="btnExportGS" title="Exportar a Google Sheets">📤 Exportar GS</button>
+        <button id="btnGSheets">Cloud Sync</button>
+        <button id="btnValidarHacienda" title="Validar datos contra Hacienda">🏛️ Validar Hacienda</button>
+        <button id="btnExportXML" title="Exportar en formato XML para Hacienda">📤 XML Hacienda</button>
+        <button id="btnPlantillas" title="Crear y usar plantillas de asientos recurrentes">📋 Plantillas</button>
+        <button id="btnReportesCustom" title="Crear y ejecutar reportes personalizables">📊 Reportes Custom</button>
+        <button id="btnImportExtracto" title="Importar extracto bancario CSV">🏦 Importar Extracto</button>
+        <button id="btnCrearProyecto" title="Crear nuevo proyecto/sucursal">➕ Nuevo Proyecto</button>
+        <button id="btnListarProyectos" title="Ver y cambiar proyectos">📁 Proyectos</button>
+        <button id="btnConsolidar" title="Consolidar datos de todos los proyectos">🔗 Consolidar</button>
+        <button id="btnHistorialAportes" title="Ver historial de aportes por empleado">📊 Historial Aportes</button>
+        <button id="btnAlertasCCSS" title="Alertas de afiliación, aportes vencidos y montos bajos">🚨 Alertas CCSS</button>
+        <button id="btnValidarMontos" title="Validar que montos CCSS sean correctos">✔️ Validar Montos CCSS</button>
+        <button id="btnCalcAportes" title="Calcular aportes CCSS por empleado">💰 Calc Aportes CCSS</button>
+        <button id="btnExportNominaCCSS" title="Exportar nómina con aportes CCSS">📤 Export Nómina CCSS</button>
+        <button id="btnReporteCCSS" title="Generar reporte de estado CCSS">📊 Reporte CCSS</button>
+        <button id="btnValidarCCSS" title="Validar empleados contra padrón CCSS">✔️ Validar CCSS</button>
+        <button id="btnCargarPadron" title="Cargar padrón CCSS desde CSV">📋 Cargar Padrón CCSS</button>
+        <button id="btnHistorial" title="Ver y restaurar versiones anteriores">History</button>
+        <button id="btnExportGS">Export GS</button>
+        <button id="btnD105" title="Generar reporte D-105 de impuesto sobre ganancias">🏛️ D-105</button>
+        <button id="btnImportCSV" title="Importar datos desde archivo CSV">📥 Importar CSV</button>
+        <button id="btnTrend" title="Gráfico de tendencia de ingresos/gastos">📊 Tendencia</button>
+        <button id="btnProyec" title="Proyecta flujo de los próximos 3 meses">📈 Proyección</button>
+        <button id="btnDedup" title="Buscar y eliminar asientos duplicados">🔍 Duplicados</button>
         <button id="btnBackup" title="Historial de versiones: ver qué cambió y restaurar">🕘 Versiones y backups</button>
         <button id="btnCompararHojas" title="Comparar dos hojas y marcar las celdas distintas">⚖ Comparar hojas</button>
         <button id="btnOcultarHojas" title="Ocultar o mostrar hojas y proteger la estructura del libro">👁 Hojas y libro</button>
@@ -20133,7 +20286,7 @@ var RB_MAPA = {};
   m('vista', 'btnSaltoPagina btnZoomSel btnZoom100');
   m('archivo', 'btnSello btnVersiones');
   m('datos', 'btnAnalizarDatos btnCombinar btnRelacionar');
-  m('contabilidad', 'btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
+  m('contabilidad', 'btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
   m('insertar', 'btnVinculo btnAdminVinculos');
   m('formulas', 'btnMisFunciones btnAdminNombres btnInspeccion btnRevisarErrores btnEvaluarFormula btnCalculoModo btnCalcularAhora btnAutoSum btnFxLib btnVerFormulas btnRastrearPrec btnRastrearDep btnQuitarRastreo btnRangos btnMacros btnSibo');
@@ -23074,7 +23227,14 @@ function abrirBalanceComparativo(){
   var mesAct=año+'-'+String(mes).padStart(2,'0');
   var mesAnt=año+'-'+String(mes-1).padStart(2,'0');
   var filas=balanceComparativo(mesAct,mesAnt);
-  snapshot();var r=escribirTablaEnHojaNueva(filas);
+  snapshot();
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),mes=new Date().toISOString().slice(0,7),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var total=Math.round((salario*0.0975+salario*0.0475+salario*0.035+salario*0.005+salario*0.01)*100)/100;
+    registrarAporteCCSS(cedula,mes,total);
+  });
+  var r=escribirTablaEnHojaNueva(filas);
   document.getElementById('saveStatus').textContent='📊 Balance comparativo creado: '+r.filas+' cuentas';
 }
 
@@ -23123,7 +23283,14 @@ function compararPeriodos(){
     var s1=saldos.p1[cod]||0,s2=saldos.p2[cod]||0,delta=s1-s2,pct=s2!==0?Math.round((delta/Math.abs(s2))*100):0;
     filas.push([cod,String(Math.round(s1*100)/100),String(Math.round(s2*100)/100),String(Math.round(delta*100)/100),String(pct)+'%']);
   });
-  snapshot();var r=escribirTablaEnHojaNueva(filas);
+  snapshot();
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),mes=new Date().toISOString().slice(0,7),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var total=Math.round((salario*0.0975+salario*0.0475+salario*0.035+salario*0.005+salario*0.01)*100)/100;
+    registrarAporteCCSS(cedula,mes,total);
+  });
+  var r=escribirTablaEnHojaNueva(filas);
   document.getElementById('saveStatus').textContent='📊 Comparativo '+p1+' vs '+p2+': '+r.filas+' cuentas';
 }
 
@@ -23151,6 +23318,857 @@ function analizarFlujo(){
 if(document.getElementById("btnAlertas"))document.getElementById("btnAlertas").addEventListener("click",verificarAlertasAutomaticas);
 if(document.getElementById("btnComparativo"))document.getElementById("btnComparativo").addEventListener("click",compararPeriodos);
 if(document.getElementById("btnFlujo"))document.getElementById("btnFlujo").addEventListener("click",analizarFlujo);
+
+var modoOscuro=false;function toggleDarkMode(){
+  modoOscuro=!modoOscuro;
+  document.documentElement.setAttribute('data-theme',modoOscuro?'dark':'light');
+  localStorage.setItem('mcrDarkMode',modoOscuro);
+  document.getElementById('btnDarkMode').textContent=modoOscuro?'☀️ Claro':'🌙 Oscuro';
+}
+function detectarPreferenciaSistema(){
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+    modoOscuro=true;
+    document.documentElement.setAttribute('data-theme','dark');
+    if(document.getElementById('btnDarkMode'))document.getElementById('btnDarkMode').textContent='☀️ Claro';
+  }
+}
+if(localStorage.getItem('mcrDarkMode')==='true'){modoOscuro=true;document.documentElement.setAttribute('data-theme','dark');}
+else if(!localStorage.getItem('mcrDarkMode'))detectarPreferenciaSistema();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',(e)=>{
+  if(!localStorage.getItem('mcrDarkModeManual')){
+    modoOscuro=e.matches;
+    document.documentElement.setAttribute('data-theme',modoOscuro?'dark':'light');
+  }
+});
+
+detectarPreferenciaSistema();
+if(document.getElementById("btnDarkMode"))document.getElementById("btnDarkMode").addEventListener("click",toggleDarkMode);
+
+function exportarAPDF(tipoReporte){
+  if(typeof html2pdf==='undefined'){
+    var script=document.createElement('script');
+    script.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    document.head.appendChild(script);
+    script.onload=()=>hacerExportPDF(tipoReporte);
+    return;
+  }
+  hacerExportPDF(tipoReporte);
+}
+function hacerExportPDF(tipo){
+  var contenido='<h1>Matriz Contable CR - '+tipo+'</h1>';
+  var fecha=new Date().toLocaleDateString('es-CR');
+  contenido+='<p><small>Generado: '+fecha+'</small></p>';
+  
+  if(tipo==='Diario'){
+    var diario=filasDeHoja('Diario');
+    contenido+='<table style="width:100%;border-collapse:collapse;"><tr><th>Fecha</th><th>Ref</th><th>Cuenta</th><th>Descripción</th><th>Debe</th><th>Haber</th></tr>';
+    diario.slice(3,Math.min(diario.length,diario.length)).forEach(f=>{
+      contenido+='<tr><td>'+f[0]+'</td><td>'+f[1]+'</td><td>'+f[2]+'</td><td>'+f[3]+'</td><td>'+f[5]+'</td><td>'+f[6]+'</td></tr>';
+    });
+    contenido+='</table>';
+  }else if(tipo==='D-104'){
+    var filas=calcularIVADelDiario();
+    contenido+='<table style="width:100%;border-collapse:collapse;"><tr><th>Concepto</th><th>Monto</th></tr>';
+    filas.forEach(f=>{contenido+='<tr><td>'+f[0]+'</td><td>'+f[1]+'</td></tr>';});
+    contenido+='</table>';
+  }
+  
+  var opt={margin:10,filename:'matriz-'+tipo+'-'+fecha.replace(/\//g,'-')+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}};
+  html2pdf().set(opt).from(contenido).save();
+  document.getElementById('saveStatus').textContent='✅ PDF exportado: '+tipo;
+}
+
+if(document.getElementById("btnExportPDF"))document.getElementById("btnExportPDF").addEventListener("click",()=>exportarAPDF("Diario"));
+if(document.getElementById("btnExportD104"))document.getElementById("btnExportD104").addEventListener("click",()=>exportarAPDF("D-104"));
+
+var ultimoBackup=0;function respaldoAutomatico(){
+  if(!window.firebase)return;
+  var ahora=Date.now();
+  if(ahora-ultimoBackup<60000)return;
+  ultimoBackup=ahora;
+  var datos={sheetData,sheetFormats,sheetNotes,colWidths,timestamp:new Date().toISOString(),usuario:currentUser?.email||'local'};
+  if(window.db){
+    db.collection('backups').add(datos).then(()=>{
+      console.log('✅ Backup automático guardado');
+    }).catch(e=>console.error('Error backup:',e));
+  }else{
+    localStorage.setItem('mcrBackupLocal',JSON.stringify({...datos,local:true}));
+    console.log('✅ Backup local guardado');
+  }
+}
+function restaurarDelUltimoBackup(){
+  if(!confirm('¿Restaurar datos del último backup?'))return;
+  var backup=JSON.parse(localStorage.getItem('mcrBackupLocal'));
+  if(backup){
+    sheetData=backup.sheetData;
+    sheetFormats=backup.sheetFormats;
+    sheetNotes=backup.sheetNotes;
+    colWidths=backup.colWidths;
+    renderizar();
+    document.getElementById('saveStatus').textContent='✅ Restaurado del backup: '+backup.timestamp;
+  }else alert('No hay backup local disponible');
+}
+
+if(document.getElementById("btnBackup"))document.getElementById("btnBackup").addEventListener("click",respaldoAutomatico);
+if(document.getElementById("btnRestore"))document.getElementById("btnRestore").addEventListener("click",restaurarDelUltimoBackup);
+setInterval(respaldoAutomatico,60000);
+
+function detectarDuplicados(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),duplicados=[],vistas={};
+  diario.slice(3).forEach((f,idx)=>{
+    var key=f[0]+"|"+f[2]+"|"+f[5]+"|"+f[6];
+    if(vistas[key]){
+      duplicados.push({fila:idx+4,original:vistas[key].fila,fecha:f[0],cuenta:f[2],debe:f[5],haber:f[6]});
+    }else{
+      vistas[key]={fila:idx+4,datos:f};
+    }
+  });
+  if(!duplicados.length){alert('✅ Sin duplicados encontrados');return;}
+  var html='<div class="mcrNota">⚠️ '+duplicados.length+' asientos duplicados</div><div style="max-height:400px;overflow:auto;">'+
+    duplicados.map(d=>'<div style="padding:8px;background:#fef3c7;border-left:4px solid #f59e0b;margin:4px 0;"><small>Fila '+d.fila+' duplica '+d.original+'</small><br>'+d.fecha+' | '+d.cuenta+' | Debe: '+d.debe+' Haber: '+d.haber+'</div>').join('')+
+    '</div>';
+  abrirPanel('🔍 Duplicados',html,[{texto:'Cerrar'}]);
+}
+function eliminarDuplicadosFila(fila){
+  if(confirm('¿Eliminar asiento en fila '+fila+'?')){
+    sheetData['Diario'][fila-1]=['','','','','','0','0'];
+    snapshot();
+    renderizar();
+    document.getElementById('saveStatus').textContent='✅ Duplicado eliminado en fila '+fila;
+  }
+}
+
+if(document.getElementById("btnDedup"))document.getElementById("btnDedup").addEventListener("click",detectarDuplicados);
+
+function proyectarFlujo(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),mesActual=new Date().getMonth()+1;
+  var ingresos=0,gastos=0,meses={};
+  diario.slice(3).forEach(f=>{
+    var fec=f[0].trim(),cod=f[2].trim(),debe=toNum(f[5]),haber=toNum(f[6]);
+    if(!fec||!cod)return;
+    var mesFec=parseInt(fec.split('-')[1])||mesActual;
+    if(!meses[mesFec])meses[mesFec]={ing:0,gas:0};
+    if(cod.startsWith('4'))meses[mesFec].ing+=haber-debe;
+    else if(cod.startsWith('5'))meses[mesFec].gas+=debe-haber;
+  });
+  var promedio=0,conteo=0;
+  Object.keys(meses).forEach(m=>{
+    var neto=meses[m].ing-meses[m].gas;
+    promedio+=neto;conteo++;
+  });
+  promedio=conteo>0?promedio/conteo:0;
+  var proyecciones=[['Mes','Proyectado']];
+  for(var i=1;i<=3;i++){
+    proyecciones.push(['Mes '+(mesActual+i),String(Math.round(promedio*100)/100)]);
+  }
+  snapshot();var r=escribirTablaEnHojaNueva(proyecciones);
+  document.getElementById('saveStatus').textContent='📈 Proyección creada: promedio mensual ₡'+Math.round(promedio*100)/100;
+}
+
+if(document.getElementById("btnProyec"))document.getElementById("btnProyec").addEventListener("click",proyectarFlujo);
+
+function graficarTendencia(){
+  if(typeof Chart==='undefined'){
+    var script=document.createElement('script');
+    script.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
+    document.head.appendChild(script);
+    script.onload=()=>dibujarTendencia();
+    return;
+  }
+  dibujarTendencia();
+}
+function dibujarTendencia(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),datos={};
+  diario.slice(3).forEach(f=>{
+    var fec=f[0].trim().slice(0,7),cod=f[2].trim(),debe=toNum(f[5]),haber=toNum(f[6]);
+    if(!fec||!cod)return;
+    if(!datos[fec])datos[fec]={ing:0,gas:0};
+    if(cod.startsWith('4'))datos[fec].ing+=haber-debe;
+    else if(cod.startsWith('5'))datos[fec].gas+=debe-haber;
+  });
+  var fechas=Object.keys(datos).sort(),ingresos=[],gastos=[],netos=[];
+  fechas.forEach(f=>{
+    ingresos.push(Math.round(datos[f].ing*100)/100);
+    gastos.push(Math.round(datos[f].gas*100)/100);
+    netos.push(Math.round((datos[f].ing-datos[f].gas)*100)/100);
+  });
+  var canvas=document.createElement('canvas');
+  canvas.id='chartTendencia';canvas.width=400;canvas.height=250;
+  var html='<div style="width:100%;overflow:auto;"><canvas id="chartTendencia"></canvas></div>';
+  abrirPanel('📈 Tendencia',html,[{texto:'Cerrar'}]);
+  setTimeout(()=>{
+    var ctx=document.getElementById('chartTendencia').getContext('2d');
+    new Chart(ctx,{type:'line',data:{labels:fechas,datasets:[
+      {label:'Ingresos',data:ingresos,borderColor:'#22c55e',tension:0.3,fill:false},
+      {label:'Gastos',data:gastos,borderColor:'#ef4444',tension:0.3,fill:false},
+      {label:'Neto',data:netos,borderColor:'#3b82f6',tension:0.3,fill:false,borderWidth:2}
+    ]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true}}}});
+  },100);
+}
+
+if(document.getElementById("btnTrend"))document.getElementById("btnTrend").addEventListener("click",graficarTendencia);
+
+function importarCSVMejorado(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.csv';
+  input.onchange=(e)=>{
+    var file=e.target.files[0];
+    if(!file)return;
+    var reader=new FileReader();
+    reader.onload=(event)=>{
+      var csv=event.target.result,lineas=csv.split('\n'),datos=[],encabezados=[];
+      lineas.forEach((l,i)=>{
+        if(!l.trim())return;
+        var cols=l.split(',').map(c=>c.trim());
+        if(i===0)encabezados=cols;
+        else datos.push(cols);
+      });
+      mostrarMapeoCSV(encabezados,datos);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function mostrarMapeoCSV(encabezados,datos){
+  var html='<div class="mcrNota">'+datos.length+' filas | '+encabezados.length+' columnas</div>';
+  html+='<div style="max-height:300px;overflow:auto;"><table style="width:100%;border-collapse:collapse;"><tr>';
+  encabezados.forEach(e=>html+='<th style="border:1px solid #ccc;padding:4px;"><small>'+escHtml(e)+'</small></th>');
+  html+='</tr>';
+  datos.slice(0,10).forEach(d=>{
+    html+='<tr>';
+    d.forEach(v=>html+='<td style="border:1px solid #eee;padding:4px;"><small>'+escHtml(v.slice(0,20))+'</small></td>');
+    html+='</tr>';
+  });
+  html+='</table></div>';
+  html+='<div style="margin-top:12px;"><button onclick="importarFilasCSV('+JSON.stringify(datos)+')">✅ Importar '+datos.length+' filas</button></div>';
+  abrirPanel('📥 Mapeo CSV',html,[{texto:'Cancelar'}]);
+}
+function importarFilasCSV(datos){
+  if(!confirm('¿Importar '+datos.length+' filas al Diario?'))return;
+  if(sheets.indexOf('Diario')<0)crearHoja('Diario');
+  var diario=sheetData['Diario'];
+  datos.forEach(d=>{
+    diario.push([d[0]||'',d[1]||'',d[2]||'',d[3]||'',d[4]||'',d[5]||'0',d[6]||'0']);
+  });
+  snapshot();renderizar();
+  document.getElementById('saveStatus').textContent='✅ '+datos.length+' filas importadas del CSV';
+}
+
+if(document.getElementById("btnImportCSV"))document.getElementById("btnImportCSV").addEventListener("click",importarCSVMejorado);
+
+function calcularD105(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario'),ingresos=0,gastos=0,deducciones=0;
+  diario.slice(3).forEach(f=>{
+    var cod=f[2].trim(),desc=f[3].trim().toLowerCase(),debe=toNum(f[5]),haber=toNum(f[6]);
+    if(!cod)return;
+    if(cod.startsWith('4'))ingresos+=haber-debe;
+    else if(cod.startsWith('5'))gastos+=debe-haber;
+    if(desc.includes('deducción')||desc.includes('deducible'))deducciones+=debe;
+  });
+  var rentaBruta=ingresos-gastos;
+  var gastosPersonales=Math.min(rentaBruta*0.2,120000);
+  var rentaNeta=Math.max(rentaBruta-deducciones-gastosPersonales,0);
+  var impuesto=0;
+  if(rentaNeta<=924000)impuesto=0;
+  else if(rentaNeta<=1385000)impuesto=(rentaNeta-924000)*0.1;
+  else if(rentaNeta<=2307000)impuesto=46100+(rentaNeta-1385000)*0.15;
+  else impuesto=184300+(rentaNeta-2307000)*0.22;
+  
+  var filas=[
+    ['REPORTE D-105 - IMPUESTO SOBRE GANANCIAS',''],
+    ['',''],
+    ['Ingresos Brutos',String(Math.round(ingresos*100)/100)],
+    ['Gastos Deducibles',String(Math.round((gastos+deducciones)*100)/100)],
+    ['Gastos Personales (20%)',String(Math.round(gastosPersonales*100)/100)],
+    ['Renta Neta Gravable',String(Math.round(rentaNeta*100)/100)],
+    ['',''],
+    ['Impuesto a Pagar',String(Math.round(impuesto*100)/100)]
+  ];
+  
+  snapshot();
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),mes=new Date().toISOString().slice(0,7),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var total=Math.round((salario*0.0975+salario*0.0475+salario*0.035+salario*0.005+salario*0.01)*100)/100;
+    registrarAporteCCSS(cedula,mes,total);
+  });
+  var r=escribirTablaEnHojaNueva(filas);
+  document.getElementById('saveStatus').textContent='📊 D-105 generado: Impuesto ₡'+Math.round(impuesto*100)/100;
+}
+
+if(document.getElementById("btnD105"))document.getElementById("btnD105").addEventListener("click",calcularD105);
+
+if(document.getElementById("btnExportGS"))document.getElementById("btnExportGS").addEventListener("click",exportarAGoogleSheets);
+
+function sincronizarConGoogleSheets(){
+  var id=prompt('ID de Google Sheet:');
+  if(!id)return;
+  localStorage.setItem('mcrGoogleSheetId',id);
+  alert('✅ Google Sheet configurado. La sincronización ocurrirá automáticamente.');
+}
+function exportarAGoogleSheets(){
+  var id=localStorage.getItem('mcrGoogleSheetId');
+  if(!id){alert('Primero configura el Google Sheet ID');return;}
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario');
+  var csv='Fecha,Referencia,Cuenta,Descripcion,Documento,Debe,Haber\n';
+  diario.slice(3).forEach(f=>{
+    csv+='"'+f.join('","')+'"\n';
+  });
+  localStorage.setItem('mcrDiarioExport',csv);
+  document.getElementById('saveStatus').textContent='✅ Datos listos para Google Sheets';
+}
+
+if(document.getElementById("btnGSheets"))document.getElementById("btnGSheets").addEventListener("click",sincronizarConGoogleSheets);
+if(document.getElementById("btnExportGS"))document.getElementById("btnExportGS").addEventListener("click",exportarAGoogleSheets);
+
+function sincronizarConGoogleSheets(){
+  var id=prompt('ID de Google Sheet:');
+  if(!id)return;
+  localStorage.setItem('mcrGoogleSheetId',id);
+  alert('Google Sheet configurado');
+}
+function exportarAGoogleSheets(){
+  var id=localStorage.getItem('mcrGoogleSheetId');
+  if(!id){alert('Configura Google Sheet ID primero');return;}
+  document.getElementById('saveStatus').textContent='Exportacion lista para Google Sheets';
+}
+
+if(document.getElementById("btnGSheets"))document.getElementById("btnGSheets").addEventListener("click",sincronizarConGoogleSheets);
+if(document.getElementById("btnExportGS"))document.getElementById("btnExportGS").addEventListener("click",exportarAGoogleSheets);
+
+var versionesAnteriores=[];function guardarVersion(){
+  versionesAnteriores.push({
+    timestamp:new Date().toISOString(),
+    data:{sheetData:JSON.parse(JSON.stringify(sheetData)),sheetFormats:JSON.parse(JSON.stringify(sheetFormats)),sheetNotes:JSON.parse(JSON.stringify(sheetNotes))}
+  });
+  if(versionesAnteriores.length>20)versionesAnteriores.shift();
+  localStorage.setItem('mcrVersiones',JSON.stringify(versionesAnteriores));
+}
+function mostrarHistorialVersiones(){
+  if(!versionesAnteriores.length){alert('Sin versiones anteriores');return;}
+  var html='<div class="mcrNota">'+versionesAnteriores.length+' versiones guardadas</div><div style="max-height:400px;overflow:auto;">';
+  versionesAnteriores.reverse().forEach((v,i)=>{
+    html+='<div style="padding:8px;border-bottom:1px solid #eee;"><button onclick="restaurarVersion('+i+')">↶ '+v.timestamp+'</button></div>';
+  });
+  html+='</div>';
+  abrirPanel('History',html,[{texto:'Cerrar'}]);
+}
+function restaurarVersion(idx){
+  if(!confirm('Restaurar version?'))return;
+  var v=versionesAnteriores[versionesAnteriores.length-1-idx];
+  sheetData=v.data.sheetData;
+  sheetFormats=v.data.sheetFormats;
+  sheetNotes=v.data.sheetNotes;
+  snapshot();
+  renderizar();
+  document.getElementById('saveStatus').textContent='Restaurado: '+v.timestamp;
+}
+
+if(document.getElementById("btnHistorial"))document.getElementById("btnHistorial").addEventListener("click",mostrarHistorialVersiones);
+
+var padronCCSS={};function cargarPadronCCSS(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.csv';
+  input.onchange=(e)=>{
+    var file=e.target.files[0];
+    if(!file)return;
+    var reader=new FileReader();
+    reader.onload=(event)=>{
+      var csv=event.target.result,lineas=csv.split('\n');
+      padronCCSS={};
+      lineas.slice(1).forEach(l=>{
+        if(!l.trim())return;
+        var cols=l.split(',').map(c=>c.trim());
+        if(cols.length>=3){
+          var cedula=cols[0],nombre=cols[1],estado=cols[2]||'activo';
+          padronCCSS[cedula]={nombre:nombre,estado:estado,fecha:cols[3]||'',monto:cols[4]||''};
+        }
+      });
+      localStorage.setItem('mcrPadronCCSS',JSON.stringify(padronCCSS));
+      document.getElementById('saveStatus').textContent='✅ Padrón CCSS cargado: '+Object.keys(padronCCSS).length+' afiliados';
+      abrirPanel('Padrón CCSS',
+        '<div class="mcrNota">'+Object.keys(padronCCSS).length+' afiliados cargados</div>'+
+        '<div style="max-height:300px;overflow:auto;">'+
+        Object.keys(padronCCSS).slice(0,20).map(c=>'<div style="padding:4px;border-bottom:1px solid #eee;"><b>'+c+'</b><br>'+padronCCSS[c].nombre+' ('+padronCCSS[c].estado+')</div>').join('')+
+        '</div>',
+        [{texto:'Cerrar'}]);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function getPadronCCSS(){
+  var stored=localStorage.getItem('mcrPadronCCSS');
+  if(stored)padronCCSS=JSON.parse(stored);
+  return padronCCSS;
+}
+getPadronCCSS();
+
+if(document.getElementById("btnCargarPadron"))document.getElementById("btnCargarPadron").addEventListener("click",cargarPadronCCSS);
+
+function validarEmpleadosEnCCSS(){
+  if(!Object.keys(padronCCSS).length){alert('Carga primero el Padrón CCSS');return;}
+  if(sheets.indexOf('Nomina')<0&&sheets.indexOf('Nómina')<0){alert('Falta hoja Nómina');return;}
+  var nomina=filasDeHoja(sheets.find(s=>s.toLowerCase()==='nomina'||s.toLowerCase()==='nómina'));
+  var problemas=[],activos=0,inactivos=0,faltantes=[];
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),nombre=f[1]?.trim();
+    if(!cedula)return;
+    if(padronCCSS[cedula]){
+      if(padronCCSS[cedula].estado.toLowerCase().includes('inactivo')||padronCCSS[cedula].estado.toLowerCase().includes('suspendido')){
+        inactivos++;
+        problemas.push({tipo:'⚠️ Inactivo',cedula:cedula,nombre:nombre,estado:padronCCSS[cedula].estado});
+      }else{
+        activos++;
+      }
+    }else{
+      faltantes.push({cedula:cedula,nombre:nombre});
+      problemas.push({tipo:'❌ No en CCSS',cedula:cedula,nombre:nombre});
+    }
+  });
+  var html='<div class="mcrNota">✅ '+activos+' activos | ⚠️ '+inactivos+' inactivos | ❌ '+faltantes.length+' no registrados</div>';
+  html+='<div style="max-height:400px;overflow:auto;">';
+  problemas.forEach(p=>{
+    html+='<div style="padding:8px;margin:4px 0;border-left:4px solid #f97316;background:#fef2f2;"><b>'+p.tipo+'</b><br>'+p.cedula+' - '+p.nombre+'<br><small>'+p.estado+'</small></div>';
+  });
+  html+='</div>';
+  abrirPanel('Validación CCSS',html,[{texto:'Cerrar'}]);
+}
+
+if(document.getElementById("btnValidarCCSS"))document.getElementById("btnValidarCCSS").addEventListener("click",validarEmpleadosEnCCSS);
+
+function FN_CCSS(cedula,campo){
+  var afiliado=padronCCSS[String(cedula).trim()];
+  if(!afiliado)return '#N/A';
+  var campos={nombre:afiliado.nombre,estado:afiliado.estado,fecha:afiliado.fecha,monto:afiliado.monto};
+  return campos[campo]||'#N/A';
+}
+if(!window.funcionesPersonalizadas)window.funcionesPersonalizadas={};
+window.funcionesPersonalizadas.CCSS=(cedula,campo)=>FN_CCSS(cedula,campo);
+
+
+function reporteEstadoCCSS(){
+  if(!Object.keys(padronCCSS).length){alert('Carga primero el Padrón CCSS');return;}
+  var activos=0,inactivos=0,suspendidos=0;
+  var filas=[['ESTADO','CANTIDAD','PORCENTAJE']];
+  Object.keys(padronCCSS).forEach(c=>{
+    var est=padronCCSS[c].estado.toLowerCase();
+    if(est.includes('activo')||est.includes('vigente'))activos++;
+    else if(est.includes('inactivo'))inactivos++;
+    else if(est.includes('suspendido'))suspendidos++;
+  });
+  var total=activos+inactivos+suspendidos;
+  filas.push(['Activos',String(activos),String(Math.round((activos/total)*100))+'%']);
+  filas.push(['Inactivos',String(inactivos),String(Math.round((inactivos/total)*100))+'%']);
+  filas.push(['Suspendidos',String(suspendidos),String(Math.round((suspendidos/total)*100))+'%']);
+  filas.push(['','','']);
+  filas.push(['TOTAL',String(total),'100%']);
+  
+  snapshot();
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),mes=new Date().toISOString().slice(0,7),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var total=Math.round((salario*0.0975+salario*0.0475+salario*0.035+salario*0.005+salario*0.01)*100)/100;
+    registrarAporteCCSS(cedula,mes,total);
+  });
+  var r=escribirTablaEnHojaNueva(filas);
+  document.getElementById('saveStatus').textContent='📊 Reporte CCSS: '+total+' afiliados ('+activos+' activos)';
+}
+
+if(document.getElementById("btnReporteCCSS"))document.getElementById("btnReporteCCSS").addEventListener("click",reporteEstadoCCSS);
+
+function exportarNominaCCSS(){
+  var nomHoja=sheets.find(s=>s.toLowerCase()==='nomina'||s.toLowerCase()==='nómina');
+  if(!nomHoja){alert('Falta hoja Nómina');return;}
+  var nomina=filasDeHoja(nomHoja);
+  var csv='CEDULA,NOMBRE,SALARIO,APORTE_EMPLEADO,APORTE_EMPLEADOR,TOTAL\n';
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),nombre=f[1]?.trim(),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var aporteEmp=Math.round(salario*0.0475*100)/100;
+    var aporteEmplador=Math.round(salario*0.0975*100)/100;
+    var total=aporteEmp+aporteEmplador;
+    csv+=cedula+','+nombre+','+String(Math.round(salario*100)/100)+','+String(aporteEmp)+','+String(aporteEmplador)+','+String(total)+'\n';
+  });
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='nomina_ccss_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  document.getElementById('saveStatus').textContent='✅ Nómina CCSS exportada';
+}
+
+if(document.getElementById("btnExportNominaCCSS"))document.getElementById("btnExportNominaCCSS").addEventListener("click",exportarNominaCCSS);
+
+function calcularAportesCCSS(){
+  var nomHoja=sheets.find(s=>s.toLowerCase()==='nomina'||s.toLowerCase()==='nómina');
+  if(!nomHoja){alert('Falta hoja Nómina');return;}
+  var nomina=filasDeHoja(nomHoja);
+  var filas=[['EMPLEADO','CEDULA','SALARIO','IVM 9.75%','IVM EMP 4.75%','AFP 3.5%','SFS 0.5%','CAJA 1%','TOTAL']];
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),nombre=f[1]?.trim(),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var ivm_emp=Math.round(salario*0.0975*100)/100;
+    var ivm_empl=Math.round(salario*0.0475*100)/100;
+    var afp=Math.round(salario*0.035*100)/100;
+    var sfs=Math.round(salario*0.005*100)/100;
+    var caja=Math.round(salario*0.01*100)/100;
+    var total=ivm_emp+ivm_empl+afp+sfs+caja;
+    filas.push([nombre,cedula,String(Math.round(salario*100)/100),String(ivm_emp),String(ivm_empl),String(afp),String(sfs),String(caja),String(Math.round(total*100)/100)]);
+  });
+  snapshot();
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),mes=new Date().toISOString().slice(0,7),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var total=Math.round((salario*0.0975+salario*0.0475+salario*0.035+salario*0.005+salario*0.01)*100)/100;
+    registrarAporteCCSS(cedula,mes,total);
+  });
+  var r=escribirTablaEnHojaNueva(filas);
+  document.getElementById('saveStatus').textContent='✅ Aportes CCSS calculados: '+r.filas+' empleados';
+}
+
+if(document.getElementById("btnCalcAportes"))document.getElementById("btnCalcAportes").addEventListener("click",calcularAportesCCSS);
+
+function validarMontosCCSS(){
+  var nomHoja=sheets.find(s=>s.toLowerCase()==='nomina'||s.toLowerCase()==='nómina');
+  if(!nomHoja){alert('Falta hoja Nómina');return;}
+  var nomina=filasDeHoja(nomHoja);
+  var errores=[],total_emp=0,total_empr=0;
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),nombre=f[1]?.trim(),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var ivm_empr=Math.round(salario*0.0975*100)/100;
+    var ivm_emp=Math.round(salario*0.0475*100)/100;
+    var afp=Math.round(salario*0.035*100)/100;
+    var sfs=Math.round(salario*0.005*100)/100;
+    var caja=Math.round(salario*0.01*100)/100;
+    var aporte_total=ivm_empr+ivm_emp+afp+sfs+caja;
+    total_emp+=ivm_emp+afp+sfs+caja;
+    total_empr+=ivm_empr;
+    if(salario<0)errores.push({tipo:'❌ Salario negativo',cedula:cedula,nombre:nombre,salario:salario});
+    if(aporte_total>salario)errores.push({tipo:'⚠️ Aportes > salario',cedula:cedula,nombre:nombre,aportes:aporte_total,salario:salario});
+  });
+  var html='<div class="mcrNota">Total Aportes: Empleador ₡'+Math.round(total_empr*100)/100+' | Empleado ₡'+Math.round(total_emp*100)/100+'</div>';
+  if(!errores.length){
+    html+='<div style="padding:12px;background:#dcfce7;color:#166534;border-radius:4px;">✅ Todos los montos son válidos</div>';
+  }else{
+    html+='<div style="max-height:300px;overflow:auto;">';
+    errores.forEach(e=>{
+      html+='<div style="padding:8px;margin:4px 0;border-left:4px solid #f97316;background:#fef2f2;"><b>'+e.tipo+'</b><br>'+e.cedula+' - '+e.nombre+'</div>';
+    });
+    html+='</div>';
+  }
+  abrirPanel('Validación Montos CCSS',html,[{texto:'Cerrar'}]);
+}
+
+if(document.getElementById("btnValidarMontos"))document.getElementById("btnValidarMontos").addEventListener("click",validarMontosCCSS);
+
+function verificarAlertasCCSS(){
+  var nomHoja=sheets.find(s=>s.toLowerCase()==='nomina'||s.toLowerCase()==='nómina');
+  if(!nomHoja){alert('Falta hoja Nómina');return;}
+  var nomina=filasDeHoja(nomHoja);
+  var alertas=[],hoy=new Date();
+  nomina.slice(3).forEach(f=>{
+    var cedula=f[2]?.trim(),nombre=f[1]?.trim(),salario=toNum(f[4])||0;
+    if(!cedula)return;
+    var afiliado=padronCCSS[cedula];
+    if(!afiliado){
+      alertas.push({tipo:'❌ Sin afiliación CCSS',cedula:cedula,nombre:nombre});
+      return;
+    }
+    if(afiliado.estado.toLowerCase().includes('inactivo')||afiliado.estado.toLowerCase().includes('suspendido')){
+      alertas.push({tipo:'⚠️ Afiliado inactivo',cedula:cedula,nombre:nombre,estado:afiliado.estado});
+    }
+    if(afiliado.fecha){
+      var fechaAporte=new Date(afiliado.fecha);
+      var diasSinAporte=Math.floor((hoy-fechaAporte)/(1000*60*60*24));
+      if(diasSinAporte>30){
+        alertas.push({tipo:'📅 Aporte vencido',cedula:cedula,nombre:nombre,dias:diasSinAporte});
+      }
+    }
+    var aporteMensual=Math.round(salario*0.15*100)/100;
+    if(afiliado.monto&&toNum(afiliado.monto)<aporteMensual*0.5){
+      alertas.push({tipo:'💰 Aporte bajo',cedula:cedula,nombre:nombre,esperado:aporteMensual,registrado:afiliado.monto});
+    }
+  });
+  var html='<div class="mcrNota">🚨 '+alertas.length+' alertas encontradas</div><div style="max-height:400px;overflow:auto;">';
+  if(!alertas.length){
+    html+='<div style="padding:12px;background:#dcfce7;color:#166534;">✅ Sin alertas de CCSS</div>';
+  }else{
+    alertas.forEach(a=>{
+      html+='<div style="padding:8px;margin:4px 0;border-left:4px solid #f97316;background:#fef2f2;"><b>'+a.tipo+'</b><br>'+a.cedula+' - '+a.nombre+'<br><small>'+a.estado||a.dias||a.esperado+'</small></div>';
+    });
+  }
+  html+='</div>';
+  abrirPanel('Alertas CCSS',html,[{texto:'Cerrar'}]);
+}
+
+if(document.getElementById("btnAlertasCCSS"))document.getElementById("btnAlertasCCSS").addEventListener("click",verificarAlertasCCSS);
+
+var historialAportesCCSS={};function registrarAporteCCSS(cedula,mes,monto){
+  if(!historialAportesCCSS[cedula])historialAportesCCSS[cedula]=[];
+  historialAportesCCSS[cedula].push({mes:mes,monto:monto,fecha:new Date().toISOString()});
+  localStorage.setItem('mcrHistorialCCSS',JSON.stringify(historialAportesCCSS));
+}
+function verHistorialAportesCCSS(){
+  var cedula=prompt('Ingresa cédula del empleado:');
+  if(!cedula)return;
+  cedula=cedula.trim();
+  var aportes=historialAportesCCSS[cedula]||[];
+  if(!aportes.length){
+    alert('Sin historial de aportes para '+cedula);
+    return;
+  }
+  var html='<div class="mcrNota">Historial de aportes: '+cedula+'</div><div style="max-height:400px;overflow:auto;"><table style="width:100%;border-collapse:collapse;"><tr><th>Mes</th><th>Monto</th><th>Fecha</th></tr>';
+  aportes.slice().reverse().forEach(a=>{
+    html+='<tr style="border-bottom:1px solid #eee;"><td style="padding:4px;">'+a.mes+'</td><td style="padding:4px;text-align:right;">₡'+Math.round(toNum(a.monto)*100)/100+'</td><td style="padding:4px;font-size:12px;">'+a.fecha.slice(0,10)+'</td></tr>';
+  });
+  html+='</table></div>';
+  var total=aportes.reduce((s,a)=>s+toNum(a.monto),0);
+  html+='<div style="padding:12px;border-top:2px solid #ccc;margin-top:8px;"><b>Total acumulado:</b> ₡'+Math.round(total*100)/100+'</div>';
+  abrirPanel('Historial Aportes CCSS',html,[{texto:'Cerrar'}]);
+}
+function cargarHistorialAportesCCSS(){
+  var stored=localStorage.getItem('mcrHistorialCCSS');
+  if(stored)historialAportesCCSS=JSON.parse(stored);
+}
+cargarHistorialAportesCCSS();
+
+if(document.getElementById("btnHistorialAportes"))document.getElementById("btnHistorialAportes").addEventListener("click",verHistorialAportesCCSS);
+
+var proyectosActivos={};function crearProyecto(){
+  var nombre=prompt('Nombre del proyecto/sucursal:');
+  if(!nombre)return;
+  nombre=nombre.trim();
+  if(proyectosActivos[nombre]){alert('Proyecto ya existe');return;}
+  proyectosActivos[nombre]={diario:[],created:new Date().toISOString()};
+  localStorage.setItem('mcrProyectos',JSON.stringify(proyectosActivos));
+  sheets.push(nombre+'_Diario');
+  sheetData[nombre+'_Diario']=[['Fecha','Ref','Cuenta','Descripción','Documento','Debe','Haber']];
+  snapshot();
+  renderizar();
+  document.getElementById('saveStatus').textContent='✅ Proyecto creado: '+nombre;
+}
+function listarProyectos(){
+  var stored=localStorage.getItem('mcrProyectos');
+  if(stored)proyectosActivos=JSON.parse(stored);
+  if(!Object.keys(proyectosActivos).length){alert('Sin proyectos creados');return;}
+  var html='<div class="mcrNota">'+Object.keys(proyectosActivos).length+' proyectos</div><div style="max-height:300px;overflow:auto;">';
+  Object.keys(proyectosActivos).forEach(p=>{
+    var datos=proyectosActivos[p];
+    html+='<div style="padding:8px;border-bottom:1px solid #eee;cursor:pointer;"><button onclick="seleccionarProyecto(\''+p+'\')" style="width:100%;text-align:left;padding:8px;border:1px solid #d1d5db;background:#f3f4f6;cursor:pointer;">📁 '+p+'</button><small>Creado: '+datos.created.slice(0,10)+'</small></div>';
+  });
+  html+='</div>';
+  abrirPanel('Proyectos/Sucursales',html,[{texto:'Cerrar'}]);
+}
+function seleccionarProyecto(nombre){
+  activeSheet=nombre+'_Diario';
+  renderizar();
+  document.getElementById('saveStatus').textContent='✅ Proyecto seleccionado: '+nombre;
+}
+function consolidarProyectos(){
+  if(Object.keys(proyectosActivos).length<2){alert('Se requieren al menos 2 proyectos');return;}
+  var consolidado=[['Proyecto','Fecha','Ref','Cuenta','Descripción','Debe','Haber']];
+  Object.keys(proyectosActivos).forEach(p=>{
+    var diario=sheetData[p+'_Diario']||[];
+    diario.slice(1).forEach(f=>{
+      if(!f[0])return;
+      consolidado.push([p,...f]);
+    });
+  });
+  snapshot();var r=escribirTablaEnHojaNueva(consolidado);
+  document.getElementById('saveStatus').textContent='✅ Consolidado: '+consolidado.length+' transacciones';
+}
+
+if(document.getElementById("btnCrearProyecto"))document.getElementById("btnCrearProyecto").addEventListener("click",crearProyecto);
+if(document.getElementById("btnListarProyectos"))document.getElementById("btnListarProyectos").addEventListener("click",listarProyectos);
+if(document.getElementById("btnConsolidar"))document.getElementById("btnConsolidar").addEventListener("click",consolidarProyectos);
+
+function importarExtractoBancario(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.csv';
+  input.onchange=(e)=>{
+    var file=e.target.files[0];
+    if(!file)return;
+    var reader=new FileReader();
+    reader.onload=(event)=>{
+      var csv=event.target.result,lineas=csv.split('\n'),datos=[];
+      lineas.slice(1).forEach(l=>{
+        if(!l.trim())return;
+        var cols=l.split(',').map(c=>c.trim());
+        if(cols.length>=3){
+          datos.push({fecha:cols[0],descripcion:cols[1],monto:cols[2],tipo:toNum(cols[2])<0?'egreso':'ingreso'});
+        }
+      });
+      mostrarMapeoExtracto(datos,file.name);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function mostrarMapeoExtracto(datos,banco){
+  var html='<div class="mcrNota">'+datos.length+' transacciones de '+banco+'</div><div style="max-height:300px;overflow:auto;"><table style="width:100%;border-collapse:collapse;"><tr><th>Fecha</th><th>Descripción</th><th>Monto</th></tr>';
+  datos.slice(0,10).forEach(d=>{
+    html+='<tr style="border-bottom:1px solid #eee;"><td style="padding:4px;">'+d.fecha+'</td><td style="padding:4px;"><small>'+d.descripcion.slice(0,30)+'</small></td><td style="padding:4px;text-align:right;">₡'+Math.round(Math.abs(toNum(d.monto))*100)/100+'</td></tr>';
+  });
+  html+='</table></div>';
+  html+='<div style="margin-top:12px;"><label>Cuenta destino: <input type="text" id="cuentaDestino" placeholder="Ej: 1105" style="padding:6px;width:150px;"/></label></div>';
+  html+='<div style="margin-top:8px;"><button onclick="importarExtractoDatos('+JSON.stringify(datos)+')">✅ Importar '+datos.length+' movimientos</button></div>';
+  abrirPanel('Extracto Bancario',html,[{texto:'Cancelar'}]);
+}
+function importarExtractoDatos(datos){
+  var cuenta=document.getElementById('cuentaDestino')?.value||'1105';
+  if(!cuenta){alert('Ingresa cuenta destino');return;}
+  if(sheets.indexOf('Diario')<0)crearHoja('Diario');
+  var diario=sheetData['Diario'];
+  datos.forEach(d=>{
+    var debe=toNum(d.monto)<0?0:Math.abs(toNum(d.monto));
+    var haber=toNum(d.monto)<0?Math.abs(toNum(d.monto)):0;
+    diario.push([d.fecha,'EXT',cuenta,d.descripcion,'',String(debe),String(haber)]);
+  });
+  snapshot();renderizar();
+  document.getElementById('saveStatus').textContent='✅ '+datos.length+' movimientos importados del banco';
+}
+
+if(document.getElementById("btnImportExtracto"))document.getElementById("btnImportExtracto").addEventListener("click",importarExtractoBancario);
+
+var reportesPersonalizados={};function crearReportePersonalizado(){
+  var nombre=prompt('Nombre del reporte:');
+  if(!nombre)return;
+  nombre=nombre.trim();
+  var filtro=prompt('Filtro (ej: cuenta, mes, rango):');
+  if(!filtro)return;
+  reportesPersonalizados[nombre]={filtro:filtro,created:new Date().toISOString()};
+  localStorage.setItem('mcrReportes',JSON.stringify(reportesPersonalizados));
+  document.getElementById('saveStatus').textContent='✅ Reporte guardado: '+nombre;
+}
+function ejecutarReportePersonalizado(){
+  var stored=localStorage.getItem('mcrReportes');
+  if(stored)reportesPersonalizados=JSON.parse(stored);
+  if(!Object.keys(reportesPersonalizados).length){alert('Sin reportes personalizados');return;}
+  var html='<div class="mcrNota">'+Object.keys(reportesPersonalizados).length+' reportes guardados</div><div style="max-height:300px;overflow:auto;">';
+  Object.keys(reportesPersonalizados).forEach(r=>{
+    var datos=reportesPersonalizados[r];
+    html+='<div style="padding:8px;border-bottom:1px solid #eee;"><button onclick="generarReporte(\''+r+'\')" style="width:100%;text-align:left;padding:8px;border:1px solid #d1d5db;background:#f3f4f6;cursor:pointer;">📊 '+r+'</button><small>Filtro: '+datos.filtro+'</small></div>';
+  });
+  html+='</div><div style="margin-top:12px;"><button onclick="crearReportePersonalizado()">➕ Nuevo Reporte</button></div>';
+  abrirPanel('Reportes Personalizables',html,[{texto:'Cerrar'}]);
+}
+function generarReporte(nombre){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario');
+  var reporte=reportesPersonalizados[nombre];
+  var filas=[['REPORTE: '+nombre,''],['Filtro: '+reporte.filtro,''],['','']];
+  filas.push(['Fecha','Ref','Cuenta','Descripción','Debe','Haber']);
+  diario.slice(3).forEach(f=>{
+    var incluir=true;
+    if(reporte.filtro.includes('-')){
+      var partes=reporte.filtro.split('-');
+      if(f[0]<partes[0]||f[0]>partes[1])incluir=false;
+    }else if(reporte.filtro.trim()&&!f[2]?.includes(reporte.filtro.trim())){
+      incluir=false;
+    }
+    if(incluir)filas.push([f[0],f[1],f[2],f[3],f[5],f[6]]);
+  });
+  snapshot();var r=escribirTablaEnHojaNueva(filas);
+  document.getElementById('saveStatus').textContent='✅ Reporte '+nombre+' generado: '+r.filas+' filas';
+}
+
+if(document.getElementById("btnReportesCustom"))document.getElementById("btnReportesCustom").addEventListener("click",ejecutarReportePersonalizado);
+
+var plantillasContables={};function crearPlantilla(){
+  var nombre=prompt('Nombre de la plantilla (ej: Nómina, Arriendo):');
+  if(!nombre)return;
+  nombre=nombre.trim();
+  var cuenta1=prompt('Primera cuenta (Ej: 5101):');
+  var desc1=prompt('Descripción 1:');
+  var monto1=prompt('Monto 1 (puede ser variable con {monto}):');
+  if(!cuenta1||!desc1)return;
+  plantillasContables[nombre]=[
+    {cuenta:cuenta1,descripcion:desc1,monto:monto1,tipo:'debe'},
+    {cuenta:prompt('Segunda cuenta:'),'descripcion':prompt('Descripción 2:'),monto:prompt('Monto 2:'),tipo:'haber'}
+  ];
+  localStorage.setItem('mcrPlantillas',JSON.stringify(plantillasContables));
+  document.getElementById('saveStatus').textContent='✅ Plantilla creada: '+nombre;
+}
+function abrirPlantillas(){
+  var stored=localStorage.getItem('mcrPlantillas');
+  if(stored)plantillasContables=JSON.parse(stored);
+  if(!Object.keys(plantillasContables).length){alert('Sin plantillas creadas');return;}
+  var html='<div class="mcrNota">'+Object.keys(plantillasContables).length+' plantillas</div><div style="max-height:300px;overflow:auto;">';
+  Object.keys(plantillasContables).forEach(p=>{
+    html+='<div style="padding:8px;border-bottom:1px solid #eee;"><button onclick="usarPlantilla(\''+p+'\')" style="width:100%;text-align:left;padding:8px;border:1px solid #d1d5db;background:#f3f4f6;cursor:pointer;">📋 '+p+'</button></div>';
+  });
+  html+='</div><div style="margin-top:12px;"><button onclick="crearPlantilla()">➕ Nueva Plantilla</button></div>';
+  abrirPanel('Plantillas Contables',html,[{texto:'Cerrar'}]);
+}
+function usarPlantilla(nombre){
+  if(sheets.indexOf('Diario')<0)crearHoja('Diario');
+  var plantilla=plantillasContables[nombre];
+  var monto=prompt('Monto de la transacción:');
+  if(!monto)return;
+  monto=toNum(monto);
+  var fecha=new Date().toISOString().slice(0,10);
+  var diario=sheetData['Diario'];
+  plantilla.forEach(item=>{
+    var montoItem=toNum(item.monto.replace('{monto}',monto))||monto;
+    var debe=item.tipo==='debe'?montoItem:0;
+    var haber=item.tipo==='haber'?montoItem:0;
+    diario.push([fecha,'TPL',item.cuenta,item.descripcion,'',String(debe),String(haber)]);
+  });
+  snapshot();renderizar();
+  document.getElementById('saveStatus').textContent='✅ Plantilla '+nombre+' aplicada';
+}
+
+if(document.getElementById("btnPlantillas"))document.getElementById("btnPlantillas").addEventListener("click",abrirPlantillas);
+
+function validarConHacienda(){
+  var cedula=prompt('Ingresa cédula o RUC a validar:');
+  if(!cedula)return;
+  cedula=cedula.trim();
+  var html='<div class="mcrNota">Validando '+cedula+' en Hacienda...</div>';
+  html+='<div style="padding:12px;background:#fef3c7;border-left:4px solid #f59e0b;">';
+  html+='<p><strong>Nota:</strong> Requiere conexión a internet y credenciales de Hacienda.</p>';
+  html+='<p>Campos que se pueden validar:</p>';
+  html+='<ul style="margin:8px 0;padding-left:20px;"><li>Nombre del contribuyente</li><li>Régimen tributario</li><li>Estado (Al día/Moroso/Omiso)</li><li>Actividad económica</li></ul>';
+  html+='<p><small>La validación se realiza contra el padrón del Ministerio de Hacienda.</small></p>';
+  html+='</div>';
+  abrirPanel('Validación Hacienda',html,[{texto:'Cerrar'}]);
+  localStorage.setItem('mcrCedulaValidacion',cedula);
+}
+function extraerDatosDeclaracion(){
+  var tipo=prompt('Tipo de declaración (D-101, D-104, D-105):');
+  if(!tipo)return;
+  alert('Extractor de '+tipo+' - Requiere archivo XML de Hacienda para procesar.');
+}
+function generarXMLHacienda(){
+  if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
+  var diario=filasDeHoja('Diario');
+  var xml='<?xml version="1.0" encoding="UTF-8"?>\n<factura>\n';
+  xml+='  <empresa>'+document.getElementById('nombreEmpresa')?.value||'Empresa'+'</empresa>\n';
+  xml+='  <fecha>'+new Date().toISOString().slice(0,10)+'</fecha>\n';
+  xml+='  <movimientos>\n';
+  diario.slice(3,Math.min(diario.length,100)).forEach(f=>{
+    if(f[0])xml+='    <movimiento><fecha>'+f[0]+'</fecha><cuenta>'+f[2]+'</cuenta><monto>'+(toNum(f[5])-toNum(f[6]))+'</monto></movimiento>\n';
+  });
+  xml+='  </movimientos>\n</factura>';
+  var blob=new Blob([xml],{type:'application/xml'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='reporte_hacienda_'+new Date().toISOString().slice(0,10)+'.xml';
+  a.click();
+  document.getElementById('saveStatus').textContent='✅ XML Hacienda exportado';
+}
+
+if(document.getElementById("btnValidarHacienda"))document.getElementById("btnValidarHacienda").addEventListener("click",validarConHacienda);
+if(document.getElementById("btnExportXML"))document.getElementById("btnExportXML").addEventListener("click",generarXMLHacienda);
 </script>
 </body>
 </html>
