@@ -55,7 +55,7 @@
   body.dark-mode { filter: invert(1) hue-rotate(180deg); background: #1a1a1a; }
   body.dark-mode img, body.dark-mode canvas, body.dark-mode .chart-float, body.dark-mode .emoji { filter: invert(1) hue-rotate(180deg); }
   #btnDarkMode { min-width: 34px; }
-  #offlineBanner { display: none; background: #b3261e; color: #fff; text-align: center; font-size: 12px; padding: 2px 8px; }
+  #offlineBanner { display: none; background: #b3261e; color: #fff; text-align: center; font-size: 12px; padding: 6px 10px; }
   #offlineBanner.show { display: block; }
   #onboardingOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.75); z-index: 10000; display: none; align-items: center; justify-content: center; }
   #onboardingOverlay.show { display: flex; }
@@ -73,15 +73,20 @@
   #app { display: flex; flex-direction: column; height: 100%; }
 
   /* ── Barra superior y menú "Inicio" desplegable ── */
-  #ribbonTrigger { display: flex; align-items: center; padding: 3px 8px; flex-shrink: 0; gap: 4px;
+  #ribbonTrigger {
+    display: flex; align-items: center; padding: 8px 10px; flex-shrink: 0; gap: 7px;
     background: linear-gradient(135deg, #14532d 0%, #1f7a44 100%);
     box-shadow: 0 2px 8px rgba(0,0,0,.22); overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   #ribbonTrigger::-webkit-scrollbar { display: none; }
-  #ribbonToggle { background: #fff !important; color: #14532d !important; border: none; border-radius: 999px; padding: 5px 14px; font-size: 13px; font-weight: 800; flex-shrink: 0; letter-spacing: .2px;
+  #ribbonToggle {
+    background: #fff !important; color: #14532d !important; border: none; border-radius: 999px;
+    padding: 8px 16px; font-size: 13px; font-weight: 800; flex-shrink: 0; letter-spacing: .2px;
     box-shadow: 0 2px 6px rgba(0,0,0,.2);
   }
-  #ribbonTrigger button:not(#ribbonToggle) { background: rgba(255,255,255,.16) !important; color: #fff; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
+  #ribbonTrigger button:not(#ribbonToggle) {
+    background: rgba(255,255,255,.16) !important; color: #fff; border: 1px solid rgba(255,255,255,.28); border-radius: 999px;
+    padding: 7px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
   }
   #ribbonTrigger button:not(#ribbonToggle):active { background: rgba(255,255,255,.32) !important; }
   #ribbonTrigger select {
@@ -102,27 +107,32 @@
     max-height: 86vh; display: flex; flex-direction: column; overflow: hidden;
     box-shadow: 0 18px 40px rgba(0,0,0,.35);
   }
-  #ribbonHead { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: linear-gradient(135deg, #14532d, #1f7a44); flex-shrink: 0;
+  #ribbonHead {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: linear-gradient(135deg, #14532d, #1f7a44); flex-shrink: 0;
   }
   #ribbonHead h3 { margin: 0; color: #fff; font-size: 17px; font-weight: 800; letter-spacing: .3px; }
   #ribbonHead button { background: rgba(255,255,255,.18); border: none; color: #fff; font-size: 15px; width: 32px; height: 32px; border-radius: 50%; padding: 0; }
-  #toolbar { display: block; padding: 6px 10px 12px; background: #f6f8f5; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  #toolbar { display: block; padding: 10px 12px 18px; background: #f6f8f5; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   #rbBuscarWrap { position: sticky; top: -10px; z-index: 2; padding: 2px 0 10px; background: #f6f8f5; }
   #rbBuscar {
     width: 100%; box-sizing: border-box; border: 1px solid #d5ddd2; border-radius: 12px; background: #fff;
     padding: 11px 14px; font-size: 14px; outline: none; color: #1f2937;
   }
   #rbBuscar:focus { border-color: #1f7a44; box-shadow: 0 0 0 3px rgba(31,122,68,.18); }
-  .rbSec { background: #fff; border: 1px solid #e3e9e0; border-radius: 12px; margin-bottom: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
-  .rbSecHead { display: flex; align-items: center; gap: 8px; padding: 8px 10px; cursor: pointer; user-select: none; -webkit-user-select: none; border-left: 5px solid var(--rbc); }
+  .rbSec { background: #fff; border: 1px solid #e3e9e0; border-radius: 16px; margin-bottom: 9px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .rbSecHead { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; user-select: none; -webkit-user-select: none; border-left: 5px solid var(--rbc); }
   .rbSecIco { font-size: 18px; }
   .rbSecTit { flex: 1; font-size: 14px; font-weight: 800; color: #1f2937; }
   .rbSecN { font-size: 11px; font-weight: 700; color: var(--rbc); background: #f1f5f0; border-radius: 999px; padding: 2px 8px; }
   .rbChev { color: #94a3b8; transition: transform .2s; font-size: 13px; }
   .rbSec.open .rbChev { transform: rotate(180deg); }
-  .rbGrid { display: none; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 3px 8px 8px; }
+  .rbGrid { display: none; grid-template-columns: repeat(3, 1fr); gap: 7px; padding: 4px 10px 12px; }
   .rbSec.open .rbGrid { display: grid; }
-  #toolbar .rbGrid button { background: #f6f8f5 !important; color: #1f2937 !important; border: 1px solid #e3e9e0; border-radius: 10px; padding: 7px 3px; font-size: 11px; line-height: 1.2; white-space: normal; word-break: break-word; min-height: 44px; display: flex; align-items: center; justify-content: center; text-align: center; box-shadow: none;
+  #toolbar .rbGrid button {
+    background: #f6f8f5 !important; color: #1f2937 !important; border: 1px solid #e3e9e0; border-radius: 12px;
+    padding: 9px 4px; font-size: 11.5px; font-weight: 600; line-height: 1.25; white-space: normal; word-break: break-word;
+    min-height: 52px; display: flex; align-items: center; justify-content: center; text-align: center; box-shadow: none;
   }
   #toolbar .rbGrid button:active { background: var(--rbc) !important; color: #fff !important; border-color: var(--rbc); }
   #toolbar .rbGrid button:disabled { opacity: .38; }
@@ -183,7 +193,8 @@
   body.dark-mode #rbBuscar { background: #252a26; border-color: #343b35; color: #e5e7eb; }
   body.dark-mode #toolbar .rbGrid button { background: #1b1f1c !important; color: #e5e7eb !important; border-color: #343b35; }
 
-  #formulaBarRow { display: flex; align-items: center; gap: 8px; padding: 2px 8px;
+  #formulaBarRow {
+    display: flex; align-items: center; gap: 8px; padding: 6px 10px;
     background: #fff; border-bottom: 1px solid #d4d4d4; flex-shrink: 0;
   }
   #cellRef { font-size: 12px; font-weight: 700; color: #217346; min-width: 34px; }
@@ -192,7 +203,7 @@
   #formulaBarRow { flex-wrap: wrap; row-gap: 6px; }
   #formulaWrap { position: relative; flex: 1 1 100%; order: 10; min-width: 0; }
   #saveStatus { margin-left: auto; }
-  #quickBar { display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 8px; background: #f4f9ee; border-bottom: 1px solid #d4d4d4; flex-shrink: 0; }
+  #quickBar { display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px 10px; background: #f4f9ee; border-bottom: 1px solid #d4d4d4; flex-shrink: 0; }
   #quickBarList { display: flex; gap: 6px; overflow-x: auto; flex: 1; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   #quickBarList::-webkit-scrollbar { display: none; }
   #quickBarList button { flex-shrink: 0; white-space: nowrap; padding: 5px 10px; font-size: 12px; font-weight: 700; border: 1px solid #cce9ae; border-radius: 14px; background: #fff; color: #245f09; }
@@ -202,7 +213,7 @@
   body.dark-mode #quickBarList button, body.dark-mode #quickBarEdit { background: #252a26; color: #e5e7eb; border-color: #343b35; }
   #undoRedoQuick { display: flex; gap: 2px; flex-shrink: 0; }
   #undoRedoQuick button {
-    width: 30px; height: 26px; padding: 0; font-size: 16px; line-height: 1; font-weight: 700;
+    width: 30px; height: 36px; padding: 0; font-size: 16px; line-height: 1; font-weight: 700;
     border: 1px solid #cce9ae; border-radius: 4px; background: #f7fbf0; color: #245f09;
   }
   #undoRedoQuick button:disabled { opacity: .35; }
@@ -215,7 +226,11 @@
     width: 24px; height: 24px; padding: 0; font-size: 13px; line-height: 1;
     border: 1px solid #cce9ae; border-radius: 4px; background: #f7fbf0; color: #245f09;
   }
-  #formulaInput { min-height: 24px;
+  #formulaInput {
+    position: relative; z-index: 2; display: block; width: 100%; box-sizing: border-box;
+    padding: 10px 10px; border: 1px solid #d4d4d4; border-radius: 4px; font-size: 13px;
+    font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif;
+    line-height: 1.4; resize: none; overflow-y: auto; max-height: 150px; min-height: 30px;
     white-space: pre-wrap; word-break: break-word;
     background: transparent; color: transparent; caret-color: #0b3d1f;
   }
@@ -238,8 +253,8 @@
 
   #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; user-select: none; background: #fff; }
   table { border-collapse: collapse; }
-  th, td { border: 1px solid #e1e1e1; font-size: 12px; padding: 0; text-align: center; }
-  th { background: #f3f2f1; color: #333333; font-weight: 600; padding: 6px 4px; position: sticky; top: 0; z-index: 3; min-width: 78px; position: relative; border-bottom: 1.5px solid #c8c8c8; }
+  th, td { border: 1px solid #e1e1e1; font-size: 16px; padding: 0; text-align: center; }
+  th { background: #f3f2f1; color: #333333; font-weight: 600; padding: 10px 8px; position: sticky; top: 0; z-index: 3; min-width: 78px; position: relative; border-bottom: 1.5px solid #c8c8c8; }
   th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: #e8e8e8; min-width: 34px; }
   th .colResizer { position: absolute; right: 0; top: 0; width: 8px; height: 100%; cursor: col-resize; touch-action: none; }
   th .colResizer::after { content: ''; position: absolute; right: 3px; top: 20%; width: 2px; height: 60%; background: #999; opacity: .5; }
@@ -257,7 +272,7 @@
     font-size: 12px; font-weight: 800; text-align: center;
   }
   tr.outlineHeaderRow th { height: 16px; padding: 0; }
-  .cell { min-width: 78px; height: 26px; line-height: 26px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
+  .cell { min-width: 78px; height: 36px; line-height: 36px; padding: 0 5px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
   .cell.selected { background: #fff; outline: 2px solid #217346; outline-offset: -2px; z-index: 1; box-shadow: 0 1px 4px rgba(33,115,70,.25); }
   .cell.in-range { background: #e6f2ea; }
   .cell.in-range-extra { background: #dcebfa; outline: 1px dashed #2176d2; outline-offset: -1px; }
@@ -280,12 +295,12 @@
   .cell.celda-desbloqueada { box-shadow: inset 0 0 0 1px #2d7a0c; background-image: repeating-linear-gradient(45deg, rgba(45,122,12,.06) 0 4px, transparent 4px 8px); }
   .cell.italic { font-style: italic; }
   .cell.bordered { outline: 1.5px solid #217346 !important; outline-offset: -1.5px; }
-  .cell.wrap-text { white-space: normal; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 26px; padding: 3px 5px; vertical-align: top; }
+  .cell.wrap-text { white-space: normal; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 36px; padding: 8px 8px; vertical-align: top; }
   /* Alto de fila a medida (arrastrando el borde del número de fila) y alineación vertical */
   tr[data-rh] .cell { height: calc(var(--rh) - 1px); line-height: calc(var(--rh) - 1px); }
   tr[data-rh] .cell.wrap-text { height: auto; min-height: calc(var(--rh) - 1px); line-height: 1.3; }
-  tr[data-rh] .cell.va-top:not(.wrap-text) { line-height: 26px; }
-  tr[data-rh] .cell.va-bottom:not(.wrap-text) { line-height: 26px; padding-top: calc(var(--rh) - 27px); }
+  tr[data-rh] .cell.va-top:not(.wrap-text) { line-height: 36px; }
+  tr[data-rh] .cell.va-bottom:not(.wrap-text) { line-height: 36px; padding-top: calc(var(--rh) - 27px); }
   .cell.wrap-text.va-middle, .cell.wrap-text.va-bottom { display: flex; flex-direction: column; }
   .cell.wrap-text.va-middle { justify-content: center; }
   .cell.wrap-text.va-bottom { justify-content: flex-end; }
@@ -362,7 +377,8 @@
   #fnAutocomplete div { padding: 7px 10px; font-size: 12px; color: #245f09; border-bottom: 1px solid #f2f9ea; }
   #fnAutocomplete div b { color: #2d7a0c; }
 
-  #statusBar { display: flex; gap: 14px; align-items: center; padding: 2px 8px;
+  #statusBar {
+    display: flex; gap: 14px; align-items: center; padding: 5px 10px;
     background: #f3f2f1; font-size: 11px; color: #333; font-weight: 600; flex-shrink: 0; flex-wrap: wrap;
     border-top: 1px solid #e1e1e1;
   }
@@ -394,8 +410,8 @@
   #cellContextMenu button.danger { color: #d13438; }
   #cellContextMenu .cmSep { height: 1px; background: #ececec; margin: 4px 2px; flex-shrink: 0; }
 
-  #tabsRow { display: flex; align-items: center; background: #ebebeb; padding: 1px 4px 0; gap: 2px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; border-top: 1px solid #d4d4d4; }
-  .tab { padding: 4px 10px; border-radius: 3px 3px 0 0; font-size: 11px; font-weight: 600; color: #555; background: #e1e1e1; white-space: nowrap; position: relative; }
+  #tabsRow { display: flex; align-items: center; background: #ebebeb; padding: 4px 6px 0; gap: 2px; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; border-top: 1px solid #d4d4d4; }
+  .tab { padding: 7px 14px; border-radius: 4px 4px 0 0; font-size: 12px; font-weight: 600; color: #555; background: #e1e1e1; white-space: nowrap; position: relative; }
   .tabMenuBtn { margin-left: 6px; opacity: .6; }
   .tab.active { background: #fff; color: #217346; box-shadow: 0 -1.5px 0 #217346 inset; }
   #addTabBtn { padding: 6px 10px; border-radius: 4px; font-size: 14px; font-weight: 700; background: #217346; color: #fff; flex-shrink: 0; }
@@ -798,7 +814,7 @@
     #formulaBarRow { flex-wrap: nowrap; padding: 2px 8px; gap: 5px; row-gap: 0; }
     #formulaWrap { flex: 1 1 160px; order: 0; }
     #formulaBarRow button { padding: 2px 7px; min-height: 0; font-size: 12px; }
-    #formulaBarRow #formulaInput { min-height: 26px; padding: 3px 8px; font-size: 12px; }
+    #formulaBarRow #formulaInput { min-height: 36px; padding: 3px 8px; font-size: 12px; }
     #saveStatus { font-size: 10px; padding: 2px 6px; white-space: nowrap; }
     #quickBar { padding: 2px 8px; }
     #quickBarList button { padding: 2px 9px; font-size: 11px; }
