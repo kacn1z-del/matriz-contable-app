@@ -114,6 +114,30 @@
   #ribbonModal.rbMin { max-height: none; width: min(230px, calc(100vw - 16px)); }
   #ribbonModal.rbMin #toolbar { display: none; }
   #ribbonCollapse { font-size: 16px !important; }
+  /* Barra de fórmulas + botones rápidos + acciones de rango: flotan y se contraen,
+     para que la hoja use toda la altura disponible. */
+  #floatTools {
+    position: fixed; top: 58px; left: 6px; right: 6px; z-index: 9600;
+    display: flex; flex-direction: column; max-height: 60vh; overflow: hidden;
+    background: #f6f8f5; border: 1px solid #cfd8cf; border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  }
+  #floatToolsHead {
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    padding: 4px 8px 4px 12px; background: linear-gradient(135deg, #14532d, #1f7a44);
+    color: #fff; font-size: 12px; font-weight: 700;
+  }
+  #floatToolsToggle {
+    background: rgba(255,255,255,.18); border: none; color: #fff;
+    width: 28px; height: 28px; border-radius: 50%; padding: 0; font-size: 14px;
+  }
+  #floatToolsBody { display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  #floatTools.ftMin #floatToolsBody { display: none; }
+  #floatTools.ftMin { max-height: none; }
+  body.dark-mode #floatTools { background: #1b1f1c; border-color: #343b35; }
+  #floatTools #formulaBarRow { position: relative !important; }
+  /* El menú flotante de Inicio queda por encima de esta barra */
+  #ribbonOverlay { z-index: 9700; }
   #ribbonHead {
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 18px; background: linear-gradient(135deg, #14532d, #1f7a44); flex-shrink: 0;
@@ -1307,6 +1331,9 @@
     </div>
   </div>
 
+  <div id="floatTools" class="ftMin">
+  <div id="floatToolsHead"><span>✏️ Fórmulas y acciones</span><button id="floatToolsToggle" title="Contraer / expandir">▾</button></div>
+  <div id="floatToolsBody">
   <div id="formulaBarRow" style="position:relative;">
     <span id="cellRef">A1</span>
     <div id="undoRedoQuick">
@@ -1373,6 +1400,8 @@
     <button id="raCheckbox">☑️ Casilla</button>
     <button id="raRadio">⚪ Radio</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
+  </div>
+  </div>
   </div>
 
   <!-- Menú contextual: clic derecho (teclado/mouse) o mantener presionada
@@ -20434,6 +20463,21 @@ document.getElementById('ribbonCollapse').addEventListener('click', function () 
   this.textContent = contraido ? '▾' : '▴';
   this.title = contraido ? 'Expandir menú' : 'Contraer menú';
 });
+// Barra de fórmulas flotante: contraer / expandir. Al tocar la fórmula se expande sola.
+(function () {
+  var ft = document.getElementById('floatTools');
+  var tg = document.getElementById('floatToolsToggle');
+  var fi = document.getElementById('formulaInput');
+  if (!ft || !tg) return;
+  tg.addEventListener('click', function () {
+    var contraido = ft.classList.toggle('ftMin');
+    tg.textContent = contraido ? '▾' : '▴';
+    tg.title = contraido ? 'Expandir' : 'Contraer';
+  });
+  if (fi) fi.addEventListener('focus', function () {
+    if (ft.classList.contains('ftMin')) { ft.classList.remove('ftMin'); tg.textContent = '▴'; tg.title = 'Contraer'; }
+  });
+})();
 
 // ── Detección de conexión ──
 function actualizarEstadoConexion() {
