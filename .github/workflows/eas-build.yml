@@ -54,10 +54,11 @@ jobs:
       - name: Enlazar/crear el proyecto en EAS (dueño actual de app.json)
         # NO QUITAR ESTE PASO: aunque app.json ya trae el projectId
         # escrito a mano, eas-cli en modo no-interactivo a veces no logra
-        # verificarlo solo contra una cuenta de tipo "team" (como
-        # carlos12chinchillas-team) y el build falla con "EAS project not
+        # verificarlo solo contra la cuenta de la organización
+        # (keny2410s-organization) y el build falla con "EAS project not
         # configured" aunque el archivo esté bien. Este paso lo confirma
         # explícitamente antes de compilar, sin pedir nada a mano.
+        # EXPO_TOKEN debe pertenecer a un miembro de keny2410s-organization.
         run: eas init --non-interactive --force
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
