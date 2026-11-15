@@ -1,49 +1,79 @@
 {
-  "name": "matriz-contable-app",
-  "version": "1.0.0",
-  "engines": {
-    "node": "22.x"
-  },
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
-  },
-  "dependencies": {
-    "expo": "~51.0.0",
-    "expo-status-bar": "~1.12.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.74.0",
-    "react-native-web": "~0.19.10",
-    "@expo/metro-runtime": "~3.2.1",
-    "react-native-safe-area-context": "4.10.1",
-    "react-native-screens": "3.31.1",
-    "react-native-webview": "13.8.6",
-    "@react-navigation/native": "^6.1.17",
-    "@react-navigation/native-stack": "^6.9.26",
-    "@react-navigation/bottom-tabs": "^6.5.20",
-    "firebase": "^10.12.0",
-    "@react-native-async-storage/async-storage": "1.23.1",
-    "react-native-gesture-handler": "~2.16.1",
-    "react-native-reanimated": "~3.10.1",
-    "expo-document-picker": "~12.0.2",
-    "expo-file-system": "~17.0.1",
-    "expo-asset": "~10.0.10",
-    "expo-camera": "~15.0.16",
-    "expo-notifications": "~0.28.1",
-    "expo-constants": "~16.0.2",
-    "expo-device": "~6.0.2",
-    "expo-sharing": "~12.0.1",
-    "expo-print": "~13.0.1",
-    "expo-image-picker": "~15.0.5",
-    "expo-local-authentication": "~14.0.1",
-    "@dojocoding/hacienda-sdk": "latest"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.20.0"
-  },
-  "private": true
+  "expo": {
+    "name": "Matriz Contable CR",
+    "slug": "matriz-contable-app",
+    "version": "39.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.kenychinchilla.matrizcontable",
+      "buildNumber": "39.1.0",
+      "infoPlist": {
+        "UIRequiredDeviceCapabilities": [
+          "armv7"
+        ],
+        "NSCameraUsageDescription": "Se necesita acceso a la cámara para capturar facturas con OCR",
+        "NSPhotoLibraryUsageDescription": "Se necesita acceso a la galería para importar imágenes de facturas",
+        "NSLocationWhenInUseUsageDescription": "Se necesita ubicación para consultas de CCSS Morosos"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.kenychinchilla.matrizcontable",
+      "versionCode": 39,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.INTERNET"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Se necesita acceso a la cámara para OCR de facturas"
+        }
+      ],
+      [
+        "expo-file-system",
+        {
+          "docTypes": [
+            "public.image",
+            "com.adobe.pdf"
+          ]
+        }
+      ]
+    ],
+    "owner": "keny2410s-organization",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
+      },
+      "apiBaseUrl": "https://api.matrizcontable.cr",
+      "exchangeRatesAPI": "https://openexchangerates.org/api",
+      "ccssAPI": "https://sfa.ccss.sa.cr"
+    }
+  }
 }
