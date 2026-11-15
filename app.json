@@ -1,35 +1,45 @@
 {
   "expo": {
     "name": "Matriz Contable CR",
-    "slug": "matriz-contable-",
-    "owner": "matriz-contable1s-team",
-    "version": "1.0.0",
-    "orientation": "default",
+    "slug": "matriz-contable-app",
+    "version": "39.1.0",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2d7a0c"
+      "backgroundColor": "#FFFFFF"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.kcnstudio.matrizcontablecr",
-      "buildNumber": "1",
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.kenychinchilla.matrizcontable",
+      "buildNumber": "39.1.0",
       "infoPlist": {
-        "NSFaceIDUsageDescription": "Usamos Face ID para proteger el acceso a tus datos contables dentro de la app."
+        "UIRequiredDeviceCapabilities": [
+          "armv7"
+        ],
+        "NSCameraUsageDescription": "Se necesita acceso a la cámara para capturar facturas con OCR",
+        "NSPhotoLibraryUsageDescription": "Se necesita acceso a la galería para importar imágenes de facturas",
+        "NSLocationWhenInUseUsageDescription": "Se necesita ubicación para consultas de CCSS Morosos"
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.kcnstudio.matrizcontablecr",
-      "versionCode": 1,
+      "package": "com.kenychinchilla.matrizcontable",
+      "versionCode": 39,
       "permissions": [
-        "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.INTERNET"
       ]
     },
     "web": {
@@ -37,12 +47,33 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-asset"
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Se necesita acceso a la cámara para OCR de facturas"
+        }
+      ],
+      [
+        "expo-file-system",
+        {
+          "docTypes": [
+            "public.image",
+            "com.adobe.pdf"
+          ]
+        }
+      ]
     ],
+    "owner": "keny2410s-organization",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
     "extra": {
       "eas": {
-        "projectId": "371b98ad-b4a8-4410-801e-58e25582b893"
-      }
+        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
+      },
+      "apiBaseUrl": "https://api.matrizcontable.cr",
+      "exchangeRatesAPI": "https://openexchangerates.org/api",
+      "ccssAPI": "https://sfa.ccss.sa.cr"
     }
   }
 }
