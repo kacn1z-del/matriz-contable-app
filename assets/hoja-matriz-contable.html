@@ -94,19 +94,26 @@
     padding: 7px 8px; font-size: 14px; font-weight: 600; flex-shrink: 0;
   }
   #ribbonTrigger select option { color: #111; }
+  /* Menú flotante: no tapa toda la pantalla. Es un panel que flota sobre la hoja
+     y la hoja sigue siendo tocable mientras está abierto. */
   #ribbonOverlay {
-    position: fixed; inset: 0; background: rgba(8,24,14,.5); z-index: 9700;
-    display: none; align-items: flex-start; justify-content: center;
-    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    position: fixed; inset: 0; background: transparent; z-index: 9700;
+    display: none; pointer-events: none;
   }
-  #ribbonOverlay.show { display: flex; }
-  #ribbonOverlay.show #ribbonModal { animation: rbBajar .22s ease-out; }
-  @keyframes rbBajar { from { transform: translateY(-14px); opacity: 0; } to { transform: none; opacity: 1; } }
+  #ribbonOverlay.show { display: block; }
+  #ribbonOverlay.show #ribbonModal { animation: rbFlotar .18s ease-out; }
+  @keyframes rbFlotar { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
   #ribbonModal {
-    background: #f6f8f5; border-radius: 0 0 22px 22px; width: 100%; max-width: 560px;
-    max-height: 86vh; display: flex; flex-direction: column; overflow: hidden;
-    box-shadow: 0 18px 40px rgba(0,0,0,.35);
+    pointer-events: auto; position: fixed; top: 58px; right: 8px;
+    width: min(360px, calc(100vw - 16px)); max-height: 62vh;
+    border: 1px solid #cfd8cf; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    background: #f6f8f5; display: flex; flex-direction: column; overflow: hidden;
   }
+  /* Menú retráctil: al contraer, queda solo la barra de título. */
+  #ribbonModal.rbMin { max-height: none; width: min(230px, calc(100vw - 16px)); }
+  #ribbonModal.rbMin #toolbar { display: none; }
+  #ribbonCollapse { font-size: 16px !important; }
   #ribbonHead {
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 18px; background: linear-gradient(135deg, #14532d, #1f7a44); flex-shrink: 0;
@@ -901,6 +908,7 @@
     <div id="ribbonModal">
       <div id="ribbonHead">
         <h3>Inicio</h3>
+        <button id="ribbonCollapse" title="Contraer / expandir menú">▴</button>
         <button id="ribbonClose">✕</button>
       </div>
   <div id="toolbar">
@@ -20415,9 +20423,16 @@ document.getElementById('ribbonClose').addEventListener('click', function () {
 // no cerrar el panel al abrir su lista de opciones.
 document.getElementById('ribbonModal').addEventListener('click', function (e) {
   var btn = e.target.closest ? e.target.closest('button') : null;
-  if (btn) {
+  if (btn && btn.id !== 'ribbonCollapse' && btn.id !== 'ribbonClose') {
     document.getElementById('ribbonOverlay').classList.remove('show');
   }
+});
+// Contraer / expandir el menú flotante (solo queda visible la barra de título).
+document.getElementById('ribbonCollapse').addEventListener('click', function () {
+  var m = document.getElementById('ribbonModal');
+  var contraido = m.classList.toggle('rbMin');
+  this.textContent = contraido ? '▾' : '▴';
+  this.title = contraido ? 'Expandir menú' : 'Contraer menú';
 });
 
 // ── Detección de conexión ──
