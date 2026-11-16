@@ -705,16 +705,45 @@
   .tgCard:active { transform: scale(.97); }
   .tgCardBlank { background: #1f5c3a; border: 1px solid #3f8a62; display: flex; align-items: center; justify-content: center; color: #7fe0a6; font-size: 64px; font-weight: 300; line-height: 1; }
   .tgLabel { font-size: 14px; color: #fff; text-align: center; line-height: 1.3; padding: 0 2px; }
-  .tgPrev { height: 100%; box-sizing: border-box; padding: 10px 9px; display: flex; flex-direction: column; gap: 4px; }
-  .tgPrevHead { height: 14px; border-radius: 2px; }
-  .tgPrevSub { height: 5px; width: 55%; background: #d9dee5; margin-bottom: 4px; }
-  .tgPrevRow { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3px; height: 7px; }
-  .tgPrevRow i { background: #f1f3f6; border-bottom: 1px solid #d3d9e1; }
-  .tgPrevTot { height: 9px; margin-top: auto; opacity: .45; }
+  .tgPrev { height: 100%; box-sizing: border-box; padding: 8px 7px; display: flex; flex-direction: column; gap: 4px; text-align: left; -webkit-text-size-adjust: none; text-size-adjust: none; overflow: hidden; }
+  .tgPrevHead { border-radius: 2px; color: #fff; font-size: 7.5px; font-weight: 700; padding: 4px 5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tgMini { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 5.5px; line-height: 1.25; color: #2b2b2b; }
+  .tgMini th, .tgMini td { border: 0.5px solid #cfd6de; padding: 1.5px 2px !important; white-space: nowrap; overflow: hidden; text-overflow: clip; height: 7px !important; min-width: 0 !important; font-size: 5.5px !important; line-height: 1.25 !important; }
+  .tgMini th { font-weight: 700; text-align: left; }
+  .tgMini td.n { text-align: right; }
+  .tgMini tr.tot td { font-weight: 700; background: #f1f3f6; }
+  .tgBars { margin-top: auto; height: 26%; display: flex; align-items: flex-end; gap: 3px; padding: 0 4px; border-bottom: 1px solid #cfd6de; }
+  .tgBars i { flex: 1; border-radius: 1px 1px 0 0; opacity: .85; }
   .tgEmpty { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,.7); font-size: 14px; padding: 30px 10px; }
-  .tgFab { position: absolute; bottom: 22px; width: 58px; height: 58px; border-radius: 50%; border: none; color: #fff; font-size: 28px; box-shadow: 0 4px 14px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
+  .tgFab { position: absolute; z-index: 5; bottom: 22px; width: 58px; height: 58px; border-radius: 50%; border: none; color: #fff; font-size: 28px; box-shadow: 0 4px 14px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
   .tgFabL { left: 22px; background: #2e7d5b; font-size: 34px; font-weight: 300; }
   .tgFabR { right: 22px; background: #35505f; font-size: 22px; }
+  /* Pantalla de inicio estilo Excel móvil: libro abierto, anclados y recientes */
+  #excelHomeOverlay { position: fixed; inset: 0; z-index: 9750; display: none; background: #14291e; }
+  #excelHomeOverlay.show { display: block; }
+  #excelHomeModal { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #1d3d2c 0%, #14291e 45%, #0c1811 100%); color: #fff; }
+  #excelHomeHead { flex-shrink: 0; padding: 14px 16px 8px; }
+  #excelHomeHead h3 { margin: 0; flex: 1; font-size: 30px; font-weight: 800; color: #fff; }
+  #excelHomeClose { background: none; border: none; color: #fff; font-size: 22px; padding: 6px 8px; }
+  #excelHomeBody { flex: 1; overflow-y: auto; padding: 6px 16px 30px; }
+  .ehAcciones { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 8px 0 18px; }
+  .ehAccion { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 14px; color: #fff; padding: 14px 6px; font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ehAccion span { font-size: 24px; line-height: 1; }
+  .ehAccion:active { transform: scale(.97); }
+  .ehTitulo { font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,.7); margin: 18px 2px 8px; }
+  .ehFila { display: flex; align-items: center; gap: 12px; width: 100%; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 10px 10px 10px 12px; margin-bottom: 8px; box-sizing: border-box; }
+  .ehFilaMain { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; background: none; border: none; color: #fff; text-align: left; padding: 0; }
+  .ehIcono { width: 38px; height: 46px; border-radius: 5px; background: #fff; flex-shrink: 0; position: relative; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .ehIcono::before { content: 'M'; position: absolute; left: 0; bottom: 6px; background: #1f7a45; color: #fff; font-size: 12px; font-weight: 800; padding: 2px 6px; border-radius: 0 3px 3px 0; }
+  .ehNombre { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ehSub { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ehTextos { min-width: 0; flex: 1; }
+  .ehPin { background: none; border: none; color: rgba(255,255,255,.75); font-size: 20px; padding: 8px; flex-shrink: 0; }
+  .ehPin.on { color: #facc15; }
+  .ehNota { font-size: 13.5px; color: rgba(255,255,255,.75); line-height: 1.45; padding: 4px 2px 10px; }
+  .ehBotonTexto { background: #2e7d5b; border: none; color: #fff; font-size: 14px; font-weight: 700; padding: 11px 18px; border-radius: 22px; }
+  .ehPie { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,.7); margin-top: 20px; padding: 0 2px; }
+  .ehPie input { width: 18px; height: 18px; }
   #plantillasModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
   #plantillasList { overflow-y: auto; padding: 6px 10px; }
   .plItem { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 4px; border-bottom: 1px solid #eee; }
@@ -945,6 +974,7 @@
     <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
     <button id="btnAtajos" style="background:#5b7a94;">⌨️ Atajos</button>
     <button id="btnAccount" style="background:#1e5c99;">👤 Cuenta</button>
+    <button id="btnPantallaInicio" style="background:#1f7a45;">🏠 Inicio</button>
     <button id="btnTemplateGallery">📁 Plantilla...</button>
     <button id="btnFactura">🧾 Factura</button>
     <button id="btnMisMatrices">📁 Mis Matrices</button>
@@ -1343,6 +1373,19 @@
     </div>
     <div id="rbVacio">No se encontró ninguna herramienta con ese nombre.</div>
   </div>
+    </div>
+  </div>
+
+  <div id="excelHomeOverlay">
+    <div id="excelHomeModal">
+      <div id="excelHomeHead">
+        <div class="tgTopRow">
+          <div class="tgAvatar" id="excelHomeAvatar">K</div>
+          <h3>Inicio</h3>
+          <button id="excelHomeClose" title="Ir a la hoja">✕</button>
+        </div>
+      </div>
+      <div id="excelHomeBody"></div>
     </div>
   </div>
 
@@ -15719,6 +15762,19 @@ var TEMPLATES_GALERIA = [
   { tipo: 'rentalucrativa', icono: '🧑‍💼', color: '#9a3412', titulo: 'Renta Persona Física', desc: 'Actividad lucrativa 2026: tramos, créditos y pagos parciales' },
   { tipo: 'sistemacontable', icono: '📚', color: '#1e3a8a', titulo: 'Libros Contables Conectados', desc: 'Catálogo + Diario + Mayor por cuenta + Balanza, todo en vivo' },
   { tipo: 'prestamo', icono: '🏠', color: '#0e7490', titulo: 'Préstamo / Amortización', desc: 'Cuota, intereses y saldo mes a mes, con abonos extra' },
+  // Plantillas tipo Excel
+  { tipo: 'presupuestomensual', icono: '💰', color: '#4d7c0f', titulo: 'Presupuesto mensual simple', desc: 'Ingresos, gastos, saldo y porcentaje gastado' },
+  { tipo: 'presupuestofamiliar', icono: '🏡', color: '#0e7490', titulo: 'Presupuesto familiar', desc: 'Previsto contra real por categoría' },
+  { tipo: 'presupuestopersonal', icono: '👤', color: '#1d4ed8', titulo: 'Presupuesto personal', desc: 'Ingresos, gastos y ahorros del mes' },
+  { tipo: 'presupuestovacaciones', icono: '🏖', color: '#0369a1', titulo: 'Presupuesto de vacaciones', desc: 'Planeado contra real del viaje' },
+  { tipo: 'tendenciasgastos', icono: '📈', color: '#be123c', titulo: 'Tendencias de gastos', desc: 'Gastos por mes con total y promedio' },
+  { tipo: 'facturabasica', icono: '🧾', color: '#1e5a6b', titulo: 'Factura básica con precio unitario', desc: 'Cantidad, precio, subtotal, IVA y total' },
+  { tipo: 'inventario', icono: '📦', color: '#374151', titulo: 'Lista de inventario', desc: 'Existencias, valor y aviso de reposición' },
+  { tipo: 'gastosviaje', icono: '🚗', color: '#155e75', titulo: 'Calculadora de gastos de viaje', desc: 'Kilometraje, alojamiento y comidas' },
+  { tipo: 'programaciondiaria', icono: '🗓', color: '#9d174d', titulo: 'Programación diaria', desc: 'Horario de la semana por horas' },
+  { tipo: 'listatareas', icono: '✅', color: '#b45309', titulo: 'Lista de tareas', desc: 'Tareas con prioridad, fecha y estado' },
+  { tipo: 'calendario', icono: '📅', color: '#3f6212', titulo: 'Calendario mensual', desc: 'Calendario del mes actual con espacio para notas' },
+  { tipo: 'gantt', icono: '📊', color: '#6d28d9', titulo: 'Diagrama de Gantt', desc: 'Tareas por semana con barras automáticas' },
 ];
 
 // Categorías de la galería (las pestañas de arriba). Una plantilla puede estar en más de una.
@@ -15727,18 +15783,175 @@ var TG_CATEGORIAS = [
   { id: 'conta', nombre: 'Contabilidad', tipos: ['diario', 'mayor', 'balance', 'conciliacion', 'd151', 'resultados', 'balancegeneral', 'sistemacontable'] },
   { id: 'planilla', nombre: 'Planillas', tipos: ['planilla', 'aguinaldo', 'liquidacion', 'rentalucrativa'] },
   { id: 'finanzas', nombre: 'Finanzas', tipos: ['flujocaja', 'depreciacion', 'prestamo'] },
+  { id: 'presupuestos', nombre: 'Presupuestos', tipos: ['presupuestomensual', 'presupuestofamiliar', 'presupuestopersonal', 'presupuestovacaciones', 'tendenciasgastos'] },
+  { id: 'negocio', nombre: 'Negocio', tipos: ['facturabasica', 'inventario', 'gastosviaje'] },
+  { id: 'planes', nombre: 'Planificadores', tipos: ['programaciondiaria', 'listatareas', 'calendario', 'gantt'] },
 ];
 var tgCategoriaActual = 'todo';
 
-// Vista previa en miniatura: encabezado de color, subtítulo y filas, como una hoja real
+// Contenido de ejemplo de cada miniatura: columnas, filas y (opcional) barras del gráfico.
+// Son datos de muestra solo para la vista previa; la plantilla real la arma loadTemplate.
+// La última fila con total:true se muestra en negrita. Las celdas que empiezan con dígito o "-" se alinean a la derecha.
+var TG_PREVIEWS = {
+  diario: {
+    cols: ['Fecha', 'Cuenta', 'Debe', 'Haber'],
+    filas: [['01/11', 'Caja', '150.000', ''], ['01/11', 'Ventas', '', '150.000'], ['03/11', 'Compras', '80.000', ''], ['03/11', 'Bancos', '', '80.000'], ['05/11', 'Alquiler', '250.000', ''], ['05/11', 'Bancos', '', '250.000']],
+    total: ['', 'Totales', '480.000', '480.000'],
+  },
+  mayor: {
+    cols: ['Fecha', 'Detalle', 'Debe', 'Haber', 'Saldo'],
+    filas: [['01/11', 'Saldo inicial', '', '', '500.000'], ['02/11', 'Venta contado', '150.000', '', '650.000'], ['04/11', 'Pago proveedor', '', '80.000', '570.000'], ['08/11', 'Depósito', '200.000', '', '770.000'], ['12/11', 'Pago luz', '', '45.000', '725.000']],
+    total: ['', 'Saldo final', '350.000', '125.000', '725.000'],
+  },
+  balance: {
+    cols: ['Cuenta', 'Debe', 'Haber', 'Saldo'],
+    filas: [['Caja', '650.000', '125.000', '525.000'], ['Bancos', '900.000', '330.000', '570.000'], ['Clientes', '300.000', '100.000', '200.000'], ['Proveedores', '80.000', '260.000', '-180.000'], ['Ventas', '', '1.200.000', '-1.200.000'], ['Gastos', '85.000', '', '85.000']],
+    total: ['Sumas iguales', '2.015.000', '2.015.000', '0'],
+  },
+  conciliacion: {
+    cols: ['Fecha', 'Detalle', 'Banco', 'Libros'],
+    filas: [['02/11', 'Depósito', '200.000', '200.000'], ['05/11', 'Cheque 104', '-80.000', '-80.000'], ['09/11', 'Comisión', '-2.500', ''], ['14/11', 'Transferencia', '120.000', '120.000'], ['20/11', 'Cheque 105', '', '-45.000']],
+    total: ['', 'Diferencia', '237.500', '195.000'],
+  },
+  d151: {
+    cols: ['Cédula', 'Nombre', 'Tipo', 'Monto'],
+    filas: [['3-101-123456', 'Proveedor A', 'Compra', '3.200.000'], ['3-101-654321', 'Cliente B', 'Venta', '5.800.000'], ['1-0456-0789', 'Proveedor C', 'Compra', '2.750.000'], ['3-102-111222', 'Cliente D', 'Venta', '4.100.000']],
+    total: ['', 'Total', '', '15.850.000'],
+  },
+  resultados: {
+    cols: ['Concepto', 'Monto'],
+    filas: [['Ingresos por ventas', '2.500.000'], ['Costo de ventas', '-900.000'], ['Utilidad bruta', '1.600.000'], ['Gastos operativos', '-650.000'], ['Gastos financieros', '-50.000']],
+    total: ['Utilidad neta', '900.000'],
+    barras: [100, 36, 64, 26, 36],
+  },
+  balancegeneral: {
+    cols: ['Cuenta', 'Monto'],
+    filas: [['ACTIVO', ''], ['Caja y bancos', '1.295.000'], ['Activos fijos', '3.500.000'], ['PASIVO', ''], ['Proveedores', '180.000'], ['PATRIMONIO', '4.615.000']],
+    total: ['Pasivo + Patrimonio', '4.795.000'],
+  },
+  planilla: {
+    cols: ['Empleado', 'Salario', 'CCSS', 'Neto'],
+    filas: [['Ana Mora', '450.000', '48.000', '402.000'], ['Luis Vega', '520.000', '55.500', '464.500'], ['María Solís', '380.000', '40.500', '339.500'], ['José Rojas', '610.000', '65.000', '545.000']],
+    total: ['Totales', '1.960.000', '209.000', '1.751.000'],
+  },
+  aguinaldo: {
+    cols: ['Empleado', 'Dic-Nov', 'Aguinaldo'],
+    filas: [['Ana Mora', '5.400.000', '450.000'], ['Luis Vega', '6.240.000', '520.000'], ['María Solís', '4.560.000', '380.000'], ['José Rojas', '7.320.000', '610.000']],
+    total: ['Totales', '23.520.000', '1.960.000'],
+  },
+  liquidacion: {
+    cols: ['Concepto', 'Días', 'Monto'],
+    filas: [['Preaviso', '30', '450.000'], ['Cesantía', '60', '900.000'], ['Vacaciones', '8', '120.000'], ['Aguinaldo', '', '262.500']],
+    total: ['Total a pagar', '', '1.732.500'],
+  },
+  flujocaja: {
+    cols: ['Mes', 'Ingresos', 'Gastos', 'Saldo'],
+    filas: [['Ene', '900.000', '700.000', '200.000'], ['Feb', '950.000', '720.000', '430.000'], ['Mar', '1.100.000', '760.000', '770.000'], ['Abr', '1.050.000', '800.000', '1.020.000']],
+    barras: [20, 43, 77, 100, 88, 96],
+  },
+  depreciacion: {
+    cols: ['Año', 'Deprec.', 'Acum.', 'Valor'],
+    filas: [['1', '400.000', '400.000', '1.600.000'], ['2', '400.000', '800.000', '1.200.000'], ['3', '400.000', '1.200.000', '800.000'], ['4', '400.000', '1.600.000', '400.000'], ['5', '400.000', '2.000.000', '0']],
+    barras: [100, 80, 60, 40, 20],
+  },
+  rentalucrativa: {
+    cols: ['Tramo', 'Tarifa', 'Impuesto'],
+    filas: [['Exento', '0%', '0'], ['Tramo 2', '10%', '185.000'], ['Tramo 3', '15%', '240.000'], ['Tramo 4', '20%', '310.000'], ['Créditos', '', '-30.000']],
+    total: ['Renta a pagar', '', '705.000'],
+  },
+  sistemacontable: {
+    cols: ['Código', 'Cuenta', 'Debe', 'Haber'],
+    filas: [['1-01', 'Caja', '650.000', ''], ['1-02', 'Bancos', '900.000', ''], ['2-01', 'Proveedores', '', '260.000'], ['4-01', 'Ventas', '', '1.200.000'], ['5-01', 'Gastos', '85.000', '']],
+    total: ['', 'Balanza', '1.635.000', '1.460.000'],
+  },
+  prestamo: {
+    cols: ['N°', 'Cuota', 'Interés', 'Saldo'],
+    filas: [['1', '215.000', '100.000', '9.885.000'], ['2', '215.000', '98.850', '9.768.850'], ['3', '215.000', '97.690', '9.651.540'], ['4', '215.000', '96.515', '9.533.055']],
+    barras: [100, 88, 76, 63, 50, 36, 22, 8],
+  },
+  presupuestomensual: {
+    cols: ['Resumen', 'Monto'],
+    filas: [['Total ingresos', '850.000'], ['Total gastos', '592.000'], ['Saldo', '258.000'], ['% gastado', '70%']],
+    barras: [100, 70],
+  },
+  presupuestofamiliar: {
+    cols: ['Categoría', 'Previsto', 'Real'],
+    filas: [['Salarios', '1.150.000', '1.130.000'], ['Vivienda', '300.000', '300.000'], ['Comida', '220.000', '241.000'], ['Transporte', '80.000', '92.000']],
+    total: ['Saldo', '300.000', '264.500'],
+    barras: [100, 98, 74, 77],
+  },
+  presupuestopersonal: {
+    cols: ['Resumen', 'Monto'],
+    filas: [['Ingresos', '850.000'], ['Gastos', '500.000'], ['Ahorros', '110.000'], ['% gastado', '59%']],
+    total: ['Saldo de efectivo', '240.000'],
+    barras: [100, 59, 13],
+  },
+  presupuestovacaciones: {
+    cols: ['Categoría', 'Planeado', 'Real'],
+    filas: [['Tiquetes', '400.000', '420.000'], ['Alojamiento', '350.000', '350.000'], ['Comida', '180.000', '205.000'], ['Actividades', '120.000', '95.000']],
+    total: ['Total', '1.180.000', '1.180.000'],
+  },
+  tendenciasgastos: {
+    cols: ['Gasto', 'Ene', 'Feb', 'Mar'],
+    filas: [['Alquiler', '250.000', '250.000', '250.000'], ['Comida', '189.000', '171.000', '180.000'], ['Servicios', '61.000', '69.000', '65.000']],
+    barras: [60, 75, 55, 90, 70, 100, 65, 80, 72, 95, 68, 85],
+  },
+  facturabasica: {
+    cols: ['Cant.', 'Descripción', 'Precio', 'Importe'],
+    filas: [['1', 'Artículo 1', '15.000', '15.000'], ['2', 'Artículo 2', '4.000', '8.000'], ['', '', '', ''], ['', '', 'Subtotal', '23.000'], ['', '', 'IVA 13%', '2.990']],
+    total: ['', '', 'TOTAL', '25.990'],
+  },
+  inventario: {
+    cols: ['Código', 'Artículo', 'Cant.', 'Valor'],
+    filas: [['A-001', 'Artículo 1', '25', '37.500'], ['A-002', 'Artículo 2', '4', '32.800'], ['A-003', 'Artículo 3', '60', '21.000'], ['A-004', 'Artículo 4', '2', '25.000']],
+    total: ['', 'Valor total', '', '116.300'],
+  },
+  gastosviaje: {
+    cols: ['Detalle', 'Km', 'Comidas', 'Total'],
+    filas: [['San José - Liberia', '215', '18.000', '100.250'], ['Liberia - San José', '215', '12.000', '44.250']],
+    total: ['Totales', '430', '30.000', '144.500'],
+  },
+  programaciondiaria: {
+    cols: ['Hora', 'Lun', 'Mar', 'Mié', 'Jue'],
+    filas: [['6:00 am', 'Gimnasio', '', 'Gimnasio', ''], ['8:00 am', 'Trabajo', 'Trabajo', 'Trabajo', 'Trabajo'], ['12:00 pm', 'Almuerzo', 'Almuerzo', 'Almuerzo', 'Almuerzo'], ['5:00 pm', '', 'Reunión', '', ''], ['7:00 pm', '', '', '', 'Compras']],
+  },
+  listatareas: {
+    cols: ['Tarea', 'Prioridad', 'Estado'],
+    filas: [['Pagar recibo de luz', 'Alta', 'Pendiente'], ['Enviar cotización', 'Alta', 'Hecha'], ['Comprar materiales', 'Media', 'Pendiente'], ['Llamar al contador', 'Baja', 'Pendiente']],
+  },
+  calendario: {
+    cols: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+    filas: [['', '', '1', '2', '3', '4', '5'], ['6', '7', '8', '9', '10', '11', '12'], ['13', '14', '15', '16', '17', '18', '19'], ['20', '21', '22', '23', '24', '25', '26'], ['27', '28', '29', '30', '', '', '']],
+  },
+  gantt: {
+    cols: ['Tarea', '1', '2', '3', '4', '5', '6'],
+    filas: [['Planificación', '█', '█', '', '', '', ''], ['Diseño', '', '█', '█', '█', '', ''], ['Desarrollo', '', '', '', '█', '█', '█'], ['Pruebas', '', '', '', '', '', '█']],
+  },
+};
+
+// Vista previa en miniatura: título con el color de la plantilla, tabla con datos de ejemplo y gráfico si aplica
 function tgVistaPrevia(t) {
-  var filas = '';
-  for (var i = 0; i < 9; i++) filas += '<div class="tgPrevRow"><i></i><i></i><i></i></div>';
+  var p = TG_PREVIEWS[t.tipo];
+  if (!p) p = { cols: ['A', 'B', 'C'], filas: [['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']] };
+  function celda(v) {
+    var esNumero = /^-?\d/.test(v);
+    return '<td' + (esNumero ? ' class="n"' : '') + '>' + escHtml(v) + '</td>';
+  }
+  var tabla = '<table class="tgMini"><tr>' + p.cols.map(function (c) {
+    return '<th style="background:' + t.color + '26;">' + escHtml(c) + '</th>';
+  }).join('') + '</tr>';
+  tabla += p.filas.map(function (f) { return '<tr>' + f.map(celda).join('') + '</tr>'; }).join('');
+  if (p.total) tabla += '<tr class="tot">' + p.total.map(celda).join('') + '</tr>';
+  tabla += '</table>';
+  var grafico = '';
+  if (p.barras) {
+    grafico = '<div class="tgBars">' + p.barras.map(function (h) {
+      return '<i style="height:' + h + '%;background:' + t.color + ';"></i>';
+    }).join('') + '</div>';
+  }
   return '<div class="tgPrev">' +
-    '<div class="tgPrevHead" style="background:' + t.color + ';"></div>' +
-    '<div class="tgPrevSub"></div>' +
-    filas +
-    '<div class="tgPrevTot" style="background:' + t.color + ';"></div>' +
+    '<div class="tgPrevHead" style="background:' + t.color + ';">' + escHtml(t.titulo) + '</div>' +
+    tabla + grafico +
   '</div>';
 }
 
@@ -15772,7 +15985,7 @@ function renderizarTemplateGaleria() {
   grid.innerHTML = html;
 
   grid.querySelectorAll('[data-blank]').forEach(function (b) {
-    b.addEventListener('click', function () { tgCerrarGaleria(); snapshot(); crearLibroEnBlanco(); });
+    b.addEventListener('click', tgNuevoEnBlanco);
   });
   grid.querySelectorAll('[data-tipo]').forEach(function (card) {
     card.addEventListener('click', function () {
@@ -15798,6 +16011,39 @@ function crearLibroEnBlanco() {
   activeSheet = name;
   buildTable(); renderTabs(); autoSave();
   document.getElementById('saveStatus').textContent = '✓ Libro en blanco creado: ' + name;
+  return name;
+}
+
+// Aviso flotante breve (se quita solo), para que se note que la hoja nueva sí se creó
+function tgAviso(texto) {
+  var a = document.getElementById('tgAvisoFlotante');
+  if (!a) {
+    a = document.createElement('div');
+    a.id = 'tgAvisoFlotante';
+    a.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1f5c3a;color:#fff;padding:12px 18px;border-radius:24px;font-size:14px;font-weight:600;z-index:9900;box-shadow:0 4px 14px rgba(0,0,0,.4);max-width:86vw;text-align:center;';
+    document.body.appendChild(a);
+  }
+  a.textContent = texto;
+  a.style.display = 'block';
+  clearTimeout(tgAviso.temporizador);
+  tgAviso.temporizador = setTimeout(function () { a.style.display = 'none'; }, 3000);
+}
+
+// Acción de los dos "+" (la tarjeta "Libro en blanco" y el botón flotante)
+function tgNuevoEnBlanco(e) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  if (libroProtegido()) { tgCerrarGaleria(); avisoLibroProtegido(); return; }
+  try {
+    tgCerrarGaleria();
+    snapshot();
+    var nombre = crearLibroEnBlanco();
+    tgAviso('✓ Hoja nueva en blanco: ' + nombre);
+    // Llevar la pestaña nueva a la vista
+    var fila = document.getElementById('tabsRow');
+    if (fila) fila.scrollLeft = fila.scrollWidth;
+  } catch (err) {
+    alert('No se pudo crear la hoja en blanco: ' + (err && err.message ? err.message : err));
+  }
 }
 
 document.getElementById('btnTemplateGallery').addEventListener('click', function () {
@@ -15807,9 +16053,7 @@ document.getElementById('btnTemplateGallery').addEventListener('click', function
   document.getElementById('templateGalleryOverlay').classList.add('show');
 });
 document.getElementById('templateGalleryClose').addEventListener('click', tgCerrarGaleria);
-document.getElementById('tgFabAdd').addEventListener('click', function () {
-  tgCerrarGaleria(); snapshot(); crearLibroEnBlanco();
-});
+document.getElementById('tgFabAdd').addEventListener('click', tgNuevoEnBlanco);
 document.getElementById('tgFabSearch').addEventListener('click', function () {
   var s = document.getElementById('templateGallerySearch');
   var abrir = !s.classList.contains('show');
@@ -15817,6 +16061,171 @@ document.getElementById('tgFabSearch').addEventListener('click', function () {
   if (abrir) s.focus(); else { s.value = ''; renderizarTemplateGaleria(); }
 });
 document.getElementById('templateGallerySearch').addEventListener('input', renderizarTemplateGaleria);
+// ── Pantalla de inicio estilo Excel móvil ──
+// Muestra el libro abierto, los libros anclados y los recientes de la nube (Mis Matrices).
+// No guarda datos nuevos del libro: solo lee la lista de la nube y recuerda, en este
+// dispositivo, cuáles están anclados y si se quiere ver esta pantalla al abrir.
+var ehLibrosNube = null;      // null = todavía no se ha cargado; [] = sin libros
+var ehErrorNube = '';
+
+function ehLeer(clave, porDefecto) {
+  try { var v = localStorage.getItem(clave); return v === null ? porDefecto : v; } catch (e) { return porDefecto; }
+}
+function ehGuardar(clave, valor) {
+  try { localStorage.setItem(clave, valor); } catch (e) {}
+}
+function ehAnclados() {
+  try { var a = JSON.parse(ehLeer('mcr_home_anclados', '[]')); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+}
+function ehFecha(ms) {
+  if (!ms) return 'sin fecha';
+  var f = new Date(Number(ms));
+  if (isNaN(f.getTime())) return 'sin fecha';
+  var MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
+  var hh = f.getHours(), mm = f.getMinutes();
+  var hora = ((hh % 12) || 12) + ':' + (mm < 10 ? '0' : '') + mm + (hh < 12 ? ' am' : ' pm');
+  return f.getDate() + ' ' + MESES[f.getMonth()] + ' ' + f.getFullYear() + ', ' + hora;
+}
+
+function ehCargarNube() {
+  ehErrorNube = '';
+  if (!currentUser || !firestoreDB) { ehLibrosNube = null; return; }
+  var propias = firestoreDB.collection('matrices').where('ownerId', '==', currentUser.uid).get();
+  var compartidas = firestoreDB.collection('matrices').where('sharedWith', 'array-contains', currentUser.email).get();
+  Promise.all([propias, compartidas]).then(function (results) {
+    var vistos = {}, items = [];
+    results.forEach(function (snap, idx) {
+      snap.forEach(function (doc) {
+        if (vistos[doc.id]) return;
+        vistos[doc.id] = true;
+        var data = doc.data() || {};
+        items.push({ id: doc.id, name: data.name || '(sin nombre)', mine: idx === 0, updatedAt: data.updatedAt || 0 });
+      });
+    });
+    items.sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    ehLibrosNube = items;
+    ehRender();
+  }).catch(function (err) {
+    ehLibrosNube = [];
+    ehErrorNube = (err && err.message) ? err.message : String(err);
+    ehRender();
+  });
+}
+
+function ehFilaLibro(it, anclado) {
+  return '<div class="ehFila">' +
+    '<button class="ehFilaMain" data-abrir="' + escHtml(it.id) + '">' +
+      '<div class="ehIcono"></div>' +
+      '<div class="ehTextos"><div class="ehNombre">' + escHtml(it.name) + '</div>' +
+      '<div class="ehSub">' + (it.mine ? 'En la nube' : 'Compartido conmigo') + ' · ' + ehFecha(it.updatedAt) + '</div></div>' +
+    '</button>' +
+    '<button class="ehPin' + (anclado ? ' on' : '') + '" data-pin="' + escHtml(it.id) + '" title="' + (anclado ? 'Desanclar' : 'Anclar') + '">' + (anclado ? '★' : '☆') + '</button>' +
+  '</div>';
+}
+
+function ehRender() {
+  var cuerpo = document.getElementById('excelHomeBody');
+  if (!cuerpo) return;
+  var correo = currentUser && currentUser.email ? currentUser.email : '';
+  document.getElementById('excelHomeAvatar').textContent = correo ? correo.charAt(0).toUpperCase() : 'K';
+
+  var html = '<div class="ehAcciones">' +
+    '<button class="ehAccion" data-accion="nuevo"><span>➕</span>Nuevo</button>' +
+    '<button class="ehAccion" data-accion="abrir"><span>📂</span>Abrir Excel</button>' +
+    '<button class="ehAccion" data-accion="nube"><span>☁️</span>Mis libros</button>' +
+  '</div>';
+
+  // Libro que está abierto ahora mismo
+  var nombreActual = currentMatrizName || 'Libro local (este dispositivo)';
+  var ultima = ehLeer('mcr_ultima_edicion', '');
+  html += '<div class="ehTitulo">Libro abierto</div>' +
+    '<div class="ehFila"><button class="ehFilaMain" data-accion="continuar">' +
+      '<div class="ehIcono"></div>' +
+      '<div class="ehTextos"><div class="ehNombre">' + escHtml(nombreActual) + '</div>' +
+      '<div class="ehSub">' + sheets.length + (sheets.length === 1 ? ' hoja' : ' hojas') + (ultima ? ' · editado ' + ehFecha(ultima) : '') + '</div></div>' +
+    '</button></div>';
+
+  if (!currentUser) {
+    html += '<div class="ehTitulo">Recientes</div>' +
+      '<div class="ehNota">Iniciá sesión para ver acá tus libros guardados en la nube.</div>' +
+      '<button class="ehBotonTexto" data-accion="cuenta">Iniciar sesión</button>';
+  } else if (ehLibrosNube === null) {
+    html += '<div class="ehTitulo">Recientes</div><div class="ehNota">Cargando tus libros…</div>';
+  } else {
+    var pins = ehAnclados();
+    var anclados = ehLibrosNube.filter(function (it) { return pins.indexOf(it.id) >= 0; });
+    var resto = ehLibrosNube.filter(function (it) { return pins.indexOf(it.id) < 0; });
+    if (anclados.length) {
+      html += '<div class="ehTitulo">Anclados</div>' + anclados.map(function (it) { return ehFilaLibro(it, true); }).join('');
+    }
+    html += '<div class="ehTitulo">Recientes</div>';
+    if (ehErrorNube) html += '<div class="ehNota">No se pudo cargar la lista de la nube: ' + escHtml(ehErrorNube) + '</div>';
+    else if (!ehLibrosNube.length) html += '<div class="ehNota">Todavía no tenés libros en la nube. Guardá el actual desde ☁️ Mis libros.</div>';
+    else if (!resto.length) html += '<div class="ehNota">Todos tus libros están anclados.</div>';
+    else html += resto.map(function (it) { return ehFilaLibro(it, false); }).join('');
+  }
+
+  html += '<label class="ehPie"><input type="checkbox" id="ehMostrarAlAbrir"' + (ehLeer('mcr_home_al_abrir', '1') === '1' ? ' checked' : '') + '> Mostrar esta pantalla al abrir</label>';
+  cuerpo.innerHTML = html;
+
+  cuerpo.querySelectorAll('[data-accion]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = b.dataset.accion;
+      if (a === 'continuar') { ehCerrar(); }
+      else if (a === 'nuevo') { ehCerrar(); document.getElementById('btnTemplateGallery').click(); }
+      else if (a === 'abrir') { ehCerrar(); document.getElementById('btnExcelImport').click(); }
+      else if (a === 'nube') { ehCerrar(); document.getElementById('btnMisMatrices').click(); }
+      else if (a === 'cuenta') { ehCerrar(); document.getElementById('btnAccount').click(); }
+    });
+  });
+  cuerpo.querySelectorAll('[data-abrir]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var it = (ehLibrosNube || []).filter(function (x) { return x.id === b.dataset.abrir; })[0];
+      if (!it) return;
+      ehCerrar();
+      abrirMatriz(it.id, it.name);
+    });
+  });
+  cuerpo.querySelectorAll('[data-pin]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var pins = ehAnclados(), i = pins.indexOf(b.dataset.pin);
+      if (i >= 0) pins.splice(i, 1); else pins.push(b.dataset.pin);
+      ehGuardar('mcr_home_anclados', JSON.stringify(pins));
+      ehRender();
+    });
+  });
+  var chk = document.getElementById('ehMostrarAlAbrir');
+  if (chk) chk.addEventListener('change', function () { ehGuardar('mcr_home_al_abrir', chk.checked ? '1' : '0'); });
+}
+
+function ehAbrir() {
+  document.getElementById('ribbonOverlay').classList.remove('show');
+  document.getElementById('excelHomeOverlay').classList.add('show');
+  ehRender();
+  ehCargarNube();
+}
+function ehCerrar() {
+  document.getElementById('excelHomeOverlay').classList.remove('show');
+}
+// La llama el inicio de sesión: si la pantalla está abierta, vuelve a cargar la lista
+function ehRefrescarSiAbierta() {
+  var o = document.getElementById('excelHomeOverlay');
+  if (o && o.classList.contains('show')) { ehRender(); ehCargarNube(); }
+}
+
+document.getElementById('excelHomeClose').addEventListener('click', ehCerrar);
+document.getElementById('btnPantallaInicio').addEventListener('click', ehAbrir);
+
+// Al abrir la hoja en el navegador se muestra la pantalla de inicio.
+// Dentro de la app móvil no, porque la app ya tiene su propia pantalla de inicio.
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    if (window.ReactNativeWebView) return;
+    if (ehLeer('mcr_home_al_abrir', '1') !== '1') return;
+    ehAbrir();
+  }, 500);
+});
+
 
 
 // ══════════════════════════════════════════════
@@ -16477,11 +16886,231 @@ function abrirCatalogosNegocio() {
 }
 document.getElementById('btnCatalogoNegocio').addEventListener('click', abrirCatalogosNegocio);
 
+// ── Plantillas tipo Excel (presupuestos, factura, planificadores, listas, inventario) ──
+// Las llama loadTemplate cuando el tipo no es una de las plantillas contables.
+// h trae los mismos ayudantes que usa loadTemplate (set, titleBar, sectionBar, etc.).
+function plantillaTipoExcel(tipo, h) {
+  var set = h.set, d = h.d, name = h.name, hoy = h.hoy;
+  var styleRange = h.styleRange, titleBar = h.titleBar, sectionBar = h.sectionBar;
+  var headerRow = h.headerRow, gridBorder = h.gridBorder, totalRow = h.totalRow;
+  var NUM = { numFormat: { type: 'number', decimals: 0, thousands: true } };
+  var PCT = { numFormat: { type: 'percent', decimals: 0 } };
+  function encabezados(row, lista) { lista.forEach(function (t, i) { set(row, i, t, true); }); }
+  function F(r, c, formula) { d[cellId(r, c)] = formula; }
+  function lista(rowInicio, items) { items.forEach(function (it, i) { it.forEach(function (v, j) { set(rowInicio + i, j, v); }); }); }
+
+  if (tipo === 'presupuestomensual') {
+    var c1 = '#4d7c0f';
+    titleBar(0, 2, '💰 PRESUPUESTO MENSUAL SIMPLE', c1);
+    set(1, 0, 'Valores de ejemplo: cambialos por los tuyos.');
+    sectionBar(2, 0, 2, 'RESUMEN', c1);
+    set(3, 0, 'Total de ingresos mensuales', true); F(3, 1, '=SUMA(B10:B12)');
+    set(4, 0, 'Total de gastos mensuales', true); F(4, 1, '=SUMA(B15:B22)');
+    set(5, 0, 'Saldo', true); F(5, 1, '=B4-B5');
+    set(6, 0, 'Porcentaje de ingresos gastados', true); F(6, 1, '=SI(B4=0;0;B5/B4)');
+    sectionBar(8, 0, 2, 'INGRESOS MENSUALES', c1);
+    lista(9, [['Salario', '750000'], ['Otros ingresos', '100000'], ['Ingreso adicional', '0']]);
+    sectionBar(13, 0, 2, 'GASTOS MENSUALES', '#9d174d');
+    lista(14, [['Alquiler o hipoteca', '250000'], ['Electricidad', '25000'], ['Agua', '12000'], ['Internet y teléfono', '30000'], ['Comida', '180000'], ['Transporte', '45000'], ['Seguros', '20000'], ['Otros gastos', '30000']]);
+    gridBorder(3, 0, 6, 1); gridBorder(9, 0, 11, 1); gridBorder(14, 0, 21, 1);
+    styleRange(3, 1, 5, 1, NUM); styleRange(6, 1, 6, 1, PCT); styleRange(9, 1, 11, 1, NUM); styleRange(14, 1, 21, 1, NUM);
+    colWidths[name] = { 0: 260, 1: 150 };
+
+  } else if (tipo === 'presupuestofamiliar') {
+    var c2 = '#0e7490';
+    titleBar(0, 4, '🏡 PRESUPUESTO FAMILIAR', c2);
+    set(1, 0, 'Anotá lo previsto y lo real de cada mes. La diferencia se calcula sola.');
+    encabezados(2, ['Categoría', 'Previsto', 'Real', 'Diferencia']); headerRow(2, 4, '#cffafe');
+    sectionBar(3, 0, 4, 'INGRESOS', c2);
+    lista(4, [['Salario 1', '700000', '700000'], ['Salario 2', '450000', '430000']]);
+    set(6, 0, 'Total ingresos', true); F(6, 1, '=SUMA(B5:B6)'); F(6, 2, '=SUMA(C5:C6)');
+    for (var r2 = 4; r2 <= 6; r2++) F(r2, 3, '=C' + (r2 + 1) + '-B' + (r2 + 1));
+    sectionBar(7, 0, 4, 'GASTOS', '#b45309');
+    lista(8, [['Vivienda', '300000', '300000'], ['Comida', '220000', '241000'], ['Servicios públicos', '70000', '66500'], ['Transporte', '80000', '92000'], ['Educación', '60000', '60000'], ['Salud', '40000', '25000'], ['Entretenimiento', '50000', '63000'], ['Otros', '30000', '18000']]);
+    set(16, 0, 'Total gastos', true); F(16, 1, '=SUMA(B9:B16)'); F(16, 2, '=SUMA(C9:C16)');
+    for (var r3 = 8; r3 <= 16; r3++) F(r3, 3, '=B' + (r3 + 1) + '-C' + (r3 + 1));
+    set(17, 0, 'Saldo (ingresos - gastos)', true); F(17, 1, '=B7-B17'); F(17, 2, '=C7-C17'); F(17, 3, '=C18-B18');
+    gridBorder(4, 0, 6, 3); gridBorder(8, 0, 17, 3);
+    styleRange(4, 1, 17, 3, NUM);
+    totalRow(6, 0, 3, '#a5f3fc'); totalRow(16, 0, 3, '#fde68a'); totalRow(17, 0, 3, '#e5e7eb');
+    colWidths[name] = { 0: 220, 1: 120, 2: 120, 3: 120 };
+
+  } else if (tipo === 'presupuestopersonal') {
+    var c3 = '#1d4ed8';
+    titleBar(0, 2, '👤 PRESUPUESTO PERSONAL', c3);
+    set(1, 0, 'Ingresos, gastos y ahorros del mes.');
+    sectionBar(2, 0, 2, 'RESUMEN', c3);
+    set(3, 0, 'Total ingresos mensuales', true); F(3, 1, '=SUMA(B11:B13)');
+    set(4, 0, 'Total gastos mensuales', true); F(4, 1, '=SUMA(B16:B21)');
+    set(5, 0, 'Total ahorros mensuales', true); F(5, 1, '=SUMA(B24:B25)');
+    set(6, 0, 'Saldo de efectivo', true); F(6, 1, '=B4-B5-B6');
+    set(7, 0, 'Porcentaje de ingresos gastados', true); F(7, 1, '=SI(B4=0;0;B5/B4)');
+    sectionBar(9, 0, 2, 'INGRESOS MENSUALES', c3);
+    lista(10, [['Fuente de ingresos 1', '650000'], ['Fuente de ingresos 2', '150000'], ['Otros', '50000']]);
+    sectionBar(14, 0, 2, 'GASTOS MENSUALES', '#b91c1c');
+    lista(15, [['Alquiler', '220000'], ['Electricidad y agua', '35000'], ['Teléfono móvil', '15000'], ['Comida', '160000'], ['Transporte', '40000'], ['Otros', '30000']]);
+    sectionBar(22, 0, 2, 'AHORROS MENSUALES', '#047857');
+    lista(23, [['Fondo de emergencia', '50000'], ['Ahorro para metas', '60000']]);
+    gridBorder(3, 0, 7, 1); gridBorder(10, 0, 12, 1); gridBorder(15, 0, 20, 1); gridBorder(23, 0, 24, 1);
+    styleRange(3, 1, 6, 1, NUM); styleRange(7, 1, 7, 1, PCT); styleRange(10, 1, 12, 1, NUM); styleRange(15, 1, 20, 1, NUM); styleRange(23, 1, 24, 1, NUM);
+    colWidths[name] = { 0: 260, 1: 150 };
+
+  } else if (tipo === 'facturabasica') {
+    var c4 = '#1e5a6b';
+    titleBar(0, 4, '🧾 FACTURA', c4);
+    set(1, 0, 'Empresa:', true); set(1, 1, 'Nombre de tu empresa'); set(1, 2, 'N.° de factura:', true); set(1, 3, '1001');
+    set(2, 0, 'Dirección:', true); set(2, 2, 'Fecha:', true); set(2, 3, hoy);
+    set(3, 0, 'Teléfono:', true); set(3, 2, 'Vence:', true);
+    set(5, 0, 'Facturar a:', true); set(5, 1, 'Nombre del cliente');
+    set(6, 0, 'Cédula:', true);
+    encabezados(8, ['Cant.', 'Descripción', 'Precio unitario', 'Importe']); headerRow(8, 4, '#cfe8ee');
+    lista(9, [['1', 'Descripción artículo 1', '15000'], ['2', 'Descripción artículo 2', '4000']]);
+    for (var r4 = 9; r4 <= 16; r4++) F(r4, 3, '=SI(A' + (r4 + 1) + '="";"";A' + (r4 + 1) + '*C' + (r4 + 1) + ')');
+    set(17, 2, 'Subtotal', true); F(17, 3, '=SUMA(D10:D17)');
+    set(18, 2, 'IVA 13%', true); F(18, 3, '=D18*13/100');
+    set(19, 2, 'TOTAL', true); F(19, 3, '=D18+D19');
+    gridBorder(9, 0, 16, 3); gridBorder(17, 2, 19, 3);
+    styleRange(9, 2, 19, 3, NUM);
+    totalRow(19, 2, 3, '#cfe8ee');
+    set(21, 0, 'Plantilla de factura simple. Para factura electrónica de Hacienda usá el botón 🧾 Factura.');
+    colWidths[name] = { 0: 90, 1: 250, 2: 130, 3: 130 };
+
+  } else if (tipo === 'presupuestovacaciones') {
+    var c5 = '#0369a1';
+    titleBar(0, 4, '🏖 PRESUPUESTO DE VACACIONES', c5);
+    set(1, 0, 'La diferencia es lo planeado menos lo real: en negativo te pasaste.');
+    encabezados(2, ['Categoría', 'Planeado', 'Real', 'Diferencia']); headerRow(2, 4, '#e0f2fe');
+    lista(3, [['Tiquetes aéreos', '400000', '420000'], ['Transporte local', '60000', '48000'], ['Alojamiento', '350000', '350000'], ['Comida', '180000', '205000'], ['Actividades y entradas', '120000', '95000'], ['Recuerdos', '40000', '52000'], ['Otros', '30000', '10000']]);
+    for (var r5 = 3; r5 <= 10; r5++) F(r5, 3, '=B' + (r5 + 1) + '-C' + (r5 + 1));
+    set(10, 0, 'Total', true); F(10, 1, '=SUMA(B4:B10)'); F(10, 2, '=SUMA(C4:C10)');
+    gridBorder(3, 0, 10, 3); styleRange(3, 1, 10, 3, NUM); totalRow(10, 0, 3, '#bae6fd');
+    colWidths[name] = { 0: 220, 1: 120, 2: 120, 3: 120 };
+
+  } else if (tipo === 'programaciondiaria') {
+    var c6 = '#9d174d';
+    titleBar(0, 8, '🗓 PROGRAMACIÓN DIARIA', c6);
+    encabezados(1, ['Hora', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']); headerRow(1, 8, '#fce7f3');
+    for (var hr = 6; hr <= 21; hr++) {
+      var etiqueta = (hr <= 12 ? hr : hr - 12) + ':00 ' + (hr < 12 ? 'am' : 'pm');
+      set(2 + hr - 6, 0, etiqueta, true);
+    }
+    [[2, 1, 'Gimnasio'], [2, 3, 'Gimnasio'], [2, 5, 'Gimnasio'], [4, 1, 'Trabajo'], [4, 2, 'Trabajo'], [4, 3, 'Trabajo'], [4, 4, 'Trabajo'], [4, 5, 'Trabajo'], [8, 1, 'Almuerzo'], [8, 2, 'Almuerzo'], [8, 3, 'Almuerzo'], [8, 4, 'Almuerzo'], [8, 5, 'Almuerzo'], [13, 2, 'Reunión'], [14, 6, 'Familia'], [15, 4, 'Compras']]
+      .forEach(function (e) { set(e[0], e[1], e[2]); });
+    gridBorder(2, 0, 17, 7);
+    styleRange(2, 0, 17, 0, { bold: true, bgColor: '#fdf2f8', border: true });
+    colWidths[name] = { 0: 90, 1: 110, 2: 110, 3: 110, 4: 110, 5: 110, 6: 110, 7: 110 };
+
+  } else if (tipo === 'listatareas') {
+    var c7 = '#b45309';
+    titleBar(0, 5, '✅ LISTA DE TAREAS', c7);
+    set(1, 0, 'Pendientes:', true); F(1, 1, '=CONTAR.SI(D4:D18;"Pendiente")');
+    set(1, 2, 'Hechas:', true); F(1, 3, '=CONTAR.SI(D4:D18;"Hecha")');
+    encabezados(2, ['Tarea', 'Prioridad', 'Vence', 'Estado', 'Notas']); headerRow(2, 5, '#fef3c7');
+    lista(3, [['Pagar recibo de luz', 'Alta', hoy, 'Pendiente', ''], ['Enviar cotización al cliente', 'Alta', hoy, 'Hecha', ''], ['Comprar materiales', 'Media', '', 'Pendiente', ''], ['Llamar al contador', 'Baja', '', 'Pendiente', 'Escribí Pendiente o Hecha en Estado']]);
+    gridBorder(3, 0, 17, 4);
+    colWidths[name] = { 0: 250, 1: 100, 2: 110, 3: 110, 4: 260 };
+
+  } else if (tipo === 'calendario') {
+    var c8 = '#3f6212';
+    var ahora = new Date(), anio = ahora.getFullYear(), mes = ahora.getMonth();
+    var MESES = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SETIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+    titleBar(0, 7, '📅 ' + MESES[mes] + ' DE ' + anio, c8);
+    encabezados(1, ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']); headerRow(1, 7, '#ecfccb');
+    var desfase = (new Date(anio, mes, 1).getDay() + 6) % 7; // lunes = 0
+    var diasMes = new Date(anio, mes + 1, 0).getDate();
+    for (var sem = 0; sem < 6; sem++) {
+      for (var dia = 0; dia < 7; dia++) {
+        var num = sem * 7 + dia - desfase + 1;
+        if (num >= 1 && num <= diasMes) set(2 + sem * 2, dia, String(num), true);
+      }
+      styleRange(2 + sem * 2, 0, 2 + sem * 2, 6, { bold: true, bgColor: '#f7fee7', border: true });
+    }
+    gridBorder(2, 0, 13, 6);
+    set(15, 0, 'Notas:', true);
+    set(16, 0, 'Debajo de cada número hay una fila libre para anotar. Para otro mes, creá la plantilla de nuevo en ese mes o cambiá los números.');
+    colWidths[name] = { 0: 105, 1: 105, 2: 105, 3: 105, 4: 105, 5: 105, 6: 105 };
+
+  } else if (tipo === 'gantt') {
+    var c9 = '#6d28d9';
+    titleBar(0, 16, '📊 DIAGRAMA DE GANTT', c9);
+    set(1, 0, 'Cambiá la semana de inicio y la duración: las barras se mueven solas.');
+    encabezados(2, ['Tarea', 'Inicio (semana)', 'Duración (sem.)', 'Responsable']);
+    for (var s = 1; s <= 12; s++) set(2, 3 + s, String(s), true);
+    headerRow(2, 16, '#ede9fe');
+    var tareas = [['Planificación', '1', '2', 'Ana'], ['Diseño', '2', '3', 'Luis'], ['Desarrollo', '4', '5', 'María'], ['Pruebas', '8', '2', 'José'], ['Lanzamiento', '10', '1', 'Ana'], ['Seguimiento', '11', '2', 'Luis']];
+    lista(3, tareas);
+    for (var rg = 3; rg <= 10; rg++) {
+      for (var cg = 4; cg <= 15; cg++) {
+        var Lg = colLetter(cg), ng = rg + 1;
+        F(rg, cg, '=SI($B' + ng + '="";"";SI(Y(' + Lg + '$3>=$B' + ng + ';' + Lg + '$3<$B' + ng + '+$C' + ng + ');"█";""))');
+      }
+    }
+    gridBorder(3, 0, 10, 15);
+    styleRange(3, 4, 10, 15, { fontColor: c9, border: true });
+    var anchosG = { 0: 180, 1: 120, 2: 120, 3: 120 };
+    for (var ag = 4; ag <= 15; ag++) anchosG[ag] = 38;
+    colWidths[name] = anchosG;
+
+  } else if (tipo === 'tendenciasgastos') {
+    var c10 = '#be123c';
+    titleBar(0, 15, '📈 TENDENCIAS DE GASTOS', c10);
+    set(1, 0, 'Anotá cada gasto por mes. El total y el promedio se calculan solos.');
+    encabezados(2, ['Gasto', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic', 'Total', 'Promedio']); headerRow(2, 15, '#ffe4e6');
+    var gastosT = [['Alquiler', 250000, 0], ['Comida', 180000, 9000], ['Servicios', 65000, 4000], ['Transporte', 45000, 6000], ['Otros', 30000, 12000]];
+    gastosT.forEach(function (g, i) {
+      set(3 + i, 0, g[0]);
+      for (var m = 1; m <= 12; m++) set(3 + i, m, String(g[1] + g[2] * ((m * (i + 3)) % 5 - 2)));
+      F(3 + i, 13, '=SUMA(B' + (4 + i) + ':M' + (4 + i) + ')');
+      F(3 + i, 14, '=PROMEDIO(B' + (4 + i) + ':M' + (4 + i) + ')');
+    });
+    set(8, 0, 'Total', true);
+    for (var ct = 1; ct <= 13; ct++) F(8, ct, '=SUMA(' + colLetter(ct) + '4:' + colLetter(ct) + '8)');
+    F(8, 14, '=PROMEDIO(B9:M9)');
+    gridBorder(3, 0, 8, 14); styleRange(3, 1, 8, 14, NUM); totalRow(8, 0, 14, '#fecdd3');
+    colWidths[name] = { 0: 150, 13: 110, 14: 110 };
+
+  } else if (tipo === 'gastosviaje') {
+    var c11 = '#155e75';
+    titleBar(0, 8, '🚗 CALCULADORA DE GASTOS DE VIAJE', c11);
+    set(1, 0, 'Costo por kilómetro', true); set(1, 1, '150');
+    encabezados(3, ['Fecha', 'Detalle', 'Kilómetros', 'Costo por km', 'Alojamiento', 'Comidas', 'Otros', 'Total']); headerRow(3, 8, '#cffafe');
+    lista(4, [[hoy, 'San José - Liberia', '215', '', '45000', '18000', '5000'], [hoy, 'Liberia - San José', '215', '', '', '12000', '']]);
+    for (var rv = 4; rv <= 11; rv++) {
+      var nv = rv + 1;
+      F(rv, 3, '=SI(C' + nv + '="";"";C' + nv + '*$B$2)');
+      F(rv, 7, '=SI(B' + nv + '="";"";SUMA(D' + nv + ':G' + nv + '))');
+    }
+    set(12, 1, 'Totales', true);
+    for (var cv = 2; cv <= 7; cv++) F(12, cv, '=SUMA(' + colLetter(cv) + '5:' + colLetter(cv) + '12)');
+    gridBorder(4, 0, 12, 7); styleRange(4, 2, 12, 7, NUM); totalRow(12, 0, 7, '#a5f3fc');
+    colWidths[name] = { 0: 110, 1: 200, 2: 100, 3: 110, 4: 110, 5: 110, 6: 100, 7: 120 };
+
+  } else if (tipo === 'inventario') {
+    var c12 = '#374151';
+    titleBar(0, 7, '📦 LISTA DE INVENTARIO', c12);
+    encabezados(1, ['Código', 'Artículo', 'Cantidad', 'Costo unitario', 'Valor', 'Mínimo', 'Reponer']); headerRow(1, 7, '#e5e7eb');
+    lista(2, [['A-001', 'Artículo 1', '25', '1500', '', '10'], ['A-002', 'Artículo 2', '4', '8200', '', '6'], ['A-003', 'Artículo 3', '60', '350', '', '20'], ['A-004', 'Artículo 4', '2', '12500', '', '3']]);
+    for (var ri = 2; ri <= 13; ri++) {
+      var ni = ri + 1;
+      F(ri, 4, '=SI(C' + ni + '="";"";C' + ni + '*D' + ni + ')');
+      F(ri, 6, '=SI(C' + ni + '="";"";SI(C' + ni + '<F' + ni + ';"Sí";""))');
+    }
+    set(14, 3, 'Valor total', true); F(14, 4, '=SUMA(E3:E14)');
+    gridBorder(2, 0, 13, 6); styleRange(2, 3, 14, 4, NUM); totalRow(14, 3, 4, '#d1d5db');
+    styleRange(2, 6, 13, 6, { fontColor: '#b91c1c', bold: true, border: true });
+    colWidths[name] = { 0: 90, 1: 220, 2: 100, 3: 130, 4: 130, 5: 90, 6: 90 };
+
+  } else {
+    return false;
+  }
+  return true;
+}
+
 function loadTemplate(tipo) {
   var hoy = new Date().toLocaleDateString('es-CR');
   var n = sheets.length + 1;
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
-  var nombresPlantillaNueva = { planilla: 'Planilla', aguinaldo: 'Aguinaldo', liquidacion: 'Liquidacion', flujocaja: 'FlujoCaja', depreciacion: 'Depreciacion' };
+  var nombresPlantillaNueva = { planilla: 'Planilla', aguinaldo: 'Aguinaldo', liquidacion: 'Liquidacion', flujocaja: 'FlujoCaja', depreciacion: 'Depreciacion', presupuestomensual: 'PresupuestoMensual', presupuestofamiliar: 'PresupuestoFamiliar', presupuestopersonal: 'PresupuestoPersonal', facturabasica: 'Factura', presupuestovacaciones: 'Vacaciones', programaciondiaria: 'Programacion', listatareas: 'Tareas', calendario: 'Calendario', gantt: 'Gantt', tendenciasgastos: 'TendenciasGastos', gastosviaje: 'GastosViaje', inventario: 'Inventario' };
   if (nombresPlantillaNueva[tipo]) baseName = nombresPlantillaNueva[tipo];
   var name = baseName;
   while (sheets.indexOf(name) >= 0) name = baseName + n++;
@@ -16509,7 +17138,7 @@ function loadTemplate(tipo) {
   // Cuadrícula con bordes para el bloque de datos
   function gridBorder(r1, c1, r2, c2) { styleRange(r1, c1, r2, c2, { border: true }); }
   // Fila de totales resaltada
-  function totalRow(row, c1, c2, color) { styleRange(row, c1, c2, { bold: true, bgColor: color, border: true }); }
+  function totalRow(row, c1, c2, color) { styleRange(row, c1, row, c2, { bold: true, bgColor: color, border: true }); }
 
   if (tipo === 'diario') {
     titleBar(0, 6, '📘 LIBRO DIARIO', '#2563eb');
@@ -16872,6 +17501,8 @@ function loadTemplate(tipo) {
     gridBorder(PRIMERA - 2, 0, PRIMERA + 29, 7);
     set(PRIMERA + FILAS_PR + 1, 0, 'Cuota nivelada (sistema francés). La fecha de pago es estimada; el banco puede aplicar días reales, comisiones o seguros que no se incluyen aquí.');
     colWidths[name] = { 0: 230, 1: 110, 2: 130, 3: 120, 4: 120, 5: 120, 6: 120, 7: 130 };
+  } else {
+    plantillaTipoExcel(tipo, { set: set, d: d, name: name, hoy: hoy, styleRange: styleRange, titleBar: titleBar, sectionBar: sectionBar, headerRow: headerRow, gridBorder: gridBorder, totalRow: totalRow });
   }
   buildTable(); autoSave();
 }
@@ -20122,6 +20753,7 @@ function initFirebaseOnce() {
     firestoreDB = firebase.firestore();
     firebase.auth().onAuthStateChanged(function (user) {
       currentUser = user;
+      try { ehRefrescarSiAbierta(); } catch (eHome) {}
       if (user) {
         setSyncStatus('online', user.email);
         intentarEnviarPushToken();
@@ -20516,6 +21148,7 @@ function guardarMatrizEnNube() {
 // ══════════════════════════════════════════════
 function autoSave() {
   try { registrarHistorialLocal(); } catch (eHist) {}
+  try { localStorage.setItem('mcr_ultima_edicion', String(Date.now())); } catch (eUlt) {}
   // Si se estaba grabando una macro y hubo un snapshot() pendiente de cerrar,
   // este es el momento en que la acción del usuario ya terminó: se compara
   // el estado "antes" (guardado en snapshot()) contra el estado actual y se
