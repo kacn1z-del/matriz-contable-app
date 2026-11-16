@@ -94,6 +94,33 @@
     padding: 7px 8px; font-size: 14px; font-weight: 600; flex-shrink: 0;
   }
   #ribbonTrigger select option { color: #111; }
+  /* Barra superior estilo Excel móvil */
+  #ribbonTrigger { gap: 2px; padding: 6px 8px; overflow: visible; }
+  #ribbonTrigger button.tbIcon:not(#_) {
+    background: none !important; border: none !important; box-shadow: none !important; color: #fff !important;
+    width: 38px; height: 38px; min-width: 0 !important; min-height: 0 !important; padding: 0; border-radius: 50%;
+    font-size: 19px; font-weight: 400; flex-shrink: 0; display: flex; align-items: center; justify-content: center; letter-spacing: 0;
+  }
+  #ribbonTrigger button.tbIcon:not(#_):active { background: rgba(255,255,255,.22) !important; }
+  #ribbonTrigger button.tbIcon:not(#_):disabled { opacity: .4; }
+  #tbTitulo { flex: 1; min-width: 0; padding: 0 6px; color: #fff; line-height: 1.2; }
+  #tbLibro { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #tbHoja { font-size: 11.5px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #tbMasPanel {
+    display: none; position: fixed; top: 52px; right: 8px; z-index: 9720; width: min(270px, calc(100vw - 16px));
+    max-height: 76vh; overflow-y: auto; flex-direction: column; padding: 6px;
+    background: #fff; border: 1px solid #d4d4d4; border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.28);
+  }
+  #tbMasPanel.show { display: flex; }
+  #tbMasPanel button, #tbIdioma {
+    display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none !important; border: none;
+    color: #222 !important; font-size: 15px; font-weight: 500; padding: 12px 12px; border-radius: 8px; box-sizing: border-box;
+  }
+  #tbMasPanel button:active { background: #eef3ee !important; }
+  #tbIdioma { justify-content: space-between; border-top: 1px solid #e5e5e5; margin-top: 4px; border-radius: 0; }
+  #tbIdioma select { font-size: 14px; padding: 6px 8px; border: 1px solid #cfcfcf; border-radius: 6px; background: #fff; color: #222; max-width: 150px; }
+  body.dark-mode #tbMasPanel { background: #1b1f1c; border-color: #343b35; }
+  body.dark-mode #tbMasPanel button, body.dark-mode #tbIdioma { color: #e5e7eb !important; }
   /* Menú flotante: no tapa toda la pantalla. Es un panel que flota sobre la hoja
      y la hoja sigue siendo tocable mientras está abierto. */
   #ribbonOverlay {
@@ -132,8 +159,9 @@
     width: 28px; height: 28px; border-radius: 50%; padding: 0; font-size: 14px;
   }
   #floatToolsBody { display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  #floatTools.ftMin #floatToolsBody { display: none; }
-  #floatTools.ftMin { max-height: none; }
+  #floatTools.ftMin { display: none; }
+  #formulaExtras { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 10px; background: #fff; border-bottom: 1px solid #d4d4d4; }
+  body.dark-mode #formulaExtras { background: #1b1f1c; border-color: #343b35; }
   body.dark-mode #floatTools { background: #1b1f1c; border-color: #343b35; }
   #floatTools #formulaBarRow { position: relative !important; }
   /* El menú flotante de Inicio queda por encima de esta barra */
@@ -236,8 +264,17 @@
   #cellRef { font-size: 14px; font-weight: 700; color: #217346; min-width: 34px; }
   /* Barra de fórmulas en 2 renglones en pantallas angostas: arriba la celda, deshacer/rehacer,
      saltos y estado; abajo la fórmula a todo el ancho (antes quedaba una columna angosta y vertical). */
-  #formulaBarRow { flex-wrap: wrap; row-gap: 6px; }
-  #formulaWrap { position: relative; flex: 1 1 100%; order: 10; min-width: 0; }
+  /* Barra de fórmulas estilo Excel: una sola línea fija sobre la cuadrícula */
+  #formulaBarRow { flex-wrap: nowrap; gap: 0; padding: 4px 6px; z-index: 20; }
+  #formulaWrap { position: relative; flex: 1 1 auto; min-width: 0; }
+  #formulaBarRow #cellRef { flex-shrink: 0; min-width: 46px; padding: 0 8px 0 4px; text-align: center; font-weight: 600; color: #222; border-right: 1px solid #d4d4d4; }
+  #fxMark { flex-shrink: 0; padding: 0 8px; font-style: italic; font-family: 'Times New Roman', Georgia, serif; font-size: 15px; color: #767676; }
+  #formulaBarRow #formulaInput { padding: 5px 8px; min-height: 30px; max-height: 96px; border-color: transparent; }
+  #formulaBarRow #formulaInput:focus { border-color: #107c41; }
+  #formulaBarRow #formulaHighlight { padding: 5px 8px; max-height: 96px; }
+  #formulaBarRow #floatToolsToggle { flex-shrink: 0; margin-left: 4px; width: 34px; height: 34px; min-width: 0 !important; min-height: 0 !important; border-radius: 6px; padding: 0; font-size: 13px; background: #f3f2f1; border: 1px solid #d4d4d4; color: #444; }
+  #formulaBarRow #floatToolsToggle.on { background: #d2e0d6; border-color: #107c41; color: #0b5c2e; }
+  body.dark-mode #formulaBarRow #cellRef { color: #e5e7eb; border-color: #343b35; }
   #saveStatus { margin-left: auto; }
   #quickBar { display: flex; align-items: center; gap: 6px; padding: 10px 12px 4px 10px; background: #f4f9ee; border-bottom: 1px solid #d4d4d4; flex-shrink: 0; }
   #quickBarList { display: flex; gap: 6px; overflow-x: auto; flex: 1; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
@@ -289,12 +326,12 @@
 
   #gridWrap { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; position: relative; user-select: none; background: #fff; }
   table { border-collapse: collapse; }
-  th, td { border: 1px solid #e1e1e1; font-size: 15px; padding: 0; text-align: center; }
-  th { background: #f3f2f1; color: #333333; font-weight: 600; padding: 10px 8px; position: sticky; top: 0; z-index: 3; min-width: 110px; position: relative; border-bottom: 1.5px solid #c8c8c8; }
+  th, td { border: 1px solid #e1e1e1; font-size: 14px; padding: 0; text-align: center; }
+  th { background: #f3f2f1; color: #444444; font-weight: 500; font-size: 13px; padding: 6px 8px; position: sticky; top: 0; z-index: 3; min-width: 110px; position: relative; border-bottom: 1.5px solid #c8c8c8; }
   th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: #e8e8e8; min-width: 34px; }
   th .colResizer { position: absolute; right: 0; top: 0; width: 8px; height: 100%; cursor: col-resize; touch-action: none; }
   th .colResizer::after { content: ''; position: absolute; right: 3px; top: 20%; width: 2px; height: 60%; background: #999; opacity: .5; }
-  td.rowhead { background: #f3f2f1; color: #333333; font-weight: 600; width: 34px; position: sticky; left: 0; z-index: 2; border-right: 1.5px solid #c8c8c8; }
+  td.rowhead { background: #f3f2f1; color: #444444; font-weight: 500; font-size: 13px; width: 34px; position: sticky; left: 0; z-index: 2; border-right: 1.5px solid #c8c8c8; }
   /* ── Franja de agrupar filas/columnas (esquema estilo Excel) ── */
   th.outlineCorner { background: #dcdcdc; }
   .outlineGutterRow, th.outlineGutterCol {
@@ -308,11 +345,12 @@
     font-size: 14px; font-weight: 800; text-align: center;
   }
   tr.outlineHeaderRow th { height: 16px; padding: 0; }
-  .cell { min-width: 110px; height: 38px; line-height: 38px; padding: 0 8px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
-  .cell.selected { background: #fff; outline: 2px solid #217346; outline-offset: -2px; z-index: 1; box-shadow: 0 1px 4px rgba(33,115,70,.25); }
-  .cell.in-range { background: #e6f2ea; }
+  /* Como en Excel: texto a la izquierda (los números se alinean a la derecha al pintarlos), filas de 32 px */
+  .cell { text-align: left; min-width: 110px; height: 32px; line-height: 32px; padding: 0 6px; outline: none; white-space: nowrap; overflow: hidden; background: #fff; position: relative; font-family: Calibri, 'Segoe UI', -apple-system, Roboto, Arial, sans-serif; }
+  .cell.selected { background: #fff; outline: 2px solid #107c41; outline-offset: -1px; z-index: 1; }
+  .cell.in-range { background: rgba(16,124,65,.12); }
   .cell.in-range-extra { background: #dcebfa; outline: 1px dashed #2176d2; outline-offset: -1px; }
-  .cell.bold { font-weight: 800; color: #1a5c38; }
+  .cell.bold { font-weight: 700; }
   .rotTxt { display: inline-block; }
   .rotTxt.up { writing-mode: vertical-rl; transform: rotate(180deg); }
   .rotTxt.down { writing-mode: vertical-rl; }
@@ -330,13 +368,23 @@
      distinguirla a simple vista de las celdas bloqueadas de alrededor. */
   .cell.celda-desbloqueada { box-shadow: inset 0 0 0 1px #2d7a0c; background-image: repeating-linear-gradient(45deg, rgba(45,122,12,.06) 0 4px, transparent 4px 8px); }
   .cell.italic { font-style: italic; }
-  .cell.bordered { outline: 1.5px solid #217346 !important; outline-offset: -1.5px; }
-  .cell.wrap-text { white-space: normal; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 38px; padding: 8px 10px; vertical-align: top; }
+  /* Borde de celda fino y oscuro, como los bordes de Excel */
+  .cell.bordered { outline: 1px solid #5f6368 !important; outline-offset: 0; }
+  .cell.bordered.selected { outline: 2px solid #107c41 !important; outline-offset: -1px; }
+  /* Borde arriba/abajo: la celda crece 1 px por lado y se monta sobre la línea de la cuadrícula,
+     para que dos filas vecinas con borde compartan una sola línea */
+  .cell.bd-t { margin-top: -1px; }
+  .cell.bd-b { margin-bottom: -1px; }
+  .cell.bd-t:not(.wrap-text), .cell.bd-b:not(.wrap-text) { height: 33px; }
+  .cell.bd-t.bd-b:not(.wrap-text) { height: 34px; }
+  tr[data-rh] .cell.bd-t:not(.wrap-text), tr[data-rh] .cell.bd-b:not(.wrap-text) { height: var(--rh); }
+  tr[data-rh] .cell.bd-t.bd-b:not(.wrap-text) { height: calc(var(--rh) + 1px); }
+  .cell.wrap-text { white-space: normal; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 32px; padding: 6px 6px; vertical-align: top; }
   /* Alto de fila a medida (arrastrando el borde del número de fila) y alineación vertical */
   tr[data-rh] .cell { height: calc(var(--rh) - 1px); line-height: calc(var(--rh) - 1px); }
   tr[data-rh] .cell.wrap-text { height: auto; min-height: calc(var(--rh) - 1px); line-height: 1.3; }
-  tr[data-rh] .cell.va-top:not(.wrap-text) { line-height: 38px; }
-  tr[data-rh] .cell.va-bottom:not(.wrap-text) { line-height: 38px; padding-top: calc(var(--rh) - 27px); }
+  tr[data-rh] .cell.va-top:not(.wrap-text) { line-height: 32px; }
+  tr[data-rh] .cell.va-bottom:not(.wrap-text) { line-height: 32px; padding-top: calc(var(--rh) - 33px); }
   .cell.wrap-text.va-middle, .cell.wrap-text.va-bottom { display: flex; flex-direction: column; }
   .cell.wrap-text.va-middle { justify-content: center; }
   .cell.wrap-text.va-bottom { justify-content: flex-end; }
@@ -350,7 +398,9 @@
   .frozen-row-td { position: sticky; z-index: 2; background: #fff; }
   .frozen-col.frozen-row-td { z-index: 4; }
   td.rowhead.frozen-row-head { position: sticky; z-index: 3; background: #f3f2f1; }
-  th.header-activo, td.rowhead.header-activo { background: #d7ecd9 !important; color: #14472b !important; font-weight: 800; }
+  th.header-activo, td.rowhead.header-activo { background: #d2e0d6 !important; color: #0b5c2e !important; font-weight: 700; }
+  th.header-activo { box-shadow: inset 0 -2px 0 #107c41; }
+  td.rowhead.header-activo { box-shadow: inset -2px 0 0 #107c41; }
   #sheetTable { transform-origin: top left; }
   #zoomRange { width: 70px; }
   #fnAutocomplete { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
@@ -451,6 +501,27 @@
   .tabMenuBtn { margin-left: 6px; opacity: .6; }
   .tab.active { background: #fff; color: #217346; box-shadow: 0 -1.5px 0 #217346 inset; }
   #addTabBtn { padding: 6px 10px; border-radius: 4px; font-size: 14px; font-weight: 700; background: #217346; color: #fff; flex-shrink: 0; }
+  /* Pestañas de hojas planas, como las de Excel: la activa en blanco con texto y raya verdes */
+  #tabsRow { background: #f3f2f1; padding: 0 4px; gap: 0; align-items: stretch; border-top: 1px solid #d4d4d4; }
+  #tabsRow::-webkit-scrollbar { display: none; }
+  .tab { padding: 8px 14px; border-radius: 0; font-size: 13.5px; font-weight: 500; color: #555; background: none; border-right: 1px solid #e1e1e1; display: flex; align-items: center; }
+  .tab.active { background: #fff; color: #107c41; font-weight: 700; box-shadow: inset 0 -3px 0 #107c41; }
+  .tab:not(.active) .tabMenuBtn { display: none; }
+  #addTabBtn { align-self: center; margin-left: 6px; width: 28px; height: 28px; padding: 0; border-radius: 50%; background: none; color: #444; border: 1px solid #c8c8c8; font-size: 18px; font-weight: 400; display: flex; align-items: center; justify-content: center; }
+  /* Barra de estado en una sola línea discreta, al pie */
+  #statusBar { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 12px; padding: 3px 10px; font-size: 12px; font-weight: 500; color: #555; background: #f3f2f1; border-top: 1px solid #e1e1e1; }
+  #statusBar::-webkit-scrollbar { display: none; }
+  #statusBar > span { flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; }
+  #statusBar #statusRangoLbl { display: none; }
+  #statusBar #quickRange { width: 78px; padding: 2px 5px; font-size: 12px; flex-shrink: 0; }
+  #statusBar #quickSum { margin-left: auto; }
+  #statusBar #syncStatusText { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+  #statusBar #zoomRange { width: 64px; }
+  #statusBar input { min-height: 0 !important; height: 20px; margin: 0; }
+  @media (max-width: 520px) { #statusBar #quickRange { display: none; } }
+  body.dark-mode #tabsRow, body.dark-mode #statusBar { background: #1b1f1c; border-color: #343b35; color: #cbd5d0; }
+  body.dark-mode .tab { color: #cbd5d0; border-color: #343b35; }
+  body.dark-mode .tab.active { background: #0f1411; color: #6ee7a8; }
 
   #chartOverlay, #tabMenuOverlay, #noteOverlay, #formatOverlay, #authOverlay, #matricesOverlay, #shareOverlay, #condOverlay, #validOverlay, #condAvanzadoOverlay, #pdfExportOverlay, #autofiltroOverlay {
     position: fixed; inset: 0; background: rgba(10,30,5,.55); z-index: 9000;
@@ -718,6 +789,28 @@
   .tgFab { position: absolute; z-index: 5; bottom: 22px; width: 58px; height: 58px; border-radius: 50%; border: none; color: #fff; font-size: 28px; box-shadow: 0 4px 14px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
   .tgFabL { left: 22px; background: #2e7d5b; font-size: 34px; font-weight: 300; }
   .tgFabR { right: 22px; background: #35505f; font-size: 22px; }
+  /* Barra de edición sobre el teclado */
+  #editBar {
+    display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 9500; align-items: center; gap: 4px;
+    padding: 4px 6px; background: #f3f2f1; border-top: 1px solid #c8c8c8; box-shadow: 0 -2px 8px rgba(0,0,0,.12);
+  }
+  #editBar.show { display: flex; }
+  #editBarScroll { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  #editBarScroll::-webkit-scrollbar { display: none; }
+  #editBar button {
+    flex-shrink: 0; width: 40px; height: 38px; min-width: 0 !important; min-height: 0 !important; padding: 0;
+    background: #fff; border: 1px solid #d4d4d4; border-radius: 8px; color: #222; font-size: 17px;
+    display: flex; align-items: center; justify-content: center; touch-action: manipulation;
+  }
+  #editBar button:active { background: #d2e0d6; border-color: #107c41; }
+  #editBar button.on { background: #d2e0d6; border-color: #107c41; color: #0b5c2e; }
+  #editBar #editBarListo { background: #107c41; border-color: #107c41; color: #fff; font-weight: 700; }
+  #editBar .ebSep { flex-shrink: 0; width: 1px; height: 24px; background: #c8c8c8; margin: 0 2px; }
+  body.dark-mode #editBar { background: #1b1f1c; border-color: #343b35; }
+  body.dark-mode #editBar button { background: #262b27; border-color: #3a423c; color: #e5e7eb; }
+  /* Con mouse y teclado físico no hace falta: esos formatos ya están en el menú */
+  @media (hover: hover) and (pointer: fine) { #editBar { display: none !important; } }
+  @media print { #editBar { display: none !important; } }
   /* Pantalla de inicio estilo Excel móvil: libro abierto, anclados y recientes */
   #excelHomeOverlay { position: fixed; inset: 0; z-index: 9750; display: none; background: #14291e; }
   #excelHomeOverlay.show { display: block; }
@@ -959,8 +1052,30 @@
   </div>
 </div>
 <div id="app">
+  <!-- Barra superior estilo Excel móvil: inicio, nombre del libro y pocos íconos.
+       Lo demás (idioma, ayuda, cuenta, plantillas, factura…) vive en el menú "⋯". -->
   <div id="ribbonTrigger">
-    <button id="ribbonToggle">☰ Inicio ▾</button>
+    <button id="btnPantallaInicio" class="tbIcon" title="Pantalla de inicio" aria-label="Pantalla de inicio">🏠</button>
+    <div id="tbTitulo">
+      <div id="tbLibro">Libro local</div>
+      <div id="tbHoja">Hoja1</div>
+    </div>
+    <button id="tbUndo" class="tbIcon" title="Deshacer" aria-label="Deshacer">↶</button>
+    <button id="tbRedo" class="tbIcon" title="Rehacer" aria-label="Rehacer">↷</button>
+    <button id="tbBuscar" class="tbIcon" title="Buscar y reemplazar" aria-label="Buscar y reemplazar">🔍</button>
+    <button id="ribbonToggle" class="tbIcon" title="Menú de herramientas" aria-label="Menú de herramientas">☰</button>
+    <button id="tbMas" class="tbIcon" title="Más opciones" aria-label="Más opciones">⋯</button>
+  </div>
+  <div id="tbMasPanel">
+    <button id="btnTemplateGallery">📁 Nuevo desde plantilla</button>
+    <button id="btnMisMatrices">☁️ Mis libros en la nube</button>
+    <button id="btnFactura">🧾 Factura</button>
+    <button id="btnContactos">👥 Clientes y proveedores</button>
+    <button id="btnImprimir">🖨 Imprimir</button>
+    <button id="btnAccount">👤 Cuenta</button>
+    <button id="btnAyuda">❔ Ayuda</button>
+    <button id="btnAtajos">⌨️ Atajos de teclado</button>
+    <label id="tbIdioma">🌐 Idioma
     <select id="langSelector">
       <option value="es">🇨🇷 Español</option>
       <option value="en">🇬🇧 English</option>
@@ -971,15 +1086,7 @@
       <option value="terraba">Térraba</option>
       <option value="maleku">Maleku</option>
     </select>
-    <button id="btnAyuda" style="background:#d97706;">❔ Ayuda</button>
-    <button id="btnAtajos" style="background:#5b7a94;">⌨️ Atajos</button>
-    <button id="btnAccount" style="background:#1e5c99;">👤 Cuenta</button>
-    <button id="btnPantallaInicio" style="background:#1f7a45;">🏠 Inicio</button>
-    <button id="btnTemplateGallery">📁 Plantilla...</button>
-    <button id="btnFactura">🧾 Factura</button>
-    <button id="btnMisMatrices">📁 Mis Matrices</button>
-    <button id="btnContactos">👥 Clientes/Prov.</button>
-    <button id="btnImprimir">🖨 Imprimir</button>
+    </label>
   </div>
 
   <div id="ribbonOverlay">
@@ -1376,6 +1483,25 @@
     </div>
   </div>
 
+  <!-- Barra de edición sobre el teclado (como en Excel móvil): aparece al tocar una celda -->
+  <div id="editBar" aria-label="Formato rápido">
+    <div id="editBarScroll">
+      <button data-eb="bold" title="Negrita"><b>N</b></button>
+      <button data-eb="italic" title="Cursiva"><i>I</i></button>
+      <button data-eb="underline" title="Subrayado"><u>U</u></button>
+      <span class="ebSep"></span>
+      <button data-eb="relleno" title="Color de relleno">🎨</button>
+      <button data-eb="colorLetra" title="Color de letra"><span style="border-bottom:3px solid #d13438;line-height:1;">A</span></button>
+      <button data-eb="bordes" title="Bordes">▦</button>
+      <button data-eb="alinear" title="Alinear: izquierda, centro, derecha, automático">≡</button>
+      <span class="ebSep"></span>
+      <button data-eb="autosuma" title="Autosuma">∑</button>
+      <button data-eb="moneda" title="Formato de moneda">₡</button>
+      <button data-eb="porcentaje" title="Formato de porcentaje">%</button>
+    </div>
+    <button id="editBarListo" data-eb="listo" title="Terminar de editar">✓</button>
+  </div>
+
   <div id="excelHomeOverlay">
     <div id="excelHomeModal">
       <div id="excelHomeHead">
@@ -1406,22 +1532,11 @@
     </div>
   </div>
 
-  <div id="floatTools" class="ftMin">
-  <div id="floatToolsHead"><span>✏️ Fórmulas y acciones</span><button id="floatToolsToggle" title="Contraer / expandir">▾</button></div>
-  <div id="floatToolsBody">
+  <!-- Barra de fórmulas fina y fija, como la de Excel: nombre de celda, fx y la fórmula en una línea.
+       El botón ▾ abre el panel con deshacer/rehacer, saltos, favoritos y acciones de rango. -->
   <div id="formulaBarRow" style="position:relative;">
     <span id="cellRef">A1</span>
-    <div id="undoRedoQuick">
-      <button id="qUndo" title="Deshacer" aria-label="Deshacer" disabled>↶</button>
-      <button id="qRedo" title="Rehacer" aria-label="Rehacer" disabled>↷</button>
-    </div>
-    <div id="navBordeGroup">
-      <button id="navBordeArriba" title="Saltar al borde de datos hacia arriba (Ctrl+↑)">⤒</button>
-      <button id="navBordeAbajo" title="Saltar al borde de datos hacia abajo (Ctrl+↓)">⤓</button>
-      <button id="navBordeIzq" title="Saltar al borde de datos hacia la izquierda (Ctrl+←)">⇤</button>
-      <button id="navBordeDer" title="Saltar al borde de datos hacia la derecha (Ctrl+→)">⇥</button>
-      <button id="btnAbsRef" title="Referencia absoluta: alterna B5 → $B$5 → B$5 → $B5">$</button>
-    </div>
+    <span id="fxMark" aria-hidden="true">fx</span>
     <div id="formulaWrap">
       <!-- "formulaHighlight" muestra el mismo texto pero coloreado (función,
            texto, número, referencia de celda) y vive JUSTO DEBAJO del
@@ -1433,6 +1548,23 @@
       <textarea id="formulaInput" rows="1" placeholder="Valor o fórmula: =SUMA(A1:A5)" style="width:100%;" spellcheck="false"></textarea>
       <div id="fnAutocomplete"></div>
       <div id="validPicker"></div>
+    </div>
+    <button id="floatToolsToggle" title="Más herramientas" aria-label="Más herramientas">▾</button>
+  </div>
+
+  <div id="floatTools" class="ftMin">
+  <div id="floatToolsBody">
+  <div id="formulaExtras">
+    <div id="undoRedoQuick">
+      <button id="qUndo" title="Deshacer" aria-label="Deshacer" disabled>↶</button>
+      <button id="qRedo" title="Rehacer" aria-label="Rehacer" disabled>↷</button>
+    </div>
+    <div id="navBordeGroup">
+      <button id="navBordeArriba" title="Saltar al borde de datos hacia arriba (Ctrl+↑)">⤒</button>
+      <button id="navBordeAbajo" title="Saltar al borde de datos hacia abajo (Ctrl+↓)">⤓</button>
+      <button id="navBordeIzq" title="Saltar al borde de datos hacia la izquierda (Ctrl+←)">⇤</button>
+      <button id="navBordeDer" title="Saltar al borde de datos hacia la derecha (Ctrl+→)">⇥</button>
+      <button id="btnAbsRef" title="Referencia absoluta: alterna B5 → $B$5 → B$5 → $B5">$</button>
     </div>
     <button id="calcPill" style="display:none;margin-left:6px;padding:3px 9px;border-radius:999px;border:1px solid #f59e0b;background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;">🧮 Calcular</button>
     <span id="saveStatus">Listo</span>
@@ -1504,17 +1636,17 @@
     <table id="sheetTable"></table>
   </div>
 
+  <div id="tabsRow"></div>
+
   <div id="statusBar">
-    <span>Rango:</span>
+    <span id="statusRangoLbl">Rango:</span>
     <input id="quickRange" type="text" placeholder="arrastrá celdas o escribí ej: A1:A5" />
+    <span><span id="syncStatusDot"></span><span id="syncStatusText">Local</span></span>
     <span id="quickSum">Suma: 0</span>
     <span id="quickAvg">Prom: 0</span>
     <span id="quickCount">Cont: 0</span>
-    <span><span id="syncStatusDot"></span><span id="syncStatusText">Local</span></span>
     <span>🔍<input id="zoomRange" type="range" min="30" max="300" step="10" value="100" /><span id="zoomLabel">100%</span></span>
   </div>
-
-  <div id="tabsRow"></div>
 </div>
 
 <div id="chartOverlay">
@@ -7077,6 +7209,17 @@ function aplicarFormatoPersonalizado(val, codigo) {
 // ══════════════════════════════════════════════
 // RENDER
 // ══════════════════════════════════════════════
+// ¿El valor es un número o una fecha? (para alinearlo a la derecha, como hace Excel)
+function esValorNumericoOFecha(v) {
+  if (typeof v === 'number') return isFinite(v);
+  if (typeof v !== 'string') return false;
+  var t = v.trim();
+  if (!t) return false;
+  if (/^-?\d+([.,]\d+)?%?$/.test(t)) return true;                 // 1500, -3,5, 13%
+  if (/^-?\d{1,3}([ .,\u00a0]\d{3})+([.,]\d+)?$/.test(t)) return true;  // 1.500.000 o 1 500 000,50
+  if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(t)) return true;     // 16/11/2026
+  return false;
+}
 function getColWidth(c) {
   var w = colWidths[activeSheet] && colWidths[activeSheet][c];
   return w || 78;
@@ -7419,6 +7562,21 @@ function buildTable() {
   html += '<col style="width:34px">';
   for (var cg = 0; cg < COLS; cg++) html += '<col style="width:' + getColWidth(cg) + 'px' + (colsOcultas.indexOf(cg) !== -1 ? ';display:none' : '') + '">';
   html += '</colgroup>';
+  // Las celdas tienen un ancho mínimo de 110 px por estilo. Si una columna se definió
+  // más angosta (a mano o por una plantilla), se le baja ese mínimo solo a ella.
+  (function () {
+    var css = '';
+    for (var ca = 0; ca < COLS; ca++) {
+      // Solo columnas con un ancho guardado a propósito; las normales no se tocan
+      var wa = colWidths[activeSheet] && colWidths[activeSheet][ca];
+      if (typeof wa !== 'number' || wa >= 110) continue;
+      var nth = ca + 2 + (hayGutterFila ? 1 : 0);
+      css += '#sheetTable tbody td:nth-child(' + nth + ') > .cell, #sheetTable thead th:nth-child(' + nth + ') { min-width: ' + wa + 'px; max-width: ' + wa + 'px; padding-left: 2px; padding-right: 2px; }\n';
+    }
+    var est = document.getElementById('anchosAngostosStyle');
+    if (!est) { est = document.createElement('style'); est.id = 'anchosAngostosStyle'; document.head.appendChild(est); }
+    if (est.textContent !== css) est.textContent = css;
+  })();
   html += '<thead>';
   if (hayGutterCol) {
     // Franja horizontal con los botones −/+ de los grupos de columnas.
@@ -8131,7 +8289,8 @@ function renderAllCellsInterno() {
     el.classList.toggle('bold', !!fmt.bold);
     el.classList.toggle('italic', !!fmt.italic);
     el.classList.toggle('wrap-text', !!fmt.wrap);
-    el.style.textAlign = fmt.align || '';
+    // Sin alineación propia: números y fechas a la derecha, texto a la izquierda (como Excel)
+    el.style.textAlign = fmt.align || (esValorNumericoOFecha(val) ? 'right' : '');
     el.style.backgroundColor = fmt.bgColor || '';
     el.style.color = colorFormatoPersonalizado || fmt.fontColor || '';
     el.style.fontSize = fmt.fontSize ? (fmt.fontSize + 'px') : '';
@@ -8153,15 +8312,23 @@ function renderAllCellsInterno() {
     // Si la celda trae el formato viejo (fmt.border = true, guardado antes
     // de este cambio) se lo traduce al estilo clásico de 4 lados. ──
     var bordes = fmt.borders;
-    if (!bordes && fmt.border) bordes = { top: true, bottom: true, left: true, right: true, width: 1.5, color: '#217346' };
+    // Borde clásico de las plantillas: línea fina y oscura, como los bordes de Excel
+    if (!bordes && fmt.border) bordes = { top: true, bottom: true, left: true, right: true, width: 1, color: '#5f6368' };
     if (bordes && (bordes.top || bordes.bottom || bordes.left || bordes.right)) {
-      var estiloBorde = (bordes.width || 1) + 'px solid ' + (bordes.color || '#217346');
+      var estiloBorde = (bordes.width || 1) + 'px solid ' + (bordes.color || '#5f6368');
       el.style.borderTop = bordes.top ? estiloBorde : '';
       el.style.borderBottom = bordes.bottom ? estiloBorde : '';
       el.style.borderLeft = bordes.left ? estiloBorde : '';
       el.style.borderRight = bordes.right ? estiloBorde : '';
+      // El borde se monta 1 px sobre la línea gris de la cuadrícula: así dos celdas vecinas
+      // con borde comparten una sola línea en vez de verse como línea doble.
+      el.classList.toggle('bd-t', !!bordes.top);
+      el.classList.toggle('bd-b', !!bordes.bottom);
+      el.style.marginLeft = bordes.left ? '-1px' : '';
+      el.style.marginRight = bordes.right ? '-1px' : '';
     } else {
       el.style.borderTop = ''; el.style.borderBottom = ''; el.style.borderLeft = ''; el.style.borderRight = '';
+      el.classList.remove('bd-t'); el.classList.remove('bd-b'); el.style.marginLeft = ''; el.style.marginRight = '';
     }
     // ── Triangulito rojo de error: la celda quedó limpia al principio de
     // esta función, así que si el valor calculado es un código de error
@@ -17107,6 +17274,8 @@ function plantillaTipoExcel(tipo, h) {
 }
 
 function loadTemplate(tipo) {
+  // Soltar la celda que tenga el cursor, para que su contenido se guarde en la hoja de origen
+  if (document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('cell')) document.activeElement.blur();
   var hoy = new Date().toLocaleDateString('es-CR');
   var n = sheets.length + 1;
   var baseName = tipo === 'diario' ? 'Diario' : tipo === 'mayor' ? 'Mayor' : tipo === 'balance' ? 'Balance' : tipo === 'conciliacion' ? 'Conciliacion' : tipo === 'd151' ? 'D151' : tipo === 'resultados' ? 'EstadoResultados' : tipo === 'balancegeneral' ? 'BalanceGeneral' : 'Hoja';
@@ -17124,13 +17293,13 @@ function loadTemplate(tipo) {
   // Barra de título principal (fila 0), fondo de color y texto blanco, combinada a lo ancho de la tabla
   function titleBar(row, colSpan, text, color) {
     set(row, 0, text, true);
-    styleRange(row, 0, row, colSpan - 1, { bold: true, bgColor: color, fontColor: '#ffffff', fontSize: 14 });
+    styleRange(row, 0, row, colSpan - 1, { bold: true, bgColor: color, fontColor: '#ffffff', fontSize: 14, align: 'left' });
     if (colSpan > 1) mergeRange(row, 0, row, colSpan - 1);
   }
   // Barra de sección (ej. "INGRESOS", "ACTIVO"), color más suave, combinada
   function sectionBar(row, col, colSpan, text, color) {
     set(row, col, text, true);
-    styleRange(row, col, row, col + colSpan - 1, { bold: true, bgColor: color, fontColor: '#ffffff' });
+    styleRange(row, col, row, col + colSpan - 1, { bold: true, bgColor: color, fontColor: '#ffffff', align: 'left' });
     if (colSpan > 1) mergeRange(row, col, row, col + colSpan - 1);
   }
   // Fila de encabezados de columnas (ej. "Fecha", "Debe", "Haber")
@@ -17504,6 +17673,29 @@ function loadTemplate(tipo) {
   } else {
     plantillaTipoExcel(tipo, { set: set, d: d, name: name, hoy: hoy, styleRange: styleRange, titleBar: titleBar, sectionBar: sectionBar, headerRow: headerRow, gridBorder: gridBorder, totalRow: totalRow });
   }
+  // Una nota larga en la columna A ensancha toda la columna y saca el resto de la pantalla.
+  // Si la fila solo tiene ese texto, se combina a lo ancho de la plantilla (como el título).
+  (function () {
+    var maxCol = 0, maxRow = 0;
+    Object.keys(d).forEach(function (id) {
+      var pm = /^([A-Z]+)(\d+)$/.exec(id);
+      if (!pm || d[id] === '' || d[id] === undefined) return;
+      var ci = 0;
+      for (var k = 0; k < pm[1].length; k++) ci = ci * 26 + (pm[1].charCodeAt(k) - 64);
+      if (ci - 1 > maxCol) maxCol = ci - 1;
+      if (parseInt(pm[2], 10) - 1 > maxRow) maxRow = parseInt(pm[2], 10) - 1;
+    });
+    if (maxCol < 1) return;
+    for (var rn = 0; rn <= maxRow; rn++) {
+      var texto = d[cellId(rn, 0)];
+      if (typeof texto !== 'string' || texto.charAt(0) === '=' || texto.length <= 26) continue;
+      var yaCombinada = m.some(function (mg) { return rn >= mg.r1 && rn <= mg.r2 && mg.c1 === 0; });
+      if (yaCombinada) continue;
+      var filaLibre = true;
+      for (var cn = 1; cn <= maxCol; cn++) { var vn = d[cellId(rn, cn)]; if (vn !== undefined && vn !== '') { filaLibre = false; break; } }
+      if (filaLibre) { mergeRange(rn, 0, rn, maxCol); styleCell(rn, 0, { align: 'left' }); }
+    }
+  })();
   buildTable(); autoSave();
 }
 
@@ -21281,6 +21473,167 @@ document.getElementById('btnDarkMode').addEventListener('click', function () {
   try { localStorage.setItem('kcn_dark_mode', document.body.classList.contains('dark-mode') ? '1' : '0'); } catch (e) {}
 });
 
+// ── Barra de edición sobre el teclado (estilo Excel móvil) ──
+// Aparece al tocar una celda y se acomoda encima del teclado. Aplica el formato a toda la
+// selección (una celda o un rango).
+(function () {
+  var barra = document.getElementById('editBar');
+  if (!barra) return;
+  var timerOcultar = null;
+
+  function celdaConFoco() {
+    var a = document.activeElement;
+    return (a && a.classList && a.classList.contains('cell')) ? a : null;
+  }
+  // Coloca la barra justo encima del teclado en pantalla
+  function ubicar() {
+    var vv = window.visualViewport, fondo = 0;
+    if (vv) fondo = Math.max(0, Math.round(window.innerHeight - (vv.height + vv.offsetTop)));
+    barra.style.bottom = fondo + 'px';
+  }
+  // Si la barra tapa la celda que se está editando, la hoja se corre lo necesario
+  function despejarCelda() {
+    var el = celdaConFoco(), wrap = document.getElementById('gridWrap');
+    if (!el || !wrap || !barra.classList.contains('show')) return;
+    var sobra = el.getBoundingClientRect().bottom - barra.getBoundingClientRect().top;
+    if (sobra > 0) wrap.scrollTop += sobra + 8;
+  }
+  function marcarActivos() {
+    var id = document.getElementById('cellRef').textContent;
+    var f = (sheetFormats[activeSheet] && sheetFormats[activeSheet][id]) || {};
+    var estados = { bold: !!f.bold, italic: !!f.italic, underline: !!f.underline, bordes: !!(f.border || f.borders), moneda: !!f.currency, porcentaje: !!f.percent };
+    barra.querySelectorAll('button[data-eb]').forEach(function (b) {
+      if (estados.hasOwnProperty(b.dataset.eb)) b.classList.toggle('on', estados[b.dataset.eb]);
+    });
+  }
+  function mostrar() {
+    clearTimeout(timerOcultar);
+    if (sheetProtegida[activeSheet]) return;
+    barra.classList.add('show');
+    ubicar(); marcarActivos();
+    setTimeout(function () { ubicar(); despejarCelda(); }, 350); // cuando el teclado terminó de subir
+  }
+  function ocultarLuego() {
+    clearTimeout(timerOcultar);
+    timerOcultar = setTimeout(function () { if (!celdaConFoco()) barra.classList.remove('show'); }, 250);
+  }
+  document.addEventListener('focusin', function (e) {
+    if (e.target && e.target.classList && e.target.classList.contains('cell')) mostrar();
+  });
+  document.addEventListener('focusout', function (e) {
+    if (e.target && e.target.classList && e.target.classList.contains('cell')) ocultarLuego();
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () { ubicar(); despejarCelda(); });
+    window.visualViewport.addEventListener('scroll', ubicar);
+  }
+
+  // ----- formatos sobre toda la selección -----
+  function formatos() { if (!sheetFormats[activeSheet]) sheetFormats[activeSheet] = {}; return sheetFormats[activeSheet]; }
+  function alternarNumero(prop, otra) {
+    var ids = idsSeleccionActual(); if (!ids.length) return;
+    snapshot();
+    var F = formatos(), alguno = ids.some(function (id) { return F[id] && F[id][prop]; });
+    ids.forEach(function (id) {
+      if (!F[id]) F[id] = {};
+      if (alguno) delete F[id][prop]; else { F[id][prop] = true; delete F[id][otra]; }
+    });
+    renderAllCells(); autoSave();
+  }
+  function alternarBordes() {
+    var ids = idsSeleccionActual(); if (!ids.length) return;
+    snapshot();
+    var F = formatos(), alguno = ids.some(function (id) { return F[id] && (F[id].border || F[id].borders); });
+    ids.forEach(function (id) {
+      if (!F[id]) F[id] = {};
+      if (alguno) { delete F[id].border; delete F[id].borders; } else F[id].border = true;
+    });
+    renderAllCells(); autoSave();
+  }
+  function rotarAlineacion() {
+    var ids = idsSeleccionActual(); if (!ids.length) return;
+    snapshot();
+    var F = formatos(), orden = ['', 'left', 'center', 'right'];
+    var actual = (F[ids[0]] && F[ids[0]].align) || '';
+    var siguiente = orden[(orden.indexOf(actual) + 1) % orden.length];
+    ids.forEach(function (id) {
+      if (!F[id]) F[id] = {};
+      if (siguiente) F[id].align = siguiente; else delete F[id].align;
+    });
+    renderAllCells(); autoSave();
+    var nombres = { '': 'automática', left: 'izquierda', center: 'centro', right: 'derecha' };
+    document.getElementById('saveStatus').textContent = 'Alineación: ' + nombres[siguiente];
+  }
+  var ACCIONES = {
+    bold: { fn: function () { alternarFormatoBooleano('bold'); }, volver: true },
+    italic: { fn: function () { alternarFormatoBooleano('italic'); }, volver: true },
+    underline: { fn: function () { alternarFormatoBooleano('underline'); }, volver: true },
+    bordes: { fn: alternarBordes, volver: true },
+    alinear: { fn: rotarAlineacion, volver: true },
+    moneda: { fn: function () { alternarNumero('currency', 'percent'); }, volver: true },
+    porcentaje: { fn: function () { alternarNumero('percent', 'currency'); }, volver: true },
+    relleno: { fn: function () { abrirSelectorColorRapido('bgColor'); }, volver: false },
+    colorLetra: { fn: function () { abrirSelectorColorRapido('fontColor'); }, volver: false },
+    autosuma: { fn: function () { autoSumar(); }, volver: false },
+    listo: { fn: function () {}, volver: false },
+  };
+  // Que el toque en la barra no le quite el cursor a la celda antes de tiempo
+  barra.addEventListener('pointerdown', function (e) { e.preventDefault(); });
+  barra.addEventListener('mousedown', function (e) { e.preventDefault(); });
+  barra.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button[data-eb]') : null;
+    if (!b) return;
+    var accion = ACCIONES[b.dataset.eb]; if (!accion) return;
+    var el = celdaConFoco(), idCelda = el ? el.id : null;
+    // Soltar la celda guarda lo que se estaba escribiendo y deja que el formato se vea de una vez
+    if (el) el.blur();
+    try { accion.fn(); } catch (err) { alert('No se pudo aplicar: ' + (err && err.message ? err.message : err)); }
+    if (accion.volver && idCelda) {
+      var otraVez = document.getElementById(idCelda);
+      if (otraVez) { otraVez.focus(); marcarActivos(); }
+    }
+  });
+})();
+
+// ── Barra superior estilo Excel móvil: nombre del libro, íconos y menú "⋯" ──
+function tbActualizarTitulo() {
+  var libro = document.getElementById('tbLibro'), hoja = document.getElementById('tbHoja');
+  if (!libro || !hoja) return;
+  var nombre = currentMatrizName || 'Libro local';
+  if (libro.textContent !== nombre) libro.textContent = nombre;
+  if (hoja.textContent !== activeSheet) hoja.textContent = activeSheet;
+  // Deshacer / rehacer se ven apagados cuando no hay nada que deshacer
+  var qu = document.getElementById('qUndo'), qr = document.getElementById('qRedo');
+  if (qu) document.getElementById('tbUndo').disabled = qu.disabled;
+  if (qr) document.getElementById('tbRedo').disabled = qr.disabled;
+}
+(function () {
+  var panel = document.getElementById('tbMasPanel'), mas = document.getElementById('tbMas');
+  function cerrar() { panel.classList.remove('show'); }
+  mas.addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('ribbonOverlay').classList.remove('show');
+    panel.classList.toggle('show');
+  });
+  // Al elegir una opción del menú se cierra; el selector de idioma no lo cierra hasta cambiarlo
+  panel.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', cerrar); });
+  var idioma = document.getElementById('langSelector');
+  if (idioma) idioma.addEventListener('change', cerrar);
+  document.addEventListener('pointerdown', function (e) {
+    if (!panel.classList.contains('show')) return;
+    if (panel.contains(e.target) || e.target === mas) return;
+    cerrar();
+  });
+  document.getElementById('ribbonToggle').addEventListener('click', cerrar);
+  document.getElementById('tbUndo').addEventListener('click', function () { document.getElementById('qUndo').click(); tbActualizarTitulo(); });
+  document.getElementById('tbRedo').addEventListener('click', function () { document.getElementById('qRedo').click(); tbActualizarTitulo(); });
+  document.getElementById('tbBuscar').addEventListener('click', function () { document.getElementById('btnBuscarReemplazar').click(); });
+  tbActualizarTitulo();
+  // El nombre del libro, la hoja activa y el estado de deshacer cambian desde muchos lugares:
+  // se refrescan con un repaso liviano en vez de enganchar cada uno.
+  setInterval(tbActualizarTitulo, 700);
+})();
+
 // ── Panel de herramientas deslizable ("Inicio", inspirado en Excel) ──
 document.getElementById('ribbonToggle').addEventListener('click', function () {
   document.getElementById('ribbonOverlay').classList.add('show');
@@ -21417,10 +21770,13 @@ document.getElementById('ribbonCollapse').addEventListener('click', function () 
   tg.addEventListener('click', function () {
     var contraido = ft.classList.toggle('ftMin');
     tg.textContent = contraido ? '▾' : '▴';
-    tg.title = contraido ? 'Expandir' : 'Contraer';
-  });
-  if (fi) fi.addEventListener('focus', function () {
-    if (ft.classList.contains('ftMin')) { ft.classList.remove('ftMin'); tg.textContent = '▴'; tg.title = 'Contraer'; }
+    tg.title = contraido ? 'Más herramientas' : 'Ocultar herramientas';
+    tg.classList.toggle('on', !contraido);
+    // El panel se abre justo debajo de la barra de fórmulas
+    if (!contraido) {
+      var barra = document.getElementById('formulaBarRow');
+      if (barra) ft.style.top = Math.round(barra.getBoundingClientRect().bottom + 4) + 'px';
+    }
   });
 })();
 
