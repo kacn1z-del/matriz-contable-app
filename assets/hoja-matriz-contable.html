@@ -552,7 +552,7 @@
   .ok { background: #2d7a0c; color: #fff; }
   .danger { background: #dc2626; color: #fff; }
   #tabMenuModal .action-btn { width: 100%; margin-bottom: 6px; text-align: left; background: #f2f9ea; color: #245f09; }
-  .chart-float { position: absolute; background: #fff; border: 2px solid #cce9ae; border-radius: 10px; padding: 8px; z-index: 40; }
+  .chart-float { position: absolute; background: #fff; border: 1px solid #c8c8c8; border-radius: 4px; padding: 8px; z-index: 40; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
   .chart-float .chead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: #245f09; gap: 4px; }
   .chart-float .chead button { background: none; border: none; font-size: 14px; cursor: pointer; }
   .chart-float .chead { touch-action: none; cursor: move; user-select: none; }
@@ -789,6 +789,83 @@
   .tgFab { position: absolute; z-index: 5; bottom: 22px; width: 58px; height: 58px; border-radius: 50%; border: none; color: #fff; font-size: 28px; box-shadow: 0 4px 14px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
   .tgFabL { left: 22px; background: #2e7d5b; font-size: 34px; font-weight: 300; }
   .tgFabR { right: 22px; background: #35505f; font-size: 22px; }
+  /* ── Cinta de opciones fija para pantalla grande (computadora / Windows), como la de Excel ──
+     En teléfono el menú sigue siendo el panel flotante; desde 1000 px de ancho pasa a ser una
+     cinta fija bajo la barra superior: pestañas arriba, grupos de botones en una fila. */
+  @media (min-width: 1000px) {
+    #ribbonOverlay { display: block !important; position: static; inset: auto; padding: 0 !important; pointer-events: auto; background: none; z-index: auto; flex-shrink: 0; }
+    body.rbDeskOff #ribbonOverlay { display: none !important; }
+    #ribbonOverlay.show #ribbonModal { animation: none; }
+    #ribbonModal, #ribbonModal.rbMin {
+      position: static; width: 100% !important; max-width: none !important; max-height: none !important;
+      border-radius: 0 !important; box-shadow: none; border: none; border-bottom: 1px solid #c8c8c8; background: #f3f2f1; overflow: visible;
+    }
+    #ribbonHead { display: none; }
+    #toolbar, #toolbar:not(.rbBuscando), #ribbonModal.rbMin #toolbar {
+      display: grid !important; grid-template-rows: auto auto; grid-auto-flow: column; grid-auto-columns: max-content;
+      align-items: stretch; gap: 0; padding: 0 8px 4px; background: #f3f2f1; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin;
+    }
+    /* La fila de pestañas y el buscador se queda quieta mientras los grupos se desplazan de lado.
+       Mide 0 de ancho para no estirar las columnas de los grupos; su contenido va posicionado encima. */
+    #rbBuscarWrap {
+      grid-row: 1; grid-column: 1; position: sticky; left: 0; top: auto; z-index: 2; width: 0; height: 36px;
+      display: block; padding: 0; background: none; overflow: visible;
+    }
+    #rbTabs { position: absolute; left: 0; top: 2px; width: calc(100vw - 290px); border-bottom: none; padding: 0; background: #f3f2f1; }
+    #rbBuscar { position: absolute; left: calc(100vw - 272px); top: 4px; width: 230px; padding: 5px 10px; font-size: 13px; border-radius: 6px; min-height: 0 !important; height: 28px; margin: 0; }
+    body.dark-mode #rbTabs { background: #1b1f1c; }
+    .rbBuscando #rbTabs { display: flex; visibility: hidden; }
+    .rbTab { padding: 7px 14px 5px; font-size: 13px; min-height: 0 !important; }
+    #rbVacio { grid-row: 2; padding: 30px 20px; }
+    #toolbar .rbSec, #toolbar:not(.rbBuscando) .rbSec {
+      grid-row: 2; display: flex; flex-direction: column-reverse; background: none; border: none; border-right: 1px solid #d4d4d4;
+      border-radius: 0; margin: 0; padding: 0 6px; box-shadow: none; overflow: visible;
+    }
+    #toolbar .rbSec.rbOculta, #toolbar:not(.rbBuscando) .rbSec.rbTabSecOculta { display: none; }
+    #toolbar .rbSecHead, #toolbar:not(.rbBuscando) .rbSecHead {
+      display: flex; justify-content: center; border: none; background: none; padding: 1px 6px 0; cursor: default;
+    }
+    #toolbar .rbSecHead .rbSecIco, #toolbar .rbSecHead .rbSecN, #toolbar .rbSecHead .rbChev { display: none; }
+    #toolbar .rbSecTit { flex: none; font-size: 11px; font-weight: 500; color: #666; }
+    #toolbar .rbSec .rbGrid, #toolbar:not(.rbBuscando) .rbSec .rbGrid, #toolbar:not(.rbBuscando) .rbSec:not(.open) .rbGrid {
+      display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, 26px); grid-template-columns: none; grid-auto-columns: max-content;
+      gap: 2px 2px; padding: 4px 0 2px; flex: 1; align-content: start;
+    }
+    #toolbar .rbGrid button {
+      background: transparent !important; border: 1px solid transparent; border-radius: 4px; padding: 0 8px; height: 26px;
+      min-height: 0 !important; font-size: 12.5px; font-weight: 400; white-space: nowrap; word-break: normal; justify-content: flex-start; text-align: left;
+    }
+    #toolbar .rbGrid button:hover { background: #e1e1e1 !important; border-color: #c8c8c8; }
+    #toolbar .rbGrid button:active { background: #d2e0d6 !important; color: #0b5c2e !important; border-color: #107c41; }
+    body.dark-mode #ribbonModal, body.dark-mode #toolbar, body.dark-mode #rbBuscarWrap { background: #1b1f1c; }
+    body.dark-mode #toolbar .rbSec { border-color: #343b35; }
+    body.dark-mode #toolbar .rbGrid button:hover { background: #2c332e !important; }
+  }
+  /* Galería e Inicio en pantalla grande (tablet, computadora, Windows): ocupan toda la ventana,
+     con el contenido centrado y más tarjetas por fila */
+  @media (min-width: 700px) {
+    #templateGalleryOverlay, #excelHomeOverlay { padding: 0 !important; }
+    #templateGalleryModal, #excelHomeModal { max-width: none !important; max-height: none !important; border-radius: 0 !important; }
+    #templateGalleryHead, #templateGalleryGrid { width: 100%; max-width: 1180px; margin-left: auto; margin-right: auto; box-sizing: border-box; }
+    #templateGalleryGrid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 26px 22px; padding-top: 22px; }
+    #excelHomeHead, #excelHomeBody { width: 100%; max-width: 820px; margin-left: auto; margin-right: auto; box-sizing: border-box; }
+    .tgFabL { left: max(22px, calc(50vw - 590px)); }
+    .tgFabR { right: max(22px, calc(50vw - 590px)); }
+  }
+  /* Ayuda de argumentos al escribir una fórmula (como la etiqueta de Excel) */
+  #fnArgHint {
+    display: none; position: fixed; z-index: 9550; max-width: min(520px, calc(100vw - 16px)); box-sizing: border-box;
+    background: #fff; border: 1px solid #c8c8c8; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+    padding: 6px 10px; font-size: 13px; line-height: 1.4; color: #333; pointer-events: none;
+  }
+  #fnArgHint.show { display: block; }
+  #fnArgHint .fahFirma { font-family: Consolas, 'Courier New', monospace; font-size: 13px; word-break: break-word; }
+  #fnArgHint .fahFirma b { color: #0b5c2e; background: #d2e0d6; border-radius: 3px; padding: 0 3px; }
+  #fnArgHint .fahDesc { margin-top: 3px; font-size: 12px; color: #666; }
+  body.dark-mode #fnArgHint { background: #1b1f1c; border-color: #343b35; color: #e5e7eb; }
+  body.dark-mode #fnArgHint .fahDesc { color: #9ca3af; }
+  body.dark-mode #fnArgHint .fahFirma b { background: #14532d; color: #bbf7d0; }
+  @media print { #fnArgHint { display: none !important; } }
   /* Barra de edición sobre el teclado */
   #editBar {
     display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 9500; align-items: center; gap: 4px;
@@ -1056,7 +1133,7 @@
        Lo demás (idioma, ayuda, cuenta, plantillas, factura…) vive en el menú "⋯". -->
   <div id="ribbonTrigger">
     <button id="btnPantallaInicio" class="tbIcon" title="Pantalla de inicio" aria-label="Pantalla de inicio">🏠</button>
-    <div id="tbTitulo">
+    <div id="tbTitulo" data-no-i18n>
       <div id="tbLibro">Libro local</div>
       <div id="tbHoja">Hoja1</div>
     </div>
@@ -1482,6 +1559,9 @@
   </div>
     </div>
   </div>
+
+  <!-- Ayuda de argumentos: se muestra mientras se escribe dentro de una función -->
+  <div id="fnArgHint" aria-live="polite" data-no-i18n></div>
 
   <!-- Barra de edición sobre el teclado (como en Excel móvil): aparece al tocar una celda -->
   <div id="editBar" aria-label="Formato rápido">
@@ -10494,7 +10574,7 @@ var TRANSLATIONS = {
     undo: '↶ Deshacer', redo: '↷ Rehacer', copy: '⧉ Copiar', paste: '📋 Pegar', bold: 'N',
     currency: '₡', percent: '%', format: '🔢 Formato', note: '📝 Nota',
     chart: '📊 Gráfico', totals: 'Σ Totales', csv: '⬇ CSV', addrow: '+Fila',
-    delrow: '-Fila', addcol: '+Col', clear: 'Borrar', account: '👤 Cuenta', misMatrices: '📁 Mis Matrices',
+    delrow: '-Fila', addcol: '+Col', clear: 'Borrar', account: '👤 Cuenta', misMatrices: '☁️ Mis libros en la nube',
     search: '🔎 Buscar', invoice: '🧾 Factura', fxlib: 'fx Funciones',
     mayorauto: '📗 Mayor Auto', balanceauto: '📊 Balance Auto', flujoauto: '💧 Flujo Efectivo',
     d101: '🇨🇷 D-101', history: '🕐 Historial', ready: 'Listo',
@@ -10505,7 +10585,7 @@ var TRANSLATIONS = {
     undo: '↶ Undo', redo: '↷ Redo', copy: '⧉ Copy', paste: '📋 Paste', bold: 'B',
     currency: '$', percent: '%', format: '🔢 Format', note: '📝 Note',
     chart: '📊 Chart', totals: 'Σ Totals', csv: '⬇ CSV', addrow: '+Row',
-    delrow: '-Row', addcol: '+Col', clear: 'Clear', account: '👤 Account', misMatrices: '📁 My Sheets',
+    delrow: '-Row', addcol: '+Col', clear: 'Clear', account: '👤 Account', misMatrices: '☁️ My cloud workbooks',
     search: '🔎 Search', invoice: '🧾 Invoice', fxlib: 'fx Functions',
     mayorauto: '📗 Ledger Auto', balanceauto: '📊 Trial Balance Auto', flujoauto: '💧 Cash Flow',
     d101: '🇨🇷 D-101', history: '🕐 History', ready: 'Ready',
@@ -10601,6 +10681,8 @@ Object.assign(I18N_EN, {"🔓 Celdas editables…":"🔓 Editable cells…","�
 Object.assign(I18N_EN, {"🧮 Cálculo: Automático":"🧮 Calculation: Automatic","🧮 Cálculo: Manual":"🧮 Calculation: Manual","⟳ Calcular ahora":"⟳ Calculate now","🧮 Calcular":"🧮 Calculate",});
 Object.assign(I18N_EN, {"🧱 Filas/Col…":"🧱 Rows/Cols…","🧱 Filas, columnas y celdas":"🧱 Rows, columns and cells","➕ Insertar filas (encima de la selección)":"➕ Insert rows (above selection)","➖ Eliminar filas":"➖ Delete rows","➕ Insertar columnas (a la izquierda)":"➕ Insert columns (to the left)","➖ Eliminar columnas":"➖ Delete columns","⬇ Insertar celdas empujando hacia abajo":"⬇ Insert cells shifting down","⬆ Eliminar celdas subiendo las de abajo":"⬆ Delete cells shifting up","➡ Insertar celdas empujando a la derecha":"➡ Insert cells shifting right","⬅ Eliminar celdas moviendo las de la derecha":"⬅ Delete cells shifting left","Cantidad":"Count","Aplicar":"Apply",});
 Object.assign(I18N_EN, {"A → Z (menor a mayor)":"A → Z (smallest to largest)","Z → A (mayor a menor)":"Z → A (largest to smallest)","— ninguna —":"— none —","Si seleccionás un rango, se rellena todo; si no, indicá un límite o cuántos valores.":"If you select a range it is filled completely; otherwise give a stop value or a count.","Tipo":"Type","Marcá las hojas que querés ver. Las ocultas siguen funcionando en las fórmulas.":"Check the sheets you want to see. Hidden sheets still work in formulas.","La protección impide agregar, borrar, renombrar, mover, copiar u ocultar hojas. Podés ponerle contraseña.":"Protection prevents adding, deleting, renaming, moving, copying or hiding sheets. You can add a password.","⚖ Comparar hojas":"⚖ Compare sheets","Hoja A":"Sheet A","Hoja B":"Sheet B","Comparar las fórmulas escritas (no solo los resultados)":"Compare the written formulas (not just results)","Quitar marcas":"Clear marks","Reporte en hoja nueva":"Report in new sheet","Comparar y marcar":"Compare and mark","👁 Hojas y libro":"👁 Sheets & workbook","🙈 Ocultar hoja":"🙈 Hide sheet","🔒 Proteger estructura del libro…":"🔒 Protect workbook structure…","🔓 Quitar protección de la estructura":"🔓 Remove structure protection","🔢 Series…":"🔢 Series…","🔢 Series de relleno":"🔢 Fill series","Lineal (suma)":"Linear (add)","Crecimiento (multiplica)":"Growth (multiply)","Fechas":"Dates","Meses (texto)":"Months (text)","Días de la semana":"Weekdays","Dirección":"Direction","Hacia abajo":"Down","Hacia la derecha":"Right","Unidad de fecha":"Date unit","Día":"Day","Día laborable":"Weekday","Semana":"Week","Mes":"Month","Año":"Year","Incremento":"Step value","Límite (opcional)":"Stop value (optional)","Cantidad (si no hay límite)":"Count (if no limit)","Rellenar":"Fill","✎ Editar gráfico":"✎ Edit chart","Título":"Title","Tipo de gráfico":"Chart type","Rango de datos":"Data range","Rango serie 2 (opcional)":"Series 2 range (optional)","Rango de etiquetas (opcional)":"Labels range (optional)","📈 Mostrar línea de tendencia (barras, línea, área, escalón, dispersión)":"📈 Show trendline (bar, line, area, step, scatter)","Este gráfico tiene datos fijos. Si escribís un rango arriba, pasa a actualizarse solo con la hoja.":"This chart has fixed data. If you enter a range above, it will update with the sheet.","Guardar":"Save","✍ Autocompletar: Sí":"✍ AutoComplete: Yes","✍ Autocompletar: No":"✍ AutoComplete: No","⬆ Importar CSV/TXT":"⬆ Import CSV/TXT","Separador":"Separator","Números":"Numbers","Automático":"Automatic","Dónde poner los datos":"Where to put the data","En una hoja nueva":"In a new sheet","Importar":"Import","Vista previa (primeras filas)":"Preview (first rows)","Dejar como texto":"Keep as text","Decimal con punto":"Decimal point","Decimal con coma":"Decimal comma","Tabulación":"Tab","🧭 Ir a…":"🧭 Go to…","🎯 Ir a especial":"🎯 Go to special","Referencia":"Reference","Recientes":"Recent","Rangos con nombre":"Named ranges","Ir":"Go","Seleccionar":"Select","ƒx Fórmulas":"ƒx Formulas","# Constantes numéricas":"# Numeric constants","Aa Constantes de texto":"Aa Text constants","▫ Celdas vacías":"▫ Blank cells","⚠ Errores (#DIV/0!, #REF!…)":"⚠ Errors (#DIV/0!, #REF!…)","📝 Celdas con notas":"📝 Cells with notes","Se busca dentro de lo que tengas seleccionado o, si no hay rango, en toda la hoja.":"Searches within your selection or, if none, the whole sheet.","Operación:":"Operation:","Ninguna":"None","Sumar":"Add","Restar":"Subtract","Multiplicar":"Multiply","Dividir":"Divide","Omitir blancos":"Skip blanks","ƒx Solo fórmulas — pega fórmulas y valores, sin formato":"ƒx Formulas only — pastes formulas and values, no format","↔ Solo anchos de columna — copia el ancho de las columnas":"↔ Column widths only — copies column widths","⇅ Ordenar":"⇅ Sort","Mis datos tienen encabezado (la primera fila no se ordena)":"My data has headers (first row is not sorted)","Ordenar por":"Sort by","Luego por":"Then by","Ordenar según":"Sort on","Valores":"Values","Color de relleno":"Fill color","Color de letra":"Font color","Orden":"Order","Posición":"Position","Arriba":"Top","Abajo":"Bottom","Cancelar":"Cancel","Ordenar":"Sort","⭐ Favoritos":"⭐ Favorites","🇨🇷 Contabilidad CR":"🇨🇷 Costa Rica Accounting","Insertar":"Insert","Fórmulas":"Formulas","Datos":"Data","Revisar":"Review","Vista":"View","Archivo":"File","Todavía no tenés favoritos. Tocá ⭐ junto a la barra de fórmulas para elegirlos.":"You have no favorites yet. Tap ⭐ next to the formula bar to pick them.","No hay herramientas en esta pestaña.":"No tools in this tab.","🔤 Fuente…": "🔤 Font…", "📏 Alto fila": "📏 Row height", "🖌 Pincel": "🖌 Format painter", "🅰 Estilos": "🅰 Styles", "ƒx Ver fórmulas": "ƒx Show formulas", "⬅ Precedentes": "⬅ Precedents", "➡ Dependientes": "➡ Dependents", "✖ Quitar rastreo": "✖ Clear tracing", "✂ Texto en columnas": "✂ Text to columns", "🖼 Imagen": "🖼 Image", "🎨 Color de la pestaña": "🎨 Tab color", "◀ Mover a la izquierda": "◀ Move left", "Mover a la derecha ▶": "Move right ▶", "Sin color": "No color", "Tipo de letra, subrayado, tachado, alineación vertical y sangría": "Font, underline, strikethrough, vertical alignment and indent", "Alto de la fila (también se puede arrastrar el borde del número de fila)": "Row height (you can also drag the bottom edge of the row number)", "Pincel de formato: copia el formato de lo seleccionado y lo pega en lo próximo que toques": "Format painter: copies the format of the selection and pastes it on the next cell you tap", "Estilos listos: Título, Total, Bueno, Malo, Encabezado…": "Ready-made styles: Title, Total, Good, Bad, Header…", "Muestra las fórmulas en lugar de los resultados (Ctrl+`)": "Shows formulas instead of results (Ctrl+`)", "Resalta las celdas que alimentan a la celda activa": "Highlights the cells that feed the active cell", "Resalta las celdas que usan a la celda activa": "Highlights the cells that use the active cell", "Quita el resaltado de rastreo": "Clears the tracing highlight", "Divide el texto de una columna en varias (por coma, espacio, etc.)": "Splits the text of a column into several (by comma, space, etc.)", "Insertar una imagen o foto sobre la hoja": "Insert an image or photo on the sheet", "Subrayado (Ctrl+U)": "Underline (Ctrl+U)", "Tachado": "Strikethrough", "🔤 Fuente y texto": "🔤 Font and text", "Tipo de letra": "Font", "Subrayado": "Underline", "Alineación vertical": "Vertical alignment", "Sangría (0 a 8)": "Indent (0 to 8)", "— sin cambio —": "— no change —", "Sí": "Yes", "Predeterminada": "Default", "Arriba": "Top", "Abajo": "Bottom", "📏 Alto de fila": "📏 Row height", "Aplicar": "Apply", "Cancelar": "Cancel", "Cerrar": "Close", "Separador": "Delimiter", "Coma ( , )": "Comma ( , )", "Punto y coma ( ; )": "Semicolon ( ; )", "Tabulador": "Tab", "Espacio": "Space", "Barra ( | )": "Bar ( | )", "Guion ( - )": "Hyphen ( - )", "Barra inclinada ( / )": "Slash ( / )", "Otro…": "Other…", "Tratar separadores seguidos como uno solo": "Treat consecutive delimiters as one", "Texto entre comillas": "Text qualifier", "Comillas dobles ( \" )": "Double quotes ( \" )", "Comilla simple ( ' )": "Single quote ( ' )", "Ninguno": "None", "Vista previa": "Preview", "Dividir": "Split", "Escribí el separador": "Type the delimiter", "Tamaño de papel": "Paper size", "Carta (Letter)": "Letter", "Oficio (Legal)": "Legal", "Márgenes": "Margins", "Normales": "Normal", "Estrechos": "Narrow", "Anchos": "Wide", "Ajuste": "Scaling", "Tamaño normal (si no caben, sigue en otra hoja)": "Normal size (if they do not fit, it continues on another page)", "Ajustar todas las columnas al ancho de la página": "Fit all columns to the page width", "Imprimir líneas de cuadrícula": "Print gridlines", "Repetir la fila de títulos en cada página": "Repeat the title row on every page", "Área de impresión": "Print area", "Usar la selección": "Use selection", "Quitar": "Remove", "Solo el área de impresión definida": "Only the defined print area", "🅰 Estilos de celda": "🅰 Cell styles", "Título": "Title", "Título 1": "Heading 1", "Título 2": "Heading 2", "Título 3": "Heading 3", "Encabezado de tabla": "Table header", "Bueno": "Good", "Malo": "Bad", "Advertencia": "Warning", "Nota": "Note", "Entrada": "Input", "Cálculo": "Calculation", "Salida": "Output", "Moneda ₡": "Currency ₡", "Porcentaje": "Percent", "Se aplica a lo que tengas seleccionado. \"Normal\" quita colores, negrita y bordes.": "Applies to your selection. \"Normal\" removes colors, bold and borders.", "Tocá primero una celda.": "Tap a cell first.", "Tocá primero una celda o seleccioná un rango.": "Tap a cell or select a range first.", "Seleccioná una sola columna para dividir.": "Select a single column to split.", "Tocá primero una celda de la columna que querés dividir.": "Tap a cell in the column you want to split first.", "Con ese separador el texto no se divide en más de una columna.": "With that delimiter the text does not split into more than one column.", "Rastreo quitado": "Tracing cleared", "Pincel cancelado": "Format painter cancelled", "🖌 Formato pegado": "🖌 Format pasted", "🖌 Tocá la celda (o arrastrá el rango) donde querés pegar el formato": "🖌 Tap the cell (or drag the range) where you want to paste the format", "ƒx Mostrando fórmulas": "ƒx Showing formulas", "Mostrando resultados": "Showing results", "Poné un alto entre 18 y 400.": "Enter a height between 18 and 400.", "Elegí un archivo de imagen (JPG, PNG…).": "Pick an image file (JPG, PNG…).", "No se pudo leer esa imagen.": "Could not read that image.", "Normal = 27. Dejalo vacío o en 0 para volver al alto automático. También podés arrastrar el borde de abajo del número de fila (doble toque = automático).": "Normal = 27. Leave it empty or 0 to go back to automatic height. You can also drag the bottom edge of the row number (double tap = automatic).", "Primero seleccioná en la hoja el rango que querés imprimir (arrastrá sobre las celdas) y volvé a abrir este panel.": "First select the range you want to print on the sheet (drag over the cells) and reopen this panel.", "Sin área definida: se imprime toda la hoja.": "No area defined: the whole sheet is printed.", "🖼 Imagen insertada: arrastrala para moverla, o tirá de la esquina para cambiar el tamaño": "🖼 Image inserted: drag it to move it, or pull the corner to resize it"});
+// Textos de la galería de plantillas, la pantalla de inicio, la barra superior y la barra de edición
+Object.assign(I18N_EN, {"Todo": "All", "Contabilidad": "Accounting", "Finanzas": "Finance", "Presupuestos": "Budgets", "Negocio": "Business", "Planificadores": "Planners", "Libro en blanco": "Blank workbook", "Buscar plantillas": "Search templates", "No hay plantillas que coincidan con": "No templates match", "Presupuesto mensual simple": "Simple monthly budget", "Ingresos, gastos, saldo y porcentaje gastado": "Income, expenses, balance and percent spent", "Presupuesto familiar": "Family budget", "Previsto contra real por categoría": "Planned vs. actual by category", "Presupuesto personal": "Personal budget", "Ingresos, gastos y ahorros del mes": "Income, expenses and savings for the month", "Presupuesto de vacaciones": "Vacation budget", "Planeado contra real del viaje": "Planned vs. actual for the trip", "Tendencias de gastos": "Expense trends", "Gastos por mes con total y promedio": "Expenses by month with total and average", "Factura básica con precio unitario": "Basic invoice with unit price", "Cantidad, precio, subtotal, IVA y total": "Quantity, price, subtotal, VAT and total", "Lista de inventario": "Inventory list", "Existencias, valor y aviso de reposición": "Stock, value and reorder flag", "Calculadora de gastos de viaje": "Travel expense calculator", "Kilometraje, alojamiento y comidas": "Mileage, lodging and meals", "Programación diaria": "Daily schedule", "Horario de la semana por horas": "Weekly schedule by hour", "Lista de tareas": "To-do list", "Tareas con prioridad, fecha y estado": "Tasks with priority, date and status", "Calendario mensual": "Monthly calendar", "Calendario del mes actual con espacio para notas": "Current month calendar with room for notes", "Diagrama de Gantt": "Gantt chart", "Tareas por semana con barras automáticas": "Tasks by week with automatic bars", "Libro en blanco creado": "Blank workbook created", "Hoja nueva en blanco": "New blank sheet", "No se pudo crear la hoja en blanco": "Could not create the blank sheet", "Abrir Excel": "Open Excel", "Mis libros": "My workbooks", "Libro abierto": "Open workbook", "Anclados": "Pinned", "Iniciá sesión para ver acá tus libros guardados en la nube.": "Sign in to see your cloud workbooks here.", "Cargando tus libros…": "Loading your workbooks…", "No se pudo cargar la lista de la nube": "Could not load the cloud list", "Todavía no tenés libros en la nube. Guardá el actual desde ☁️ Mis libros.": "You have no cloud workbooks yet. Save the current one from ☁️ My workbooks.", "Todos tus libros están anclados.": "All your workbooks are pinned.", "Mostrar esta pantalla al abrir": "Show this screen on startup", "En la nube": "In the cloud", "Compartido conmigo": "Shared with me", "hojas": "sheets", "hoja": "sheet", "editado": "edited", "Anclar": "Pin", "Desanclar": "Unpin", "Ir a la hoja": "Go to the sheet", "sin fecha": "no date", "Pantalla de inicio": "Home screen", "Menú de herramientas": "Tools menu", "Más opciones": "More options", "📁 Nuevo desde plantilla": "📁 New from template", "👥 Clientes y proveedores": "👥 Customers and suppliers", "🌐 Idioma": "🌐 Language", "☁️ Mis libros en la nube": "☁️ My cloud workbooks", "Más herramientas": "More tools", "Ocultar herramientas": "Hide tools", "Formato rápido": "Quick format", "Bordes": "Borders", "Alinear: izquierda, centro, derecha, automático": "Align: left, center, right, automatic", "Autosuma": "AutoSum", "Formato de moneda": "Currency format", "Formato de porcentaje": "Percent format", "Terminar de editar": "Finish editing", "Alineación: automática": "Alignment: automatic", "Alineación: izquierda": "Alignment: left", "Alineación: centro": "Alignment: center", "Alineación: derecha": "Alignment: right", "No se pudo aplicar": "Could not apply"});
 var i18nLang = 'es', i18nRegex = null, i18nObs = null, i18nTocados = [], i18nCola = [], i18nProg = false;
 var I18N_SALTAR = '#sheetTable, #tabsRow, .cell, textarea, input, script, style, [contenteditable], [data-no-i18n], #contactosList, #feHistList';
 function i18nNorm(s) { return s.replace(/\s+/g, ' ').trim(); }
@@ -12262,6 +12344,16 @@ function attachCellEvents() {
       // selección anterior — así se puede formatear/copiar celdas no
       // contiguas de una sola vez, igual que en Excel.
       var agregarRango = multiSelMode || e.ctrlKey || e.metaKey;
+      // Shift + clic: extiende la selección desde la celda activa hasta esta, como en Excel
+      if (e.shiftKey && !agregarRango) {
+        var ancla = selRangeStart || document.getElementById('cellRef').textContent;
+        if (ancla) {
+          limpiarMultiSeleccion();
+          isSelecting = false; selRangeStart = ancla; selRangeEnd = el.dataset.id;
+          highlightRange(selRangeStart, selRangeEnd);
+          return;
+        }
+      }
       if (agregarRango && selRangeStart && selRangeEnd) {
         multiSelRanges.push({ a: selRangeStart, b: selRangeEnd });
       } else if (!agregarRango) {
@@ -12269,6 +12361,10 @@ function attachCellEvents() {
       }
       isSelecting = true; selRangeStart = el.dataset.id; selRangeEnd = el.dataset.id;
       highlightRange(selRangeStart, selRangeEnd);
+    });
+    // Con Shift + clic el cursor se queda en la celda de origen (no salta a la celda tocada)
+    el.addEventListener('mousedown', function (e) {
+      if (e.shiftKey && !e.ctrlKey && !e.metaKey && document.activeElement !== el) e.preventDefault();
     });
     el.addEventListener('pointerenter', function () {
       if (isSelecting) { selRangeEnd = el.dataset.id; highlightRange(selRangeStart, selRangeEnd); }
@@ -16116,7 +16212,7 @@ function tgVistaPrevia(t) {
       return '<i style="height:' + h + '%;background:' + t.color + ';"></i>';
     }).join('') + '</div>';
   }
-  return '<div class="tgPrev">' +
+  return '<div class="tgPrev" data-no-i18n>' +
     '<div class="tgPrevHead" style="background:' + t.color + ';">' + escHtml(t.titulo) + '</div>' +
     tabla + grafico +
   '</div>';
@@ -16283,8 +16379,8 @@ function ehFilaLibro(it, anclado) {
   return '<div class="ehFila">' +
     '<button class="ehFilaMain" data-abrir="' + escHtml(it.id) + '">' +
       '<div class="ehIcono"></div>' +
-      '<div class="ehTextos"><div class="ehNombre">' + escHtml(it.name) + '</div>' +
-      '<div class="ehSub">' + (it.mine ? 'En la nube' : 'Compartido conmigo') + ' · ' + ehFecha(it.updatedAt) + '</div></div>' +
+      '<div class="ehTextos"><div class="ehNombre" data-no-i18n>' + escHtml(it.name) + '</div>' +
+      '<div class="ehSub"><span>' + (it.mine ? 'En la nube' : 'Compartido conmigo') + '</span> · ' + ehFecha(it.updatedAt) + '</div></div>' +
     '</button>' +
     '<button class="ehPin' + (anclado ? ' on' : '') + '" data-pin="' + escHtml(it.id) + '" title="' + (anclado ? 'Desanclar' : 'Anclar') + '">' + (anclado ? '★' : '☆') + '</button>' +
   '</div>';
@@ -16303,13 +16399,14 @@ function ehRender() {
   '</div>';
 
   // Libro que está abierto ahora mismo
-  var nombreActual = currentMatrizName || 'Libro local (este dispositivo)';
+  var enIngles = typeof i18nLang !== 'undefined' && i18nLang === 'en';
+  var nombreActual = currentMatrizName || (enIngles ? 'Local workbook (this device)' : 'Libro local (este dispositivo)');
   var ultima = ehLeer('mcr_ultima_edicion', '');
   html += '<div class="ehTitulo">Libro abierto</div>' +
     '<div class="ehFila"><button class="ehFilaMain" data-accion="continuar">' +
       '<div class="ehIcono"></div>' +
-      '<div class="ehTextos"><div class="ehNombre">' + escHtml(nombreActual) + '</div>' +
-      '<div class="ehSub">' + sheets.length + (sheets.length === 1 ? ' hoja' : ' hojas') + (ultima ? ' · editado ' + ehFecha(ultima) : '') + '</div></div>' +
+      '<div class="ehTextos"><div class="ehNombre" data-no-i18n>' + escHtml(nombreActual) + '</div>' +
+      '<div class="ehSub">' + sheets.length + ' <span>' + (sheets.length === 1 ? 'hoja' : 'hojas') + '</span>' + (ultima ? ' · <span>editado</span> ' + ehFecha(ultima) : '') + '</div></div>' +
     '</button></div>';
 
   if (!currentUser) {
@@ -17065,6 +17162,17 @@ function plantillaTipoExcel(tipo, h) {
   function encabezados(row, lista) { lista.forEach(function (t, i) { set(row, i, t, true); }); }
   function F(r, c, formula) { d[cellId(r, c)] = formula; }
   function lista(rowInicio, items) { items.forEach(function (it, i) { it.forEach(function (v, j) { set(rowInicio + i, j, v); }); }); }
+  // Gráfico ligado a rangos de la plantilla (se actualiza solo al cambiar los datos).
+  // Se coloca debajo de la tabla, a partir de la fila indicada (0 = fila 1), para que en el teléfono
+  // se vea al bajar sin tener que desplazarse de lado.
+  function grafico(tipo, titulo, rango, rango2, etiquetas, filaLibre) {
+    var graficos = sheetGraficos[name] || (sheetGraficos[name] = []);
+    graficos.push({
+      id: nuevoIdGrafico() + graficos.length, tipo: tipo, titulo: titulo,
+      x: 44, y: 34 + filaLibre * 33, w: 330, h: 240,
+      fuente: { rango: rango, rango2: rango2 || '', rangoEtiquetas: etiquetas || '' }
+    });
+  }
 
   if (tipo === 'presupuestomensual') {
     var c1 = '#4d7c0f';
@@ -17082,6 +17190,7 @@ function plantillaTipoExcel(tipo, h) {
     gridBorder(3, 0, 6, 1); gridBorder(9, 0, 11, 1); gridBorder(14, 0, 21, 1);
     styleRange(3, 1, 5, 1, NUM); styleRange(6, 1, 6, 1, PCT); styleRange(9, 1, 11, 1, NUM); styleRange(14, 1, 21, 1, NUM);
     colWidths[name] = { 0: 260, 1: 150 };
+    grafico('bar', 'Ingresos y gastos del mes', 'B4:B5', '', 'A4:A5', 23);
 
   } else if (tipo === 'presupuestofamiliar') {
     var c2 = '#0e7490';
@@ -17101,6 +17210,7 @@ function plantillaTipoExcel(tipo, h) {
     styleRange(4, 1, 17, 3, NUM);
     totalRow(6, 0, 3, '#a5f3fc'); totalRow(16, 0, 3, '#fde68a'); totalRow(17, 0, 3, '#e5e7eb');
     colWidths[name] = { 0: 220, 1: 120, 2: 120, 3: 120 };
+    grafico('bar_grouped', 'Gastos: previsto y real', 'B9:B16', 'C9:C16', 'A9:A16', 19);
 
   } else if (tipo === 'presupuestopersonal') {
     var c3 = '#1d4ed8';
@@ -17121,6 +17231,7 @@ function plantillaTipoExcel(tipo, h) {
     gridBorder(3, 0, 7, 1); gridBorder(10, 0, 12, 1); gridBorder(15, 0, 20, 1); gridBorder(23, 0, 24, 1);
     styleRange(3, 1, 6, 1, NUM); styleRange(7, 1, 7, 1, PCT); styleRange(10, 1, 12, 1, NUM); styleRange(15, 1, 20, 1, NUM); styleRange(23, 1, 24, 1, NUM);
     colWidths[name] = { 0: 260, 1: 150 };
+    grafico('donut', 'En qué se va el dinero', 'B16:B21', '', 'A16:A21', 26);
 
   } else if (tipo === 'facturabasica') {
     var c4 = '#1e5a6b';
@@ -17152,6 +17263,7 @@ function plantillaTipoExcel(tipo, h) {
     set(10, 0, 'Total', true); F(10, 1, '=SUMA(B4:B10)'); F(10, 2, '=SUMA(C4:C10)');
     gridBorder(3, 0, 10, 3); styleRange(3, 1, 10, 3, NUM); totalRow(10, 0, 3, '#bae6fd');
     colWidths[name] = { 0: 220, 1: 120, 2: 120, 3: 120 };
+    grafico('bar_grouped', 'Planeado y real', 'B4:B10', 'C4:C10', 'A4:A10', 12);
 
   } else if (tipo === 'programaciondiaria') {
     var c6 = '#9d174d';
@@ -17235,6 +17347,7 @@ function plantillaTipoExcel(tipo, h) {
     F(8, 14, '=PROMEDIO(B9:M9)');
     gridBorder(3, 0, 8, 14); styleRange(3, 1, 8, 14, NUM); totalRow(8, 0, 14, '#fecdd3');
     colWidths[name] = { 0: 150, 13: 110, 14: 110 };
+    grafico('line', 'Total de gastos por mes', 'B9:M9', '', 'B3:M3', 10);
 
   } else if (tipo === 'gastosviaje') {
     var c11 = '#155e75';
@@ -17697,6 +17810,7 @@ function loadTemplate(tipo) {
     }
   })();
   buildTable(); autoSave();
+  try { renderizarGraficos(); } catch (eGraf) {}
 }
 
 // ══════════════════════════════════════════════
@@ -18100,7 +18214,7 @@ document.getElementById('quickRange').addEventListener('input', function () {
   var nums = rangeNums(v);
   var sum = nums.reduce(function (a, b) { return a + b; }, 0);
   document.getElementById('quickSum').textContent = 'Suma: ' + fmtNum(sum);
-  document.getElementById('quickAvg').textContent = 'Prom: ' + (nums.length ? fmtNum(sum / nums.length) : '0');
+  document.getElementById('quickAvg').textContent = 'Prom: ' + (nums.length ? fmtNum(Math.round(sum / nums.length * 100) / 100) : '0');
   document.getElementById('quickCount').textContent = 'Cont: ' + nums.filter(function (n) { return n !== 0; }).length;
 });
 
@@ -21473,6 +21587,113 @@ document.getElementById('btnDarkMode').addEventListener('click', function () {
   try { localStorage.setItem('kcn_dark_mode', document.body.classList.contains('dark-mode') ? '1' : '0'); } catch (e) {}
 });
 
+// ── Ayuda de argumentos al escribir una fórmula ──
+// Mientras el cursor está dentro de una función (en la barra de fórmulas o en una celda),
+// muestra su sintaxis del catálogo y resalta el argumento que se está escribiendo.
+(function () {
+  var caja = document.getElementById('fnArgHint');
+  if (!caja) return;
+  var indice = null;
+
+  function catalogo() {
+    if (indice) return indice;
+    indice = {};
+    try {
+      Object.keys(fnData).forEach(function (cat) {
+        (fnData[cat] || []).forEach(function (f) {
+          if (f.n) indice[String(f.n).toUpperCase()] = f;
+          if (f.e && !indice[String(f.e).toUpperCase()]) indice[String(f.e).toUpperCase()] = f;
+        });
+      });
+    } catch (e) {}
+    return indice;
+  }
+  // Texto desde el inicio hasta el cursor, en la barra de fórmulas (textarea) o en una celda
+  function textoHastaCursor(el) {
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+      return typeof el.selectionStart === 'number' ? el.value.slice(0, el.selectionStart) : el.value;
+    }
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount || !el.contains(sel.anchorNode)) return el.textContent;
+    var r = sel.getRangeAt(0).cloneRange();
+    r.selectNodeContents(el);
+    r.setEnd(sel.anchorNode, sel.anchorOffset);
+    return r.toString();
+  }
+  // Función más interna que sigue abierta antes del cursor, y en qué argumento va
+  function funcionAbierta(texto) {
+    if (texto.charAt(0) !== '=') return null;
+    var pila = [], enComillas = false;
+    for (var i = 1; i < texto.length; i++) {
+      var ch = texto.charAt(i);
+      if (ch === '"') { enComillas = !enComillas; continue; }
+      if (enComillas) continue;
+      if (ch === '(') {
+        var m = /([A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-zÁÉÍÓÚÑáéíóúñ0-9_.]*)$/.exec(texto.slice(0, i));
+        pila.push({ nombre: m ? m[1].toUpperCase() : '', arg: 0 });
+      } else if (ch === ')') {
+        pila.pop();
+      } else if (pila.length && (ch === ';' || (ch === ',' && !(/\d/.test(texto.charAt(i - 1)) && /\d/.test(texto.charAt(i + 1)))))) {
+        pila[pila.length - 1].arg++;
+      }
+    }
+    for (var k = pila.length - 1; k >= 0; k--) if (pila[k].nombre) return pila[k];
+    return null;
+  }
+  function partirArgumentos(sintaxis) {
+    var a = sintaxis.indexOf('('), b = sintaxis.lastIndexOf(')');
+    if (a < 0 || b < a) return null;
+    var dentro = sintaxis.slice(a + 1, b), partes = [], nivel = 0, actual = '';
+    for (var i = 0; i < dentro.length; i++) {
+      var ch = dentro.charAt(i);
+      if (ch === '(' || ch === '[') nivel++;
+      if (ch === ')' || ch === ']') nivel--;
+      if (ch === ';' && nivel === 0) { partes.push(actual.trim()); actual = ''; } else actual += ch;
+    }
+    if (actual.trim()) partes.push(actual.trim());
+    return { nombre: sintaxis.slice(0, a), args: partes };
+  }
+  function ocultar() { caja.classList.remove('show'); }
+  function actualizar() {
+    var el = document.activeElement;
+    var esBarra = el && el.id === 'formulaInput';
+    var esCelda = el && el.classList && el.classList.contains('cell');
+    if (!esBarra && !esCelda) { ocultar(); return; }
+    // Mientras está la lista de nombres de función, no se muestra la ayuda encima
+    var auto = document.getElementById('fnAutocomplete');
+    if (auto && auto.classList.contains('show')) { ocultar(); return; }
+    var abierta = funcionAbierta(textoHastaCursor(el));
+    var f = abierta ? catalogo()[abierta.nombre] : null;
+    if (!f || !f.s) { ocultar(); return; }
+    var p = partirArgumentos(f.s);
+    if (!p) { ocultar(); return; }
+    // Si se pasa del último argumento (funciones con "…"), se queda resaltado el último
+    var actual = Math.min(abierta.arg, p.args.length - 1);
+    var firma = escHtml(p.nombre) + '(' + p.args.map(function (a, i) {
+      return i === actual ? '<b>' + escHtml(a) + '</b>' : escHtml(a);
+    }).join('; ') + ')';
+    caja.innerHTML = '<div class="fahFirma">' + firma + '</div>' + (f.d ? '<div class="fahDesc">' + escHtml(f.d) + '</div>' : '');
+    caja.classList.add('show');
+    // Ubicación: debajo de la barra de fórmulas o de la celda; arriba si no cabe abajo
+    var ancla = esBarra ? document.getElementById('formulaBarRow') : el;
+    var r = ancla.getBoundingClientRect(), alto = caja.offsetHeight, ancho = caja.offsetWidth;
+    var vv = window.visualViewport, limite = vv ? vv.height + vv.offsetTop : window.innerHeight;
+    var barraEd = document.getElementById('editBar');
+    if (barraEd && barraEd.classList.contains('show') && getComputedStyle(barraEd).display !== 'none') limite = Math.min(limite, barraEd.getBoundingClientRect().top);
+    var y = r.bottom + 4;
+    if (y + alto > limite - 4) y = Math.max(4, r.top - alto - 4);
+    var x = Math.max(8, Math.min(esBarra ? r.left + 60 : r.left, window.innerWidth - ancho - 8));
+    caja.style.left = x + 'px';
+    caja.style.top = y + 'px';
+  }
+  var pendiente = null;
+  function programar() { clearTimeout(pendiente); pendiente = setTimeout(actualizar, 30); }
+  ['input', 'keyup', 'click', 'focusin'].forEach(function (ev) { document.addEventListener(ev, programar, true); });
+  document.addEventListener('focusout', function () { clearTimeout(pendiente); pendiente = setTimeout(actualizar, 180); }, true);
+  var gw = document.getElementById('gridWrap');
+  if (gw) gw.addEventListener('scroll', function () { if (caja.classList.contains('show')) programar(); }, { passive: true });
+})();
+
 // ── Barra de edición sobre el teclado (estilo Excel móvil) ──
 // Aparece al tocar una celda y se acomoda encima del teclado. Aplica el formato a toda la
 // selección (una celda o un rango).
@@ -21495,6 +21716,7 @@ document.getElementById('btnDarkMode').addEventListener('click', function () {
   function despejarCelda() {
     var el = celdaConFoco(), wrap = document.getElementById('gridWrap');
     if (!el || !wrap || !barra.classList.contains('show')) return;
+    if (getComputedStyle(barra).display === 'none') return; // oculta (computadora): no hay nada que despejar
     var sobra = el.getBoundingClientRect().bottom - barra.getBoundingClientRect().top;
     if (sobra > 0) wrap.scrollTop += sobra + 8;
   }
@@ -21599,7 +21821,7 @@ document.getElementById('btnDarkMode').addEventListener('click', function () {
 function tbActualizarTitulo() {
   var libro = document.getElementById('tbLibro'), hoja = document.getElementById('tbHoja');
   if (!libro || !hoja) return;
-  var nombre = currentMatrizName || 'Libro local';
+  var nombre = currentMatrizName || (typeof i18nLang !== 'undefined' && i18nLang === 'en' ? 'Local workbook' : 'Libro local');
   if (libro.textContent !== nombre) libro.textContent = nombre;
   if (hoja.textContent !== activeSheet) hoja.textContent = activeSheet;
   // Deshacer / rehacer se ven apagados cuando no hay nada que deshacer
@@ -21625,6 +21847,21 @@ function tbActualizarTitulo() {
     cerrar();
   });
   document.getElementById('ribbonToggle').addEventListener('click', cerrar);
+  // En pantalla grande la cinta es fija: el botón ☰ la muestra u oculta, y se recuerda la elección
+  var anchoCinta = window.matchMedia ? window.matchMedia('(min-width: 1000px)') : null;
+  // En la cinta fija, la rueda del mouse desplaza los grupos de lado cuando no caben
+  document.getElementById('toolbar').addEventListener('wheel', function (e) {
+    if (!anchoCinta || !anchoCinta.matches) return;
+    if (this.scrollWidth <= this.clientWidth || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    this.scrollLeft += e.deltaY;
+    e.preventDefault();
+  }, { passive: false });
+  try { if (localStorage.getItem('mcr_cinta_oculta') === '1') document.body.classList.add('rbDeskOff'); } catch (eC) {}
+  document.getElementById('ribbonToggle').addEventListener('click', function () {
+    if (!anchoCinta || !anchoCinta.matches) return;
+    var oculta = document.body.classList.toggle('rbDeskOff');
+    try { localStorage.setItem('mcr_cinta_oculta', oculta ? '1' : '0'); } catch (eC2) {}
+  });
   document.getElementById('tbUndo').addEventListener('click', function () { document.getElementById('qUndo').click(); tbActualizarTitulo(); });
   document.getElementById('tbRedo').addEventListener('click', function () { document.getElementById('qRedo').click(); tbActualizarTitulo(); });
   document.getElementById('tbBuscar').addEventListener('click', function () { document.getElementById('btnBuscarReemplazar').click(); });
