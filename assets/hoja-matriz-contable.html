@@ -201,20 +201,25 @@
   body.dark-mode #inspWin { background: #252a26; color: #e5e7eb; border-color: #343b35; }
   .cell.dato-invalido { box-shadow: inset 0 0 0 2px #dc2626 !important; border-radius: 999px; }
   .cell.cmp-dif { box-shadow: inset 0 0 0 2px #f59e0b !important; background-color: #fef3c7 !important; }
-  #rbTabs { display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 8px 0 2px; scrollbar-width: none; }
+  #rbTabs { display: flex; gap: 0; border-bottom: 1px solid #d5ddd2; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 8px 0 2px; scrollbar-width: none; }
   #rbTabs::-webkit-scrollbar { display: none; }
-  .rbTab { flex: 0 0 auto; border: 1px solid #d5ddd2; background: #fff; color: #374151; border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 700; white-space: nowrap; }
-  .rbTab.on { background: #1f7a44; border-color: #1f7a44; color: #fff; }
+  .rbTab { flex: 0 0 auto; border: none; border-bottom: 3px solid transparent; background: transparent; color: #4b5563; border-radius: 0; padding: 9px 12px 7px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .rbTab.on { background: transparent; border-bottom-color: #1f7a44; color: #1f7a44; font-weight: 800; }
   #toolbar:not(.rbBuscando) .rbGrid button.rbTabOculto { display: none; }
   #toolbar:not(.rbBuscando) .rbSec.rbTabSecOculta { display: none; }
   .rbBuscando #rbTabs { display: none; }
-  #toolbar:not(.rbBuscando) .rbSecHead { display: none; }
-  #toolbar:not(.rbBuscando) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; align-content: start; }
+  #toolbar:not(.rbBuscando) .rbSecHead { display: flex; justify-content: center; border-left: none; border-top: 1px solid #e3e9e0; padding: 5px 10px; background: #f8faf7; font-size: 12px; font-weight: 700; color: #374151; }
+  #toolbar:not(.rbBuscando) .rbSecHead .rbSecIco, #toolbar:not(.rbBuscando) .rbSecHead .rbSecN, #toolbar:not(.rbBuscando) .rbSecHead .rbChev { display: none; }
+  #toolbar:not(.rbBuscando) { display: block; }
   #toolbar:not(.rbBuscando) > #rbBuscarWrap, #toolbar:not(.rbBuscando) > #rbVacio { grid-column: 1 / -1; }
-  #toolbar:not(.rbBuscando) .rbSec, #toolbar:not(.rbBuscando) .rbSec .rbGrid { display: contents; }
+  /* Estilo Excel: cada grupo es una banda con sus botones y el nombre del grupo abajo */
+  #toolbar:not(.rbBuscando) .rbSec { display: flex; flex-direction: column-reverse; background: #fff; border: none; border-radius: 0; margin: 0 0 8px; box-shadow: none; overflow: visible; }
+  #toolbar:not(.rbBuscando) .rbSec .rbGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 8px; }
+  #toolbar:not(.rbBuscando) .rbSec:not(.open) .rbGrid { display: none; }
   body.dark-mode #toolbar:not(.rbBuscando) .rbSec { background: transparent; }
   body.dark-mode .rbTab { background: #252a26; border-color: #343b35; color: #e5e7eb; }
-  body.dark-mode .rbTab.on { background: #1f7a44; color: #fff; }
+  body.dark-mode .rbTab.on { background: transparent; color: #4ade80; border-bottom-color: #4ade80; }
+  body.dark-mode .rbTab { background: transparent; color: #d1d5db; }
   #toolbar .rbGrid button.rbOculto { display: none; }
   #rbVacio { display: none; text-align: center; color: #64748b; font-size: 14px; padding: 24px 10px; }
   body.dark-mode #ribbonModal, body.dark-mode #toolbar, body.dark-mode #rbBuscarWrap { background: #1b1f1c; }
@@ -678,19 +683,38 @@
   #reportesOverlay.show { display: flex; }
   #plantillasOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
   #plantillasOverlay.show { display: flex; }
-  #templateGalleryOverlay { position: fixed; inset: 0; background: rgba(10,30,5,.65); z-index: 9600; display: none; align-items: flex-end; justify-content: center; }
-  #templateGalleryOverlay.show { display: flex; }
-  #templateGalleryModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 520px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
-  #templateGalleryHead { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #217346; flex-shrink: 0; }
-  #templateGalleryHead h3 { margin: 0; color: #fff; font-size: 13px; }
-  #templateGalleryHead button { background: none; border: none; color: #fff; font-size: 16px; padding: 10px 12px; }
-  #templateGalleryGrid { overflow-y: auto; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f3f2f1; }
-  .templateCard { background: #fff; border-radius: 10px; overflow: hidden; text-align: left; border: 1px solid #e1e1e1; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-  .templateCard:active { transform: scale(.97); }
-  .templateCardTop { height: 54px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-  .templateCardBody { padding: 8px 10px 10px; }
-  .templateCardTitle { font-size: 14px; font-weight: 700; color: #2d3b1f; line-height: 1.3; }
-  .templateCardDesc { font-size: 14px; color: #767676; margin-top: 3px; line-height: 1.3; }
+  /* Galería "Nuevo" estilo Excel móvil: pantalla completa, fondo verde oscuro, pestañas, tarjetas con vista previa */
+  #templateGalleryOverlay { position: fixed; inset: 0; background: #14291e; z-index: 9800; display: none; }
+  #templateGalleryOverlay.show { display: block; }
+  #templateGalleryModal { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #1d3d2c 0%, #14291e 45%, #0c1811 100%); color: #fff; }
+  #templateGalleryHead { flex-shrink: 0; padding: 14px 16px 6px; }
+  .tgTopRow { display: flex; align-items: center; gap: 12px; }
+  .tgAvatar { width: 40px; height: 40px; border-radius: 50%; background: #4a1f5c; border: 2px solid rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; flex-shrink: 0; }
+  #templateGalleryHead h3 { margin: 0; flex: 1; font-size: 30px; font-weight: 800; color: #fff; }
+  #templateGalleryClose { background: none; border: none; color: #fff; font-size: 22px; padding: 6px 8px; }
+  .tgTabs { display: flex; gap: 8px; margin-top: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tgTabs::-webkit-scrollbar { display: none; }
+  .tgTab { flex-shrink: 0; background: none; border: 1px solid transparent; color: rgba(255,255,255,.75); font-size: 15px; padding: 9px 14px; border-radius: 22px; }
+  .tgTab.on { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.35); color: #fff; font-weight: 600; }
+  #templateGallerySearch { display: none; width: 100%; box-sizing: border-box; margin-top: 12px; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.1); color: #fff; font-size: 15px; outline: none; }
+  #templateGallerySearch.show { display: block; }
+  #templateGallerySearch::placeholder { color: rgba(255,255,255,.6); }
+  #templateGalleryGrid { flex: 1; overflow-y: auto; padding: 16px 16px 110px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px 16px; align-content: start; }
+  .tgItem { display: flex; flex-direction: column; gap: 8px; }
+  .tgCard { width: 100%; aspect-ratio: 3 / 4; padding: 0; border: none; border-radius: 6px; overflow: hidden; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); cursor: pointer; }
+  .tgCard:active { transform: scale(.97); }
+  .tgCardBlank { background: #1f5c3a; border: 1px solid #3f8a62; display: flex; align-items: center; justify-content: center; color: #7fe0a6; font-size: 64px; font-weight: 300; line-height: 1; }
+  .tgLabel { font-size: 14px; color: #fff; text-align: center; line-height: 1.3; padding: 0 2px; }
+  .tgPrev { height: 100%; box-sizing: border-box; padding: 10px 9px; display: flex; flex-direction: column; gap: 4px; }
+  .tgPrevHead { height: 14px; border-radius: 2px; }
+  .tgPrevSub { height: 5px; width: 55%; background: #d9dee5; margin-bottom: 4px; }
+  .tgPrevRow { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3px; height: 7px; }
+  .tgPrevRow i { background: #f1f3f6; border-bottom: 1px solid #d3d9e1; }
+  .tgPrevTot { height: 9px; margin-top: auto; opacity: .45; }
+  .tgEmpty { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,.7); font-size: 14px; padding: 30px 10px; }
+  .tgFab { position: absolute; bottom: 22px; width: 58px; height: 58px; border-radius: 50%; border: none; color: #fff; font-size: 28px; box-shadow: 0 4px 14px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; }
+  .tgFabL { left: 22px; background: #2e7d5b; font-size: 34px; font-weight: 300; }
+  .tgFabR { right: 22px; background: #35505f; font-size: 22px; }
   #plantillasModal { background: #fff; border-radius: 14px 14px 0 0; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; overflow: hidden; }
   #plantillasList { overflow-y: auto; padding: 6px 10px; }
   .plItem { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 4px; border-bottom: 1px solid #eee; }
@@ -959,6 +983,7 @@
         <button id="btnIrA" title="Saltar a una celda, rango o rango con nombre">🧭 Ir a…</button>
         <button id="btnIrAEspecial" title="Seleccionar todas las fórmulas, vacías, errores, notas, números o textos">🎯 Ir a especial</button>
         <button id="btnClear">Borrar</button>
+        <button id="btnBorrarFormato" title="Quita el formato (negrita, colores, bordes, número) pero deja los valores">🧹 Borrar formato</button>
       </div>
     </div>
     <div class="rbSec" style="--rbc:#c2410c;">
@@ -1324,10 +1349,17 @@
   <div id="templateGalleryOverlay">
     <div id="templateGalleryModal">
       <div id="templateGalleryHead">
-        <h3>📁 Plantillas contables</h3>
-        <button id="templateGalleryClose">✕</button>
+        <div class="tgTopRow">
+          <div class="tgAvatar">K</div>
+          <h3>Nuevo</h3>
+          <button id="templateGalleryClose" title="Cerrar">✕</button>
+        </div>
+        <div class="tgTabs" id="templateGalleryTabs"></div>
+        <input id="templateGallerySearch" type="search" placeholder="Buscar plantillas" autocomplete="off">
       </div>
       <div id="templateGalleryGrid"></div>
+      <button id="tgFabAdd" class="tgFab tgFabL" title="Libro en blanco">+</button>
+      <button id="tgFabSearch" class="tgFab tgFabR" title="Buscar plantillas">🔍</button>
     </div>
   </div>
 
@@ -3394,6 +3426,12 @@ function matchCrit(val, crit) {
       }
     }
   }
+  // Operador "=" explícito (=1, ="texto"): igual que sin operador, pero numérico si ambos son números.
+  if (crit.charAt(0) === '=') {
+    crit = crit.substring(1).trim();
+    var nvEq = parseFloat(limpiaNum(val)), ncEq = parseFloat(crit);
+    if (crit !== '' && !isNaN(nvEq) && !isNaN(ncEq)) return nvEq === ncEq;
+  }
   if (crit.indexOf('*') >= 0 || crit.indexOf('?') >= 0) {
     var re = new RegExp('^' + crit.replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
     return re.test(String(val));
@@ -3695,7 +3733,7 @@ function computeExpr(expr) {
       args = splitArgs(inner); var ns = isRange(args[0]) ? rangeNums(args[0]) : [resolveNum(args[0])];
       ns.sort(function (a, b) { return a - b; }); return fmtNum(ns[resolveNum(args[1]) - 1]);
     }
-    if ((inner = matchFn('MODA|MODE')) !== null) {
+    if ((inner = matchFn('MODA\\.UNO|MODA|MODE')) !== null) {
       args = splitArgs(inner); var numsMo = isRange(args[0]) ? rangeNums(args[0]) : args.map(resolveNum);
       var freq = {}; numsMo.forEach(function (n) { freq[n] = (freq[n] || 0) + 1; });
       var best = numsMo[0], bestC = 0;
@@ -3772,6 +3810,49 @@ function computeExpr(expr) {
     if ((inner = matchFn('REPETIR|REPT')) !== null) { args = splitArgs(inner); return String(resolveArg(args[0])).repeat(parseInt(resolveNum(args[1]))); }
     if ((inner = matchFn('VALOR|VALUE')) !== null) { return fmtNum(parseFloat(limpiaNum(resolveArg(splitArgs(inner)[0])))); }
     if ((inner = matchFn('ESTEXTO|ISTEXT')) !== null) { var vt = resolveArg(splitArgs(inner)[0]); return (isNaN(parseFloat(vt)) && typeof vt === 'string' && vt !== '') ? 'VERDADERO' : 'FALSO'; }
+    // ── Funciones añadidas (paso 2: fórmulas tipo Excel) ──
+    if ((inner = matchFn('NA|NOD')) !== null) { return '#N/A'; }
+    if ((inner = matchFn('XOR|XO')) !== null) { var nxor = 0; splitArgs(inner).forEach(function (a) { if (esVerdaderoArg(a)) nxor++; }); return nxor % 2 === 1 ? 'VERDADERO' : 'FALSO'; }
+    if ((inner = matchFn('RAND|ALEATORIO|ALEAT')) !== null) { return String(Math.random()); }
+    if ((inner = matchFn('RANDBETWEEN|ALEATORIO\\.ENTRE|ALEAT\\.ENTRE')) !== null) {
+      var rbArgs = splitArgs(inner);
+      var rbLo = Math.ceil(toNum(resolveArg(rbArgs[0]))), rbHi = Math.floor(toNum(resolveArg(rbArgs[1])));
+      if (isNaN(rbLo) || isNaN(rbHi) || rbHi < rbLo) return '#NUM!';
+      return String(Math.floor(Math.random() * (rbHi - rbLo + 1)) + rbLo);
+    }
+    if ((inner = matchFn('T')) !== null) { try { var tTxt = String(resolveArg(splitArgs(inner)[0] || '')); return (tTxt !== '' && isNaN(Number(tTxt))) ? tTxt : ''; } catch (eT) { return ''; } }
+    if ((inner = matchFn('ESNOD|ISNA')) !== null) { try { return String(resolveArg(splitArgs(inner)[0])) === '#N/A' ? 'VERDADERO' : 'FALSO'; } catch (eNA) { return 'FALSO'; } }
+    if ((inner = matchFn('ESERR|ISERR')) !== null) { try { var veR = String(resolveArg(splitArgs(inner)[0])); return (veR.charAt(0) === '#' && veR !== '#N/A') ? 'VERDADERO' : 'FALSO'; } catch (eER) { return 'FALSO'; } }
+    if ((inner = matchFn('LOOKUP|BUSCAR')) !== null) {
+      // Forma vectorial de BUSCAR/LOOKUP: busca el mayor valor <= buscado en un rango ordenado.
+      var lkArgs = splitArgs(inner);
+      var lkVals = rangeVals(lkArgs[1]);
+      var lkRes = lkArgs[2] ? rangeVals(lkArgs[2]) : lkVals;
+      var lkBusc = String(resolveArg(lkArgs[0]));
+      var lkNum = Number(lkBusc), lkEsNum = lkBusc !== '' && !isNaN(lkNum);
+      var lkPos = -1;
+      for (var lkI = 0; lkI < lkVals.length; lkI++) {
+        var lkCand = String(lkVals[lkI]); if (lkCand === '') continue;
+        var lkCandNum = Number(lkCand), lkCandEsNum = !isNaN(lkCandNum);
+        if (lkEsNum && lkCandEsNum ? lkCandNum <= lkNum : (!lkEsNum && !lkCandEsNum && lkCand <= lkBusc)) lkPos = lkI;
+      }
+      if (lkPos === -1 || lkRes[lkPos] === undefined) return '#N/A';
+      return String(lkRes[lkPos]);
+    }
+    if ((inner = matchFn('PROMEDIO\\.SI\\.CONJUNTO|AVERAGEIFS')) !== null) {
+      // Promedio con varios criterios: promedio_rango, rango1, criterio1, rango2, criterio2, ...
+      var pcArgs = splitArgs(inner);
+      var pcAvg = rangeVals(pcArgs[0]);
+      var pcCrits = [];
+      for (var pcK = 1; pcK + 1 < pcArgs.length; pcK += 2) pcCrits.push({ vals: rangeVals(pcArgs[pcK]), crit: String(resolveArg(pcArgs[pcK + 1])) });
+      var pcSum = 0, pcCnt = 0;
+      for (var pcR = 0; pcR < pcAvg.length; pcR++) {
+        var pcOk = pcCrits.every(function (cr) { return matchCrit(cr.vals[pcR], cr.crit); });
+        var pcV = Number(pcAvg[pcR]);
+        if (pcOk && pcAvg[pcR] !== '' && !isNaN(pcV)) { pcSum += pcV; pcCnt++; }
+      }
+      return pcCnt ? fmtNum(pcSum / pcCnt) : '#DIV/0!';
+    }
     if ((inner = matchFn('ESERROR|ISERROR')) !== null) { try { var ve = String(resolveArg(splitArgs(inner)[0])); return ve.charAt(0) === '#' ? 'VERDADERO' : 'FALSO'; } catch (e4) { return 'VERDADERO'; } }
     if ((inner = matchFn('ESBLANCO|ISBLANK')) !== null) { var vb = resolveArg(splitArgs(inner)[0]); return (vb === '' || vb === null) ? 'VERDADERO' : 'FALSO'; }
     if ((inner = matchFn('ESNUMERO|ISNUMBER')) !== null) { var vn2 = resolveArg(splitArgs(inner)[0]); return !isNaN(parseFloat(vn2)) && vn2 !== '' ? 'VERDADERO' : 'FALSO'; }
@@ -6545,6 +6626,9 @@ if((inner=matchFn('BUSCAR\.NESIMO'))!==null){
       var result = Function('"use strict";return (' + safe + ')')();
       return isNaN(result) ? '#ERR' : fmtNum(result);
     }
+    // Función que no existe en el motor: Excel muestra #NOMBRE?
+    var fnNombreDesconocido = /^\s*([A-Za-zÁÉÍÓÚÑ_][A-Za-zÁÉÍÓÚÑ0-9_.]*)\s*\(/.exec(expr);
+    if (fnNombreDesconocido && FN_MOTOR_NOMBRES.indexOf(fnNombreDesconocido[1].toUpperCase()) === -1) return '#NOMBRE?';
     return '#ERROR';
   } catch (e) { return '#ERR'; }
 }
@@ -6669,19 +6753,45 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
     var infoD = partirRango(args[0]);
     var rFrom = Math.min(filaDe(infoD.from), filaDe(infoD.to)), rTo = Math.max(filaDe(infoD.from), filaDe(infoD.to));
     var cFrom = Math.min(colDe(infoD.from), colDe(infoD.to)), cTo = Math.max(colDe(infoD.from), colDe(infoD.to));
-    var critRango = args[1], criterio = args[2];
-    var critVals = (critRango && isRange(critRango)) ? rangeVals(critRango) : null;
+    var incArg = args[1] || '';
+    // Forma antigua de la app: FILTRAR(datos; rango_criterio; criterio). Se conserva para hojas que ya la usan.
+    var forzadoLegacy = incArg !== '' && isRange(incArg);
+    var critVals = forzadoLegacy ? rangeVals(incArg) : null;
+    // Forma de Excel: FILTRAR(datos; A1:A10>1; si_vacio) — condiciones unidas con * (Y).
+    var condiciones = null;
+    if (!forzadoLegacy && incArg !== '') {
+      // Grupos separados por + (O); dentro de cada grupo, términos separados por * (Y).
+      condiciones = [];
+      var grupos = incArg.split('+');
+      for (var gi = 0; gi < grupos.length; gi++) {
+        var grupo = [];
+        var terminos = grupos[gi].split('*');
+        for (var ti = 0; ti < terminos.length; ti++) {
+          var termTxt = terminos[ti].trim().replace(/^\((.*)\)$/, '$1').trim();
+          var mT = termTxt.match(/^(.+?)(>=|<=|<>|>|<|=)(.+)$/);
+          if (!mT || !isRange(mT[1].trim())) return [['#VALOR!']];
+          var valDerecho = String(resolveArg(mT[3].trim()));
+          grupo.push({ vals: rangeVals(mT[1].trim()), crit: mT[2] + valDerecho });
+        }
+        condiciones.push(grupo);
+      }
+    }
     var filasOut = [];
     for (var rr = rFrom; rr <= rTo; rr++) {
       var incluir = true;
-      if (critVals) incluir = matchCrit(critVals[rr - rFrom], criterio);
+      if (critVals) incluir = matchCrit(critVals[rr - rFrom], args[2]);
+      if (condiciones) incluir = condiciones.some(function (grupo) { return grupo.every(function (c) { return matchCrit(c.vals[rr - rFrom], c.crit); }); });
       if (incluir) {
         var filaVals = [];
         for (var cc = cFrom; cc <= cTo; cc++) filaVals.push(computeValueEnHoja(infoD.hoja, cellId(rr, cc)));
         filasOut.push(filaVals);
       }
     }
-    if (!filasOut.length) return [['(sin resultados)']];
+    if (!filasOut.length) {
+      if (condiciones && args[2] !== undefined && args[2] !== '') return [[resolveArg(args[2])]];
+      if (condiciones) return [['#CALC!']];
+      return [['(sin resultados)']];
+    }
     return filasOut;
   }
   if (nombre === 'ORDENAR') {
@@ -6860,9 +6970,21 @@ function formatearSeccionPersonalizada(numAbs, patron) {
   });
   var esPorcentaje = limpio.indexOf('%') !== -1;
   var numParaMostrar = esPorcentaje ? numAbs * 100 : numAbs;
+  var mSci = limpio.match(/([#0][#0,]*(?:\.[#0]+)?)E([+-])(0+)/i);
   var mPlaceholder = limpio.match(/[#0][#0,]*(?:\.[#0]+)?|\.[#0]+/);
   var resultado;
-  if (mPlaceholder) {
+  if (mSci) {
+    // Notación científica (0.00E+00): mantisa con los decimales del patrón y exponente.
+    var phSci = mSci[1];
+    var decSci = phSci.indexOf('.') !== -1 ? phSci.split('.')[1].length : 0;
+    var expDig = mSci[3].length;
+    var vSci = numParaMostrar, exSci = vSci === 0 ? 0 : Math.floor(Math.log10(Math.abs(vSci)));
+    var mantSci = vSci / Math.pow(10, exSci);
+    if (Math.abs(parseFloat(mantSci.toFixed(decSci))) >= 10) { exSci += 1; mantSci = vSci / Math.pow(10, exSci); }
+    var mantTxt = parseFloat(mantSci.toFixed(decSci)).toLocaleString('es-CR', { minimumFractionDigits: decSci, maximumFractionDigits: decSci, useGrouping: false });
+    var expTxt = (exSci < 0 ? '-' : (mSci[2] === '+' ? '+' : '')) + String(Math.abs(exSci)).padStart(expDig, '0');
+    resultado = limpio.slice(0, mSci.index) + mantTxt + 'E' + expTxt + limpio.slice(mSci.index + mSci[0].length);
+  } else if (mPlaceholder) {
     var placeholder = mPlaceholder[0];
     var prefijo = limpio.slice(0, mPlaceholder.index);
     var sufijo = limpio.slice(mPlaceholder.index + placeholder.length);
@@ -6883,6 +7005,12 @@ function formatearSeccionPersonalizada(numAbs, patron) {
 // (con sus hasta 3 secciones) y devuelve { texto, color }.
 function aplicarFormatoPersonalizado(val, codigo) {
   if (val === '' || val === null || val === undefined) return { texto: val, color: null };
+  // Formato de fecha (dd/mm/aaaa, mmmm, hh:mm…): el valor se convierte a fecha, como en Excel.
+  var secFecha = String(codigo || '').split(';')[0];
+  if (esCodigoDeFecha(secFecha)) {
+    var dtFecha = fechaDe(isNaN(Number(val)) ? String(val) : Number(val));
+    if (dtFecha && !isNaN(dtFecha.getTime())) return { texto: formatearFechaConCodigo(dtFecha, secFecha), color: null };
+  }
   var num = parseFloat(limpiaNum(val));
   if (isNaN(num)) return { texto: String(val), color: null };
   var secciones = String(codigo || '0').split(';');
@@ -8044,7 +8172,11 @@ function renderAllCellsInterno() {
 
   // ── Fórmulas matriciales / derrame: pintar el resultado sobre las
   // celdas vecinas vacías (no se guarda en sheetData, se recalcula cada vez) ──
-  document.querySelectorAll('.cell.spill-cell').forEach(function (el) { el.classList.remove('spill-cell'); });
+  // Las celdas que estaban derramadas y ya no lo están (la fórmula cambió o dio menos resultados) se vacían.
+  document.querySelectorAll('.cell.spill-cell').forEach(function (el) {
+    el.classList.remove('spill-cell');
+    if (data[el.dataset.id] === undefined || data[el.dataset.id] === '') el.textContent = '';
+  });
   var spills = calcularSpills(activeSheet);
   Object.keys(spills).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -11774,6 +11906,102 @@ function marcarEncabezadoActivo(id) {
   if (td) td.classList.add('header-activo');
 }
 
+// ── Atajos tipo Excel dentro de la celda activa ──
+function colocarCursorAlFinal(el) {
+  try {
+    var r = document.createRange(); r.selectNodeContents(el); r.collapse(false);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  } catch (e) {}
+}
+// Última celda con datos de la hoja activa (para Ctrl+End y Ctrl+A).
+function ultimaCeldaUsada() {
+  var maxR = 0, maxC = 0, hay = false;
+  Object.keys(sheetData[activeSheet] || {}).forEach(function (k) {
+    var m = k.match(/^([A-Za-z]+)(\d+)$/); if (!m) return;
+    hay = true;
+    maxC = Math.max(maxC, colIndex(m[1]));
+    maxR = Math.max(maxR, parseInt(m[2], 10) - 1);
+  });
+  return hay ? cellId(maxR, maxC) : 'A1';
+}
+// Devuelve true si el atajo fue manejado y no debe seguir de largo.
+function atajosCeldaExcel(e, el) {
+  var editado = el.dataset.editado === '1';
+  var id = el.dataset.id;
+  var ctrl = e.ctrlKey || e.metaKey;
+  var flechas = { ArrowDown: [0, 1], ArrowUp: [0, -1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+  var hayRango = !!(selRangeStart && selRangeEnd && selRangeStart !== selRangeEnd);
+
+  // Escape: cancela la edición y devuelve el valor original de la celda.
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    el.textContent = getRaw(id);
+    el.dataset.editado = '0';
+    el.blur();
+    return true;
+  }
+  // Shift+Enter sube, Shift+Tab va a la izquierda (Enter/Tab siguen igual).
+  if ((e.key === 'Enter' || e.key === 'Tab') && e.shiftKey) {
+    e.preventDefault(); snapshot(); el.blur();
+    moveSelection(e.key === 'Tab' ? -1 : 0, e.key === 'Enter' ? -1 : 0);
+    return true;
+  }
+  // F2: entrar a editar la celda con el cursor al final.
+  if (e.key === 'F2') {
+    e.preventDefault(); el.dataset.editado = '1'; colocarCursorAlFinal(el);
+    return true;
+  }
+  // Supr / Retroceso sobre una celda sin editar: borra su contenido (o el rango seleccionado).
+  if ((e.key === 'Delete' || e.key === 'Backspace') && !editado && !ctrl) {
+    e.preventDefault(); snapshot();
+    document.getElementById(hayRango ? 'raClear' : 'btnClear').click();
+    el.dataset.editado = '0';
+    return true;
+  }
+  // Escribir sobre una celda sin editar reemplaza su contenido, como en Excel.
+  if (!editado && !ctrl && !e.altKey && e.key.length === 1) {
+    e.preventDefault();
+    el.textContent = e.key; el.dataset.editado = '1'; colocarCursorAlFinal(el);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  }
+  // Shift+flechas: extiende la selección desde la celda de anclaje.
+  if (e.shiftKey && !ctrl && flechas[e.key] && !editado) {
+    e.preventDefault();
+    var ancla = selRangeStart || id;
+    el.blur();
+    moveSelection(flechas[e.key][0], flechas[e.key][1]);
+    selRangeStart = ancla;
+    selRangeEnd = document.getElementById('cellRef').textContent;
+    highlightRange(selRangeStart, selRangeEnd);
+    return true;
+  }
+  // Ctrl+Inicio = A1, Ctrl+Fin = última celda con datos.
+  if (ctrl && (e.key === 'Home' || e.key === 'End')) {
+    e.preventDefault(); el.blur();
+    var destino = e.key === 'Home' ? 'A1' : ultimaCeldaUsada();
+    var tDest = celdaEl(destino); if (tDest) tDest.focus();
+    return true;
+  }
+  // Ctrl+A (sin estar escribiendo texto): selecciona todo el bloque con datos.
+  if (ctrl && !editado && (e.key === 'a' || e.key === 'A')) {
+    e.preventDefault();
+    selRangeStart = 'A1'; selRangeEnd = ultimaCeldaUsada();
+    highlightRange(selRangeStart, selRangeEnd);
+    return true;
+  }
+  // Ctrl+X / Ctrl+C (sin estar escribiendo texto): usa cortar/copiar de la app, con rango si hay.
+  if (ctrl && !editado && (e.key === 'x' || e.key === 'X')) {
+    e.preventDefault(); document.getElementById(hayRango ? 'raCut' : 'btnCut').click();
+    return true;
+  }
+  if (ctrl && !editado && (e.key === 'c' || e.key === 'C')) {
+    e.preventDefault(); document.getElementById(hayRango ? 'raCopy' : 'btnCopy').click();
+    return true;
+  }
+  return false;
+}
+
 function attachCellEvents() {
   // Los eventos de cada celda se ligan de forma perezosa (la primera vez que se toca/enfoca):
   // con miles de celdas, ligar todas al construir la tabla era lo más lento.
@@ -11782,6 +12010,7 @@ function attachCellEvents() {
     el.addEventListener('focus', function () {
       document.querySelectorAll('.cell.selected').forEach(function (e) { e.classList.remove('selected'); });
       el.classList.add('selected');
+      el.dataset.editado = '0';
       var id = el.dataset.id;
       document.getElementById('cellRef').textContent = id;
       document.getElementById('formulaInput').value = getRaw(id);
@@ -11798,7 +12027,9 @@ function attachCellEvents() {
       }, 150);
       commitCell(el);
     });
+    el.addEventListener('input', function () { el.dataset.editado = '1'; });
     el.addEventListener('keydown', function (e) {
+      if (atajosCeldaExcel(e, el)) return;
       var esFlecha = e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight';
       if (esFlecha && (e.ctrlKey || e.metaKey)) {
         // Ctrl+flecha (o Cmd+flecha): saltar al borde del bloque de datos,
@@ -15367,6 +15598,15 @@ document.getElementById('btnEstilosCelda').addEventListener('click', function ()
   });
 });
 
+// Borrar formato: quita negrita, colores, bordes y formato de número, pero conserva los valores.
+document.getElementById('btnBorrarFormato').addEventListener('click', function () {
+  var ids = idsSeleccionActual(); if (!ids.length) return;
+  if (hojaBloqueadaParaIds(ids)) { avisoHojaProtegida(); return; }
+  snapshot();
+  if (sheetFormats[activeSheet]) ids.forEach(function (id) { delete sheetFormats[activeSheet][id]; });
+  renderAllCells(); autoSave();
+  document.getElementById('saveStatus').textContent = 'Formato borrado (' + ids.length + ' celda' + (ids.length === 1 ? '' : 's') + ')';
+});
 document.getElementById('btnClear').addEventListener('click', function () {
   if (hojaBloqueadaParaIds([document.getElementById('cellRef').textContent])) { avisoHojaProtegida(); return; }
   snapshot();
@@ -15481,34 +15721,102 @@ var TEMPLATES_GALERIA = [
   { tipo: 'prestamo', icono: '🏠', color: '#0e7490', titulo: 'Préstamo / Amortización', desc: 'Cuota, intereses y saldo mes a mes, con abonos extra' },
 ];
 
+// Categorías de la galería (las pestañas de arriba). Una plantilla puede estar en más de una.
+var TG_CATEGORIAS = [
+  { id: 'todo', nombre: 'Todo', tipos: null },
+  { id: 'conta', nombre: 'Contabilidad', tipos: ['diario', 'mayor', 'balance', 'conciliacion', 'd151', 'resultados', 'balancegeneral', 'sistemacontable'] },
+  { id: 'planilla', nombre: 'Planillas', tipos: ['planilla', 'aguinaldo', 'liquidacion', 'rentalucrativa'] },
+  { id: 'finanzas', nombre: 'Finanzas', tipos: ['flujocaja', 'depreciacion', 'prestamo'] },
+];
+var tgCategoriaActual = 'todo';
+
+// Vista previa en miniatura: encabezado de color, subtítulo y filas, como una hoja real
+function tgVistaPrevia(t) {
+  var filas = '';
+  for (var i = 0; i < 9; i++) filas += '<div class="tgPrevRow"><i></i><i></i><i></i></div>';
+  return '<div class="tgPrev">' +
+    '<div class="tgPrevHead" style="background:' + t.color + ';"></div>' +
+    '<div class="tgPrevSub"></div>' +
+    filas +
+    '<div class="tgPrevTot" style="background:' + t.color + ';"></div>' +
+  '</div>';
+}
+
 function renderizarTemplateGaleria() {
-  var grid = document.getElementById('templateGalleryGrid');
-  grid.innerHTML = TEMPLATES_GALERIA.map(function (t) {
-    return '<button class="templateCard" data-tipo="' + t.tipo + '">' +
-      '<div class="templateCardTop" style="background:' + t.color + ';">' + t.icono + '</div>' +
-      '<div class="templateCardBody">' +
-        '<div class="templateCardTitle">' + t.titulo + '</div>' +
-        '<div class="templateCardDesc">' + t.desc + '</div>' +
-      '</div>' +
-    '</button>';
+  var tabs = document.getElementById('templateGalleryTabs');
+  tabs.innerHTML = TG_CATEGORIAS.map(function (c) {
+    return '<button class="tgTab' + (c.id === tgCategoriaActual ? ' on' : '') + '" data-cat="' + c.id + '">' + c.nombre + '</button>';
   }).join('');
-  grid.querySelectorAll('.templateCard').forEach(function (card) {
+  tabs.querySelectorAll('.tgTab').forEach(function (b) {
+    b.addEventListener('click', function () { tgCategoriaActual = b.dataset.cat; renderizarTemplateGaleria(); });
+  });
+
+  var cat = TG_CATEGORIAS.filter(function (c) { return c.id === tgCategoriaActual; })[0] || TG_CATEGORIAS[0];
+  var texto = (document.getElementById('templateGallerySearch').value || '').trim().toLowerCase();
+  var lista = TEMPLATES_GALERIA.filter(function (t) {
+    if (cat.tipos && cat.tipos.indexOf(t.tipo) < 0) return false;
+    if (!texto) return true;
+    return (t.titulo + ' ' + t.desc).toLowerCase().indexOf(texto) >= 0;
+  });
+
+  var grid = document.getElementById('templateGalleryGrid');
+  // "Libro en blanco" siempre primero, como en Excel (salvo que se esté buscando)
+  var html = (texto ? '' :
+    '<div class="tgItem"><button class="tgCard tgCardBlank" data-blank="1" title="Libro en blanco">+</button>' +
+    '<div class="tgLabel">Libro en blanco</div></div>');
+  html += lista.map(function (t) {
+    return '<div class="tgItem"><button class="tgCard" data-tipo="' + t.tipo + '" title="' + t.desc + '">' +
+      tgVistaPrevia(t) + '</button><div class="tgLabel">' + t.titulo + '</div></div>';
+  }).join('');
+  if (!lista.length && texto) html += '<div class="tgEmpty">No hay plantillas que coincidan con "' + escHtml(texto) + '".</div>';
+  grid.innerHTML = html;
+
+  grid.querySelectorAll('[data-blank]').forEach(function (b) {
+    b.addEventListener('click', function () { tgCerrarGaleria(); snapshot(); crearLibroEnBlanco(); });
+  });
+  grid.querySelectorAll('[data-tipo]').forEach(function (card) {
     card.addEventListener('click', function () {
       var tipo = card.dataset.tipo;
-      document.getElementById('templateGalleryOverlay').classList.remove('show');
-      document.getElementById('ribbonOverlay').classList.remove('show');
+      tgCerrarGaleria();
       snapshot();
       if (tipo === 'sistemacontable') crearSistemaContable(); else loadTemplate(tipo);
     });
   });
 }
+
+function tgCerrarGaleria() {
+  document.getElementById('templateGalleryOverlay').classList.remove('show');
+  document.getElementById('ribbonOverlay').classList.remove('show');
+}
+
+// Crea una hoja vacía con el mismo esquema que usa loadTemplate
+function crearLibroEnBlanco() {
+  var n = sheets.length + 1;
+  var name = 'Hoja' + n;
+  while (sheets.indexOf(name) >= 0) name = 'Hoja' + (++n);
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; sheetProtegidaHash[name] = null; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetGroupsRow[name] = []; sheetGroupsCol[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {}; sheetPivoteConfig[name] = null; sheetAutoFiltro[name] = null; sheetCeldasDesbloqueadas[name] = [];
+  activeSheet = name;
+  buildTable(); renderTabs(); autoSave();
+  document.getElementById('saveStatus').textContent = '✓ Libro en blanco creado: ' + name;
+}
+
 document.getElementById('btnTemplateGallery').addEventListener('click', function () {
+  document.getElementById('templateGallerySearch').value = '';
+  document.getElementById('templateGallerySearch').classList.remove('show');
   renderizarTemplateGaleria();
   document.getElementById('templateGalleryOverlay').classList.add('show');
 });
-document.getElementById('templateGalleryClose').addEventListener('click', function () {
-  document.getElementById('templateGalleryOverlay').classList.remove('show');
+document.getElementById('templateGalleryClose').addEventListener('click', tgCerrarGaleria);
+document.getElementById('tgFabAdd').addEventListener('click', function () {
+  tgCerrarGaleria(); snapshot(); crearLibroEnBlanco();
 });
+document.getElementById('tgFabSearch').addEventListener('click', function () {
+  var s = document.getElementById('templateGallerySearch');
+  var abrir = !s.classList.contains('show');
+  s.classList.toggle('show', abrir);
+  if (abrir) s.focus(); else { s.value = ''; renderizarTemplateGaleria(); }
+});
+document.getElementById('templateGallerySearch').addEventListener('input', renderizarTemplateGaleria);
 
 
 // ══════════════════════════════════════════════
@@ -20405,6 +20713,10 @@ var RB_MAPA = {};
 var rbTabActual = 'cr';
 function rbAplicarPestana(tab) {
   if (tab) rbTabActual = tab;
+  // El título del menú sigue a la pestaña activa (Inicio, Datos, Fórmulas…).
+  var rbTit = document.querySelector('#ribbonHead h3');
+  var rbTabObj = RB_TABS.filter(function (x) { return x[0] === rbTabActual; })[0];
+  if (rbTit && rbTabObj) rbTit.textContent = rbTabObj[1].replace(/^[^A-Za-zÁÉÍÓÚáéíóúñÑ]+\s*/, '');
   var tb = document.getElementById('toolbar'); if (!tb) return;
   var favs = {}; try { qbLeer().forEach(function (i) { favs[i] = 1; }); } catch (e) {}
   document.querySelectorAll('#rbTabs .rbTab').forEach(function (b) { var on = b.getAttribute('data-tab') === rbTabActual; b.classList.toggle('on', on); if (on && b.scrollIntoView) { try { b.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {} } });
@@ -22522,6 +22834,17 @@ document.addEventListener('keydown', function (e) {
   if (key === 'f') {
     e.preventDefault();
     document.getElementById('btnBuscarReemplazar').click();
+    return;
+  }
+  // Ctrl+D rellena hacia abajo y Ctrl+R hacia la derecha (como en Excel).
+  if (key === 'd') {
+    e.preventDefault();
+    document.getElementById('btnRellenarAbajo').click();
+    return;
+  }
+  if (key === 'r') {
+    e.preventDefault();
+    document.getElementById('btnRellenarDerecha').click();
     return;
   }
 });
