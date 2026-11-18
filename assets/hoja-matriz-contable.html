@@ -11211,7 +11211,10 @@ function siboEnviarTexto(texto) {
   wrap.appendChild(typingEl);
   wrap.scrollTop = wrap.scrollHeight;
 
-  fetchViaXHR(SIBO_CHAT_URL, {
+  var siboFetch = (typeof window !== 'undefined' && window.ReactNativeWebView)
+    ? fetchViaXHR
+    : function(url, opts) { return fetch(url, opts); };
+  siboFetch(SIBO_CHAT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: texto, history: hist.slice(0, -1), sheetContext: siboSnapshotHoja() }),
@@ -11220,7 +11223,7 @@ function siboEnviarTexto(texto) {
     .then(function (data) {
       var el = document.getElementById('siboTypingIndicator');
       if (el) el.remove();
-      var respuesta = data.text || siboBuscarRespuesta(texto);
+      var respuesta = data.reply || data.text || siboBuscarRespuesta(texto);
       var h2 = siboGetHistorial();
       h2.push({ user: false, texto: respuesta });
       siboGuardarHistorial(h2);
