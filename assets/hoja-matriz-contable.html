@@ -3195,7 +3195,7 @@ function guardarArchivoNativo(filename, base64, mime) {
 function utf8ToBase64(str) {
   return btoa(unescape(encodeURIComponent(str)));
 }
-var SIBO_CHAT_URL = 'https://little-violet-1c79.kacn1z.workers.dev/chat';
+var SIBO_CHAT_URL = 'https://matriz-contable-app.vercel.app/api/sibo-chat';
 var webCache = {};
 var webPending = {};
 
@@ -3289,6 +3289,13 @@ function explicarErrorCelda(val) {
   return MENSAJES_ERROR_CELDA[val] || 'La fórmula de esta celda no se pudo calcular correctamente.';
 }
 var MAX_COLUMNAS = 104; // hasta CZ
+// Hoja "infinita" (como Excel): las filas aparecen solas al desplazarse o al
+// bajar con las flechas, hasta el mismo tope que Excel. Solo se guardan las
+// celdas con datos, así que una hoja larga y vacía no pesa más.
+// Excel llega a 1.048.576 filas, pero un navegador no puede desplazar algo más
+// alto que ~33 millones de píxeles (y Firefox ~17 millones): con filas de ~33 px
+// el máximo seguro en todos los equipos es 400.000 filas.
+var MAX_FILAS_HOJA = 400000, CRECER_FILAS_PASO = 500;
 function colLetter(i) { var t = ''; i = i + 1; while (i > 0) { var r = (i - 1) % 26; t = String.fromCharCode(65 + r) + t; i = Math.floor((i - 1) / 26); } return t; }
 function colIndex(s) { var n = 0; s = (s || '').toUpperCase(); for (var i = 0; i < s.length; i++) n = n * 26 + s.charCodeAt(i) - 64; return n - 1; }
 function cellId(r, c) { return colLetter(c) + (r + 1); }
@@ -7576,8 +7583,11 @@ function anchoDeTextoPx(texto) {
 }
 function autoajustarColumna(c) {
   var maxW = 36; // ancho mínimo (igual al mínimo que ya se usa al arrastrar a mano)
-  for (var r = 0; r < ROWS; r++) {
-    var id = cellId(r, c);
+  // Solo las filas que tienen algo en esta columna (no toda la hoja).
+  var letraAA = colLetter(c), filasAA = [];
+  for (var kAA in (sheetData[activeSheet] || {})) { var mAA = /^([A-Z]+)(\d+)$/.exec(kAA); if (mAA && mAA[1] === letraAA) filasAA.push(parseInt(mAA[2], 10) - 1); }
+  for (var iAA = 0; iAA < filasAA.length; iAA++) {
+    var r = filasAA[iAA], id = cellId(r, c);
     var el = document.getElementById('cell_' + id);
     var texto = el ? el.textContent : (ventana.activa ? String(computeValue(id) === undefined ? '' : computeValue(id)) : '');
     if (!texto) continue;
@@ -7688,20 +7698,89 @@ function ventanaEspaciador(clase, alto) {
   return '<tr class="vspacer ' + clase + '" style="height:' + Math.max(0, Math.round(alto)) + 'px"><td colspan="' + ventana.nCols + '" style="padding:0;border:0;height:' + Math.max(0, Math.round(alto)) + 'px"></td></tr>';
 }
 // Alto (px) de las filas visibles (no ocultas) entre a y b, ambas incluidas.
+// Filas "especiales" (ocultas o con alto propio), ordenadas. Las demás miden
+// ventana.alto, así el cálculo no recorre fila por fila (importa con hojas de
+// cientos de miles de filas).
+function ventanaEspeciales() {
+  var cw = colWidths[activeSheet] || {}, set = {}, k;
+  for (k in cw) if (k.charAt(0) === 'r' && /^r\d+$/.test(k) && cw[k] > 0) set[k.slice(1)] = 1;
+  for (k in ventana.ocultas) if (ventana.ocultas[k]) set[k] = 1;
+  return Object.keys(set).map(Number).sort(function (x, y) { return x - y; });
+}
+function ventanaAltoFila(r) { return ventana.ocultas[r] ? 0 : (getRowHeightCustom(r) || ventana.alto); }
 function ventanaAlto(a, b) {
-  var n = 0;
-  for (var r = Math.max(0, a); r <= b && r < ROWS; r++) if (!ventana.ocultas[r]) n += (getRowHeightCustom(r) || ventana.alto);
+  a = Math.max(0, a); b = Math.min(b, ROWS - 1);
+  if (b < a) return 0;
+  var n = (b - a + 1) * ventana.alto;
+  ventanaEspeciales().forEach(function (r) { if (r >= a && r <= b) n += ventanaAltoFila(r) - ventana.alto; });
   return n;
 }
 // Fila que queda en la posición vertical y (px desde el borde de las filas de datos).
 function ventanaFilaEnY(y) {
-  var acc = 0;
-  for (var r = 0; r < ROWS; r++) {
-    if (ventana.ocultas[r]) continue;
-    acc += (getRowHeightCustom(r) || ventana.alto);
-    if (acc > y) return r;
+  var acc = 0, r = 0, esp = ventanaEspeciales(), al = ventana.alto;
+  for (var i = 0; i < esp.length; i++) {
+    var s = esp[i]; if (s >= ROWS) break; if (s < r) continue;
+    var tramo = (s - r) * al;
+    if (acc + tramo > y) return Math.min(ROWS - 1, r + Math.floor((y - acc) / al));
+    acc += tramo;
+    var h = ventanaAltoFila(s);
+    if (h > 0 && acc + h > y) return s;
+    acc += h; r = s + 1;
   }
-  return ROWS - 1;
+  return Math.max(0, Math.min(ROWS - 1, r + Math.floor(Math.max(0, y - acc) / al)));
+}
+// Última fila (0-based) que tiene algo: dato, formato, nota o adjunto. Los
+// recorridos "por toda la hoja" usan este tope en vez de ROWS, así no se
+// vuelven lentos cuando la hoja llega a un millón de filas.
+function filaTopeContenido(h) {
+  h = h || activeSheet; var tope = -1;
+  [sheetData[h], sheetFormats[h], sheetNotes[h], (typeof sheetAttachments !== 'undefined' ? sheetAttachments[h] : null)].forEach(function (o) {
+    if (!o) return;
+    for (var k in o) { var m = /^[A-Z]+(\d+)$/.exec(k); if (m) { var r = parseInt(m[1], 10) - 1; if (r > tope) tope = r; } }
+  });
+  return Math.min(ROWS - 1, tope + 1);
+}
+// Corre las filas guardadas (datos, formatos, notas…) moviendo solo las
+// claves que existen, sin recorrer fila por fila. delta +1: desde "desde"
+// hacia abajo bajan una (insertar). delta -1: la fila "desde" se borra y
+// las de abajo suben una (eliminar).
+function desplazarFilasPorClave(objs, desde, delta) {
+  objs.forEach(function (o) {
+    if (!o) return;
+    var mover = [];
+    for (var k in o) { var m = /^([A-Z]+)(\d+)$/.exec(k); if (m && parseInt(m[2], 10) - 1 >= desde) mover.push([k, m[1], parseInt(m[2], 10) - 1, o[k]]); }
+    mover.forEach(function (x) { delete o[x[0]]; });
+    mover.forEach(function (x) { if (delta < 0 && x[2] === desde) return; o[x[1] + (x[2] + delta + 1)] = x[3]; });
+  });
+}
+// Agrega filas al final de la hoja (sin redibujar todo si la ventana ya está activa).
+function crecerFilas(minimo) {
+  if (ROWS >= MAX_FILAS_HOJA) return false;
+  var nuevo = Math.min(MAX_FILAS_HOJA, Math.max(minimo || 0, ROWS + CRECER_FILAS_PASO));
+  if (nuevo <= ROWS) return false;
+  ROWS = nuevo;
+  var wrap = document.getElementById('gridWrap');
+  if (ventana.activa) { ventanaPonerEspaciadores(); ventanaActualizar(); }
+  else {
+    var st = wrap ? wrap.scrollTop : 0, sl = wrap ? wrap.scrollLeft : 0, ref = document.getElementById('cellRef').textContent;
+    buildTable();
+    if (wrap) { wrap.scrollTop = st; wrap.scrollLeft = sl; }
+    var el = /^[A-Z]+\d+$/.test(ref || '') ? celdaEl(ref) : null;
+    if (el && !(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('cell'))) { try { el.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  return true;
+}
+// Al acercarse al final deslizando, aparecen más filas (no mientras se escribe en una celda).
+var _crecerRaf = 0;
+function revisarCrecimientoPorScroll() {
+  if (_crecerRaf) return;
+  _crecerRaf = requestAnimationFrame(function () {
+    _crecerRaf = 0;
+    var wrap = document.getElementById('gridWrap'); if (!wrap || ROWS >= MAX_FILAS_HOJA) return;
+    var ae = document.activeElement;
+    if (ae && ae.classList && ae.classList.contains('cell') && ae.dataset.editado === '1') return;
+    if (wrap.scrollTop + wrap.clientHeight * 2.5 >= wrap.scrollHeight) crecerFilas();
+  });
 }
 function ventanaRangoVisible() {
   var wrap = document.getElementById('gridWrap');
@@ -7744,6 +7823,7 @@ function ventanaPonerEspaciadores() {
 function ventanaAplicar(nIni, nFin) {
   if (!ventana.activa) return;
   nIni = Math.max(ventana.congeladas, nIni); nFin = Math.min(ROWS - 1, nFin);
+  if (nFin - nIni > 1500) { var v = ventanaRangoVisible(); nIni = Math.max(ventana.congeladas, v.primera - VENT_COLCHON); nFin = Math.min(ROWS - 1, v.ultima + VENT_COLCHON); }
   if (nIni === ventana.ini && nFin === ventana.fin) return;
   var tabla = document.getElementById('sheetTable'), tbody = tabla.tBodies[0];
   var bot = tbody.querySelector('tr.vBot');
@@ -7812,7 +7892,7 @@ function ventanaActualizar() {
   var nIni = Math.max(ventana.congeladas, v.primera - VENT_COLCHON), nFin = Math.min(ROWS - 1, v.ultima + VENT_COLCHON);
   // Si se está editando una celda dentro de la ventana actual, su fila no se descarta.
   var ae = document.activeElement;
-  if (ae && ae.classList && ae.classList.contains('cell') && ae.dataset.id) {
+  if (ae && ae.classList && ae.classList.contains('cell') && ae.dataset.id && ae.dataset.editado === '1') {
     var m = /^[A-Za-z]+(\d+)$/.exec(ae.dataset.id);
     if (m) {
       var ra = parseInt(m[1], 10) - 1;
@@ -7843,6 +7923,7 @@ function celdaEl(id) {
 (function () {
   var wrap = document.getElementById('gridWrap');
   if (wrap) wrap.addEventListener('scroll', ventanaProgramarActualizacion, { passive: true });
+  if (wrap) wrap.addEventListener('scroll', revisarCrecimientoPorScroll, { passive: true });
   // Imprimir: se dibuja la hoja completa y luego se vuelve a la ventana.
   window.addEventListener('beforeprint', function () { if (ventana.activa) { ventana.forzarCompleta = true; buildTable(); } });
   window.addEventListener('afterprint', function () { if (ventana.forzarCompleta) { ventana.forzarCompleta = false; buildTable(); } });
@@ -7873,6 +7954,9 @@ function buildTable() {
     btnAutofiltro.textContent = af ? '✖ Quitar Autofiltro' : '🔽 Autofiltro';
     btnAutofiltro.style.background = af ? '#dc2626' : '';
   }
+  var ultimaConDatos = 0;
+  for (var kd in (sheetData[activeSheet] || {})) { var md = /^[A-Z]+(\d+)$/.exec(kd); if (md) { var nd = parseInt(md[1], 10); if (nd > ultimaConDatos) ultimaConDatos = nd; } }
+  if (ROWS < ultimaConDatos + 20) ROWS = Math.min(MAX_FILAS_HOJA, ultimaConDatos + 20);
   var table = document.getElementById('sheetTable');
   var merges = sheetMerges[activeSheet] || [];
   var freeze = sheetFreeze[activeSheet] || { row: 0, col: 0 };
@@ -11211,10 +11295,7 @@ function siboEnviarTexto(texto) {
   wrap.appendChild(typingEl);
   wrap.scrollTop = wrap.scrollHeight;
 
-  var siboFetch = (typeof window !== 'undefined' && window.ReactNativeWebView)
-    ? fetchViaXHR
-    : function(url, opts) { return fetch(url, opts); };
-  siboFetch(SIBO_CHAT_URL, {
+  fetchViaXHR(SIBO_CHAT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: texto, history: hist.slice(0, -1), sheetContext: siboSnapshotHoja() }),
@@ -11223,7 +11304,7 @@ function siboEnviarTexto(texto) {
     .then(function (data) {
       var el = document.getElementById('siboTypingIndicator');
       if (el) el.remove();
-      var respuesta = data.reply || data.text || siboBuscarRespuesta(texto);
+      var respuesta = data.text || siboBuscarRespuesta(texto);
       var h2 = siboGetHistorial();
       h2.push({ user: false, texto: respuesta });
       siboGuardarHistorial(h2);
@@ -12418,19 +12499,8 @@ function insertarFilaEn(indice) {
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
   var notas = sheetNotes[activeSheet] || {}, adjuntos = sheetAttachments[activeSheet] || {};
 
-  for (var r = ROWS - 1; r > indice; r--) {
-    for (var c = 0; c < COLS; c++) {
-      var origen = cellId(r - 1, c), destino = cellId(r, c);
-      if (d[origen] !== undefined) d[destino] = d[origen]; else delete d[destino];
-      if (f[origen] !== undefined) f[destino] = f[origen]; else delete f[destino];
-      if (notas[origen] !== undefined) notas[destino] = notas[origen]; else delete notas[destino];
-      if (adjuntos[origen] !== undefined) adjuntos[destino] = adjuntos[origen]; else delete adjuntos[destino];
-    }
-  }
-  for (var c2 = 0; c2 < COLS; c2++) {
-    var k = cellId(indice, c2);
-    delete d[k]; delete f[k]; delete notas[k]; delete adjuntos[k];
-  }
+  if (!d) d = sheetData[activeSheet] = {}; if (!f) f = sheetFormats[activeSheet] = {};
+  desplazarFilasPorClave([d, f, notas, adjuntos], indice, 1);
 
   // Reacomoda TODAS las fórmulas de la hoja (se hayan movido o no) para
   // que sigan apuntando a la misma celda real de antes de insertar.
@@ -12482,8 +12552,9 @@ function insertarColumnaEn(indice) {
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
   var notas = sheetNotes[activeSheet] || {}, adjuntos = sheetAttachments[activeSheet] || {};
 
+  var topeIC = filaTopeContenido();
   for (var c = COLS - 1; c > indice; c--) {
-    for (var r = 0; r < ROWS; r++) {
+    for (var r = 0; r <= topeIC; r++) {
       var origen = cellId(r, c - 1), destino = cellId(r, c);
       if (d[origen] !== undefined) d[destino] = d[origen]; else delete d[destino];
       if (f[origen] !== undefined) f[destino] = f[origen]; else delete f[destino];
@@ -12491,7 +12562,7 @@ function insertarColumnaEn(indice) {
       if (adjuntos[origen] !== undefined) adjuntos[destino] = adjuntos[origen]; else delete adjuntos[destino];
     }
   }
-  for (var r2 = 0; r2 < ROWS; r2++) {
+  for (var r2 = 0; r2 <= topeIC; r2++) {
     var k = cellId(r2, indice);
     delete d[k]; delete f[k]; delete notas[k]; delete adjuntos[k];
   }
@@ -13668,14 +13739,15 @@ function eliminarColumnaActual() {
   if (!confirm('¿Eliminar la columna ' + m[1] + '?')) return;
   snapshot();
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
+  var topeEC = filaTopeContenido();
   for (var c = targetCol; c < COLS - 1; c++) {
-    for (var r = 0; r < ROWS; r++) {
+    for (var r = 0; r <= topeEC; r++) {
       var nk = cellId(r, c + 1), ck = cellId(r, c);
       if (d[nk] !== undefined) d[ck] = d[nk]; else delete d[ck];
       if (f[nk] !== undefined) f[ck] = f[nk]; else delete f[ck];
     }
   }
-  for (var r2 = 0; r2 < ROWS; r2++) { delete d[cellId(r2, COLS - 1)]; delete f[cellId(r2, COLS - 1)]; }
+  for (var r2 = 0; r2 <= topeEC; r2++) { delete d[cellId(r2, COLS - 1)]; delete f[cellId(r2, COLS - 1)]; }
   buildTable(); autoSave();
 }
 document.getElementById('cmCortar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnCut', 'raCut'); });
@@ -13795,6 +13867,7 @@ function moveSelection(dc, dr) {
   var id = document.getElementById('cellRef').textContent;
   var m = id.match(/([A-Za-z]+)(\d+)/);
   var c = colIndex(m[1]) + dc, r = parseInt(m[2]) - 1 + dr;
+  if (r > ROWS - 1 && dr > 0) crecerFilas(r + 1);
   c = Math.max(0, Math.min(COLS - 1, c)); r = Math.max(0, Math.min(ROWS - 1, r));
   var next = celdaEl(cellId(r, c));
   if (next) next.focus();
@@ -13821,6 +13894,12 @@ function moveSelectionBorde(dc, dr) {
   if (!actualTieneAlgo || !siguienteTieneAlgo) {
     // Desde una celda vacía, o con un salto vacío justo al lado: avanzar
     // hasta la primera celda con contenido (o hasta el borde de la hoja).
+    if (dr > 0 && ROWS < MAX_FILAS_HOJA) {
+      // ¿Hay algo más abajo en esta columna? Si no, se va al final de la hoja como Excel.
+      var d0 = sheetData[activeSheet] || {}, col0 = colLetter(c), hayAbajo = false;
+      for (var kk in d0) { var mk = /^([A-Z]+)(\d+)$/.exec(kk); if (mk && mk[1] === col0 && parseInt(mk[2], 10) - 1 > r && String(d0[kk]) !== '') { hayAbajo = true; break; } }
+      if (!hayAbajo) crecerFilas(MAX_FILAS_HOJA);
+    }
     while (true) {
       var pr = nr + dr, pc = nc + dc;
       if (pr < 0 || pc < 0 || pr >= ROWS || pc >= COLS) break;
@@ -14263,10 +14342,10 @@ function resolverReferenciaIrA(txt) {
     var hh = sheets.filter(function (x) { return x.toLowerCase() === m[1].toLowerCase(); })[0];
     if (!hh) return { error: 'No existe la hoja "' + m[1] + '".' }; hoja = hh; resto = m[2];
   }
-  var mm = /^\$?([A-Za-z]{1,3})\$?(\d{1,5})(?::\$?([A-Za-z]{1,3})\$?(\d{1,5}))?$/.exec(resto.trim());
+  var mm = /^\$?([A-Za-z]{1,3})\$?(\d{1,7})(?::\$?([A-Za-z]{1,3})\$?(\d{1,7}))?$/.exec(resto.trim());
   if (!mm) return { error: '"' + txt + '" no es una referencia válida. Probá con A1, B2:D10, Hoja2!C3 o un nombre de rango.' };
   var c1 = colIndex(mm[1].toUpperCase()), r1 = parseInt(mm[2], 10) - 1, c2 = mm[3] ? colIndex(mm[3].toUpperCase()) : c1, r2 = mm[4] ? parseInt(mm[4], 10) - 1 : r1;
-  if (isNaN(c1) || isNaN(c2) || c1 >= COLS && hoja === activeSheet || r1 >= ROWS && hoja === activeSheet) return { error: 'Esa celda queda fuera de la hoja (tiene ' + ROWS + ' filas y ' + COLS + ' columnas).' };
+  if (isNaN(c1) || isNaN(c2) || c1 >= COLS && hoja === activeSheet || r1 >= MAX_FILAS_HOJA && hoja === activeSheet) return { error: 'Esa celda queda fuera de la hoja (llega hasta la fila ' + MAX_FILAS_HOJA.toLocaleString('es-CR') + ' y la columna ' + colLetter(COLS - 1) + ').' };
   return { hoja: hoja, r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) };
 }
 function irAReferencia(txt) {
@@ -14276,7 +14355,9 @@ function irAReferencia(txt) {
   if (ref.hoja !== activeSheet) {
     activeSheet = ref.hoja; buildTable();
   }
-  if (ref.r2 >= ROWS || ref.c2 >= COLS) { alert('Esa referencia queda fuera de la hoja.'); return false; }
+  // Como Excel: ir a una fila lejana la hace aparecer (hasta el tope de la hoja).
+  if (ref.r2 >= ROWS && ref.r2 < MAX_FILAS_HOJA) crecerFilas(ref.r2 + 1);
+  if (ref.r2 >= ROWS || ref.c2 >= COLS) { alert('Esa referencia queda fuera de la hoja (llega hasta la fila ' + MAX_FILAS_HOJA.toLocaleString('es-CR') + ').'); return false; }
   seleccionarRangoPorCodigo(ref.r1, ref.c1, ref.r2, ref.c2);
   var t = String(txt).trim(); irARecientes = [t].concat(irARecientes.filter(function (x) { return x !== t; })).slice(0, 6);
   return true;
@@ -14434,7 +14515,7 @@ function ejecutarImportarCSV(sepAuto) {
   var d = sheetData[activeSheet] || (sheetData[activeSheet] = {});
   filas.forEach(function (f, i) { for (var j = 0; j < nc; j++) { var v = f[j]; if (v === undefined || v === '') continue; d[cellId(r0 + i, c0 + j)] = convertirNumeroCSV(v, modoNum, sep); } });
   buildTable(); renderTabs(); autoSave();
-  document.getElementById('saveStatus').textContent = '✓ Importadas ' + filas.length + ' filas' + (recortadas ? ' (se omitieron ' + recortadas + ' por el límite de 5000)' : '') + (cortCols ? ' (se omitieron ' + cortCols + ' columnas)' : '');
+  document.getElementById('saveStatus').textContent = '✓ Importadas ' + filas.length + ' filas' + (recortadas ? ' (se omitieron ' + recortadas + ' por el límite de filas)' : '') + (cortCols ? ' (se omitieron ' + cortCols + ' columnas)' : '');
   return true;
 }
 document.getElementById('btnImportarCSV').addEventListener('click', function () { document.getElementById('csvImportInput').value = ''; document.getElementById('csvImportInput').click(); });
@@ -14525,7 +14606,7 @@ function abrirSeries() {
     var disp = dir === 'col' ? ROWS - b.minR : COLS - b.minC;
     var seleccion = dir === 'col' ? filas : cols, n = (seleccion > 1 && !lim) ? seleccion : (lim ? Math.min(2000, disp) : Math.min(cant || 2, 2000));
     if (seleccion > 1 && lim) n = Math.min(seleccion, n);
-    if (dir === 'col' && b.minR + n > ROWS && ROWS < 5000) ROWS = Math.min(5000, b.minR + n);
+    if (dir === 'col' && b.minR + n > ROWS && ROWS < MAX_FILAS_HOJA) ROWS = Math.min(MAX_FILAS_HOJA, b.minR + n);
     if (dir === 'fila' && b.minC + n > COLS) n = COLS - b.minC;
     n = Math.max(1, Math.min(n, dir === 'col' ? ROWS - b.minR : COLS - b.minC));
     var serie = generarSerie({ tipo: tipo, unidad: document.getElementById('seUni').value, paso: paso, limite: lim, cantidad: n, inicio: inicio });
@@ -14654,7 +14735,7 @@ function crearMapaEstructura(eje, desde, n, banda) {
 // Reescribe las referencias de una fórmula (o de un texto de rango) que apuntan a la hoja "hojaMov".
 function reescribirReferenciasEstructura(formula, hojaFormula, hojaMov, mapa) {
   var partes = String(formula).split(/("(?:[^"]|"")*")/);
-  var re = /(?:(?:'([^']+)'|([A-Za-z_][A-Za-z0-9_.]*))!)?(\$?)([A-Za-z]{1,2})(\$?)(\d{1,5})(?::(\$?)([A-Za-z]{1,2})(\$?)(\d{1,5}))?/g;
+  var re = /(?:(?:'([^']+)'|([A-Za-z_][A-Za-z0-9_.]*))!)?(\$?)([A-Za-z]{1,2})(\$?)(\d{1,7})(?::(\$?)([A-Za-z]{1,2})(\$?)(\d{1,7}))?/g;
   return partes.map(function (txt, idx) {
     if (idx % 2 === 1) return txt; // texto entre comillas
     return txt.replace(re, function (m, shQ, shN, a1, c1L, a2, r1S, a3, c2L, a4, r2S, off, whole) {
@@ -14754,11 +14835,11 @@ function ejecutarEstructura(accion, desde, cantidad, banda) {
   if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida. Desbloqueala (🔒 Proteger Hoja) antes de cambiar su estructura.'); return false; }
   var eje = /fila|abajo|arriba/.test(accion) ? 'f' : 'c';
   var ins = /^ins/.test(accion), n = ins ? cantidad : -cantidad;
-  if (ins && eje === 'f' && ROWS + cantidad > 5000) { alert('La hoja no puede pasar de 5000 filas.'); return false; }
+  if (ins && eje === 'f' && ROWS + cantidad > MAX_FILAS_HOJA) { alert('La hoja no puede pasar de ' + MAX_FILAS_HOJA.toLocaleString('es-CR') + ' filas (el mismo límite de Excel).'); return false; }
   if (ins && eje === 'c' && COLS + cantidad > MAX_COLUMNAS && !banda) { alert('No se pueden agregar tantas columnas (máximo ' + MAX_COLUMNAS + ', hasta la CZ).'); return false; }
   snapshot();
   var mapa = crearMapaEstructura(eje, desde, n, banda);
-  if (ins) { if (eje === 'f') ROWS = Math.min(5000, ROWS + cantidad); else COLS = Math.min(MAX_COLUMNAS, COLS + cantidad); }
+  if (ins) { if (eje === 'f') ROWS = Math.min(MAX_FILAS_HOJA, ROWS + cantidad); else COLS = Math.min(MAX_COLUMNAS, COLS + cantidad); }
   aplicarMovimientoEstructura(activeSheet, mapa);
   buildTable(); autoSave();
   return true;
@@ -14974,7 +15055,7 @@ function aplicarMarcasSaltos() {
   document.querySelectorAll('.cell.salto-f, .cell.salto-c').forEach(function (e) { e.classList.remove('salto-f', 'salto-c'); });
   var sb = cfgSaltos(false);
   sb.f.forEach(function (r) { for (var c = 0; c < COLS; c++) { var el = document.getElementById('cell_' + cellId(r, c)); if (el) el.classList.add('salto-f'); } });
-  sb.c.forEach(function (c) { for (var r = 0; r < ROWS; r++) { var el = document.getElementById('cell_' + cellId(r, c)); if (el) el.classList.add('salto-c'); } });
+  sb.c.forEach(function (c) { document.querySelectorAll('#sheetTable .cell[data-c="' + c + '"]').forEach(function (el) { el.classList.add('salto-c'); }); });
 }
 function abrirSaltosPagina() {
   var id = idCeldaActiva() || 'A1', m = /^([A-Z]+)(\d+)$/.exec(id), r0 = parseInt(m[2], 10) - 1, c0 = colIndex(m[1]);
@@ -15675,7 +15756,7 @@ function combinarFuentes(fuentes, conEncabezado, conOrigen) {
 }
 function escribirTablaEnHojaNueva(filas) {
   document.getElementById('addTabBtn').click();
-  var MAXF = 5000, nc = filas.reduce(function (m, f) { return Math.max(m, f.length); }, 0), recort = Math.max(0, filas.length - MAXF);
+  var MAXF = MAX_FILAS_HOJA, nc = filas.reduce(function (m, f) { return Math.max(m, f.length); }, 0), recort = Math.max(0, filas.length - MAXF);
   if (recort) filas = filas.slice(0, MAXF);
   if (nc > MAX_COLUMNAS) nc = MAX_COLUMNAS;
   if (filas.length > ROWS) ROWS = filas.length; if (nc > COLS) COLS = nc;
@@ -16506,7 +16587,7 @@ function actualizarInspeccion() {
 // ══════════════════════════════════════════════
 var revisionMarcas = null;
 function formulaRelativa(raw, r, c) {
-  return String(raw).replace(/("(?:[^"]|"")*")|((?:'[^']+'|[A-Za-z_][A-Za-z0-9_.]*)!)?(\$?)([A-Za-z]{1,2})(\$?)(\d{1,5})(?![A-Za-z0-9_(])/g, function (m, str, hoja, a1, cL, a2, rS, off, whole) {
+  return String(raw).replace(/("(?:[^"]|"")*")|((?:'[^']+'|[A-Za-z_][A-Za-z0-9_.]*)!)?(\$?)([A-Za-z]{1,2})(\$?)(\d{1,7})(?![A-Za-z0-9_(])/g, function (m, str, hoja, a1, cL, a2, rS, off, whole) {
     if (str) return str;
     if (off > 0 && /[A-Za-z0-9_.$]/.test(whole.charAt(off - 1)) && !hoja) return m;
     var cc = colIndex(cL.toUpperCase()), rr = parseInt(rS, 10) - 1;
@@ -16621,7 +16702,7 @@ function evaluarFormulaPasos(hoja, crudo) {
   }
   // referencias sueltas → su valor
   var refs = [], vistos = {};
-  actual.replace(/(^|[^A-Za-z0-9_.!'])(\$?[A-Za-z]{1,2}\$?\d{1,5})(?![A-Za-z0-9_(])/g, function (m, a, r) { if (!vistos[r]) { vistos[r] = 1; refs.push(r); } return m; });
+  actual.replace(/(^|[^A-Za-z0-9_.!'])(\$?[A-Za-z]{1,2}\$?\d{1,7})(?![A-Za-z0-9_(])/g, function (m, a, r) { if (!vistos[r]) { vistos[r] = 1; refs.push(r); } return m; });
   if (refs.length && !/^[+-]?\d+(\.\d+)?$/.test(actual.trim())) {
     var tmp = actual, partes = [];
     refs.forEach(function (r) {
@@ -16731,7 +16812,7 @@ function ejecutarSubtotales(b, cfg) {
   }
   for (var gi = grupos.length - 1; gi >= 0; gi--) {
     var g = grupos[gi];
-    if (ROWS + 1 > 5000) { alert('La hoja llegó al máximo de 5000 filas.'); return false; }
+    if (ROWS + 1 > MAX_FILAS_HOJA) { alert('La hoja llegó al máximo de ' + MAX_FILAS_HOJA.toLocaleString('es-CR') + ' filas.'); return false; }
     ROWS++;
     aplicarMovimientoEstructura(activeSheet, crearMapaEstructura('f', g.e + 1, 1, null));
     escribirFila(g.e + 1, etq[gi] + ' Total', g.s, g.e);
@@ -17546,7 +17627,7 @@ function abrirTextoEnColumnas() {
   if (!lim) { alert('Tocá primero una celda de la columna que querés dividir.'); return; }
   if (lim.minC !== lim.maxC) { alert('Seleccioná una sola columna para dividir.'); return; }
   var d = sheetData[activeSheet] || {}, c0 = lim.minC, r1 = lim.minR, r2 = lim.maxR;
-  if (r1 === r2) { for (var r = r1; r < ROWS; r++) { if (String(d[cellId(r, c0)] || '').trim() !== '') r2 = r; } }
+  if (r1 === r2) { var topeTC = filaTopeContenido(); for (var r = r1; r <= topeTC; r++) { if (String(d[cellId(r, c0)] || '').trim() !== '') r2 = r; } }
   if (r2 < r1) r2 = r1;
   abrirPanel('✂ Texto en columnas',
     '<div class="mcrNota" style="margin-bottom:8px;">Divide el texto de <b>' + cellId(r1, c0) + ':' + cellId(r2, c0) + '</b> en varias columnas hacia la derecha.</div>' +
@@ -17671,14 +17752,7 @@ document.getElementById('btnDelRow').addEventListener('click', function () {
   if (!confirm('¿Eliminar la fila ' + (targetRow + 1) + '?')) return;
   snapshot();
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
-  for (var r = targetRow; r < ROWS - 1; r++) {
-    for (var c = 0; c < COLS; c++) {
-      var nk = cellId(r + 1, c), ck = cellId(r, c);
-      if (d[nk] !== undefined) d[ck] = d[nk]; else delete d[ck];
-      if (f[nk] !== undefined) f[ck] = f[nk]; else delete f[ck];
-    }
-  }
-  for (var c2 = 0; c2 < COLS; c2++) { delete d[cellId(ROWS - 1, c2)]; delete f[cellId(ROWS - 1, c2)]; }
+  desplazarFilasPorClave([d, f], targetRow, -1);
   desplazarAltosFila(targetRow, -1);
   buildTable(); autoSave();
 });
@@ -22988,7 +23062,7 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
   reader.onload = function (ev) {
     try {
       var wb = XLSX.read(ev.target.result, { type: 'binary', cellNF: true, cellStyles: true });
-      var MAX_FILAS = 5000, MAX_COLS = MAX_COLUMNAS;
+      var MAX_FILAS = MAX_FILAS_HOJA, MAX_COLS = MAX_COLUMNAS;
       var estilosXlsx = {};
       try { estilosXlsx = leerEstilosXlsx(ev.target.result); } catch (eEst) { estilosXlsx = {}; }
       snapshot();
@@ -25208,7 +25282,7 @@ document.getElementById('backupArchivoInput').addEventListener('change', functio
     if (!confirm('Esto REEMPLAZA todo lo que tenés ahora por el respaldo' + fechaTxt + ' (' + estado.sheets.length + ' hoja(s)). Podés deshacerlo con "Deshacer" justo después. ¿Restaurar?')) { e.target.value = ''; return; }
     try {
       snapshot();
-      if (paquete.filas && paquete.filas > 0) ROWS = Math.min(Math.max(parseInt(paquete.filas, 10) || ROWS, 1), 5000);
+      if (paquete.filas && paquete.filas > 0) ROWS = Math.min(Math.max(parseInt(paquete.filas, 10) || ROWS, 1), MAX_FILAS_HOJA);
       if (paquete.columnas && paquete.columnas > 0) COLS = Math.min(Math.max(parseInt(paquete.columnas, 10) || COLS, 1), MAX_COLUMNAS);
       cargarEstadoDesdeObjeto(estado);
       renderTabs(); autoSave();
