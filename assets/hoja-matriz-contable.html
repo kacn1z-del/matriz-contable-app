@@ -3468,6 +3468,7 @@ var MAX_COLUMNAS = 16384; // hasta XFD, igual que Excel
 // que se ven (más un colchón); a los lados quedan dos espaciadores con el
 // ancho exacto de las que faltan, así la hoja mide lo mismo y se desliza igual.
 var VENT_MIN_COLS = 120, VENT_COLCHON_COLS = 15, CRECER_COLS_PASO = 52;
+var COLS_INICIALES = 131; // A … EA (más que VENT_MIN_COLS, así siempre se dibujan solo las columnas visibles)
 var ventanaCol = { activa: false, ini: 0, fin: 0, pedido: null };
 // Hoja "infinita" (como Excel): las filas aparecen solas al desplazarse o al
 // bajar con las flechas, hasta el mismo tope que Excel. Solo se guardan las
@@ -8156,6 +8157,16 @@ function celdaEl(id) {
   if (wrap) wrap.addEventListener('scroll', ventanaProgramarActualizacion, { passive: true });
   if (wrap) wrap.addEventListener('scroll', revisarCrecimientoPorScroll, { passive: true });
   if (wrap) wrap.addEventListener('scroll', revisarColumnasPorScroll, { passive: true });
+  // Respaldo para iPhone/WebView: al soltar el dedo o terminar el impulso se vuelve a revisar
+  // (en algunos equipos el evento de desplazamiento no llega durante el impulso).
+  function revisarTodoAlSoltar() {
+    setTimeout(function () { revisarCrecimientoPorScroll(); revisarColumnasPorScroll(); ventanaProgramarActualizacion(); }, 120);
+    setTimeout(function () { revisarCrecimientoPorScroll(); revisarColumnasPorScroll(); ventanaProgramarActualizacion(); }, 700);
+  }
+  if (wrap) {
+    wrap.addEventListener('touchend', revisarTodoAlSoltar, { passive: true });
+    wrap.addEventListener('scrollend', revisarTodoAlSoltar, { passive: true });
+  }
   // Imprimir: se dibuja la hoja completa y luego se vuelve a la ventana.
   window.addEventListener('beforeprint', function () { if (ventana.activa) { ventana.forzarCompleta = true; buildTable(); } });
   window.addEventListener('afterprint', function () { if (ventana.forzarCompleta) { ventana.forzarCompleta = false; buildTable(); } });
@@ -8192,6 +8203,9 @@ function buildTable() {
   var ultimaColDatos = -1;
   for (var kc in (sheetData[activeSheet] || {})) { var mcol = /^([A-Z]+)\d+$/.exec(kc); if (mcol) { var ncl = colIndex(mcol[1]); if (ncl > ultimaColDatos) ultimaColDatos = ncl; } }
   if (COLS < ultimaColDatos + 4) COLS = Math.min(MAX_COLUMNAS, ultimaColDatos + 4);
+  // La hoja ya arranca ancha (A…EA), como Excel: no depende de que el teléfono avise
+  // el desplazamiento para ir agregando columnas. Solo se dibujan las que se ven.
+  if (COLS < COLS_INICIALES) COLS = COLS_INICIALES;
   var table = document.getElementById('sheetTable');
   var merges = sheetMerges[activeSheet] || [];
   var freeze = sheetFreeze[activeSheet] || { row: 0, col: 0 };
