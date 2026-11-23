@@ -38,7 +38,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Instalar EAS CLI
         run: npm install -g eas-cli
@@ -51,14 +51,11 @@ jobs:
       - name: Instalar dependencias del proyecto
         run: npm install
 
-      - name: Enlazar/crear el proyecto en EAS (dueño actual de app.json)
-        # NO QUITAR ESTE PASO: aunque app.json ya trae el projectId
-        # escrito a mano, eas-cli en modo no-interactivo a veces no logra
-        # verificarlo solo contra la cuenta de la organización
-        # (keny2410s-organization) y el build falla con "EAS project not
-        # configured" aunque el archivo esté bien. Este paso lo confirma
-        # explícitamente antes de compilar, sin pedir nada a mano.
-        # EXPO_TOKEN debe pertenecer a un miembro de keny2410s-organization.
+      - name: Enlazar el proyecto en EAS (dueño actual de app.json)
+        # NO QUITAR ESTE PASO: confirma el proyecto (kenn-32 de k24101542cs-team)
+        # antes de compilar, sin pedir nada a mano. Si falta, eas-cli en modo
+        # no-interactivo a veces falla con "EAS project not configured".
+        # EXPO_TOKEN debe ser un token de la cuenta que es miembro de k24101542cs-team.
         run: eas init --non-interactive --force
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
