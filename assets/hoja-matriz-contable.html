@@ -10984,13 +10984,13 @@ document.getElementById('feBtnXml').addEventListener('click', function () {
   document.getElementById('saveStatus').textContent = 'XML exportado';
 });
 
-var FIRMAR_FACTURA_URL = 'https://matriz-contable-app.vercel.app/api/firmar-factura';
-var CONSULTAR_ESTADO_URL = 'https://matriz-contable-app.vercel.app/api/consultar-estado';
-var ENVIAR_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-correo-factura';
-var NOTA_CREDITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-credito';
-var NOTA_DEBITO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-nota-debito';
-var MENSAJE_RECEPTOR_URL = 'https://matriz-contable-app.vercel.app/api/emitir-mensaje-receptor';
-var RECIBO_PAGO_URL = 'https://matriz-contable-app.vercel.app/api/emitir-recibo-pago';
+var FIRMAR_FACTURA_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/firmar-factura';
+var CONSULTAR_ESTADO_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/consultar-estado';
+var ENVIAR_CORREO_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/enviar-correo-factura';
+var NOTA_CREDITO_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/emitir-nota-credito';
+var NOTA_DEBITO_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/emitir-nota-debito';
+var MENSAJE_RECEPTOR_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/emitir-mensaje-receptor';
+var RECIBO_PAGO_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/emitir-recibo-pago';
 var VALIDAR_CEDULA_URL = 'https://matriz-certificados.kacn1z.workers.dev/validar-cedula';
 var GUARDAR_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/guardar-plantillas';
 var OBTENER_PLANTILLAS_URL = 'https://matriz-certificados.kacn1z.workers.dev/obtener-plantillas';
@@ -11025,6 +11025,21 @@ window.recibirRespuestaNativa = function (id, ok, httpOk, textoOrError) {
 };
 function fetchViaXHR(url, opciones) {
   opciones = opciones || {};
+  // En browser (GitHub Pages) usamos fetch normal; en la app nativa usamos el puente RPC
+  if (!window.ReactNativeWebView) {
+    return fetch(url, {
+      method: opciones.method || 'GET',
+      headers: opciones.headers || {},
+      body: opciones.body,
+    }).then(function (r) {
+      var status = r.status;
+      return r.text().then(function (texto) {
+        var datos;
+        try { datos = JSON.parse(texto); } catch (e) { datos = { error: texto }; }
+        return { ok: r.ok, status: status, json: function () { return Promise.resolve(datos); }, text: function () { return Promise.resolve(texto); } };
+      });
+    });
+  }
   return new Promise(function (resolve, reject) {
     var id = 'rpc' + (_rpcContador++) + '_' + Date.now();
     var limite = setTimeout(function () {
