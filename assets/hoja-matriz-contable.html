@@ -327,6 +327,11 @@
   th, td { border: 1px solid #e1e1e1; font-size: 14px; padding: 0; text-align: center; }
   th { background: #f3f2f1; color: #444444; font-weight: 500; font-size: 13px; padding: 6px 8px; position: sticky; top: 0; z-index: 3; min-width: 110px; position: relative; border-bottom: 1.5px solid #c8c8c8; }
   th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: #e8e8e8; min-width: 34px; }
+  th.corner.selTodo { cursor: pointer; }
+  th.corner.selTodo::after { content: ''; position: absolute; right: 4px; bottom: 4px; width: 0; height: 0; border-left: 11px solid transparent; border-bottom: 11px solid #9ca3af; }
+  th.corner.selTodo:active::after, th.corner.selTodo.activa::after { border-bottom-color: #217346; }
+  th.corner.selTodo.activa { background: #d3e6d8; }
+  #sheetTable thead th.hdrSelTodo, #sheetTable td.rowhead.hdrSelTodo { background: #d3e6d8 !important; color: #1e5c37; }
   th .colResizer { position: absolute; right: 0; top: 0; width: 8px; height: 100%; cursor: col-resize; touch-action: none; }
   th .colResizer::after { content: ''; position: absolute; right: 3px; top: 20%; width: 2px; height: 60%; background: #999; opacity: .5; }
   td.rowhead { background: #f3f2f1; color: #444444; font-weight: 500; font-size: 13px; width: 34px; position: sticky; left: 0; z-index: 2; border-right: 1.5px solid #c8c8c8; }
@@ -413,6 +418,30 @@
   .psItem button[data-a] { width: 32px; height: 32px; border: 1px solid #d1e7c0; background: #f7fbf2; border-radius: 6px; font-size: 13px; flex-shrink: 0; }
   .psItem input { width: 18px; height: 18px; margin: 0; flex-shrink: 0; }
   .chart-float.psDestello { outline: 3px solid #3b82f6; outline-offset: 2px; }
+  .estBloque { margin-bottom: 10px; }
+  .estBloque > b { display: block; font-size: 13px; color: #245f09; margin-bottom: 4px; }
+  .estTabla { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .estTabla td, .estTabla th { padding: 4px 6px; border-bottom: 1px solid #eef2ea; text-align: left; }
+  .estTabla td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .estTabla.estAncha td, .estTabla.estAncha th { white-space: nowrap; }
+  .estTabla th { color: #6b7280; font-weight: 600; }
+  .cell.valInvalida { position: relative; }
+  .cell.valInvalida::after { content: ''; position: absolute; left: -3px; right: -3px; top: 1px; bottom: 1px; border: 2px solid #e11d48; border-radius: 50%; pointer-events: none; }
+  .tab.agrupada { background: #eaf6e2; }
+  .tab.agrupada::before { content: '🗂 '; font-size: 11px; }
+  #panelParalelo { display: none; flex: 0 0 42%; min-height: 120px; flex-direction: column; border-top: 3px solid #217346; background: #fff; }
+  #panelParalelo.show { display: flex; }
+  #panelParalelo .parBarra { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: #e6f2ea; font-size: 12.5px; color: #1a5c38; flex-shrink: 0; }
+  #panelParalelo .parBarra select { flex: 1; min-width: 0; height: 30px; font-size: 13px; border: 1px solid #cce9ae; border-radius: 6px; background: #fff; }
+  #panelParalelo .parBarra label { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  #panelParalelo .parBarra input { width: auto; margin: 0; }
+  #panelParalelo .parBarra button { width: 32px; height: 30px; border: 1px solid #cce9ae; background: #fff; border-radius: 6px; font-size: 14px; color: #1a5c38; flex-shrink: 0; }
+  #paraleloCuerpo { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
+  .parTabla { border-collapse: collapse; table-layout: fixed; }
+  .parTabla th { position: sticky; top: 0; z-index: 2; background: #f3f2f1; font-weight: 500; font-size: 12px; padding: 4px; }
+  .parTabla th.parFila, .parTabla th.parEsq { position: sticky; left: 0; z-index: 3; min-width: 34px; width: 34px; }
+  .parTabla th.parEsq { z-index: 4; }
+  .parTabla td { font-size: 13px; padding: 0 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid #e1e1e1; }
   .egPunto { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 12.5px; }
   .egPunto input[type=color] { width: 34px; height: 28px; padding: 0; border: 1px solid #ccc; border-radius: 4px; flex-shrink: 0; }
   .egPunto span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -550,6 +579,9 @@
   th.header-activo { box-shadow: inset 0 -2px 0 #107c41; }
   td.rowhead.header-activo { box-shadow: inset -2px 0 0 #107c41; }
   #sheetTable { transform-origin: top left; }
+  #sheetTable.conFondo { background-repeat: repeat; background-position: 0 0; }
+  #sheetTable.conFondo td:not(.rowhead):not(.frozen-col):not(.frozen-row-td), #sheetTable.conFondo td:not(.frozen-col):not(.frozen-row-td) > .cell { background-color: transparent; }
+  @media print { #sheetTable.conFondo { background-image: none !important; } }
   #zoomRange { width: 70px; }
   #fnAutocomplete { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
   #validPicker { display: none; position: absolute; background: #fff; border: 1px solid #cce9ae; border-radius: 8px; max-height: 160px; overflow-y: auto; z-index: 500; box-shadow: 0 4px 10px rgba(0,0,0,.15); left: 0; right: 0; top: 100%; }
@@ -1592,11 +1624,13 @@
         <button id="btnTablaFila" title="Agregar una fila a la tabla donde está el cursor (encima de la fila de totales si hay)">➕ Fila a la tabla</button>
         <button id="btnMisFunciones" title="Crear tus propias funciones con nombre (como LAMBDA) y usarlas en cualquier fórmula">ƒ Mis funciones</button>
         <button id="btnAdminNombres" title="Ver, buscar, renombrar, cambiar o borrar los nombres definidos y ver dónde se usan">🏷 Administrador de nombres</button>
+        <button id="btnEstadisticasLibro" title="Cuántas hojas, celdas, fórmulas, gráficos y más tiene el libro, y el rango usado de cada hoja">📈 Estadísticas del libro</button>
         <button id="btnInspeccionar" title="Antes de compartir: busca notas, historial con nombres, hojas y filas ocultas, texto invisible, vínculos externos, errores y macros, y los limpia">🔍 Inspeccionar libro</button>
         <button id="btnAccesibilidad" title="Revisar que el libro se pueda leer bien por todos: contraste, texto alternativo en gráficos e imágenes, nombres de hoja, celdas combinadas…">♿ Comprobar accesibilidad</button>
         <button id="btnInspDoc" title="Revisar el libro antes de compartirlo: comentarios, hojas ocultas, datos personales, vínculos, nombres rotos…">🕵 Inspeccionar documento</button>
         <button id="btnSello" title="Sellá el libro al cerrar el mes: si alguien cambia algo después, se detecta y se muestra qué cambió">🔏 Sellado del libro</button>
         <button id="btnVersiones" title="Historial de versiones guardado en este dispositivo: comparar y restaurar el libro, una hoja o una celda">📜 Historial de versiones</button>
+        <button id="btnParalelo" title="Dividir la pantalla y ver otra hoja abajo, con desplazamiento sincrónico (Ver en paralelo)">🪟 Ver en paralelo</button>
         <button id="btnZoomSel" title="Agrandar o achicar la hoja para que el rango seleccionado llene la pantalla">🔍 Zoom a la selección</button>
         <button id="btnZoom100" title="Volver al zoom normal (100%)">🔍 Zoom 100%</button>
         <button id="btnCuadricula" title="Mostrar u ocultar las líneas de la cuadrícula de esta hoja (los bordes que pusiste se mantienen)">▦ Cuadrícula</button>
@@ -1605,6 +1639,7 @@
         <button id="btnDividir" title="Ver dos partes de la misma hoja a la vez, cada una con su propio desplazamiento">⊟ Dividir pantalla</button>
         <button id="btnDisenoPagina" title="Ver dónde termina cada página impresa y ajustar papel, orientación, márgenes, encabezado y pie mientras editás">📃 Diseño de página</button>
         <button id="btnSaltoPagina" title="Poner o quitar saltos de página manuales para el PDF / impresión">📄 Saltos de página</button>
+        <button id="btnFondoHoja" title="Poner una imagen de fondo detrás de las celdas de esta hoja (solo en pantalla, no se imprime)">🖼 Fondo</button>
         <button id="btnPanelComentarios" title="Lista de todos los comentarios: abiertos y resueltos">💬 Panel de comentarios</button>
         <button id="btnVinculo" title="Insertar un vínculo a una página web, a otro lugar del libro o a un correo">🔗 Vínculo</button>
         <button id="btnAdminVinculos" title="Ver, ir, cambiar o quitar los vínculos del libro">🔗 Administrar vínculos</button>
@@ -1614,6 +1649,9 @@
         <button id="btnQuitarDuplicados">🧹 Quitar duplicados</button>
         <button id="btnTextoEnColumnas" title="Divide el texto de una columna en varias (por coma, espacio, etc.)">✂ Texto en columnas</button>
         <button id="btnAutofiltro">🔽 Autofiltro</button>
+        <button id="btnEsquemaAuto" title="Agrupar solo las filas de detalle de cada subtotal (=SUMA de las filas de arriba), con botones −/+">📑 Esquema automático</button>
+        <button id="btnBorrarEsquema" title="Quitar todos los grupos −/+ de la hoja">✕ Borrar esquema</button>
+        <button id="btnRelaciones" title="Unir dos tablas por una columna clave para usarlas juntas en la tabla dinámica (Modelo de datos)">🔗 Relaciones</button>
         <button id="btnFiltroAvanzado" title="Filtrar con un rango de criterios (Y/O), copiar el resultado a otro lugar o quedarse con registros únicos">🔍 Filtro avanzado</button>
         <button id="btnTotales">Σ Totales</button>
         <button id="btnSegmentadores">🔘 Segmentadores</button>
@@ -1664,6 +1702,7 @@
         <button id="btnDashboard">📊 Dashboard</button>
         <button id="btnComparativoMensual">📈 Comparativo Mensual</button>
         <button id="btnBuscarObjetivo">🎯 Buscar Objetivo</button>
+        <button id="btnAnalisisDatos" title="Estadística descriptiva, correlación, regresión, prueba t, ANOVA, histograma, media móvil, muestreo y números aleatorios">📊 Análisis de datos</button>
         <button id="btnEscenarios">🧪 Escenarios</button>
         <button id="btnFxLib">fx Funciones</button>
         <button id="btnMacros">▶ Macros</button>
@@ -1815,6 +1854,7 @@
         <button id="btnRelacionar" title="Traer columnas de otra tabla buscando por una columna en común (como un BUSCARV visual)">🔗 Relacionar tablas</button>
         <button id="btnCombinar" title="Juntar varios archivos CSV/TXT, o varias hojas de este libro, en una sola tabla">📚 Combinar archivos u hojas</button>
         <button id="btnImportarCSV" title="Abrir un archivo CSV o TXT (detecta solo el separador)">⬆ Importar CSV/TXT</button>
+        <button id="btnImportarPDF" title="Traer las tablas de un PDF (estado de cuenta, reporte, factura) a la hoja">📄 Desde PDF</button>
         <button id="btnPdfReporte">⬇ PDF Reporte</button>
         <button id="btnExcelExport" title="Exporta todas las hojas en un solo archivo">⬇ Excel</button>
         <button id="btnExcelImport">⬆ Importar Excel</button>
@@ -1886,11 +1926,13 @@
         <button id="btnOcultarHojas" title="Ocultar o mostrar hojas y proteger la estructura del libro">👁 Hojas y libro</button>
         <button id="btnCeldasEditables" title="Elegir qué celdas se pueden editar cuando la hoja está protegida">🔓 Celdas editables…</button>
         <button id="btnProtegerHoja">🔓 Proteger Hoja</button>
+        <button id="btnCifrarLibro" title="Guardar los respaldos del libro cifrados: sin la contraseña no se pueden abrir">🔐 Cifrar con contraseña</button>
         <button id="btnOcultarFormulas" title="Marcar las celdas seleccionadas para que, con la hoja protegida, no se vea su fórmula">🙈 Ocultar fórmulas</button>
       </div>
     </div>
     <div style="display:none;">
       <input type="file" id="reciboFileInput" accept="image/*" capture="environment" style="display:none" />
+ <input type="file" id="pdfImportInput" accept="application/pdf,.pdf" style="display:none" />
       <input type="file" id="csvImportInput" accept=".csv,.txt,.tsv,text/csv,text/plain,text/tab-separated-values,*/*" style="display:none" />
       <input type="file" id="excelFileInput" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,*/*" style="display:none" />
       <input type="file" id="bankFileInput" accept=".csv,.txt,.xlsx,.xls,text/csv,text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,*/*" style="display:none" />
@@ -2099,6 +2141,16 @@
   <div id="gridWrap">
     <table id="sheetTable"></table>
   </div>
+  <div id="panelParalelo">
+    <div class="parBarra">
+      <span>🪟</span>
+      <select id="paraleloHoja" title="Hoja que se ve abajo"></select>
+      <label><input type="checkbox" id="paraleloSinc" checked> Sincrónico</label>
+      <button type="button" id="paraleloIr" title="Intercambiar: pasar a editar esta hoja">⇅</button>
+      <button type="button" id="paraleloCerrar" title="Cerrar la vista en paralelo">✕</button>
+    </div>
+    <div id="paraleloCuerpo"></div>
+  </div>
 
   <div id="tabsRow"></div>
 
@@ -2191,6 +2243,7 @@
     <button class="action-btn" id="btnDuplicate">📄 Duplicar hoja</button>
     <button class="action-btn" id="btnTabColor">🎨 Color de la pestaña</button>
     <div style="display:flex;gap:8px;"><button class="action-btn" id="btnTabIzq" style="flex:1;">◀ Mover a la izquierda</button><button class="action-btn" id="btnTabDer" style="flex:1;">Mover a la derecha ▶</button></div>
+    <button class="action-btn" id="btnTabAgrupar">🗂 Agrupar hojas (editar varias a la vez)</button>
     <button class="action-btn" id="btnTabOcultar">🙈 Ocultar hoja</button>
     <button class="action-btn" id="btnDeleteSheet" style="color:#dc2626;">🗑 Eliminar hoja</button>
     <div class="row"><button class="cancel" id="tabMenuCancel">Cerrar</button></div>
@@ -2400,11 +2453,28 @@
     <h3>✅ Validación de datos</h3>
     <span class="field-label">Rango (ej: C2:C20)</span>
     <input id="validRange" type="text" placeholder="Ej: C2:C20" />
+ <span class="field-label">Permitir</span>
+    <select id="validTipo" style="width:100%;margin-bottom:8px;"><option value="lista">Lista</option><option value="entero">Número entero</option><option value="decimal">Decimal</option><option value="fecha">Fecha</option><option value="hora">Hora</option><option value="longitud">Longitud del texto</option><option value="formula">Personalizada (fórmula)</option></select>
+    <div id="validBoxRegla" style="display:none;">
+      <div id="validBoxOp"><span class="field-label">Datos</span>
+      <select id="validOp" style="width:100%;margin-bottom:8px;"><option value="entre">entre</option><option value="noEntre">no está entre</option><option value="igual">igual a</option><option value="distinto">distinto de</option><option value="mayor">mayor que</option><option value="menor">menor que</option><option value="mayorIgual">mayor o igual que</option><option value="menorIgual">menor o igual que</option></select>
+      <div style="display:flex;gap:6px;"><div style="flex:1;"><span class="field-label" id="validV1Lbl">Mínimo</span><input id="validV1" type="text" placeholder="Ej: 0" /></div>
+      <div style="flex:1;" id="validV2Box"><span class="field-label">Máximo</span><input id="validV2" type="text" placeholder="Ej: 1000000" /></div></div></div>
+      <div id="validBoxFormula" style="display:none;"><span class="field-label">Fórmula (debe dar VERDADERO para que el dato sea válido; escrita para la primera celda del rango)</span>
+      <input id="validFormula" type="text" placeholder="Ej: =Y(LARGO(B2)=9;ESNUMERO(--B2))" /></div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;"><input id="validOmitir" type="checkbox" checked style="width:auto;margin:0;" /> Omitir blancos</label>
+    </div>
+    <div id="validBoxLista">
     <span class="field-label">Lista de valores permitidos (uno por línea o separados por coma)</span>
     <textarea id="validList" rows="4" placeholder="Sí&#10;No&#10;Pendiente" style="width:100%;padding:8px;border:1px solid #cce9ae;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical;"></textarea>
     <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin-bottom:8px;">
       <input id="validNativa" type="checkbox" style="width:auto;margin:0;" /> Mostrar como lista desplegable nativa sobre la celda
     </label>
+    </div>
+    <span class="field-label">Mensaje de error (si escriben un dato no válido)</span>
+    <select id="validEstilo" style="width:100%;margin-bottom:6px;"><option value="detener">⛔ Detener: no deja guardar el dato</option><option value="advertencia">⚠ Advertencia: pregunta si seguir</option><option value="informacion">ℹ Información: solo avisa</option></select>
+    <input id="validErrTitulo" type="text" placeholder="Título (opcional), ej: Monto inválido" />
+    <input id="validErrMsg" type="text" placeholder="Mensaje (opcional), ej: El monto tiene que ser mayor que cero" />
     <span class="field-label">Mensaje de entrada (opcional): aparece al tocar la celda</span>
     <input id="validMsjTitulo" type="text" placeholder="Título, ej: Cédula" />
     <textarea id="validMsjTexto" rows="2" placeholder="Ej: Escribí la cédula sin guiones (9 dígitos)" style="width:100%;padding:8px;border:1px solid #cce9ae;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical;"></textarea>
@@ -2412,6 +2482,10 @@
     <div class="row" style="justify-content:space-between;">
       <button class="cancel" id="validCancel">Cerrar</button>
       <button class="ok" id="validAddBtn">+ Agregar validación</button>
+    </div>
+    <div class="row" style="gap:6px;margin-top:8px;">
+      <button type="button" id="validCirculos" style="flex:1;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;">⭕ Rodear datos no válidos</button>
+      <button type="button" id="validBorrarCirculos" style="flex:1;background:#eee;color:#333;">Borrar círculos</button>
     </div>
     <div id="validRulesList" style="margin-top:10px;"></div>
   </div>
@@ -3264,6 +3338,14 @@
     <p style="font-size:10.5px;color:#889;margin:2px 0 10px;">
       Podés usar <b>{pagina}</b>, <b>{total}</b> y <b>{fecha}</b> — se reemplazan solos al generar el PDF. Si lo dejás vacío, no se agrega pie de página.
     </p>
+    <span class="field-label">Marca de agua (opcional)</span>
+    <input type="text" id="pdfMarcaTexto" list="pdfMarcaLista" placeholder="Ej: BORRADOR" style="margin-bottom:6px;" />
+    <datalist id="pdfMarcaLista"><option value="BORRADOR"></option><option value="CONFIDENCIAL"></option><option value="COPIA"></option><option value="NO VÁLIDO COMO FACTURA"></option><option value="PAGADO"></option></datalist>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;font-size:12px;color:#445;">
+      Color <input type="color" id="pdfMarcaColor" value="#c00000" style="width:44px;height:30px;padding:0;margin:0;" />
+      Intensidad <select id="pdfMarcaOp" style="flex:1;margin:0;"><option value="0.08">Suave</option><option value="0.15">Media</option><option value="0.3">Fuerte</option></select>
+    </div>
+    <label style="display:flex;gap:6px;align-items:center;font-size:12px;color:#245f09;margin-bottom:10px;"><input type="checkbox" id="pdfMarcaLogo" style="width:auto;margin:0;" /> Usar el logo como marca de agua (de fondo, en el centro)</label>
     <button id="pdfExportVista" type="button">👁 Vista previa</button>
     <button id="pdfExportGenerar">Generar PDF</button>
     <button id="pdfExportCancel" style="background:#eee;color:#333;margin-top:6px;">Cancelar</button>
@@ -4070,13 +4152,23 @@ function evaluarOperacionMezclada(expr) {
 }
 function splitArgs(s) {
   var args = [], depth = 0, cur = '', inStr = false, sc = '';
+  // Excel en español separa con ";" y usa la coma como decimal (0,09).
+  // Si en este nivel hay algún ";", la coma ya no separa argumentos.
+  var hayPuntoYComa = false;
+  for (var q = 0, dq = 0, eq = false, cq = ''; q < s.length; q++) {
+    var chq = s[q];
+    if (!eq && (chq === '"' || chq === "'")) { eq = true; cq = chq; continue; }
+    if (eq) { if (chq === cq) eq = false; continue; }
+    if (chq === '(' || chq === '{') dq++; else if (chq === ')' || chq === '}') dq--;
+    else if (chq === ';' && dq === 0) { hayPuntoYComa = true; break; }
+  }
   for (var i = 0; i < s.length; i++) {
     var ch = s[i];
     if (!inStr && (ch === '"' || ch === "'")) { inStr = true; sc = ch; cur += ch; continue; }
     if (inStr && ch === sc) { inStr = false; cur += ch; continue; }
     if (!inStr && ch === '(') depth++;
     if (!inStr && ch === ')') depth--;
-    if (!inStr && (ch === ';' || ch === ',') && depth === 0) { args.push(cur.trim()); cur = ''; continue; }
+    if (!inStr && (ch === ';' || (ch === ',' && !hayPuntoYComa)) && depth === 0) { args.push(cur.trim()); cur = ''; continue; }
     cur += ch;
   }
   if (cur.trim()) args.push(cur.trim());
@@ -4345,7 +4437,7 @@ var REGEX_FUNCIONES = {};
 // ── Funciones propias (estilo LAMBDA con nombre) ──
 // Se guardan en colWidths.__funciones = { NOMBRE: { params: ['a','b'], cuerpo: 'a*b' } }.
 // Al calcular, NOMBRE(x;y) se reescribe como LET(a;x;b;y;cuerpo), que ya sabe resolver el motor.
-var FN_MOTOR_NOMBRES = ["IMAGEN", "IMAGE", "ABS", "ACCRINT", "ACCRINTM", "ADDDAYS", "ADDMONTHS", "ADDRESS", "AGE", "AGREGAR.DIAS", "AGREGAR.MESES", "AGUINALDO", "AND", "APILARH", "APILARV", "ARABIC", "ARABIGO", "ARCHIVOMAKEARRAY", "AREAS", "ARRAYTOTEXT", "ASC", "ASEN", "ASENO", "ASIN", "ATAN2", "AVERAGE", "AVERAGEA", "AVERAGEIF", "AÑO", "AÑO.BISIESTO", "BASE", "BASE.IVA", "BDCONTAR", "BDCONTARA", "BDEXTRAER", "BDMAX", "BDMIN", "BDPROMEDIO", "BDSUMA", "BESSELJ", "BESSELY", "BETA.DIST", "BETA.INV", "BIN.A.DEC", "BIN2DEC", "BINOM.DIST", "BINOM.DIST.RANGE", "BINOM.INV", "BIT.O", "BIT.XO", "BIT.Y", "BITAND", "BITOR", "BITXOR", "BUSCAR.NESIMO", "BUSCAR.REGEX", "BUSCAR.ULTIMA", "BUSCARH", "BUSCARV", "BUSCARX", "BYCOL", "BYROW", "CAMBIAR", "CAPITALIZAR", "CAR", "CARACTER", "CARGAS.SOCIALES", "CEILING", "CEILING.MATH", "CELDA", "CELL", "CESANTIA", "CHAR", "CHEBYSHEV", "CHISQ.DIST.RT", "CHISQ.INV", "CHISQ.INV.RT", "CHISQ.TEST", "CHOOSE", "CHOOSECOLS", "CHOOSEROWS", "CLEAN", "COCIENTE", "COCIENTE.EXACTO", "CODE", "CODIGO", "COEF.DE.CORREL", "COEFICIENTE.ASIMETRIA", "COEFICIENTE.R2", "COINCIDIR", "COINCIDIR.TEXTO", "COINCIDIRX", "COLUMN", "COLUMNA", "COLUMNAS", "COLUMNS", "COMBIN", "COMBINAT", "CONCAT", "CONCATENAR", "CONCATENATE", "CONFIDENCE", "CONFIDENCE.NORM", "CONFIDENCE.T", "CONJUNTOCUBO", "CONTAR", "CONTAR.BLANCO", "CONTAR.OCURRENCIAS", "CONTAR.PALABRAS", "CONTAR.RANGO", "CONTAR.SI", "CONTAR.SI.CONJUNTO", "CONTAR.UNICOS", "CONTARA", "CONTARA.VALORES", "CONV.DECIMAL", "CONV.EN.FRACCION", "CONVERT", "CONVERTIR", "CORREL", "COSH", "COUNT", "COUNT.UNIQUE", "COUNTA", "COUNTALL", "COUNTBLANK", "COUNTIF", "COUNTIFS", "COUPDAYS", "COUPNUM", "COVARIANCE.P", "COVARIANCE.S", "COVARIANZA.M", "COVARIANZA.P", "CRECIMIENTO", "CUARTIL", "CUARTIL.EXC", "CUARTIL.INC", "CUBEKPIMEMBER", "CUBEMEMBER", "CUBEMEMBERPROPERTY", "CUBERANKEDMEMBER", "CUBESET", "CUBESETCOUNT", "CUBEVALUE", "CUMIPMT", "CUMPRINC", "CUPON.DIAS", "CUPON.NUM", "CURTOSIS", "D101", "DATE", "DATEDIF", "DATEVALUE", "DAVERAGE", "DAY", "DAYNAME", "DAYS", "DAYSDIFF", "DB", "DCOUNT", "DCOUNTA", "DDB", "DEC.A.BIN", "DEC.A.HEX", "DEC.A.OCT", "DEC2BIN", "DEC2HEX", "DEC2OCT", "DEGREES", "DELTA", "DERECHA", "DERECHAB", "DESREF", "DESREF.DINAMICO", "DESVEST", "DESVEST.M", "DESVEST.P", "DESVESTA", "DESVESTP", "DESVESTPA", "DETECTARIDIOMA", "DETECTLANGUAGE", "DGET", "DIA.LAB", "DIA.LAB.INTL", "DIAS", "DIAS.EN.MES", "DIAS.LAB", "DIAS.LAB.INTL", "DIAS360", "DIASEM", "DIFERENCIA.DIAS", "DIRECCION", "DISC", "DIST.POISSON", "DISTR.BETA", "DISTR.BETA.INV.N", "DISTR.BETA.N", "DISTR.BINOM", "DISTR.BINOM.N", "DISTR.BINOM.NEG", "DISTR.BINOM.NEG.N", "DISTR.BINOM.SERIE", "DISTR.CHICUAD.CD", "DISTR.EXP", "DISTR.EXP.N", "DISTR.F.CD", "DISTR.F.N", "DISTR.GAMMA", "DISTR.GAMMA.N", "DISTR.HIPERGEOM", "DISTR.HIPERGEOM.N", "DISTR.LOGNORM", "DISTR.LOGNORM.N", "DISTR.NORM", "DISTR.NORM.ESTAND", "DISTR.NORM.ESTAND.N", "DISTR.NORM.N", "DISTR.POISSON", "DISTR.T.2C", "DISTR.T.CD", "DISTR.T.N", "DISTR.WEIBULL", "DIVIDIRTEXTO", "DMAX", "DMIN", "DOLLAR", "DOLLARDE", "DOLLARFR", "DROP", "DSUM", "DURACION", "DURACION.MODIF", "DURATION", "DVS", "EDAD", "EDATE", "EFFECT", "ELEGIR", "ELEGIRCOLS", "ELEGIRFILAS", "ENCODEURL", "ENCOL", "ENCONTRAR", "ENCONTRARB", "ENFILA", "ENMASCARAR", "ENTERO", "ENTERO.SUPERIOR", "EOMONTH", "ERF.PRECISE", "ERFC", "ERFC.PRECISE", "ERROR.TIPICO.XY", "ERROR.TYPE", "ES.FORMULA.TEXTO", "ES.IMPAR", "ES.MULTIPLO", "ES.NUMERO.ENTERO", "ES.PAR", "ESAÑO.BISIESTO", "ESBLANCO", "ESERROR", "ESFORMULA", "ESLOGICO", "ESNOTEXTO", "ESNUMERO", "ESPACIOS", "ESREF", "ESTEXTO", "ESTIMACION.LINEAL", "ESTIMACION.LOGARITMICA", "EVEN", "EXACT", "EXCLUIR", "EXP", "EXPAND", "EXPANDIR", "EXPON.DIST", "EXTRAE", "EXTRAEB", "F.DIST.RT", "F.INV", "F.INV.RT", "F.TEST", "FACT", "FACT.DOBLE", "FACTDOUBLE", "FECHA", "FECHA.MES", "FECHANUMERO", "FIELDVALUE", "FILA", "FILAS", "FILTER", "FILTERXML", "FILTRAR", "FIN.MES", "FIND", "FINDB", "FISHERINV", "FLOOR", "FLOOR.MATH", "FORECAST", "FORECAST.ETS", "FORECAST.LINEAR", "FORMATNUMBER", "FORMATO.NUMERO", "FORMULATEXT", "FORMULATEXTO", "FRAC.AÑO", "FRACCION", "FRECUENCIA", "FREQUENCY", "FUN.ERROR.COMPL", "FUN.ERROR.COMPL.EXACTO", "FUN.ERROR.EXACTO", "FUNCION.GAMMA", "FV", "FVSCHEDULE", "GAMMA.DIST", "GAMMA.INV", "GAMMA.LN", "GAMMA.LN.EXACTO", "GAMMALN", "GAMMALN.PRECISE", "GCD", "GEOMEAN", "GESTEP", "GETPIVOTDATA", "GRADOS", "GROWTH", "HALLAR", "HALLARB", "HARMEAN", "HEX.A.DEC", "HEX2DEC", "HIPERVINCULO", "HLOOKUP", "HOJA", "HOJAS", "HORA", "HORANUMERO", "HOUR", "HSTACK", "HYPERLINK", "HYPGEOM.DIST", "IF", "IFERROR", "IFNA", "IFS", "IGUAL", "IMPORTARDATOSDINAMICOS", "IMPUESTO.D101", "IMPUESTO.RENTA", "INDEX", "INDICE", "INDIRECT", "INDIRECTO", "INFO", "INICIO.MES", "INT", "INT.ACUM", "INT.ACUM.V", "INT.EFECTIVO", "INT.PAGO.DIR", "INTERCEPT", "INTERSECCION.EJE", "INTERVALO.CONFIANZA", "INTERVALO.CONFIANZA.NORM", "INTERVALO.CONFIANZA.T", "INTRATE", "INV.BETA", "INV.CHICUAD", "INV.CHICUAD.CD", "INV.F", "INV.F.CD", "INV.GAMMA", "INV.LOGNORM", "INV.NORM", "INV.NORM.ESTAND", "INV.T", "INV.T.2C", "INVERTIR.TEXTO", "IPMT", "IRR", "ISBLANK", "ISERROR", "ISEVEN", "ISFORMULA", "ISINT", "ISLOGICAL", "ISMULTIPLE", "ISNONTEXT", "ISNUMBER", "ISO.CEILING", "ISO.NUM.DE.SEMANA", "ISODD", "ISOWEEKNUM", "ISPMT", "ISREF", "ISTEXT", "IVA", "IVA.INCLUIDO", "IZQUIERDA", "IZQUIERDAB", "JERARQUIA", "JERARQUIA.EQV", "JERARQUIA.MEDIA", "JIS", "K.ESIMO.MAYOR", "K.ESIMO.MENOR", "KURT", "LAMBDA", "LARGE", "LARGO", "LARGOB", "LASTMATCH", "LCM", "LEFT", "LEFTB", "LEN", "LENB", "LET", "LETRA.DE.TES.PRECIO", "LETRA.DE.TES.RENDTO", "LIMPIAR", "LINEST", "LN", "LOG", "LOG.GAMMA", "LOG10", "LOGEST", "LOGNORM.DIST", "LOGNORM.INV", "LOWER", "M.C.D", "M.C.M", "MAKEARRAY", "MAP", "MASK", "MATCH", "MATRIZALEAT", "MATRIZATEXTO", "MAX", "MAX.SI.CONJUNTO", "MAXA", "MAXIFS", "MAXIMO", "MAYOR.O.IGUAL", "MAYUSC", "MDETERM", "MDURATION", "MEDIA.ACOTADA", "MEDIA.ARMONICA", "MEDIA.GEOMETRICA", "MEDIA.PONDERADA", "MEDIAN", "MEDIANA", "MES", "MID", "MIDB", "MIEMBROCUBO", "MIEMBROKPICUBO", "MIEMBRORANGOCUBO", "MIN", "MIN.SI.CONJUNTO", "MINA", "MINIFS", "MINIMO", "MINUSC", "MINUTE", "MINUTO", "MIRR", "MMULT", "MOD", "MODA", "MODA.VARIOS", "MODE", "MODE.MULT", "MONEDA", "MONEDA.CR", "MONTH", "MONTHNAME", "MONTHSTART", "MONTO.SIN.IVA", "MROUND", "MULTIPLO.INFERIOR", "MULTIPLO.INFERIOR.MAT", "MULTIPLO.SUPERIOR", "MULTIPLO.SUPERIOR.ISO", "MULTIPLO.SUPERIOR.MAT", "MUNIT", "NEGBINOM.DIST", "NETWORKDAYS", "NETWORKDAYS.INTL", "NO", "NOD", "NOMBRE.DIA", "NOMBRE.MES", "NOMINAL", "NOMPROPIO", "NORM.DIST", "NORM.INV", "NORM.S.DIST", "NORM.S.INV", "NORMA.EUCLIDEA", "NORMALIZE", "NOT", "NPER", "NPV", "NSHORA", "NUM.DE.SEMANA", "NUMBERTEXT", "NUMBERVALUE", "NUMERO.A.TEXTO", "NUMERO.ALEATORIO", "NUMERO.DECIMAL", "NUMERO.ROMANO", "O", "OB", "OCT.A.DEC", "OCT2DEC", "ODD", "OFFSET", "OR", "ORDENAR", "P.DURACION", "PADLEFT", "PADRIGHT", "PADRON", "PAGO", "PAGO.INT.ENTRE", "PAGO.PRINC.ENTRE", "PAGOINT", "PAGOPRIN", "PDURATION", "PEARSON", "PENDIENTE", "PER", "PERCENTIL.EXC", "PERCENTIL.INC", "PERCENTILE", "PERCENTILE.EXC", "PERCENTRANK", "PERCENTRANK.EXC", "PERCENTRANK.INC", "PERMUT", "PERMUTACIONES", "PERMUTACIONES.A", "PERMUTATIONA", "PERS", "PI", "PISO", "PLANILLA.CCSS", "PLANILLACCSS", "PMT", "POISSON.DIST", "POSICION.TEXTO", "POTENCIA", "POTENCIA.DE.DIEZ", "POWER", "PPMT", "PREAVISO", "PRECIO", "PRECIO.DESCUENTO", "PRECIO.VENCIMIENTO", "PRICE", "PRICEDISC", "PRICEMAT", "PROB", "PROBABILIDAD", "PRODUCT", "PRODUCTO", "PROMEDIO", "PROMEDIO.SI", "PROMEDIOA", "PRONOSTICO", "PRONOSTICO.ETS", "PRONOSTICO.LINEAL", "PROPER", "PROPIEDADMIEMBROCUBO", "PRUEBA.CHICUAD", "PRUEBA.F", "PRUEBA.F.N", "PRUEBA.FISHER.INV", "PRUEBA.T", "PRUEBA.T.N", "PRUEBA.Z", "PRUEBA.Z.N", "PV", "QUARTER", "QUARTILE", "QUARTILE.EXC", "QUOTIENT", "RADIANES", "RADIANS", "RAIZ", "RANDARRAY", "RANGO.PERCENTIL", "RANGO.PERCENTIL.EXC", "RANGO.PERCENTIL.INC", "RANK", "RANK.AVG", "RATE", "RDTR", "RECORTAR.RANGO", "RECUENTOCONJUNTOCUBO", "REDOND.MULT", "REDONDEA.IMPAR", "REDONDEA.PAR", "REDONDEAR", "REDONDEAR.MAS", "REDONDEAR.MENOS", "REDUCE", "REEMPLAZAR", "REEMPLAZARB", "REEMPLAZARTODO", "REGEXEXTRACCION", "REGEXEXTRACT", "REGEXPRUEBA", "REGEXREEMPLAZAR", "REGEXREPLACE", "REGEXTEST", "RELLENAR.DER", "RELLENAR.IZQ", "RENDTO", "RENDTO.DESC", "RENDTO.VENCIMIENTO", "RENTA.TRABAJO", "REPETIR", "REPLACE", "REPLACEB", "REPT", "RESIDUO", "RETENCIONFUENTE", "REVERSETEXT", "RIGHT", "RIGHTB", "ROMAN", "ROUND", "ROUNDDOWN", "ROUNDUP", "ROW", "ROWS", "RRI", "RSQ", "RTD", "SCAN", "SEARCH", "SEARCHB", "SECOND", "SECUENCIA", "SEGUNDO", "SENH", "SENO", "SEPARAR.TEXTO", "SEQUENCE", "SERIESSUM", "SERVICIOWEB", "SHEET", "SHEETS", "SI", "SI.CONJUNTO", "SI.ERROR", "SI.ND", "SIFECHA", "SIGN", "SIGNO", "SIN", "SINH", "SKEW", "SLN", "SLOPE", "SMALL", "SORT", "SPLIT", "SQRT", "STDEV", "STDEV.P", "STDEV.S", "STDEVA", "STDEVPA", "STEYX", "SUBSTITUTE", "SUBTOTAL", "SUBTOTALES", "SUM", "SUMA", "SUMA.CUADRADOS", "SUMA.SERIES", "SUMAPRODUCTO", "SUMAR.CUADRADOS.DIFERENCIAS", "SUMAR.DIAGONAL", "SUMAR.SI", "SUMAR.SI.CONJUNTO", "SUMAR.X2.MAS.Y2", "SUMAR.X2.MENOS.Y2", "SUMIF", "SUMIFS", "SUMPRODUCT", "SUMSQ", "SUMX2MY2", "SUMX2PY2", "SUMXMY2", "SUSTITUIR", "SWITCH", "T.DIST.2T", "T.DIST.RT", "T.INV", "T.INV.2T", "T.TEST", "TAKE", "TANH", "TASA", "TASA.DESC", "TASA.EQUIVALENTE", "TASA.INT", "TASA.NOMINAL", "TBILLPRICE", "TBILLYIELD", "TC.BCCR", "TECHO", "TENDENCIA", "TEXT", "TEXTAFTER", "TEXTBEFORE", "TEXTJOIN", "TEXTMATCH", "TEXTO", "TEXTOANTES", "TEXTODESPUES", "TEXTSPLIT", "TIME", "TIMEVALUE", "TIPIFICAR", "TIPO", "TIPO.CAMBIO", "TIPO.DE.ERROR", "TIPOCAMBIO", "TIR", "TIRM", "TOCOL", "TOMAR", "TOROW", "TRACE", "TRANSPONER", "TRANSPOSE", "TREND", "TRIM", "TRIMESTRE", "TRIMMEAN", "TRIMRANGE", "TRUNC", "TRUNCAR", "TYPE", "UNICODE", "UNICOS", "UNIQUE", "UNIRCADENAS", "UPPER", "URLCODIF", "VA", "VALIDACEDULA", "VALOR", "VALOR.CAMPO", "VALOR.NUMERO", "VALORCUBO", "VALUE", "VAR", "VAR.M", "VAR.P", "VAR.S", "VARA", "VARIANZA", "VARP", "VARPA", "VDB", "VERDADERO.SI", "VF", "VF.PLAN", "VLOOKUP", "VNA", "VSTACK", "WAVERAGE", "WEBSERVICE", "WEEKDAY", "WEEKNUM", "WEIBULL.DIST", "WORDCOUNT", "WORKDAY", "WORKDAY.INTL", "XLOOKUP", "XMATCH", "XMLFILTRO", "Y", "YEAR", "YEARFRAC", "YIELD", "YIELDDISC", "YIELDMAT", "Z.TEST"];
+var FN_MOTOR_NOMBRES = ["IMAGEN", "IMAGE", "ABS", "ACCRINT", "ACCRINTM", "ADDDAYS", "ADDMONTHS", "ADDRESS", "AGE", "AGREGAR.DIAS", "AGREGAR.MESES", "AGUINALDO", "AND", "APILARH", "APILARV", "ARABIC", "ARABIGO", "ARCHIVOMAKEARRAY", "AREAS", "ARRAYTOTEXT", "ASC", "ASEN", "ASENO", "ASIN", "ATAN2", "AVERAGE", "AVERAGEA", "AVERAGEIF", "AÑO", "AÑO.BISIESTO", "BASE", "BASE.IVA", "BDCONTAR", "BDCONTARA", "BDEXTRAER", "BDMAX", "BDMIN", "BDPROMEDIO", "BDSUMA", "BESSELJ", "BESSELY", "BETA.DIST", "BETA.INV", "BIN.A.DEC", "BIN2DEC", "BINOM.DIST", "BINOM.DIST.RANGE", "BINOM.INV", "BIT.O", "BIT.XO", "BIT.Y", "BITAND", "BITOR", "BITXOR", "BUSCAR.NESIMO", "BUSCAR.REGEX", "BUSCAR.ULTIMA", "BUSCARH", "BUSCARV", "BUSCARX", "BYCOL", "BYROW", "CAMBIAR", "CAPITALIZAR", "CAR", "CARACTER", "CARGAS.SOCIALES", "CEILING", "CEILING.MATH", "CELDA", "CELL", "CESANTIA", "CHAR", "CHEBYSHEV", "CHISQ.DIST.RT", "CHISQ.INV", "CHISQ.INV.RT", "CHISQ.TEST", "CHOOSE", "CHOOSECOLS", "CHOOSEROWS", "CLEAN", "COCIENTE", "COCIENTE.EXACTO", "CODE", "CODIGO", "COEF.DE.CORREL", "COEFICIENTE.ASIMETRIA", "COEFICIENTE.R2", "COINCIDIR", "COINCIDIR.TEXTO", "COINCIDIRX", "COLUMN", "COLUMNA", "COLUMNAS", "COLUMNS", "COMBIN", "COMBINAT", "CONCAT", "CONCATENAR", "CONCATENATE", "CONFIDENCE", "CONFIDENCE.NORM", "CONFIDENCE.T", "CONJUNTOCUBO", "CONTAR", "CONTAR.BLANCO", "CONTAR.OCURRENCIAS", "CONTAR.PALABRAS", "CONTAR.RANGO", "CONTAR.SI", "CONTAR.SI.CONJUNTO", "CONTAR.UNICOS", "CONTARA", "CONTARA.VALORES", "CONV.DECIMAL", "CONV.EN.FRACCION", "CONVERT", "CONVERTIR", "CORREL", "COSH", "COUNT", "COUNT.UNIQUE", "COUNTA", "COUNTALL", "COUNTBLANK", "COUNTIF", "COUNTIFS", "COUPDAYS", "COUPNUM", "COVARIANCE.P", "COVARIANCE.S", "COVARIANZA.M", "COVARIANZA.P", "CRECIMIENTO", "CUARTIL", "CUARTIL.EXC", "CUARTIL.INC", "CUBEKPIMEMBER", "CUBEMEMBER", "CUBEMEMBERPROPERTY", "CUBERANKEDMEMBER", "CUBESET", "CUBESETCOUNT", "CUBEVALUE", "CUMIPMT", "CUMPRINC", "CUPON.DIAS", "CUPON.NUM", "CURTOSIS", "D101", "DATE", "DATEDIF", "DATEVALUE", "DAVERAGE", "DAY", "DAYNAME", "DAYS", "DAYSDIFF", "DB", "DCOUNT", "DCOUNTA", "DDB", "DEC.A.BIN", "DEC.A.HEX", "DEC.A.OCT", "DEC2BIN", "DEC2HEX", "DEC2OCT", "DEGREES", "DELTA", "DERECHA", "DERECHAB", "DESREF", "DESREF.DINAMICO", "DESVEST", "DESVEST.M", "DESVEST.P", "DESVESTA", "DESVESTP", "DESVESTPA", "DETECTARIDIOMA", "DETECTLANGUAGE", "DGET", "DIA.LAB", "DIA.LAB.INTL", "DIAS", "DIAS.EN.MES", "DIAS.LAB", "DIAS.LAB.INTL", "DIAS360", "DIASEM", "DIFERENCIA.DIAS", "DIRECCION", "DISC", "DIST.POISSON", "DISTR.BETA", "DISTR.BETA.INV.N", "DISTR.BETA.N", "DISTR.BINOM", "DISTR.BINOM.N", "DISTR.BINOM.NEG", "DISTR.BINOM.NEG.N", "DISTR.BINOM.SERIE", "DISTR.CHICUAD.CD", "DISTR.EXP", "DISTR.EXP.N", "DISTR.F.CD", "DISTR.F.N", "DISTR.GAMMA", "DISTR.GAMMA.N", "DISTR.HIPERGEOM", "DISTR.HIPERGEOM.N", "DISTR.LOGNORM", "DISTR.LOGNORM.N", "DISTR.NORM", "DISTR.NORM.ESTAND", "DISTR.NORM.ESTAND.N", "DISTR.NORM.N", "DISTR.POISSON", "DISTR.T.2C", "DISTR.T.CD", "DISTR.T.N", "DISTR.WEIBULL", "DIVIDIRTEXTO", "DMAX", "DMIN", "DOLLAR", "DOLLARDE", "DOLLARFR", "DROP", "DSUM", "DURACION", "DURACION.MODIF", "DURATION", "DVS", "EDAD", "EDATE", "EFFECT", "ELEGIR", "ELEGIRCOLS", "ELEGIRFILAS", "ENCODEURL", "ENCOL", "ENCONTRAR", "ENCONTRARB", "ENFILA", "ENMASCARAR", "ENTERO", "ENTERO.SUPERIOR", "EOMONTH", "ERF.PRECISE", "ERFC", "ERFC.PRECISE", "ERROR.TIPICO.XY", "ERROR.TYPE", "ES.FORMULA.TEXTO", "ES.IMPAR", "ES.MULTIPLO", "ES.NUMERO.ENTERO", "ES.PAR", "ESAÑO.BISIESTO", "ESBLANCO", "ESERROR", "ESFORMULA", "ESLOGICO", "ESNOTEXTO", "ESNUMERO", "ESPACIOS", "ESREF", "ESTEXTO", "ESTIMACION.LINEAL", "ESTIMACION.LOGARITMICA", "EVEN", "EXACT", "EXCLUIR", "EXP", "EXPAND", "EXPANDIR", "EXPON.DIST", "EXTRAE", "EXTRAEB", "F.DIST.RT", "F.INV", "F.INV.RT", "F.TEST", "FACT", "FACT.DOBLE", "FACTDOUBLE", "FECHA", "FECHA.MES", "FECHANUMERO", "FIELDVALUE", "FILA", "FILAS", "FILTER", "FILTERXML", "FILTRAR", "FIN.MES", "FIND", "FINDB", "FISHERINV", "FLOOR", "FLOOR.MATH", "FORECAST", "FORECAST.ETS", "FORECAST.LINEAR", "FORMATNUMBER", "FORMATO.NUMERO", "FORMULATEXT", "FORMULATEXTO", "FRAC.AÑO", "FRACCION", "FRECUENCIA", "FREQUENCY", "FUN.ERROR.COMPL", "FUN.ERROR.COMPL.EXACTO", "FUN.ERROR.EXACTO", "FUNCION.GAMMA", "FV", "FVSCHEDULE", "GAMMA.DIST", "GAMMA.INV", "GAMMA.LN", "GAMMA.LN.EXACTO", "GAMMALN", "GAMMALN.PRECISE", "GCD", "GEOMEAN", "GESTEP", "GETPIVOTDATA", "GRADOS", "GROWTH", "HALLAR", "HALLARB", "HARMEAN", "HEX.A.DEC", "HEX2DEC", "HIPERVINCULO", "HLOOKUP", "HOJA", "HOJAS", "HORA", "HORANUMERO", "HOUR", "HSTACK", "HYPERLINK", "HYPGEOM.DIST", "IF", "IFERROR", "IFNA", "IFS", "IGUAL", "IMPORTARDATOSDINAMICOS", "IMPUESTO.D101", "IMPUESTO.RENTA", "INDEX", "INDICE", "INDIRECT", "INDIRECTO", "INFO", "INICIO.MES", "INT", "INT.ACUM", "INT.ACUM.V", "INT.EFECTIVO", "INT.PAGO.DIR", "INTERCEPT", "INTERSECCION.EJE", "INTERVALO.CONFIANZA", "INTERVALO.CONFIANZA.NORM", "INTERVALO.CONFIANZA.T", "INTRATE", "INV.BETA", "INV.CHICUAD", "INV.CHICUAD.CD", "INV.F", "INV.F.CD", "INV.GAMMA", "INV.LOGNORM", "INV.NORM", "INV.NORM.ESTAND", "INV.T", "INV.T.2C", "INVERTIR.TEXTO", "IPMT", "IRR", "ISBLANK", "ISERROR", "ISEVEN", "ISFORMULA", "ISINT", "ISLOGICAL", "ISMULTIPLE", "ISNONTEXT", "ISNUMBER", "ISO.CEILING", "ISO.NUM.DE.SEMANA", "ISODD", "ISOWEEKNUM", "ISPMT", "ISREF", "ISTEXT", "IVA", "IVA.INCLUIDO", "IZQUIERDA", "IZQUIERDAB", "JERARQUIA", "JERARQUIA.EQV", "JERARQUIA.MEDIA", "JIS", "K.ESIMO.MAYOR", "K.ESIMO.MENOR", "KURT", "LAMBDA", "LARGE", "LARGO", "LARGOB", "LASTMATCH", "LCM", "LEFT", "LEFTB", "LEN", "LENB", "LET", "LETRA.DE.TES.PRECIO", "LETRA.DE.TES.RENDTO", "LIMPIAR", "LINEST", "LN", "LOG", "LOG.GAMMA", "LOG10", "LOGEST", "LOGNORM.DIST", "LOGNORM.INV", "LOWER", "M.C.D", "M.C.M", "MAKEARRAY", "MAP", "MASK", "MATCH", "MATRIZALEAT", "MATRIZATEXTO", "MAX", "MAX.SI.CONJUNTO", "MAXA", "MAXIFS", "MAXIMO", "MAYOR.O.IGUAL", "MAYUSC", "MDETERM", "MDURATION", "MEDIA.ACOTADA", "MEDIA.ARMONICA", "MEDIA.GEOMETRICA", "MEDIA.PONDERADA", "MEDIAN", "MEDIANA", "MES", "MID", "MIDB", "MIEMBROCUBO", "MIEMBROKPICUBO", "MIEMBRORANGOCUBO", "MIN", "MIN.SI.CONJUNTO", "MINA", "MINIFS", "MINIMO", "MINUSC", "MINUTE", "MINUTO", "MIRR", "MMULT", "MOD", "MODA", "MODA.VARIOS", "MODE", "MODE.MULT", "MONEDA", "MONEDA.CR", "MONTH", "MONTHNAME", "MONTHSTART", "MONTO.SIN.IVA", "MROUND", "MULTIPLO.INFERIOR", "MULTIPLO.INFERIOR.MAT", "MULTIPLO.SUPERIOR", "MULTIPLO.SUPERIOR.ISO", "MULTIPLO.SUPERIOR.MAT", "MUNIT", "NEGBINOM.DIST", "NETWORKDAYS", "NETWORKDAYS.INTL", "NO", "NOD", "NOMBRE.DIA", "NOMBRE.MES", "NOMINAL", "NOMPROPIO", "NORM.DIST", "NORM.INV", "NORM.S.DIST", "NORM.S.INV", "NORMA.EUCLIDEA", "NORMALIZE", "NOT", "NPER", "NPV", "NSHORA", "NUM.DE.SEMANA", "NUMBERTEXT", "NUMBERVALUE", "NUMERO.A.TEXTO", "NUMERO.ALEATORIO", "NUMERO.DECIMAL", "NUMERO.ROMANO", "O", "OB", "OCT.A.DEC", "OCT2DEC", "ODD", "OFFSET", "OR", "ORDENAR", "P.DURACION", "PADLEFT", "PADRIGHT", "PADRON", "PAGO", "PAGO.INT.ENTRE", "PAGO.PRINC.ENTRE", "PAGOINT", "PAGOPRIN", "PDURATION", "PEARSON", "PENDIENTE", "PER", "PERCENTIL.EXC", "PERCENTIL.INC", "PERCENTILE", "PERCENTILE.EXC", "PERCENTRANK", "PERCENTRANK.EXC", "PERCENTRANK.INC", "PERMUT", "PERMUTACIONES", "PERMUTACIONES.A", "PERMUTATIONA", "PERS", "PI", "PISO", "PLANILLA.CCSS", "PLANILLACCSS", "PMT", "POISSON.DIST", "POSICION.TEXTO", "POTENCIA", "POTENCIA.DE.DIEZ", "POWER", "PPMT", "PREAVISO", "PRECIO", "PRECIO.DESCUENTO", "PRECIO.VENCIMIENTO", "PRICE", "PRICEDISC", "PRICEMAT", "PROB", "PROBABILIDAD", "PRODUCT", "PRODUCTO", "PROMEDIO", "PROMEDIO.SI", "PROMEDIOA", "PRONOSTICO", "PRONOSTICO.ETS", "PRONOSTICO.LINEAL", "PROPER", "PROPIEDADMIEMBROCUBO", "PRUEBA.CHICUAD", "PRUEBA.F", "PRUEBA.F.N", "PRUEBA.FISHER.INV", "PRUEBA.T", "PRUEBA.T.N", "PRUEBA.Z", "PRUEBA.Z.N", "PV", "QUARTER", "QUARTILE", "QUARTILE.EXC", "QUOTIENT", "RADIANES", "RADIANS", "RAIZ", "RANDARRAY", "RANGO.PERCENTIL", "RANGO.PERCENTIL.EXC", "RANGO.PERCENTIL.INC", "RANK", "RANK.AVG", "RATE", "RDTR", "RECORTAR.RANGO", "RECUENTOCONJUNTOCUBO", "REDOND.MULT", "REDONDEA.IMPAR", "REDONDEA.PAR", "REDONDEAR", "REDONDEAR.MAS", "REDONDEAR.MENOS", "REDUCE", "REEMPLAZAR", "REEMPLAZARB", "REEMPLAZARTODO", "REGEXEXTRACCION", "REGEXEXTRACT", "REGEXPRUEBA", "REGEXREEMPLAZAR", "REGEXREPLACE", "REGEXTEST", "RELLENAR.DER", "RELLENAR.IZQ", "RENDTO", "RENDTO.DESC", "RENDTO.VENCIMIENTO", "RENTA.TRABAJO", "REPETIR", "REPLACE", "REPLACEB", "REPT", "RESIDUO", "RETENCIONFUENTE", "REVERSETEXT", "RIGHT", "RIGHTB", "ROMAN", "ROUND", "ROUNDDOWN", "ROUNDUP", "ROW", "ROWS", "RRI", "RSQ", "RTD", "SCAN", "SEARCH", "SEARCHB", "SECOND", "SECUENCIA", "SEGUNDO", "SENH", "SENO", "SEPARAR.TEXTO", "SEQUENCE", "SERIESSUM", "SERVICIOWEB", "SHEET", "SHEETS", "SI", "SI.CONJUNTO", "SI.ERROR", "SI.ND", "SIFECHA", "SIGN", "SIGNO", "SIN", "SINH", "SKEW", "SLN", "SLOPE", "SMALL", "SORT", "SPLIT", "SQRT", "STDEV", "STDEV.P", "STDEV.S", "STDEVA", "STDEVPA", "STEYX", "SUBSTITUTE", "SUBTOTAL", "SUBTOTALES", "SUM", "SUMA", "SUMA.CUADRADOS", "SUMA.SERIES", "SUMAPRODUCTO", "SUMAR.CUADRADOS.DIFERENCIAS", "SUMAR.DIAGONAL", "SUMAR.SI", "SUMAR.SI.CONJUNTO", "SUMAR.X2.MAS.Y2", "SUMAR.X2.MENOS.Y2", "SUMIF", "SUMIFS", "SUMPRODUCT", "SUMSQ", "SUMX2MY2", "SUMX2PY2", "SUMXMY2", "SUSTITUIR", "SWITCH", "T.DIST.2T", "T.DIST.RT", "T.INV", "T.INV.2T", "T.TEST", "TAKE", "TANH", "TASA", "TASA.DESC", "TASA.EQUIVALENTE", "TASA.INT", "TASA.NOMINAL", "TBILLPRICE", "TBILLYIELD", "TC.BCCR", "TECHO", "TENDENCIA", "TEXT", "TEXTAFTER", "TEXTBEFORE", "TEXTJOIN", "TEXTMATCH", "TEXTO", "TEXTOANTES", "TEXTODESPUES", "TEXTSPLIT", "TIME", "TIMEVALUE", "TIPIFICAR", "TIPO", "TIPO.CAMBIO", "TIPO.DE.ERROR", "TIPOCAMBIO", "TIR", "TIRM", "TOCOL", "TOMAR", "TOROW", "TRACE", "TRANSPONER", "TRANSPOSE", "TREND", "TRIM", "TRIMESTRE", "TRIMMEAN", "TRIMRANGE", "TRUNC", "TRUNCAR", "TYPE", "UNICODE", "UNICOS", "UNIQUE", "UNIRCADENAS", "UPPER", "URLCODIF", "VA", "VALIDACEDULA", "VALOR", "VALOR.CAMPO", "VALOR.NUMERO", "VALORCUBO", "VALUE", "VAR", "VAR.M", "VAR.P", "VAR.S", "VARA", "VARIANZA", "VARP", "VARPA", "VDB", "VERDADERO.SI", "VF", "VF.PLAN", "VLOOKUP", "VNA", "VSTACK", "WAVERAGE", "WEBSERVICE", "WEEKDAY", "WEEKNUM", "WEIBULL.DIST", "WORDCOUNT", "WORKDAY", "WORKDAY.INTL", "XLOOKUP", "XMATCH", "XMLFILTRO", "Y", "YEAR", "YEARFRAC", "YIELD", "YIELDDISC", "YIELDMAT", "Z.TEST", "TIR.NO.PER", "XIRR", "VNA.NO.PER", "XNPV", "SYD", "AMORTIZ.LIN", "AMORLINC", "AMORTIZ.PROGRE", "AMORDEGRC", "AGREGAR", "AGGREGATE", "PORCENTAJEDE", "PERCENTOF", "COMPLEJO", "COMPLEX", "VALOR.A.TEXTO", "VALUETOTEXT", "ORDENARPOR", "SORTBY", "AJUSTARFILAS", "WRAPROWS", "AJUSTARCOLS", "WRAPCOLS", "AGRUPARPOR", "GROUPBY", "MINVERSA", "MINVERSE"];
 function funcionesPropias() { return (colWidths.__funciones && typeof colWidths.__funciones === 'object' && !Array.isArray(colWidths.__funciones)) ? colWidths.__funciones : {}; }
 function expandirFuncionesPropias(expr, prof) {
   var F = funcionesPropias(); prof = prof || 0;
@@ -6312,6 +6404,131 @@ if((inner=matchFn('FECHANUMERO|DATEVALUE'))!==null){
       var base=new Date(1900,0,1);
       return String(Math.round((d14_-base)/86400000)+1);
     }
+// ── Funciones que faltaban (financieras, matrices, texto, números complejos) ──
+// TIR.NO.PER / XIRR: tasa interna de retorno con fechas irregulares (base 365)
+if ((inner = matchFn('TIR\\.NO\\.PER|XIRR')) !== null) {
+      args = splitArgs(inner);
+      if (!isRange(args[0]) || !isRange(args[1])) return '#VALOR!';
+      var flujosX = rangeVals(args[0]).map(numeroDeValorFin), fechasX = rangeVals(args[1]).map(serialDeValorFin);
+      if (flujosX.length !== fechasX.length || flujosX.length < 2) return '#NUM!';
+      if (flujosX.some(isNaN) || fechasX.some(isNaN)) return '#VALOR!';
+      var hayPos = flujosX.some(function (v) { return v > 0; }), hayNeg = flujosX.some(function (v) { return v < 0; });
+      if (!hayPos || !hayNeg) return '#NUM!';
+      var tasaX = args[2] !== undefined && String(args[2]).trim() !== '' ? resolveNum(args[2]) : 0.1;
+      var tirX = tirNoPeriodica(flujosX, fechasX, tasaX);
+      return tirX === null ? '#NUM!' : fmtNum(tirX);
+    }
+// VNA.NO.PER / XNPV: valor actual neto con fechas irregulares
+if ((inner = matchFn('VNA\\.NO\\.PER|XNPV')) !== null) {
+      args = splitArgs(inner);
+      if (!isRange(args[1]) || !isRange(args[2])) return '#VALOR!';
+      var tasaV = resolveNum(args[0]);
+      var flujosV = rangeVals(args[1]).map(numeroDeValorFin), fechasV = rangeVals(args[2]).map(serialDeValorFin);
+      if (flujosV.length !== fechasV.length || !flujosV.length) return '#NUM!';
+      if (flujosV.some(isNaN) || fechasV.some(isNaN)) return '#VALOR!';
+      return fmtNum(vnaNoPeriodica(tasaV, flujosV, fechasV));
+    }
+// SYD: depreciación por suma de dígitos de los años
+if ((inner = matchFn('SYD')) !== null) {
+      args = splitArgs(inner);
+      var costoS = resolveNum(args[0]), residualS = resolveNum(args[1]), vidaS = resolveNum(args[2]), perS = resolveNum(args[3]);
+      if (vidaS <= 0 || perS <= 0 || perS > vidaS) return '#NUM!';
+      return fmtNum((costoS - residualS) * (vidaS - perS + 1) * 2 / (vidaS * (vidaS + 1)));
+    }
+// AMORTIZ.LIN / AMORLINC: depreciación lineal prorrateada (sistema contable francés)
+if ((inner = matchFn('AMORTIZ\\.LIN|AMORLINC')) !== null) {
+      args = splitArgs(inner);
+      var pL = parametrosAmortizacion(args);
+      if (!pL) return '#NUM!';
+      var unaL = pL.costo * pL.tasa;
+      var ceroL = fraccionAnioFin(pL.compra, pL.primero, pL.base) * pL.tasa * pL.costo;
+      var completosL = Math.floor((pL.costo - pL.residual - ceroL) / unaL);
+      if (pL.periodo === 0) return fmtNum(ceroL);
+      if (pL.periodo <= completosL) return fmtNum(unaL);
+      if (pL.periodo === completosL + 1) return fmtNum(Math.max(0, pL.costo - pL.residual - unaL * completosL - ceroL));
+      return fmtNum(0);
+    }
+// AMORTIZ.PROGRE / AMORDEGRC: depreciación decreciente con coeficiente
+if ((inner = matchFn('AMORTIZ\\.PROGRE|AMORDEGRC')) !== null) {
+      args = splitArgs(inner);
+      var pD = parametrosAmortizacion(args);
+      if (!pD) return '#NUM!';
+      var vidaD = 1 / pD.tasa;
+      var coefD = vidaD < 3 ? 1 : vidaD < 5 ? 1.5 : vidaD <= 6 ? 2 : 2.5;
+      var tasaD = pD.tasa * coefD;
+      var cuotaD = Math.round(fraccionAnioFin(pD.compra, pD.primero, pD.base) * tasaD * pD.costo);
+      var costoD = pD.costo - cuotaD;
+      var restoD = costoD - pD.residual;
+      for (var nD = 0; nD < pD.periodo; nD++) {
+        cuotaD = Math.round(tasaD * costoD);
+        restoD -= cuotaD;
+        if (restoD < 0) return fmtNum(pD.periodo - nD <= 1 ? Math.round(costoD * 0.5) : 0);
+        costoD -= cuotaD;
+      }
+      return fmtNum(cuotaD);
+    }
+// AGREGAR / AGGREGATE: como SUBTOTALES, pero puede ignorar errores
+if ((inner = matchFn('AGREGAR|AGGREGATE')) !== null) {
+      args = splitArgs(inner);
+      var fnA = Math.round(resolveNum(args[0])), opA = Math.round(resolveNum(args[1] || '0'));
+      if (fnA < 1 || fnA > 19) return '#VALOR!';
+      var ignorarErr = [2, 3, 6, 7].indexOf(opA) !== -1;
+      var crudosA = [];
+      var hastaA = fnA >= 14 ? 3 : args.length;
+      for (var ia = 2; ia < hastaA; ia++) {
+        if (isRange(args[ia])) rangeVals(args[ia]).forEach(function (v) { crudosA.push(v); });
+        else crudosA.push(resolveArg(args[ia]));
+      }
+      var numsA = [], contA = 0;
+      for (var ja = 0; ja < crudosA.length; ja++) {
+        var vA = crudosA[ja];
+        var esErrA = typeof vA === 'string' && /^#[A-Z\/0-9!?_]+/.test(vA.trim());
+        if (esErrA) { if (ignorarErr) continue; return vA; }
+        if (vA === '' || vA === null || vA === undefined) continue;
+        contA++;
+        var nA = numeroDeValorFin(vA);
+        if (!isNaN(nA) && typeof vA !== 'boolean') numsA.push(nA);
+      }
+      var kA = fnA >= 14 ? resolveNum(args[3]) : null;
+      var resA = agregarCalculo(fnA, numsA, contA, kA);
+      return typeof resA === 'string' ? resA : fmtNum(resA);
+    }
+// PORCENTAJEDE / PERCENTOF: qué parte del total representa un subconjunto
+if ((inner = matchFn('PORCENTAJEDE|PERCENTOF')) !== null) {
+      args = splitArgs(inner);
+      var sumaParte = isRange(args[0]) ? rangeNums(args[0]).reduce(function (s, x) { return s + (isNaN(x) ? 0 : x); }, 0) : resolveNum(args[0]);
+      var sumaTotal = isRange(args[1]) ? rangeNums(args[1]).reduce(function (s, x) { return s + (isNaN(x) ? 0 : x); }, 0) : resolveNum(args[1]);
+      if (!sumaTotal) return '#DIV/0!';
+      return fmtNum(sumaParte / sumaTotal);
+    }
+// COMPLEJO / COMPLEX: arma un número complejo "a+bi"
+if ((inner = matchFn('COMPLEJO|COMPLEX')) !== null) {
+      args = splitArgs(inner);
+      var reC = resolveNum(args[0]), imC = resolveNum(args[1]);
+      var sufC = args[2] !== undefined && String(args[2]).trim() !== '' ? String(resolveArg(args[2])) : 'i';
+      if (sufC !== 'i' && sufC !== 'j') return '#VALOR!';
+      if (isNaN(reC) || isNaN(imC)) return '#VALOR!';
+      return textoComplejo(reC, imC, sufC);
+    }
+// VALOR.A.TEXTO / VALUETOTEXT: 0 = conciso, 1 = estricto (texto entre comillas)
+if ((inner = matchFn('VALOR\\.A\\.TEXTO|VALUETOTEXT')) !== null) {
+      args = splitArgs(inner);
+      var valT = resolveArg(args[0]);
+      var estrictoT = args[1] !== undefined && String(args[1]).trim() !== '' && resolveNum(args[1]) === 1;
+      var txtT = valT === true ? 'VERDADERO' : valT === false ? 'FALSO' : String(valT);
+      var esNumT = txtT.trim() !== '' && !isNaN(parseFloat(limpiaNum(txtT))) && /^[-+]?[\d\s.,]+$/.test(txtT.trim());
+      if (estrictoT && !esNumT && txtT !== 'VERDADERO' && txtT !== 'FALSO' && txtT.charAt(0) !== '#') return '"' + txtT.replace(/"/g, '""') + '"';
+      return txtT;
+    }
+// Versión anidada de las funciones de matriz nuevas (=SUMA(ORDENARPOR(...)) etc.):
+// devuelve los valores separados por "; ", igual que ORDENAR o UNICOS.
+if ((inner = matchFn('ORDENARPOR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|MINVERSA|MINVERSE')) !== null) {
+      var nomArr = NOMBRES_ARRAY_NUEVOS[exprUp.slice(0, exprUp.indexOf('(')).trim()] || exprUp.slice(0, exprUp.indexOf('(')).trim();
+      var filasArr = calcularFormulaArray(hojaFormulaActual || activeSheet, nomArr, inner);
+      var planoArr = [];
+      filasArr.forEach(function (f) { f.forEach(function (v) { planoArr.push(v); }); });
+      return planoArr.join('; ');
+    }
 if((inner=matchFn('DIAS360'))!==null){
       args=splitArgs(inner);
       var d15_=fechaDe(String(resolveArg(args[0])));
@@ -6428,7 +6645,16 @@ if((inner=matchFn('TIPO\.DE\.ERROR|ERROR\.TYPE'))!==null){
       return String(errMap[v1]||'#N/A');
     }
 if((inner=matchFn('HOJA|SHEET'))!==null){
-      return String((typeof activeSheet!=='undefined'?activeSheet:0)+1);
+      // Número de la hoja (1, 2, 3…), como Excel. Sin argumento: la hoja de la fórmula.
+      var argHoja=(inner||'').trim(), nomHoja=hojaFormulaActual||activeSheet;
+      if(argHoja!==''){
+        var mHoja=argHoja.match(/^(?:'([^']+)'|([^'!]+))!/);
+        if(mHoja) nomHoja=mHoja[1]||mHoja[2];
+        else if(/^".*"$/.test(argHoja)) nomHoja=argHoja.slice(1,-1);
+        else if(!/^\$?[A-Za-z]+\$?\d+(:\$?[A-Za-z]+\$?\d+)?$/.test(argHoja)) nomHoja=String(resolveArg(argHoja));
+      }
+      var ixHoja=sheets.indexOf(nomHoja);
+      return ixHoja===-1?'#N/A':String(ixHoja+1);
     }
 if((inner=matchFn('HOJAS|SHEETS'))!==null){
       return String(typeof sheets!=='undefined'?sheets.length:1);
@@ -6455,11 +6681,20 @@ if((inner=matchFn('INFO'))!==null){
     }
 if((inner=matchFn('CELDA|CELL'))!==null){
       args=splitArgs(inner);
-      var tipo2=String(resolveArg(args[0])).toLowerCase();
-      var ref3=args[1]?args[1].trim().toUpperCase():cellId(row,col);
-      if(tipo2==='address')return '$'+ref3;
+      var tipo2=String(resolveArg(args[0])).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      // Nombres en español (Excel en español) → los mismos tipos en inglés
+      var tiposCelda={fila:'row',columna:'col',direccion:'address',contenido:'contents',tipo:'type',formato:'format',ancho:'width',nombrearchivo:'filename',prefijo:'prefix',proteger:'protect',color:'color',parentesis:'parentheses'};
+      tipo2=tiposCelda[tipo2]||tipo2;
+      var ref3=args[1]?args[1].trim().toUpperCase().replace(/\$/g,''):(pilaEvaluacionFormulas.length?String(pilaEvaluacionFormulas[pilaEvaluacionFormulas.length-1]).split('!').pop():'A1');
+      if(ref3.indexOf('!')!==-1) ref3=ref3.split('!').pop();
+      ref3=ref3.split(':')[0];
+      if(tipo2==='address')return '$'+(ref3.match(/[A-Z]+/)||['A'])[0]+'$'+(ref3.match(/\d+/)||['1'])[0];
       if(tipo2==='col')return String(colIndex((ref3.match(/[A-Z]+/)||['A'])[0])+1);
       if(tipo2==='row')return String(parseInt((ref3.match(/\d+/)||[1])[0]));
+      if(tipo2==='filename')return (typeof nombreLibroActual==='string'&&nombreLibroActual?nombreLibroActual:'Libro')+'['+(hojaFormulaActual||activeSheet)+']';
+      if(tipo2==='width'){var cwC=colWidths[hojaFormulaActual||activeSheet];var wC=cwC&&cwC[colIndex((ref3.match(/[A-Z]+/)||['A'])[0])];return String(Math.round((wC||110)/7));}
+      if(tipo2==='prefix'||tipo2==='color'||tipo2==='parentheses')return tipo2==='prefix'?'':'0';
+      if(tipo2==='protect')return '1';
       if(tipo2==='contents')return String(computeValue(ref3));
       if(tipo2==='type'){var v4=computeValue(ref3);return v4===''?'b':(!isNaN(parseFloat(v4))?'n':'l');}
       if(tipo2==='format')return 'G';
@@ -6471,7 +6706,7 @@ if ((inner=matchFn('DISTR\.BETA\.N|DISTR\.BETA|BETA\.DIST'))!==null) {
       var acum=String(resolveArg(args[3]||'VERDADERO')).toUpperCase()!=='FALSO';
       var lo=args[4]?resolveNum(args[4]):0, hi=args[5]?resolveNum(args[5]):1;
       var xn=(x1-lo)/(hi-lo);
-      return fmtNum(acum?betaInc(xn,a1,b1):Math.pow(xn,a1-1)*Math.pow(1-xn,b1-1)/Math.exp(lnGamma(a1)+lnGamma(b1)-lnGamma(a1+b1)));
+      return fmtNum(acum?betaIncAd(xn,a1,b1):Math.pow(xn,a1-1)*Math.pow(1-xn,b1-1)/Math.exp(lnGammaAd(a1)+lnGammaAd(b1)-lnGammaAd(a1+b1)));
     }
 if ((inner=matchFn('DISTR\.BETA\.INV\.N|INV\.BETA|BETA\.INV'))!==null) {
       args=splitArgs(inner);
@@ -6479,7 +6714,7 @@ if ((inner=matchFn('DISTR\.BETA\.INV\.N|INV\.BETA|BETA\.INV'))!==null) {
       var lo2=args[3]?resolveNum(args[3]):0, hi2=args[4]?resolveNum(args[4]):1;
       // Binary search
       var lo3=0,hi3=1,mid,iter=0;
-      while (hi3-lo3>1e-10&&iter<100) { mid=(lo3+hi3)/2; if(betaInc(mid,a2,b2)<p1) lo3=mid; else hi3=mid; iter++; }
+      while (hi3-lo3>1e-10&&iter<100) { mid=(lo3+hi3)/2; if(betaIncAd(mid,a2,b2)<p1) lo3=mid; else hi3=mid; iter++; }
       return fmtNum(lo2+(lo3+hi3)/2*(hi2-lo2));
     }
 if ((inner=matchFn('DISTR\.GAMMA\.N|DISTR\.GAMMA|GAMMA\.DIST'))!==null) {
@@ -6489,7 +6724,7 @@ if ((inner=matchFn('DISTR\.GAMMA\.N|DISTR\.GAMMA|GAMMA\.DIST'))!==null) {
       if (acum2) {
         // Regularized incomplete gamma
         var xn2=x2/b3, sum=0, t1=1;
-        for (var k=0;k<100;k++) { if(k>0)t1*=xn2/k; sum+=t1*Math.exp(-xn2+a3*Math.log(xn2)-lnGamma(a3+k+1)+lnGamma(a3)); }
+        for (var k=0;k<100;k++) { if(k>0)t1*=xn2/k; sum+=t1*Math.exp(-xn2+a3*Math.log(xn2)-lnGammaAd(a3+k+1)+lnGammaAd(a3)); }
         return fmtNum(Math.min(1,Math.max(0,1-Math.exp(-xn2)*Math.pow(xn2,a3)/gamma(a3))));
       }
       return fmtNum(Math.pow(x2,a3-1)*Math.exp(-x2/b3)/(Math.pow(b3,a3)*gamma(a3)));
@@ -6502,7 +6737,7 @@ if ((inner=matchFn('INV\.GAMMA|GAMMA\.INV'))!==null) {
       return fmtNum(Math.max(0,x3)*b4);
     }
 if ((inner=matchFn('GAMMA\.LN\.EXACTO|GAMMA\.LN|GAMMALN'))!==null) {
-      return fmtNum(lnGamma(resolveNum(splitArgs(inner)[0])));
+      return fmtNum(lnGammaAd(resolveNum(splitArgs(inner)[0])));
     }
 if ((inner=matchFn('FUNCION\.GAMMA|GAMMA(?!\.)'))!==null) {
       return fmtNum(gamma(resolveNum(splitArgs(inner)[0])));
@@ -6563,7 +6798,7 @@ if ((inner=matchFn('INV\.F\.CD|INV\.F|F\.INV\.RT|F\.INV'))!==null) {
       args=splitArgs(inner);
       var p7=resolveNum(args[0]),d1_=resolveNum(args[1]),d2_=resolveNum(args[2]);
       // Approximation via beta inverse
-      var bInv=betaInc(d1_*p7/(d1_*p7+d2_),d1_/2,d2_/2);
+      var bInv=betaIncAd(d1_*p7/(d1_*p7+d2_),d1_/2,d2_/2);
       return fmtNum(d2_*p7/(d1_*(1-p7)));
     }
 if ((inner=matchFn('INV\.CHICUAD\.CD|INV\.CHICUAD|CHISQ\.INV\.RT|CHISQ\.INV'))!==null) {
@@ -6779,11 +7014,12 @@ if ((inner=matchFn('INTERVALO\.CONFIANZA\.T|CONFIDENCE\.T'))!==null) {
 if ((inner=matchFn('PRONOSTICO\.ETS|FORECAST\.ETS'))!==null) {
       args=splitArgs(inner);
       var vals2=isRange(args[1])?rangeNums(args[1]):[];
-      if (!vals2.length) return '#VALOR!';
-      // Simple exponential smoothing
-      var alpha3=0.3,smoothed=vals2[0];
-      for (var i8=1;i8<vals2.length;i8++) smoothed=alpha3*vals2[i8]+(1-alpha3)*smoothed;
-      return fmtNum(smoothed);
+      if (vals2.length<2) return '#VALOR!';
+      var objetivoEts=resolveNum(args[0]);
+      var tiempoEts=isRange(args[2])?rangeNums(args[2]):vals2.map(function(_,i){return i+1;});
+      if (tiempoEts.length!==vals2.length) return '#N/A';
+      var r=pronosticoEts(vals2,tiempoEts,objetivoEts);
+      return r===null?'#NUM!':fmtNum(r);
     }
 if ((inner=matchFn('SUMA\.SERIES|SERIESSUM'))!==null) {
       args=splitArgs(inner);
@@ -6826,7 +7062,7 @@ if ((inner=matchFn('FACT\.DOBLE|FACTDOUBLE'))!==null) {
       return fmtNum(f1);
     }
 if ((inner=matchFn('LOG\.GAMMA|GAMMALN\.PRECISE'))!==null) {
-      return fmtNum(lnGamma(resolveNum(splitArgs(inner)[0])));
+      return fmtNum(lnGammaAd(resolveNum(splitArgs(inner)[0])));
     }
 if ((inner=matchFn('CHEBYSHEV'))!==null) {
       args=splitArgs(inner);
@@ -7587,11 +7823,180 @@ function computeValueSinCache(id, hojaDeEstaCelda, clave) {
 // renderAllCells() y se "pinta" encima, igual que el formato condicional,
 // así siempre queda vivo y nunca se guarda como texto suelto.
 // ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// Ayudas para las funciones financieras y de matriz agregadas
+// (TIR.NO.PER, VNA.NO.PER, AMORTIZ.LIN/PROGRE, AGREGAR, ORDENARPOR,
+// AGRUPARPOR, AJUSTARFILAS/COLS, MINVERSA, COMPLEJO).
+// ══════════════════════════════════════════════
+// PRONOSTICO.ETS: suavizado exponencial doble (Holt) con nivel y tendencia;
+// alfa y beta se escogen buscando el menor error cuadrático, como hace Excel
+// con su modelo AAA (aquí sin estacionalidad).
+function pronosticoEts(valores, tiempos, objetivo) {
+  var pares = valores.map(function (v, i) { return [tiempos[i], v]; }).filter(function (p) { return !isNaN(p[0]) && !isNaN(p[1]); });
+  pares.sort(function (a, b) { return a[0] - b[0]; });
+  if (pares.length < 2) return null;
+  var y = pares.map(function (p) { return p[1]; });
+  var paso = (pares[pares.length - 1][0] - pares[0][0]) / (pares.length - 1);
+  if (!(paso > 0)) return null;
+  var h = (objetivo - pares[pares.length - 1][0]) / paso;
+  var mejor = null;
+  for (var a = 0.05; a <= 1.0001; a += 0.05) {
+    for (var b = 0; b <= 1.0001; b += 0.05) {
+      var nivel = y[0], tend = y[1] - y[0], sse = 0;
+      for (var t = 1; t < y.length; t++) {
+        var pred = nivel + tend; sse += (y[t] - pred) * (y[t] - pred);
+        var nuevo = a * y[t] + (1 - a) * (nivel + tend);
+        tend = b * (nuevo - nivel) + (1 - b) * tend; nivel = nuevo;
+      }
+      if (!mejor || sse < mejor.sse - 1e-12) mejor = { sse: sse, nivel: nivel, tend: tend };
+    }
+  }
+  return mejor.nivel + h * mejor.tend;
+}
+var NOMBRES_ARRAY_NUEVOS = { SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA' };
+function numeroDeValorFin(v) {
+  if (typeof v === 'number') return v;
+  if (v === true) return 1;
+  if (v === false) return 0;
+  var t = String(v == null ? '' : v).trim();
+  if (t === '') return 0;
+  return toNum(t);
+}
+// Fecha (texto dd/mm/aaaa, ISO o número de serie) → número de serie de Excel
+function serialDeValorFin(v) {
+  if (typeof v === 'number') return Math.floor(v);
+  var t = String(v == null ? '' : v).trim();
+  if (/^\d{5}(\.\d+)?$/.test(t)) return Math.floor(parseFloat(t));
+  var d = fechaDe(t);
+  if (isNaN(d.getTime())) return NaN;
+  return Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(1899, 11, 30)) / 86400000);
+}
+function vnaNoPeriodica(tasa, flujos, fechas) {
+  var d0 = fechas[0], s = 0;
+  for (var i = 0; i < flujos.length; i++) s += flujos[i] / Math.pow(1 + tasa, (fechas[i] - d0) / 365);
+  return s;
+}
+function tirNoPeriodica(flujos, fechas, estimacion) {
+  var d0 = fechas[0];
+  function f(r) { var s = 0; for (var i = 0; i < flujos.length; i++) s += flujos[i] / Math.pow(1 + r, (fechas[i] - d0) / 365); return s; }
+  function df(r) { var s = 0; for (var i = 0; i < flujos.length; i++) { var t = (fechas[i] - d0) / 365; s -= t * flujos[i] / Math.pow(1 + r, t + 1); } return s; }
+  var r = isNaN(estimacion) ? 0.1 : estimacion;
+  for (var k = 0; k < 100; k++) {
+    var fv = f(r), dv = df(r);
+    if (!isFinite(fv) || !isFinite(dv) || dv === 0) break;
+    var nr = r - fv / dv;
+    if (nr <= -0.999999) nr = (r - 0.999999) / 2;
+    if (Math.abs(nr - r) < 1e-10) return nr;
+    r = nr;
+  }
+  // Respaldo: bisección entre -99,99 % y 1 000 %
+  var lo = -0.9999, hi = 10, flo = f(lo), fhi = f(hi);
+  if (flo * fhi > 0) return null;
+  for (var j = 0; j < 300; j++) {
+    var m = (lo + hi) / 2, fm = f(m);
+    if (Math.abs(fm) < 1e-9) return m;
+    if (flo * fm < 0) { hi = m; fhi = fm; } else { lo = m; flo = fm; }
+  }
+  return (lo + hi) / 2;
+}
+// Fracción de año entre dos números de serie, según la base de Excel
+function fraccionAnioFin(s1, s2, base) {
+  var a = fechaDe(s1), b = fechaDe(s2);
+  if (base === 1 || base === 3) return (s2 - s1) / 365;
+  if (base === 2) return (s2 - s1) / 360;
+  var d1 = a.getDate(), d2 = b.getDate();
+  if (base === 4) { if (d1 === 31) d1 = 30; if (d2 === 31) d2 = 30; }
+  else {
+    var finFeb = function (x) { return x.getMonth() === 1 && new Date(x.getFullYear(), 2, 0).getDate() === x.getDate(); };
+    if (finFeb(a)) { if (finFeb(b)) d2 = 30; d1 = 30; }
+    if (d2 === 31 && d1 >= 30) d2 = 30;
+    if (d1 === 31) d1 = 30;
+  }
+  return ((b.getFullYear() - a.getFullYear()) * 360 + (b.getMonth() - a.getMonth()) * 30 + (d2 - d1)) / 360;
+}
+function parametrosAmortizacion(args) {
+  var costo = resolveNum(args[0]);
+  var compra = serialDeValorFin(resolveArg(args[1])), primero = serialDeValorFin(resolveArg(args[2]));
+  var residual = resolveNum(args[3]), periodo = Math.floor(resolveNum(args[4])), tasa = resolveNum(args[5]);
+  var base = args[6] !== undefined && String(args[6]).trim() !== '' ? Math.round(resolveNum(args[6])) : 0;
+  if ([costo, compra, primero, residual, periodo, tasa].some(isNaN)) return null;
+  if (tasa <= 0 || residual > costo || periodo < 0 || primero < compra || base < 0 || base > 4 || base === 2) return null;
+  return { costo: costo, compra: compra, primero: primero, residual: residual, periodo: periodo, tasa: tasa, base: base };
+}
+function agregarCalculo(fn, nums, contados, k) {
+  var n = nums.length, orden = nums.slice().sort(function (a, b) { return a - b; });
+  var suma = nums.reduce(function (s, x) { return s + x; }, 0), media = n ? suma / n : NaN;
+  var sc = nums.reduce(function (s, x) { return s + (x - media) * (x - media); }, 0);
+  function percInc(p) { if (!n || p < 0 || p > 1) return '#NUM!'; var h = (n - 1) * p, lo = Math.floor(h); return lo + 1 < n ? orden[lo] + (h - lo) * (orden[lo + 1] - orden[lo]) : orden[lo]; }
+  function percExc(p) { if (!n || p <= 0 || p >= 1) return '#NUM!'; var h = (n + 1) * p; if (h < 1 || h > n) return '#NUM!'; var lo = Math.floor(h); return lo < n ? orden[lo - 1] + (h - lo) * (orden[lo] - orden[lo - 1]) : orden[lo - 1]; }
+  switch (fn) {
+    case 1: return n ? media : '#DIV/0!';
+    case 2: return n;
+    case 3: return contados;
+    case 4: return n ? orden[n - 1] : 0;
+    case 5: return n ? orden[0] : 0;
+    case 6: return nums.reduce(function (s, x) { return s * x; }, 1);
+    case 7: return n > 1 ? Math.sqrt(sc / (n - 1)) : '#DIV/0!';
+    case 8: return n ? Math.sqrt(sc / n) : '#DIV/0!';
+    case 9: return suma;
+    case 10: return n > 1 ? sc / (n - 1) : '#DIV/0!';
+    case 11: return n ? sc / n : '#DIV/0!';
+    case 12: return n ? (n % 2 ? orden[(n - 1) / 2] : (orden[n / 2 - 1] + orden[n / 2]) / 2) : '#NUM!';
+    case 13:
+      var cuentas = {}, mejor = null, maxC = 1;
+      nums.forEach(function (x) { cuentas[x] = (cuentas[x] || 0) + 1; if (cuentas[x] > maxC) { maxC = cuentas[x]; mejor = x; } });
+      return mejor === null ? '#N/A' : mejor;
+    case 14: return k >= 1 && k <= n ? orden[n - Math.floor(k)] : '#NUM!';
+    case 15: return k >= 1 && k <= n ? orden[Math.floor(k) - 1] : '#NUM!';
+    case 16: return percInc(k);
+    case 17: return k >= 0 && k <= 4 ? percInc(Math.floor(k) / 4) : '#NUM!';
+    case 18: return percExc(k);
+    case 19: return k > 0 && k < 4 ? percExc(Math.floor(k) / 4) : '#NUM!';
+  }
+  return '#VALOR!';
+}
+function textoComplejo(re, im, suf) {
+  function n(x) { return String(Math.round(x * 1e12) / 1e12); }
+  if (im === 0) return n(re);
+  var parteIm = im === 1 ? suf : im === -1 ? '-' + suf : n(im) + suf;
+  if (re === 0) return parteIm;
+  return n(re) + (im > 0 ? '+' : '') + parteIm;
+}
+// Rango → matriz de valores (filas × columnas), respetando "Hoja!A1:B3"
+function matrizDeRangoFin(arg) {
+  var info = partirRango(arg);
+  var r1 = Math.min(filaDe(info.from), filaDe(info.to || info.from)), r2 = Math.max(filaDe(info.from), filaDe(info.to || info.from));
+  var c1 = Math.min(colDe(info.from), colDe(info.to || info.from)), c2 = Math.max(colDe(info.from), colDe(info.to || info.from));
+  var out = [];
+  for (var r = r1; r <= r2; r++) {
+    var fila = [];
+    for (var c = c1; c <= c2; c++) fila.push(computeValueEnHoja(info.hoja, cellId(r, c)));
+    out.push(fila);
+  }
+  return out;
+}
+function vectorDeArgFin(arg) {
+  if (isRange(arg)) { var m = matrizDeRangoFin(arg), plano = []; m.forEach(function (f) { f.forEach(function (v) { plano.push(v); }); }); return plano; }
+  return [resolveArg(arg)];
+}
+// Funciones de agregado que acepta AGRUPARPOR (en español o en inglés)
+function agregadoPorNombre(nombre, valores) {
+  var nom = String(nombre || 'SUMA').trim().toUpperCase().replace(/^"|"$/g, '');
+  var nums = valores.map(numeroDeValorFin).filter(function (x, i) { return !isNaN(x) && String(valores[i]).trim() !== ''; });
+  var mapa = { SUMA: 9, SUM: 9, PROMEDIO: 1, AVERAGE: 1, CONTAR: 2, COUNT: 2, CONTARA: 3, COUNTA: 3, MAX: 4, MIN: 5, PRODUCTO: 6, PRODUCT: 6,
+    'DESVEST': 7, 'DESVEST.M': 7, STDEV: 7, 'STDEV.S': 7, 'VAR': 10, 'VAR.S': 10, MEDIANA: 12, MEDIAN: 12 };
+  var fn = mapa[nom];
+  if (!fn) return '#VALOR!';
+  var cont = valores.filter(function (v) { return String(v).trim() !== ''; }).length;
+  var r = agregarCalculo(fn, nums, cont, null);
+  return typeof r === 'string' ? r : fmtNum(r);
+}
 function formulaArrayInfo(crudo) {
   if (typeof crudo !== 'string' || crudo.charAt(0) !== '=') return null;
-  var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENAR)\s*\(/i);
+  var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENARPOR|ORDENAR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|MINVERSA|MINVERSE)\s*\(/i);
   if (!m) return null;
   var nombre = m[1].toUpperCase();
+  if (NOMBRES_ARRAY_NUEVOS[nombre]) nombre = NOMBRES_ARRAY_NUEVOS[nombre];
   var inicio = m[0].length;
   var prof = 1, i = inicio;
   while (i < crudo.length && prof > 0) {
@@ -7694,6 +8099,109 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
     });
     return filasO;
   }
+  // ── ORDENARPOR(matriz; por_matriz1; [orden1]; por_matriz2; [orden2]; ...) ──
+  if (nombre === 'ORDENARPOR') {
+    if (!args[0] || !isRange(args[0])) return [['#VALOR!']];
+    var filasOP = matrizDeRangoFin(args[0]);
+    var criteriosOP = [];
+    for (var aOP = 1; aOP < args.length; aOP += 2) {
+      if (!args[aOP] || !isRange(args[aOP])) return [['#VALOR!']];
+      var vecOP = vectorDeArgFin(args[aOP]);
+      if (vecOP.length !== filasOP.length) return [['#VALOR!']];
+      var ordOP = args[aOP + 1] !== undefined && String(args[aOP + 1]).trim() !== '' ? resolveNum(args[aOP + 1]) : 1;
+      if (ordOP !== 1 && ordOP !== -1) return [['#VALOR!']];
+      criteriosOP.push({ vals: vecOP, orden: ordOP });
+    }
+    if (!criteriosOP.length) return [['#VALOR!']];
+    var idxOP = filasOP.map(function (_, i) { return i; });
+    idxOP.sort(function (x, y) {
+      for (var k = 0; k < criteriosOP.length; k++) {
+        var cmp = compararValoresOrdenables(criteriosOP[k].vals[x], criteriosOP[k].vals[y]);
+        if (cmp) return criteriosOP[k].orden < 0 ? -cmp : cmp;
+      }
+      return x - y;
+    });
+    return idxOP.map(function (i) { return filasOP[i]; });
+  }
+  // ── AJUSTARFILAS(vector; ancho; [relleno]) / AJUSTARCOLS(vector; alto; [relleno]) ──
+  if (nombre === 'AJUSTARFILAS' || nombre === 'AJUSTARCOLS') {
+    if (!args[0]) return [['#VALOR!']];
+    var vecAJ = vectorDeArgFin(args[0]);
+    if (isRange(args[0])) { var mAJ = matrizDeRangoFin(args[0]); if (mAJ.length > 1 && mAJ[0].length > 1) return [['#VALOR!']]; }
+    var tamAJ = Math.floor(resolveNum(args[1]));
+    if (!(tamAJ >= 1)) return [['#NUM!']];
+    var rellAJ = args[2] !== undefined && String(args[2]).trim() !== '' ? resolveArg(args[2]) : '#N/A';
+    var grupos = Math.ceil(vecAJ.length / tamAJ), outAJ = [];
+    if (nombre === 'AJUSTARFILAS') {
+      for (var gA = 0; gA < grupos; gA++) {
+        var filaAJ = [];
+        for (var jA = 0; jA < tamAJ; jA++) { var ixA = gA * tamAJ + jA; filaAJ.push(ixA < vecAJ.length ? vecAJ[ixA] : rellAJ); }
+        outAJ.push(filaAJ);
+      }
+    } else {
+      for (var rA = 0; rA < tamAJ; rA++) {
+        var filaAC = [];
+        for (var cA = 0; cA < grupos; cA++) { var ixC = cA * tamAJ + rA; filaAC.push(ixC < vecAJ.length ? vecAJ[ixC] : rellAJ); }
+        outAJ.push(filaAC);
+      }
+    }
+    return outAJ;
+  }
+  // ── AGRUPARPOR(campo_filas; valores; función; [encabezados]; [nivel_total]; [orden]) ──
+  if (nombre === 'AGRUPARPOR') {
+    if (!args[0] || !isRange(args[0]) || !args[1] || !isRange(args[1])) return [['#VALOR!']];
+    var claves = matrizDeRangoFin(args[0]), valoresG = matrizDeRangoFin(args[1]);
+    if (claves.length !== valoresG.length) return [['#VALOR!']];
+    var fnG = (args[2] || 'SUMA').trim().replace(/^"|"$/g, '');
+    var encG = args[3] !== undefined && String(args[3]).trim() !== '' ? Math.round(resolveNum(args[3])) : 0;
+    var totG = args[4] !== undefined && String(args[4]).trim() !== '' ? Math.round(resolveNum(args[4])) : 1;
+    var ordG = args[5] !== undefined && String(args[5]).trim() !== '' ? Math.round(resolveNum(args[5])) : 1;
+    var titulosK = null, titulosV = null;
+    if (encG === 1 || encG === 3) { titulosK = claves.shift(); titulosV = valoresG.shift(); }
+    var grupoMap = {}, ordenClaves = [];
+    claves.forEach(function (fk, i) {
+      if (fk.every(function (v) { return String(v).trim() === ''; })) return;
+      var kk = JSON.stringify(fk);
+      if (!grupoMap[kk]) { grupoMap[kk] = { clave: fk, filas: [] }; ordenClaves.push(kk); }
+      grupoMap[kk].filas.push(valoresG[i]);
+    });
+    var anchoV = valoresG[0] ? valoresG[0].length : 1;
+    function agregarFilas(filas) {
+      var r = [];
+      for (var c = 0; c < anchoV; c++) r.push(agregadoPorNombre(fnG, filas.map(function (f) { return f[c]; })));
+      return r;
+    }
+    var salidaG = ordenClaves.map(function (kk) { return grupoMap[kk].clave.concat(agregarFilas(grupoMap[kk].filas)); });
+    var colOrdG = Math.abs(ordG) - 1;
+    if (colOrdG >= 0 && salidaG.length && colOrdG < salidaG[0].length) {
+      salidaG.sort(function (a, b) { var cmp = compararValoresOrdenables(a[colOrdG], b[colOrdG]); return ordG < 0 ? -cmp : cmp; });
+    }
+    if (totG !== 0) {
+      var todas = [];
+      ordenClaves.forEach(function (kk) { grupoMap[kk].filas.forEach(function (f) { todas.push(f); }); });
+      var filaTot = [];
+      for (var t = 0; t < claves[0].length; t++) filaTot.push(t === 0 ? 'Total' : '');
+      salidaG.push(filaTot.concat(agregarFilas(todas)));
+    }
+    if (encG === 3 && titulosK) salidaG.unshift(titulosK.concat(titulosV));
+    if (encG === 2) {
+      var genK = claves[0].map(function (_, i) { return 'Campo' + (i + 1); }), genV = [];
+      for (var gv = 0; gv < anchoV; gv++) genV.push(fnG.toUpperCase());
+      salidaG.unshift(genK.concat(genV));
+    }
+    return salidaG.length ? salidaG : [['#CALC!']];
+  }
+  // ── MINVERSA(matriz): matriz inversa ──
+  if (nombre === 'MINVERSA') {
+    if (!args[0] || !isRange(args[0])) return [['#VALOR!']];
+    var mI = matrizDeRangoFin(args[0]);
+    if (!mI.length || mI.length !== mI[0].length) return [['#VALOR!']];
+    var numI = mI.map(function (f) { return f.map(numeroDeValorFin); });
+    if (numI.some(function (f) { return f.some(isNaN); })) return [['#VALOR!']];
+    var inv = invertirMatrizAd(numI);
+    if (!inv) return [['#NUM!']];
+    return inv.map(function (f) { return f.map(function (x) { return fmtNum(Math.abs(x) < 1e-13 ? 0 : x); }); });
+  }
   return [['#NOMBRE?']];
 }
 // Permite ANIDAR FILTRAR/ORDENAR/ÚNICOS/SECUENCIA dentro de otra función,
@@ -7706,7 +8214,7 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
 function valoresDeFuncionArrayAnidada(texto) {
   if (typeof texto !== 'string') return null;
   var t = texto.trim();
-  var m = t.match(/^(FILTRAR|FILTER|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE)\s*\(/i);
+  var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|MINVERSA|MINVERSE)\s*\(/i);
   if (!m) return null;
   var inicio = m[0].length;
   var prof = 1, i = inicio;
@@ -7716,7 +8224,7 @@ function valoresDeFuncionArrayAnidada(texto) {
     i++;
   }
   if (prof !== 0 || i !== t.length) return null; // tiene que ser TODO el argumento, no la función seguida de algo más
-  var mapaNombres = { FILTER: 'FILTRAR', SORT: 'ORDENAR', UNIQUE: 'UNICOS', SEQUENCE: 'SECUENCIA' };
+  var mapaNombres = { FILTER: 'FILTRAR', SORT: 'ORDENAR', UNIQUE: 'UNICOS', SEQUENCE: 'SECUENCIA', SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA' };
   var nombreFn = mapaNombres[m[1].toUpperCase()] || m[1].toUpperCase();
   var argsTexto = t.slice(inicio, i - 1);
   try {
@@ -7814,6 +8322,7 @@ function applyNumberFormat(val, fmt) {
   if (SIMBOLOS_MONEDA_PRESET[type]) return (isNeg ? '-' : '') + SIMBOLOS_MONEDA_PRESET[type] + absStr;
   if (type === 'accounting') return isNeg ? '(₡' + absStr + ')' : '₡' + absStr;
   if (type === 'number') return (isNeg ? '-' : '') + absStr;
+  if (type === 'scientific') { var ex = num.toExponential(dec).split('e'), ev = parseInt(ex[1], 10); return ex[0].replace('.', ',') + 'E' + (ev < 0 ? '-' : '+') + (Math.abs(ev) < 10 ? '0' : '') + Math.abs(ev); }
   return String(val);
 }
 
@@ -8505,7 +9014,7 @@ function buildTable() {
   }
   html += '<tr>';
   if (hayGutterFila) html += '<th class="corner outlineCorner" style="left:0;width:' + GUTTER_W + 'px;min-width:' + GUTTER_W + 'px;"></th>';
-  html += '<th class="corner" style="left:' + rowheadLeft + 'px;"></th>';
+  html += '<th class="corner selTodo" style="left:' + rowheadLeft + 'px;" title="Seleccionar toda la hoja" role="button" aria-label="Seleccionar toda la hoja"></th>';
   html += recorrerCols(function (c) {
     var thFrozen = c < freeze.col;
     var thStyleParts = [];
@@ -8686,7 +9195,21 @@ document.getElementById('sheetTable').addEventListener('click', function (e) {
 // entera — así "Ocultar fila(s)"/"Ocultar columna(s)" en la barra de
 // rango saben exactamente qué ocultar, igual que hacer clic derecho
 // sobre el encabezado en Excel.
+// Esquina de arriba a la izquierda (el triangulito de Excel): selecciona toda la hoja
+function seleccionarTodaLaHoja() {
+  if (document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('cell')) document.activeElement.blur();
+  selRangeStart = 'A1'; selRangeEnd = cellId(ROWS - 1, COLS - 1);
+  isSelecting = false;
+  highlightRange(selRangeStart, selRangeEnd);
+  document.getElementById('cellRef').textContent = 'A1';
+  document.getElementById('saveStatus').textContent = '▦ Toda la hoja seleccionada';
+  // Como en Excel del teléfono: al tocar la esquina aparece el menú (Cortar, Copiar, Pegar, Borrar…)
+  var esq = document.querySelector('#sheetTable thead th.selTodo');
+  if (esq && typeof mostrarMenuContextual === 'function') { var rc = esq.getBoundingClientRect(); setTimeout(function () { mostrarMenuContextual(rc.right + 6, rc.bottom + 6); }, 0); }
+}
 function attachHeaderSelectEvents() {
+  var esq = document.querySelector('#sheetTable thead th.selTodo');
+  if (esq) esq.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); seleccionarTodaLaHoja(); });
   document.querySelectorAll('#sheetTable thead th[data-col]').forEach(function (th) {
     th.addEventListener('click', function (e) {
       if (e.target.classList.contains('colResizer')) return;
@@ -9392,6 +9915,9 @@ function renderAllCellsInterno() {
   });
   if (typeof ccPintarMarcas === 'function') ccPintarMarcas();
   if (typeof refrescarCamaras === 'function') refrescarCamaras();
+  if (typeof refrescarParaleloPronto === 'function') refrescarParaleloPronto();
+  if (typeof aplicarFondoHoja === 'function') aplicarFondoHoja();
+  if (typeof circulosValidacionActivos !== 'undefined' && circulosValidacionActivos) pintarCirculosValidacion();
   Object.keys(notes).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
     if (el && notes[id]) { el.classList.add('has-note'); var hh = hiloDeNotas(activeSheet, id); el.classList.toggle('nota-resuelta', !!(hh[0] && hh[0].resuelto)); }
@@ -9654,7 +10180,7 @@ function renderTabs() {
     if (hojaOculta(s) && s !== activeSheet) return;
     var colTab = colWidths[s] && colWidths[s].tabColor;
     var estTab = (colTab && /^#[0-9a-fA-F]{3,8}$/.test(colTab)) ? ' style="border-bottom:4px solid ' + colTab + ';"' : '';
-    html += '<div class="tab' + (s === activeSheet ? ' active' : '') + '" data-sheet="' + s + '" title="Arrastrá la pestaña para cambiar el orden de las hojas"' + estTab + '>' + s + '<span class="tabMenuBtn" data-sheet="' + s + '">⋯</span></div>';
+    html += '<div class="tab' + (s === activeSheet ? ' active' : '') + (typeof hojasAgrupadas !== 'undefined' && hojasAgrupadas.length > 1 && hojasAgrupadas.indexOf(s) !== -1 ? ' agrupada' : '') + '" data-sheet="' + s + '" title="Arrastrá la pestaña para cambiar el orden de las hojas"' + estTab + '>' + s + '<span class="tabMenuBtn" data-sheet="' + s + '">⋯</span></div>';
   });
   html += '<div id="addTabBtn">+</div>';
   tabsRow.innerHTML = html;
@@ -9670,7 +10196,7 @@ function renderTabs() {
       var name = this.dataset.sheet;
       var now = Date.now();
       if (lastTap[name] && now - lastTap[name] < 400) { openTabMenu(name); }
-      else { activeSheet = name; buildTable(); }
+      else { if (typeof alCambiarHojaGrupo === 'function') alCambiarHojaGrupo(name); activeSheet = name; buildTable(); }
       lastTap[name] = now;
     });
   });
@@ -12254,7 +12780,8 @@ document.getElementById('buscarGlobalInput').addEventListener('input', buscarGlo
 // para cambiar los campos, o apretar "Actualizar" para recalcularla con los
 // datos de hoy, sin tener que repetir todo el asistente desde cero.
 // ══════════════════════════════════════════════
-function pivoteLeerEncabezados(hoja) {
+function pivoteLeerEncabezados(hoja) { return pivoteLeerEncabezadosPropios(hoja).concat(camposRelacionadosDe(hoja)); }
+function pivoteLeerEncabezadosPropios(hoja) {
   var data = sheetData[hoja] || {};
   var maxCol = 0;
   Object.keys(data).forEach(function (key) {
@@ -12381,6 +12908,106 @@ document.getElementById('pivoteGenerarBtn').addEventListener('click', function (
 //   orden: aparicion | az | za | mayor | menor
 //   filtro: filtro de informe { col, excluir: [...] }
 //   subtotales / totalGeneral: true por defecto
+// ══════════════════════════════════════════════
+// RELACIONES ENTRE TABLAS (el "Modelo de datos" de Excel, en sencillo):
+// une la tabla de una hoja (ej. Ventas) con otra (ej. Clientes) por una columna clave
+// (ej. Cédula). La tabla dinámica de Ventas puede usar los campos de Clientes sin BUSCARV.
+// Cada tabla empieza en A1 con encabezados en la fila 1 (igual que la tabla dinámica).
+// Se guardan con el libro en opcionesLibro.relaciones = [{ hojaA, colA, hojaB, colB }].
+// ══════════════════════════════════════════════
+var BASE_CAMPO_RELACION = 1000;
+var indicesRelacionPivote = {};
+function relacionesLibro() { return (opcionesLibro.relaciones || []).filter(function (r) { return r && sheets.indexOf(r.hojaA) !== -1 && sheets.indexOf(r.hojaB) !== -1; }); }
+function claveRelacion(v) { return String(v == null ? '' : v).trim().toLowerCase().replace(/[\s-]/g, ''); }
+function filasDeHojaRel(h) {
+  var max = 0; Object.keys(sheetData[h] || {}).forEach(function (k) { var m = /(\d+)$/.exec(k); if (m && +m[1] - 1 > max) max = +m[1] - 1; });
+  return max;
+}
+function indiceRelacion(i) {
+  if (indicesRelacionPivote[i]) return indicesRelacionPivote[i];
+  var rel = (opcionesLibro.relaciones || [])[i], idx = {}, dup = 0, n = filasDeHojaRel(rel.hojaB);
+  for (var r = 1; r <= n; r++) {
+    var k = claveRelacion(computeValueEnHoja(rel.hojaB, cellId(r, rel.colB)));
+    if (!k) continue;
+    if (idx[k] === undefined) idx[k] = r; else dup++;
+  }
+  indicesRelacionPivote[i] = { idx: idx, dup: dup };
+  return indicesRelacionPivote[i];
+}
+// Valor de un campo para la fila r de la tabla de origen: propio o traído por la relación
+function valorCampoPivote(origen, r, col) {
+  col = Number(col);
+  if (col < BASE_CAMPO_RELACION) return computeValueEnHoja(origen, cellId(r, col));
+  var i = Math.floor((col - BASE_CAMPO_RELACION) / 100), cB = (col - BASE_CAMPO_RELACION) % 100, rel = (opcionesLibro.relaciones || [])[i];
+  if (!rel || rel.hojaA !== origen) return '';
+  var fila = indiceRelacion(i).idx[claveRelacion(computeValueEnHoja(origen, cellId(r, rel.colA)))];
+  return fila === undefined ? '(sin relación)' : computeValueEnHoja(rel.hojaB, cellId(fila, cB));
+}
+function camposRelacionadosDe(hoja) {
+  var out = [];
+  (opcionesLibro.relaciones || []).forEach(function (rel, i) {
+    if (!rel || rel.hojaA !== hoja || sheets.indexOf(rel.hojaB) === -1) return;
+    pivoteLeerEncabezadosPropios(rel.hojaB).forEach(function (e) {
+      if (e.col === rel.colB || e.col >= 100) return;
+      out.push({ col: BASE_CAMPO_RELACION + i * 100 + e.col, nombre: rel.hojaB + ' › ' + e.nombre });
+    });
+  });
+  return out;
+}
+function abrirRelaciones() {
+  var esc = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var rels = opcionesLibro.relaciones || [];
+  var nombreCol = function (h, c) { var e = pivoteLeerEncabezadosPropios(h).filter(function (x) { return x.col === c; })[0]; return e ? e.nombre : cellId(0, c).replace(/\d+/, ''); };
+  var opsHojas = sheets.map(function (h) { return '<option value="' + esc(h) + '">' + esc(h) + '</option>'; }).join('');
+  var html = '<div class="mcrNota">Uní dos tablas por una columna que tengan en común (cédula, código, número de cliente). Después, en la tabla dinámica de la primera vas a ver también los campos de la segunda, como "Clientes › Provincia". Cada tabla empieza en A1 con encabezados en la fila 1.</div>' +
+    (rels.some(Boolean) ? rels.map(function (r, i) {
+      if (!r) return '';
+      var ok = sheets.indexOf(r.hojaA) !== -1 && sheets.indexOf(r.hojaB) !== -1;
+      return '<div class="lpItem"><span>' + (ok ? '' : '⚠ ') + '<b>' + esc(r.hojaA) + '</b> [' + esc(ok ? nombreCol(r.hojaA, r.colA) : '?') + '] → <b>' + esc(r.hojaB) + '</b> [' + esc(ok ? nombreCol(r.hojaB, r.colB) : '?') + ']' + (ok ? '' : ' <small>(falta una hoja)</small>') + '</span><button type="button" data-borrar="' + i + '">🗑</button></div>';
+    }).join('') : '<div class="mcrNota">Todavía no hay relaciones.</div>') +
+    '<label class="mcrF">Nueva relación</label>' +
+    '<div class="egDos"><div><label class="mcrF">Tabla (hoja)</label><select id="relHA" class="mcrI">' + opsHojas + '</select></div><div><label class="mcrF">Columna</label><select id="relCA" class="mcrI"></select></div></div>' +
+    '<div class="egDos"><div><label class="mcrF">Tabla relacionada</label><select id="relHB" class="mcrI">' + opsHojas + '</select></div><div><label class="mcrF">Columna</label><select id="relCB" class="mcrI"></select></div></div>' +
+    '<div id="relInfo" class="mcrNota"></div><button type="button" class="egAccion" id="relAgregar">🔗 Crear relación</button>';
+  abrirPanel('🔗 Relaciones entre tablas', html, [{ texto: 'Cerrar', ok: true }]);
+  var hA = document.getElementById('relHA'), hB = document.getElementById('relHB');
+  hA.value = activeSheet; if (sheets.length > 1) hB.value = sheets.filter(function (h) { return h !== activeSheet; })[0];
+  function llenar(selH, selC) { document.getElementById(selC).innerHTML = pivoteLeerEncabezadosPropios(document.getElementById(selH).value).map(function (e) { return '<option value="' + e.col + '">' + esc(e.nombre) + '</option>'; }).join(''); }
+  function revisar() {
+    var a = hA.value, b = hB.value, ca = Number(document.getElementById('relCA').value), cb = Number(document.getElementById('relCB').value), info = document.getElementById('relInfo');
+    if (a === b) { info.textContent = 'Escogé dos hojas distintas.'; return; }
+    var idx = {}, dup = 0, nB = filasDeHojaRel(b);
+    for (var r = 1; r <= nB; r++) { var k = claveRelacion(computeValueEnHoja(b, cellId(r, cb))); if (!k) continue; if (idx[k]) dup++; idx[k] = 1; }
+    var nA = filasDeHojaRel(a), con = 0, tot = 0;
+    for (var r2 = 1; r2 <= nA; r2++) { var k2 = claveRelacion(computeValueEnHoja(a, cellId(r2, ca))); if (!k2) continue; tot++; if (idx[k2]) con++; }
+    info.innerHTML = tot ? '✔ ' + con + ' de ' + tot + ' filas de ' + esc(a) + ' encuentran su pareja en ' + esc(b) + '.' + (dup ? '<br>⚠ En ' + esc(b) + ' hay ' + dup + ' clave(s) repetida(s): se usa la primera.' : '') : 'La columna elegida de ' + esc(a) + ' está vacía.';
+  }
+  llenar('relHA', 'relCA'); llenar('relHB', 'relCB');
+  hA.addEventListener('change', function () { llenar('relHA', 'relCA'); revisar(); });
+  hB.addEventListener('change', function () { llenar('relHB', 'relCB'); revisar(); });
+  document.getElementById('relCA').addEventListener('change', revisar); document.getElementById('relCB').addEventListener('change', revisar);
+  // Si hay encabezados con el mismo nombre en las dos tablas, se sugieren como clave
+  (function () {
+    var ea = pivoteLeerEncabezadosPropios(hA.value), eb = pivoteLeerEncabezadosPropios(hB.value);
+    for (var i = 0; i < ea.length; i++) for (var j = 0; j < eb.length; j++) if (claveRelacion(ea[i].nombre) === claveRelacion(eb[j].nombre)) { document.getElementById('relCA').value = ea[i].col; document.getElementById('relCB').value = eb[j].col; return; }
+  })();
+  revisar();
+  document.getElementById('relAgregar').addEventListener('click', function () {
+    var r = { hojaA: hA.value, colA: Number(document.getElementById('relCA').value), hojaB: hB.value, colB: Number(document.getElementById('relCB').value) };
+    if (r.hojaA === r.hojaB) { alert('Escogé dos hojas distintas.'); return; }
+    if (rels.some(function (x) { return x && x.hojaA === r.hojaA && x.hojaB === r.hojaB; })) { alert('Ya existe una relación entre esas dos hojas.'); return; }
+    opcionesLibro.relaciones = rels.concat([r]); indicesRelacionPivote = {};
+    autoSave(); abrirRelaciones();
+    document.getElementById('saveStatus').textContent = '🔗 Relación creada: ' + r.hojaA + ' → ' + r.hojaB;
+  });
+  document.querySelectorAll('.lpItem [data-borrar]').forEach(function (b) { b.addEventListener('click', function () {
+    if (!confirm('¿Borrar esta relación? Las tablas dinámicas que usen sus campos van a perderlos.')) return;
+    // Se deja el hueco (null) para no mover los números de los campos de las demás relaciones
+    var l = (opcionesLibro.relaciones || []).slice(); l[parseInt(b.dataset.borrar, 10)] = null;
+    while (l.length && !l[l.length - 1]) l.pop();
+    opcionesLibro.relaciones = l; indicesRelacionPivote = {}; autoSave(); abrirRelaciones();
+  }); });
+}
 var pivoteAvPendiente = null;
 var NOMBRES_FN_PIVOTE = { suma: 'Suma', promedio: 'Promedio', contar: 'Cuenta', max: 'Máx.', min: 'Mín.' };
 var MESES_CORTOS_PIV = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -12398,6 +13025,7 @@ function grupoFechaPivote(v, nivel) {
 }
 function generarPivoteEnHoja(origen, colFilas, colColumnas, colValores, funcion, etiquetaFilas, hojaDestino) {
   var cfgH = sheetPivoteConfig[hojaDestino];
+  indicesRelacionPivote = {};
   var av = pivoteAvPendiente || (cfgH && cfgH.av) || {};
   var data = sheetData[origen] || {};
   var maxRow = 0;
@@ -12415,7 +13043,7 @@ function generarPivoteEnHoja(origen, colFilas, colColumnas, colValores, funcion,
   var medidas = [{ col: colValores, fn: funcion }];
   (av.valores || []).forEach(function (v) { if (v && v.col !== '' && v.col !== null && v.col !== undefined) medidas.push({ col: Number(v.col), fn: v.fn || 'suma' }); });
   var simple = medidas.length === 1 && !av.calc && !av.mostrar;
-  medidas.forEach(function (m) { m.nombre = (NOMBRES_FN_PIVOTE[m.fn] || 'Suma') + ' de ' + (nomCol[m.col] || cellId(0, m.col).replace(/\d+/, '')); });
+  medidas.forEach(function (m) { m.nombre = (NOMBRES_FN_PIVOTE[m.fn] || 'Suma') + ' de ' + (nomCol[m.col] || (m.col < BASE_CAMPO_RELACION ? cellId(0, m.col).replace(/\d+/, '') : 'campo')); });
   var calc = null;
   if (av.calc && av.calc.formula) {
     var refs = [], expr = String(av.calc.formula).replace(/\[([^\]]+)\]/g, function (_, n) {
@@ -12442,7 +13070,7 @@ function generarPivoteEnHoja(origen, colFilas, colColumnas, colValores, funcion,
     });
   }
   function clave(col, agrup, r) {
-    var v = computeValueEnHoja(origen, cellId(r, col));
+    var v = valorCampoPivote(origen, r, col);
     var gf = grupoFechaPivote(v, agrup);
     if (gf) return gf;
     var s = String(v === '' || v === null || v === undefined ? '(vacío)' : v);
@@ -12451,14 +13079,14 @@ function generarPivoteEnHoja(origen, colFilas, colColumnas, colValores, funcion,
   for (var r = 1; r <= maxRow; r++) {
     if (escPiv && !fechaEnEscala(computeValueEnHoja(origen, cellId(r, escPiv.col)), escPiv)) continue;
     var vacia = true;
-    niveles.concat(colsLeer).forEach(function (c) { var x = data[cellId(r, c)]; if (x !== undefined && x !== '') vacia = false; });
+    niveles.concat(colsLeer).forEach(function (c) { if (c >= BASE_CAMPO_RELACION) { var rl = (opcionesLibro.relaciones || [])[Math.floor((c - BASE_CAMPO_RELACION) / 100)]; if (!rl) return; c = rl.colA; } var x = data[cellId(r, c)]; if (x !== undefined && x !== '') vacia = false; });
     if (vacia) continue;
-    if (filtro && (filtro.excluir || []).indexOf(String(computeValueEnHoja(origen, cellId(r, Number(filtro.col))) || '(vacío)')) !== -1) continue;
+    if (filtro && (filtro.excluir || []).indexOf(String(valorCampoPivote(origen, r, Number(filtro.col)) || '(vacío)')) !== -1) continue;
     var ck = '', cl = 'Valor';
     if (colColumnas !== null) { var kc = clave(colColumnas, av.agrupCols, r); ck = kc.k; cl = kc.l; }
     if (!colInfo[ck]) { colInfo[ck] = cl; colKeys.push(ck); }
     var nums = colsLeer.map(function (c, i) {
-      var raw = computeValueEnHoja(origen, cellId(r, c));
+      var raw = valorCampoPivote(origen, r, c);
       if (i < medidas.length && medidas[i].fn === 'contar') return raw === '' || raw === null || raw === undefined ? null : 1;
       var n = parseFloat(limpiaNum(raw)); return isNaN(n) ? 0 : n;
     });
@@ -12611,7 +13239,7 @@ function prepararOpcionesPivote(hojaOrigen, encabezados, av) {
     if (col === '') { cont.innerHTML = ''; return; }
     var vistos = [], data = sheetData[hojaOrigen] || {}, maxRow = 0;
     Object.keys(data).forEach(function (k) { var m = /\d+$/.exec(k); if (m && +m[0] - 1 > maxRow) maxRow = +m[0] - 1; });
-    for (var r = 1; r <= maxRow && vistos.length < 300; r++) { var x = String(computeValueEnHoja(hojaOrigen, cellId(r, Number(col))) || '(vacío)'); if (vistos.indexOf(x) === -1) vistos.push(x); }
+    for (var r = 1; r <= maxRow && vistos.length < 300; r++) { var x = String(valorCampoPivote(hojaOrigen, r, Number(col)) || '(vacío)'); if (vistos.indexOf(x) === -1) vistos.push(x); }
     vistos.sort(function (a, b) { return a.localeCompare(b, 'es', { numeric: true }); });
     cont.innerHTML = vistos.map(function (x) { var e = x.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); return '<label class="pivChk"><input type="checkbox" data-v="' + e + '"' + ((excluir || []).indexOf(x) === -1 ? ' checked' : '') + '> ' + e + '</label>'; }).join('');
   }
@@ -12895,6 +13523,8 @@ document.getElementById('noteDelete').addEventListener('click', function () {
 // EVENTOS DE CELDA + NAVEGACIÓN + SELECCIÓN DE RANGO
 // ══════════════════════════════════════════════
 function clearRangeHighlight() {
+  var esqT = document.querySelector('#sheetTable thead th.selTodo'); if (esqT) esqT.classList.remove('activa');
+  document.querySelectorAll('#sheetTable thead th.hdrSelTodo, #sheetTable td.rowhead.hdrSelTodo').forEach(function (e) { e.classList.remove('hdrSelTodo'); });
   document.querySelectorAll('.cell.in-range').forEach(function (e) { e.classList.remove('in-range'); });
   document.querySelectorAll('.cell.in-range-extra').forEach(function (e) { e.classList.remove('in-range-extra'); });
 }
@@ -12939,6 +13569,10 @@ function highlightRange(idA, idB) {
     if (el) el.classList.add('in-range');
   }
   var rangeStr = cellId(minR, minC) + ':' + cellId(maxR, maxC);
+  if (minR === 0 && minC === 0 && maxR >= ROWS - 1 && maxC >= COLS - 1) {
+    var esqA = document.querySelector('#sheetTable thead th.selTodo'); if (esqA) esqA.classList.add('activa');
+    document.querySelectorAll('#sheetTable thead th[data-col], #sheetTable td.rowhead').forEach(function (e) { e.classList.add('hdrSelTodo'); });
+  }
   document.getElementById('quickRange').value = rangeStr;
   document.getElementById('quickRange').dispatchEvent(new Event('input'));
   var bounds = currentRangeBounds();
@@ -13095,6 +13729,7 @@ function escribirFechaEnCelda(fecha) {
   var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
   cerrarCalendarioFecha(true);
   if (val === anterior) { cerrarCalendarioFecha(); return; }
+  if (!validarAlConfirmar(id, val, anterior)) { cerrarCalendarioFecha(); return; }
   snapshot();
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
@@ -14753,6 +15388,7 @@ function commitCell(el) {
   }
   var val = el.textContent.trim();
   var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
+  if (val !== anterior && !validarAlConfirmar(id, val, anterior)) { el.textContent = anterior; el.classList.remove('selected'); renderAllCells(); return; }
   if (el.dataset.editado === '1' && val !== anterior) { var vAC = aplicarAutocorreccion(val); if (vAC !== val) { document.getElementById('saveStatus').textContent = '✍ Autocorrección: ' + vAC.slice(0, 60) + ' (Ctrl+Z para deshacer)'; val = vAC; el.textContent = val; } }
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
@@ -15435,6 +16071,186 @@ function ejecutarImportarCSV(sepAuto) {
   document.getElementById('saveStatus').textContent = '✓ Importadas ' + filas.length + ' filas' + (recortadas ? ' (se omitieron ' + recortadas + ' por el límite de filas)' : '') + (cortCols ? ' (se omitieron ' + cortCols + ' columnas)' : '');
   return true;
 }
+// ══════════════════════════════════════════════
+// IMPORTAR TABLAS DESDE PDF (Datos ▸ Obtener datos ▸ Desde PDF de Excel)
+// Lee el texto del PDF con pdf.js, arma las filas por altura y las columnas por posición
+// (los montos se alinean a la derecha, como en los estados de cuenta) y lo vuelca en la hoja.
+// Funciona con PDF que traen texto (los que genera un banco o un sistema); los escaneados son imagen.
+// ══════════════════════════════════════════════
+var PDFJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+var PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function cargarPdfJs() {
+  return new Promise(function (ok, mal) {
+    if (window.pdfjsLib) { ok(window.pdfjsLib); return; }
+    var s = document.createElement('script'); s.src = PDFJS_URL;
+    s.onload = function () {
+      if (!window.pdfjsLib) { mal(new Error('No cargó pdf.js')); return; }
+      try { window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER; } catch (e) {}
+      ok(window.pdfjsLib);
+    };
+    s.onerror = function () { mal(new Error('Sin conexión para cargar el lector de PDF')); };
+    document.head.appendChild(s);
+  });
+}
+var esMontoPdf = function (t) { return /^\(?[-+]?\s*[₡$€]?\s*[\d.,\s]*\d[\d.,\s]*\)?-?$/.test(String(t).trim()) && /\d/.test(t); };
+// Una página → filas de celdas [{ t, x0, x1 }]
+function filasDePaginaPdf(items) {
+  var trozos = items.filter(function (it) { return it.str && it.str.trim() !== ''; }).map(function (it) {
+    var x = it.transform[4], y = it.transform[5], h = Math.abs(it.transform[3]) || Math.abs(it.height) || 10;
+    return { t: it.str, x0: x, x1: x + (it.width || it.str.length * h * 0.5), y: y, h: h };
+  });
+  trozos.sort(function (a, b) { return b.y - a.y || a.x0 - b.x0; });
+  var lineas = [];
+  trozos.forEach(function (tz) {
+    var l = lineas.length ? lineas[lineas.length - 1] : null;
+    if (l && Math.abs(l.y - tz.y) <= Math.max(2, tz.h * 0.45)) l.trozos.push(tz);
+    else lineas.push({ y: tz.y, h: tz.h, trozos: [tz] });
+  });
+  // Dentro de cada línea, los trozos muy juntos son la misma celda
+  return lineas.map(function (l) {
+    l.trozos.sort(function (a, b) { return a.x0 - b.x0; });
+    var celdas = [];
+    l.trozos.forEach(function (tz) {
+      var c = celdas[celdas.length - 1];
+      var hueco = c ? tz.x0 - c.x1 : Infinity;
+      if (c && hueco < Math.max(3, tz.h * 0.9)) { c.t += (hueco > tz.h * 0.15 ? ' ' : '') + tz.t; c.x1 = Math.max(c.x1, tz.x1); }
+      else celdas.push({ t: tz.t, x0: tz.x0, x1: tz.x1 });
+    });
+    celdas.forEach(function (c) { c.t = c.t.replace(/\s+/g, ' ').trim(); c.num = esMontoPdf(c.t); });
+    return celdas;
+  });
+}
+// Columnas comunes a todas las filas: los textos se alinean por su inicio y los montos por su final
+function tablaDeFilasPdf(lineas) {
+  var anclas = [];
+  function anclar(pos, tipo) {
+    for (var i = 0; i < anclas.length; i++) if (anclas[i].tipo === tipo && Math.abs(anclas[i].pos - pos) <= 6) { anclas[i].n++; anclas[i].pos += (pos - anclas[i].pos) / anclas[i].n; return anclas[i]; }
+    var a = { pos: pos, tipo: tipo, n: 1 }; anclas.push(a); return a;
+  }
+  lineas.forEach(function (cs) { cs.forEach(function (c) { c.ancla = c.num ? anclar(c.x1, 'der') : anclar(c.x0, 'izq'); }); });
+  // Un encabezado de texto alineado a la derecha ("Débito", "Saldo") va en la columna de sus montos
+  lineas.forEach(function (cs) { cs.forEach(function (c) {
+    if (c.num || c.ancla.n > 2) return;
+    for (var i = 0; i < anclas.length; i++) {
+      var a = anclas[i];
+      if (a.tipo === 'der' && a.n >= 2 && Math.abs(a.pos - c.x1) <= 6) { c.ancla.n--; c.ancla = a; a.n++; break; }
+    }
+  }); });
+  anclas = anclas.filter(function (a) { return a.n > 0; });
+  // Se ordenan por el centro aproximado de lo que agrupan, y anclas muy cercanas de distinto tipo se juntan
+  anclas.forEach(function (a) { a.centro = 0; a.cuenta = 0; });
+  lineas.forEach(function (cs) { cs.forEach(function (c) { c.ancla.centro += (c.x0 + c.x1) / 2; c.ancla.cuenta++; }); });
+  anclas.forEach(function (a) { a.centro /= a.cuenta; });
+  anclas.sort(function (a, b) { return a.centro - b.centro; });
+  anclas.forEach(function (a, i) { a.col = i; });
+  return lineas.map(function (cs) {
+    var fila = [];
+    cs.forEach(function (c) {
+      var k = c.ancla.col;
+      while (fila[k] !== undefined && fila[k] !== '') k++;
+      fila[k] = c.t;
+    });
+    for (var i = 0; i < fila.length; i++) if (fila[i] === undefined) fila[i] = '';
+    return fila;
+  });
+}
+// Quita columnas que quedaron vacías en todas las filas
+function compactarColumnasPdf(filas) {
+  var nc = filas.reduce(function (m, f) { return Math.max(m, f.length); }, 0), usadas = [];
+  for (var c = 0; c < nc; c++) if (filas.some(function (f) { return f[c] !== undefined && f[c] !== ''; })) usadas.push(c);
+  return filas.map(function (f) { return usadas.map(function (c) { return f[c] === undefined ? '' : f[c]; }); });
+}
+function numeroDePdf(v, modo) {
+  var t = String(v).trim();
+  if (!esMontoPdf(t)) return v;
+  var neg = /^\(.*\)$/.test(t) || /-$/.test(t);
+  t = t.replace(/^\(|\)$/g, '').replace(/-$/, '').trim();
+  if (neg && t.charAt(0) !== '-') t = '-' + t;
+  var r = convertirNumeroCSV(t, modo, ';');
+  return r === t && !/^-?\d+(\.\d+)?$/.test(r) ? v : r;
+}
+var pdfImportado = null;
+function leerPdfParaImportar(archivo) {
+  document.getElementById('saveStatus').textContent = '📄 Leyendo el PDF…';
+  var lector = new FileReader();
+  lector.onload = function () {
+    cargarPdfJs().then(function (pdfjs) {
+      return pdfjs.getDocument({ data: new Uint8Array(lector.result) }).promise;
+    }).then(function (doc) {
+      var paginas = [], n = doc.numPages, cadena = Promise.resolve();
+      for (var p = 1; p <= n; p++) (function (num) {
+        cadena = cadena.then(function () { return doc.getPage(num); }).then(function (pg) { return pg.getTextContent(); }).then(function (tc) { paginas.push(filasDePaginaPdf(tc.items)); });
+      })(p);
+      return cadena.then(function () { return paginas; });
+    }).then(function (paginas) {
+      var conTexto = paginas.some(function (p) { return p.length; });
+      if (!conTexto) { alert('Este PDF no trae texto (parece escaneado o una foto). Probá con 📷 Escanear factura (OCR).'); document.getElementById('saveStatus').textContent = ''; return; }
+      pdfImportado = { nombre: archivo.name.replace(/\.pdf$/i, ''), paginas: paginas };
+      abrirImportarPdf();
+    }).catch(function (e) { alert('No se pudo leer el PDF: ' + (e && e.message ? e.message : e)); document.getElementById('saveStatus').textContent = ''; });
+  };
+  lector.readAsArrayBuffer(archivo);
+}
+function tablaPdfSegunOpciones() {
+  var desde = parseInt(document.getElementById('ipDesde').value, 10) || 1, hasta = parseInt(document.getElementById('ipHasta').value, 10) || pdfImportado.paginas.length;
+  var lineas = [];
+  pdfImportado.paginas.slice(desde - 1, hasta).forEach(function (p, i) { if (i && document.getElementById('ipSep').checked) lineas.push([]); lineas = lineas.concat(p); });
+  var filas = compactarColumnasPdf(tablaDeFilasPdf(lineas.map(function (cs) { return cs.map(function (c) { return { t: c.t, x0: c.x0, x1: c.x1, num: c.num }; }); })));
+  // Encabezados repetidos en cada página (como en los estados de cuenta): se deja solo el primero
+  if (document.getElementById('ipRepetidos').checked && filas.length) {
+    var vistos = {};
+    filas = filas.filter(function (f) {
+      var k = f.join('\u0001'); if (!k.replace(/\u0001/g, '').trim()) return true;
+      if (f.some(function (x) { return esMontoPdf(x); })) return true;
+      if (vistos[k]) return false; vistos[k] = 1; return true;
+    });
+  }
+  if (document.getElementById('ipSoloTabla').checked) filas = filas.filter(function (f) { return f.filter(function (x) { return x !== ''; }).length >= 2; });
+  return filas;
+}
+function abrirImportarPdf() {
+  var np = pdfImportado.paginas.length;
+  var html = '<div class="mcrNota" id="ipInfo"></div>' +
+    '<div class="egDos"><div><label class="mcrF">Desde la página</label><input id="ipDesde" class="mcrI" type="number" min="1" max="' + np + '" value="1"></div>' +
+    '<div><label class="mcrF">Hasta la página</label><input id="ipHasta" class="mcrI" type="number" min="1" max="' + np + '" value="' + np + '"></div></div>' +
+    '<label class="egChk"><input type="checkbox" id="ipSoloTabla" checked> Solo filas de tabla (quitar títulos y párrafos sueltos)</label>' +
+    '<label class="egChk"><input type="checkbox" id="ipRepetidos" checked> Quitar encabezados repetidos de cada página</label>' +
+    '<label class="egChk"><input type="checkbox" id="ipSep"> Dejar una fila vacía entre páginas</label>' +
+    '<div class="egDos"><div><label class="mcrF">Números</label><select id="ipNum" class="mcrI"><option value="auto">Automático</option><option value="coma">Decimal con coma (1.234,56)</option><option value="punto">Decimal con punto (1,234.56)</option><option value="no">Dejar como texto</option></select></div>' +
+    '<div><label class="mcrF">Dónde ponerlos</label><select id="ipDest" class="mcrI"><option value="nueva">En una hoja nueva</option><option value="celda">Desde la celda activa (' + (document.getElementById('cellRef').textContent || 'A1') + ')</option></select></div></div>' +
+    '<div class="mcrNota" style="margin-top:8px;">Vista previa</div><div id="ipPrev" style="overflow:auto;max-height:240px;border:1px solid #e3e9e0;border-radius:8px;font-size:11.5px;"></div>';
+  abrirPanel('📄 Importar desde PDF: ' + pdfImportado.nombre, html, [{ texto: 'Cancelar' }, { texto: 'Importar', ok: true, accion: ejecutarImportarPdf }]);
+  function refrescar() {
+    var filas = tablaPdfSegunOpciones(), nc = filas.reduce(function (m, f) { return Math.max(m, f.length); }, 0), modo = document.getElementById('ipNum').value;
+    document.getElementById('ipInfo').textContent = np + ' página(s) · ' + filas.length + ' filas × ' + nc + ' columnas';
+    var h = '<table style="border-collapse:collapse;width:auto;min-width:100%;">';
+    filas.slice(0, 12).forEach(function (f) { h += '<tr>' + f.map(function (x) { var v = numeroDePdf(x, modo), num = v !== x || /^-?\d+(\.\d+)?$/.test(v); return '<td style="border:1px solid #eee;padding:3px 6px;white-space:nowrap;' + (num ? 'text-align:right;color:#1d4ed8;' : 'text-align:left;') + '">' + String(v).replace(/</g, '&lt;').slice(0, 30) + '</td>'; }).join('') + '</tr>'; });
+    document.getElementById('ipPrev').innerHTML = h + '</table>' + (filas.length > 12 ? '<div class="mcrNota" style="padding:4px 6px;">… y ' + (filas.length - 12) + ' filas más</div>' : '');
+  }
+  ['ipDesde', 'ipHasta', 'ipSoloTabla', 'ipRepetidos', 'ipSep', 'ipNum'].forEach(function (id) { document.getElementById(id).addEventListener('change', refrescar); });
+  refrescar();
+}
+function ejecutarImportarPdf() {
+  var filas = tablaPdfSegunOpciones(), modo = document.getElementById('ipNum').value, dest = document.getElementById('ipDest').value;
+  if (!filas.length) { alert('No quedó ninguna fila con esas opciones.'); return false; }
+  var r0 = 0, c0 = 0;
+  if (dest === 'nueva') { document.getElementById('addTabBtn').click(); }
+  else {
+    if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida.'); return false; }
+    var m = /^([A-Za-z]+)(\d+)$/.exec(document.getElementById('cellRef').textContent || 'A1'); if (m) { c0 = colIndex(m[1].toUpperCase()); r0 = parseInt(m[2], 10) - 1; }
+    snapshot();
+  }
+  var nc = filas.reduce(function (mx, f) { return Math.max(mx, f.length); }, 0);
+  if (r0 + filas.length > ROWS) ROWS = r0 + filas.length;
+  if (c0 + nc > COLS) COLS = Math.min(MAX_COLUMNAS, c0 + nc);
+  var d = sheetData[activeSheet] || (sheetData[activeSheet] = {});
+  filas.forEach(function (f, i) { f.forEach(function (v, j) { if (v === '' || c0 + j >= MAX_COLUMNAS) return; d[cellId(r0 + i, c0 + j)] = numeroDePdf(v, modo); }); });
+  buildTable(); renderTabs(); autoSave();
+  document.getElementById('saveStatus').textContent = '📄 Importadas ' + filas.length + ' filas del PDF "' + pdfImportado.nombre + '"';
+  return true;
+}
+document.getElementById('btnImportarPDF').addEventListener('click', function () { document.getElementById('pdfImportInput').value = ''; document.getElementById('pdfImportInput').click(); });
+document.getElementById('pdfImportInput').addEventListener('change', function () { var f = this.files && this.files[0]; if (f) leerPdfParaImportar(f); });
 document.getElementById('btnImportarCSV').addEventListener('click', function () { document.getElementById('csvImportInput').value = ''; document.getElementById('csvImportInput').click(); });
 document.getElementById('csvImportInput').addEventListener('change', function (e) {
   var f = e.target.files && e.target.files[0]; if (!f) return;
@@ -17331,7 +18147,194 @@ function abrirInspeccionarLibro() {
     irAReferencia((x.h !== activeSheet ? (/^[A-Za-z_][A-Za-z0-9_]*$/.test(x.h) ? x.h : "'" + x.h + "'") + '!' : '') + x.id);
   }); });
 }
+// ══════════════════════════════════════════════
+// ESTADÍSTICAS DEL LIBRO (Revisar ▸ Estadísticas del libro de Excel)
+// ══════════════════════════════════════════════
+function estadisticasDeHoja(h) {
+  var d = sheetData[h] || {}, o = { celdas: 0, formulas: 0, maxR: -1, maxC: -1 };
+  Object.keys(d).forEach(function (id) {
+    var v = d[id]; if (v === '' || v === undefined || v === null) return;
+    var m = /^([A-Z]+)(\d+)$/.exec(id); if (!m) return;
+    o.celdas++; if (typeof v === 'string' && v.charAt(0) === '=') o.formulas++;
+    var r = parseInt(m[2], 10) - 1, c = colIndex(m[1]); if (r > o.maxR) o.maxR = r; if (c > o.maxC) o.maxC = c;
+  });
+  var g = sheetGraficos[h] || [];
+  o.graficos = g.filter(function (x) { return x.kind !== 'forma'; }).length;
+  o.formas = g.filter(function (x) { return x.kind === 'forma' && x.forma !== 'imagen'; }).length;
+  o.imagenes = g.filter(function (x) { return x.kind === 'forma' && x.forma === 'imagen'; }).length;
+  o.notas = Object.keys(sheetNotes[h] || {}).length;
+  o.condicional = (sheetCondFormats[h] || []).length + (sheetCondFormatsAvanzado[h] || []).length;
+  o.validaciones = Object.keys(sheetValidations[h] || {}).length;
+  o.combinadas = (sheetMerges[h] || []).length;
+  o.dinamica = !!sheetPivoteConfig[h];
+  o.rango = o.maxR < 0 ? '—' : 'A1:' + cellId(o.maxR, o.maxC);
+  return o;
+}
+function abrirEstadisticasLibro() {
+  var esc = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var filas = [['Rango usado', 'rango'], ['Celdas con datos', 'celdas'], ['Fórmulas', 'formulas'], ['Gráficos', 'graficos'], ['Formas', 'formas'], ['Imágenes', 'imagenes'], ['Notas', 'notas'], ['Formato condicional', 'condicional'], ['Validaciones', 'validaciones'], ['Celdas combinadas', 'combinadas']];
+  var act = estadisticasDeHoja(activeSheet), tot = { celdas: 0, formulas: 0, graficos: 0, formas: 0, imagenes: 0, notas: 0, condicional: 0, validaciones: 0, combinadas: 0 }, dinamicas = 0, ocultas = 0;
+  var porHoja = sheets.map(function (h) { var e = estadisticasDeHoja(h); Object.keys(tot).forEach(function (k) { tot[k] += e[k]; }); if (e.dinamica) dinamicas++; if (hojaOculta(h)) ocultas++; return { h: h, e: e }; });
+  var tam = 0; try { tam = JSON.stringify(estadoActualComoObjeto()).length; } catch (e) {}
+  var tabla = function (titulo, e, conRango) {
+    return '<div class="estBloque"><b>' + titulo + '</b><table class="estTabla">' + filas.filter(function (f) { return conRango || f[1] !== 'rango'; }).map(function (f) { return '<tr><td>' + f[0] + '</td><td>' + esc(typeof e[f[1]] === 'number' ? e[f[1]].toLocaleString('es-CR') : e[f[1]]) + '</td></tr>'; }).join('') + '</table></div>';
+  };
+  var html = tabla('📄 Hoja actual: ' + esc(activeSheet), act, true) +
+    tabla('📚 Todo el libro', tot, false).replace('</table>', '<tr><td>Hojas</td><td>' + sheets.length + (ocultas ? ' (' + ocultas + ' ocultas)' : '') + '</td></tr><tr><td>Tablas dinámicas</td><td>' + dinamicas + '</td></tr><tr><td>Rangos con nombre</td><td>' + Object.keys(rangosNombrados || {}).length + '</td></tr><tr><td>Macros</td><td>' + Object.keys(macros || {}).length + '</td></tr><tr><td>Relaciones entre tablas</td><td>' + (opcionesLibro.relaciones || []).filter(Boolean).length + '</td></tr><tr><td>Tamaño aproximado</td><td>' + (tam > 1048576 ? (tam / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(tam / 1024)) + ' KB') + '</td></tr></table>') +
+    '<div class="estBloque"><b>Por hoja</b><div style="overflow-x:auto;"><table class="estTabla estAncha"><tr><th>Hoja</th><th>Rango usado</th><th>Celdas</th><th>Fórmulas</th><th>Gráficos</th></tr>' +
+    porHoja.map(function (x) { return '<tr><td>' + esc(x.h) + (hojaOculta(x.h) ? ' 🙈' : '') + '</td><td>' + x.e.rango + '</td><td>' + x.e.celdas.toLocaleString('es-CR') + '</td><td>' + x.e.formulas.toLocaleString('es-CR') + '</td><td>' + x.e.graficos + '</td></tr>'; }).join('') + '</table></div></div>';
+  abrirPanel('📈 Estadísticas del libro', html, [{ texto: 'Cerrar', ok: true }]);
+}
 document.getElementById('btnInspeccionar').addEventListener('click', abrirInspeccionarLibro);
+// ══════════════════════════════════════════════
+// VER EN PARALELO (Vista ▸ Nueva ventana + Ver en paralelo de Excel): la pantalla se
+// divide y abajo se ve otra hoja (o la misma en otra parte), con desplazamiento sincrónico.
+// La parte de abajo es de solo lectura y se actualiza sola cuando cambian los datos.
+// ══════════════════════════════════════════════
+var paralelo = { hoja: null, sincronizar: true, moviendo: false, pendiente: false };
+function textoCeldaParalelo(h, id) {
+  var v; try { v = computeValueEnHoja(h, id); } catch (e) { v = ''; }
+  if (v === null || v === undefined) return '';
+  var fm = (sheetFormats[h] || {})[id] || {};
+  if (fm.numFormat && fm.numFormat.type === 'custom') { try { return aplicarFormatoPersonalizado(v, fm.numFormat.codigo).texto; } catch (e2) { return String(v); } }
+  if (fm.numFormat) return applyNumberFormat(v, fm.numFormat);
+  if (fm.currency && v !== '' && !isNaN(parseFloat(limpiaNum(v)))) return '₡' + parseFloat(limpiaNum(v)).toLocaleString('es-CR', { minimumFractionDigits: 2 });
+  if (fm.percent && v !== '' && !isNaN(parseFloat(v))) return (parseFloat(v) * 100).toFixed(1) + '%';
+  return String(v);
+}
+function pintarParalelo() {
+  var cont = document.getElementById('paraleloCuerpo'); if (!cont || !paralelo.hoja) return;
+  var h = paralelo.hoja, d = sheetData[h] || {}, maxR = 30, maxC = 10;
+  Object.keys(d).forEach(function (id) { var m = /^([A-Z]+)(\d+)$/.exec(id); if (!m) return; maxR = Math.max(maxR, +m[2] + 5); maxC = Math.max(maxC, colIndex(m[1]) + 3); });
+  maxR = Math.min(maxR, 600); maxC = Math.min(maxC, 60);
+  var tdA = document.getElementById('cell_A1'); tdA = tdA && tdA.closest ? tdA.closest('td') : null;
+  var fx = tdA && tdA.offsetWidth ? tdA.offsetWidth / getColWidth(0) : 1, alto = tdA && tdA.parentNode.offsetHeight ? tdA.parentNode.offsetHeight : 26;
+  var anchos = colWidths[h] || {}, fmts = sheetFormats[h] || {};
+  var esc = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var html = '<table class="parTabla"><thead><tr><th class="parEsq"></th>';
+  for (var c = 0; c < maxC; c++) { var w = Math.round((typeof anchos[c] === 'number' ? anchos[c] : 78) * fx); html += '<th style="width:' + w + 'px;min-width:' + w + 'px;max-width:' + w + 'px;">' + cellId(0, c).replace(/\d+/, '') + '</th>'; }
+  html += '</tr></thead><tbody>';
+  for (var r = 0; r < maxR; r++) {
+    html += '<tr style="height:' + (typeof anchos['r' + r] === 'number' ? anchos['r' + r] : alto) + 'px;"><th class="parFila">' + (r + 1) + '</th>';
+    for (var c2 = 0; c2 < maxC; c2++) {
+      var id = cellId(r, c2), t = d[id] === undefined ? '' : textoCeldaParalelo(h, id), fm = fmts[id] || {}, st = '';
+      if (fm.bold) st += 'font-weight:700;'; if (fm.italic) st += 'font-style:italic;';
+      if (fm.bgColor) st += 'background:' + fm.bgColor + ';'; if (fm.fontColor) st += 'color:' + fm.fontColor + ';';
+      var num = t !== '' && esValorNumericoOFecha(computeValueEnHoja(h, id));
+      st += 'text-align:' + (fm.align || (num ? 'right' : 'left')) + ';';
+      html += '<td style="' + st + '">' + esc(t) + '</td>';
+    }
+    html += '</tr>';
+  }
+  cont.innerHTML = html + '</tbody></table>';
+}
+function abrirParalelo(hoja) {
+  var p = document.getElementById('panelParalelo');
+  var sel = document.getElementById('paraleloHoja');
+  sel.innerHTML = sheets.map(function (s) { return '<option value="' + String(s).replace(/"/g, '&quot;') + '">' + String(s).replace(/</g, '&lt;') + (s === activeSheet ? ' (la misma)' : '') + '</option>'; }).join('');
+  paralelo.hoja = hoja || paralelo.hoja || sheets.filter(function (s) { return s !== activeSheet; })[0] || activeSheet;
+  if (sheets.indexOf(paralelo.hoja) === -1) paralelo.hoja = activeSheet;
+  sel.value = paralelo.hoja;
+  document.getElementById('paraleloSinc').checked = paralelo.sincronizar;
+  p.classList.add('show'); document.body.classList.add('conParalelo');
+  pintarParalelo();
+  var b = document.getElementById('btnParalelo'); if (b) b.classList.add('active');
+}
+function cerrarParalelo() {
+  paralelo.hoja = null;
+  document.getElementById('panelParalelo').classList.remove('show'); document.body.classList.remove('conParalelo');
+  var b = document.getElementById('btnParalelo'); if (b) b.classList.remove('active');
+}
+function refrescarParaleloPronto() {
+  if (!paralelo.hoja || paralelo.pendiente) return;
+  paralelo.pendiente = true;
+  setTimeout(function () { paralelo.pendiente = false; if (paralelo.hoja) { var c = document.getElementById('paraleloCuerpo'), t = c.scrollTop, l = c.scrollLeft; pintarParalelo(); c.scrollTop = t; c.scrollLeft = l; } }, 250);
+}
+(function () {
+  var wrap = document.getElementById('gridWrap'), cuerpo = document.getElementById('paraleloCuerpo');
+  function sync(de, a) { if (!paralelo.hoja || !paralelo.sincronizar || paralelo.moviendo) return; paralelo.moviendo = true; a.scrollTop = de.scrollTop; a.scrollLeft = de.scrollLeft; requestAnimationFrame(function () { paralelo.moviendo = false; }); }
+  wrap.addEventListener('scroll', function () { sync(wrap, cuerpo); }, { passive: true });
+  cuerpo.addEventListener('scroll', function () { sync(cuerpo, wrap); }, { passive: true });
+  document.getElementById('paraleloHoja').addEventListener('change', function () { paralelo.hoja = this.value; pintarParalelo(); });
+  document.getElementById('paraleloSinc').addEventListener('change', function () { paralelo.sincronizar = this.checked; if (this.checked) sync(wrap, cuerpo); });
+  document.getElementById('paraleloCerrar').addEventListener('click', cerrarParalelo);
+  document.getElementById('paraleloIr').addEventListener('click', function () { var h = paralelo.hoja; if (h && h !== activeSheet) { var actual = activeSheet; if (typeof alCambiarHojaGrupo === 'function') alCambiarHojaGrupo(h); activeSheet = h; buildTable(); paralelo.hoja = actual; abrirParalelo(actual); } });
+  document.getElementById('btnParalelo').addEventListener('click', function () { if (paralelo.hoja) cerrarParalelo(); else abrirParalelo(); });
+})();
+
+document.getElementById('btnEstadisticasLibro').addEventListener('click', abrirEstadisticasLibro);
+// ── Imagen de fondo de la hoja (Vista ▸ Fondo), como Excel ──
+// Se guarda por hoja en colWidths[hoja].fondo (JPEG comprimido, máx. 800 px).
+// Solo se ve en pantalla: no sale en el PDF ni al imprimir.
+function fondoDeHoja(h) {
+  var meta = colWidths[h || activeSheet];
+  return meta && meta.fondo ? meta.fondo : '';
+}
+function aplicarFondoHoja() {
+  var tabla = document.getElementById('sheetTable');
+  if (!tabla) return;
+  var f = fondoDeHoja();
+  var actual = tabla.getAttribute('data-fondo') || '';
+  var clave = f ? String(f.length) + f.slice(-40) : '';
+  if (actual === clave) return;
+  tabla.setAttribute('data-fondo', clave);
+  if (f) {
+    tabla.classList.add('conFondo');
+    tabla.style.backgroundImage = 'url("' + f + '")';
+  } else {
+    tabla.classList.remove('conFondo');
+    tabla.style.backgroundImage = '';
+  }
+  var b = document.getElementById('btnFondoHoja');
+  if (b) b.classList.toggle('active', !!f);
+}
+function comprimirImagenFondo(archivo, listo) {
+  var lector = new FileReader();
+  lector.onload = function () {
+    var img = new Image();
+    img.onload = function () {
+      var max = 800, w = img.width, hh = img.height;
+      var esc = Math.min(1, max / Math.max(w, hh));
+      var lienzo = document.createElement('canvas');
+      lienzo.width = Math.max(1, Math.round(w * esc));
+      lienzo.height = Math.max(1, Math.round(hh * esc));
+      var ctx = lienzo.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+      ctx.drawImage(img, 0, 0, lienzo.width, lienzo.height);
+      listo(lienzo.toDataURL('image/jpeg', 0.8));
+    };
+    img.onerror = function () { alert('No se pudo leer esa imagen.'); };
+    img.src = lector.result;
+  };
+  lector.readAsDataURL(archivo);
+}
+function ponerFondoHoja(dataUrl) {
+  if (!colWidths[activeSheet]) colWidths[activeSheet] = {};
+  if (dataUrl) colWidths[activeSheet].fondo = dataUrl;
+  else delete colWidths[activeSheet].fondo;
+  aplicarFondoHoja();
+  autoSave();
+}
+function abrirFondoHoja() {
+  var tiene = !!fondoDeHoja();
+  var html = '<p style="margin:0 0 10px">Elegí una imagen para mostrarla detrás de las celdas de <b>' + escXml(activeSheet) + '</b>. ' +
+    'Se repite como mosaico, igual que en Excel. Las celdas con color de relleno la tapan.</p>' +
+    '<p style="margin:0 0 10px;color:#666;font-size:12px">Solo se ve en pantalla: no sale en el PDF ni al imprimir. Se reduce a 800 px para que el archivo no pese.</p>' +
+    (tiene ? '<div style="margin-bottom:10px"><img src="' + fondoDeHoja() + '" style="max-width:100%;max-height:140px;border:1px solid #ccc;border-radius:6px"></div>' : '') +
+    '<input type="file" id="fondoArchivo" accept="image/*">';
+  var botones = [
+    { texto: 'Poner fondo', ok: true, accion: function () {
+      var inp = document.getElementById('fondoArchivo');
+      if (!inp || !inp.files || !inp.files[0]) { alert('Elegí una imagen primero.'); return false; }
+      comprimirImagenFondo(inp.files[0], function (url) { ponerFondoHoja(url); });
+    } }
+  ];
+  if (tiene) botones.push({ texto: 'Quitar fondo', accion: function () { ponerFondoHoja(''); } });
+  botones.push({ texto: 'Cancelar' });
+  abrirPanel('🖼 Fondo de la hoja', html, botones);
+}
+document.getElementById('btnFondoHoja').addEventListener('click', abrirFondoHoja);
 if (typeof I18N_EN !== 'undefined') Object.assign(I18N_EN, { '🔍 Inspeccionar libro': '🔍 Inspect workbook' });
 // ══════════════════════════════════════════════
 // SEGMENTACIÓN DE DATOS (botones que filtran el autofiltro)
@@ -17990,6 +18993,59 @@ function ocultarHoja(nombre) {
   buildTable(); renderTabs(); autoSave();
   return true;
 }
+// ══════════════════════════════════════════════
+// AGRUPAR HOJAS (clic derecho en la pestaña ▸ Seleccionar varias hojas, en Excel):
+// mientras hay un grupo, lo que se escribe, borra o formatea en la hoja activa se copia
+// a la misma celda de las demás hojas del grupo. Tocar una pestaña fuera del grupo lo deshace.
+// ══════════════════════════════════════════════
+var hojasAgrupadas = [], baseGrupoHojas = null;
+function clonarObjGrupo(o) { return JSON.parse(JSON.stringify(o || {})); }
+function iniciarBaseGrupo() { baseGrupoHojas = { hoja: activeSheet, d: clonarObjGrupo(sheetData[activeSheet]), f: clonarObjGrupo(sheetFormats[activeSheet]) }; }
+function grupoActivo() { return hojasAgrupadas.length > 1 && hojasAgrupadas.indexOf(activeSheet) !== -1; }
+function propagarCambiosGrupo() {
+  if (!grupoActivo() || !baseGrupoHojas) return 0;
+  if (baseGrupoHojas.hoja !== activeSheet) { iniciarBaseGrupo(); return 0; }
+  var d = sheetData[activeSheet] || {}, f = sheetFormats[activeSheet] || {}, cD = {}, cF = {}, n = 0;
+  Object.keys(d).concat(Object.keys(baseGrupoHojas.d)).forEach(function (k) { if (d[k] !== baseGrupoHojas.d[k] && !(k in cD)) { cD[k] = d[k]; n++; } });
+  Object.keys(f).concat(Object.keys(baseGrupoHojas.f)).forEach(function (k) { if (!(k in cF) && JSON.stringify(f[k]) !== JSON.stringify(baseGrupoHojas.f[k])) { cF[k] = f[k]; n++; } });
+  if (!n) return 0;
+  var otras = hojasAgrupadas.filter(function (h) { return h !== activeSheet && sheets.indexOf(h) !== -1 && !sheetProtegida[h]; });
+  otras.forEach(function (h) {
+    var dh = sheetData[h] || (sheetData[h] = {}), fh = sheetFormats[h] || (sheetFormats[h] = {});
+    Object.keys(cD).forEach(function (k) { if (cD[k] === undefined || cD[k] === '') delete dh[k]; else dh[k] = cD[k]; });
+    Object.keys(cF).forEach(function (k) { if (cF[k] === undefined) delete fh[k]; else fh[k] = clonarObjGrupo(cF[k]); });
+  });
+  iniciarBaseGrupo();
+  var st = document.getElementById('saveStatus'); if (st && otras.length) st.textContent = '🗂 Copiado también en ' + otras.length + ' hoja(s) del grupo';
+  return otras.length;
+}
+function desagruparHojas(silencio) {
+  if (!hojasAgrupadas.length) return;
+  hojasAgrupadas = []; baseGrupoHojas = null; renderTabs();
+  if (!silencio) document.getElementById('saveStatus').textContent = 'Hojas desagrupadas';
+}
+// Al tocar una pestaña: dentro del grupo se cambia de hoja sin perderlo; fuera, se desagrupa
+function alCambiarHojaGrupo(nueva) {
+  if (!hojasAgrupadas.length) return;
+  if (hojasAgrupadas.indexOf(nueva) === -1) desagruparHojas();
+  else setTimeout(iniciarBaseGrupo, 0);
+}
+function abrirAgruparHojas() {
+  var esc = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  var html = '<div class="mcrNota">Marcá las hojas que querés editar juntas (por ejemplo Enero a Diciembre). Mientras estén agrupadas, lo que escribás o el formato que pongás en la hoja activa se copia a la misma celda de las demás. Tocá una pestaña fuera del grupo para desagrupar.</div>' +
+    sheets.map(function (h) { return '<label class="egChk"><input type="checkbox" class="grpChk" data-h="' + esc(h) + '"' + (h === activeSheet || hojasAgrupadas.indexOf(h) !== -1 ? ' checked' : '') + (h === activeSheet ? ' disabled' : '') + '> ' + esc(h) + (sheetProtegida[h] ? ' 🔒' : '') + (h === activeSheet ? ' <small>(activa)</small>' : '') + '</label>'; }).join('') +
+    '<div class="egDos"><button type="button" class="egAccion" id="grpTodas">Seleccionar todas</button>' + (hojasAgrupadas.length ? '<button type="button" class="egAccion" id="grpQuitar">Desagrupar</button>' : '') + '</div>';
+  abrirPanel('🗂 Agrupar hojas', html, [{ texto: 'Cancelar' }, { texto: 'Agrupar', ok: true, accion: function () {
+    var sel = Array.prototype.slice.call(document.querySelectorAll('.grpChk')).filter(function (c) { return c.checked; }).map(function (c) { return c.dataset.h; });
+    if (sel.length < 2) { alert('Marcá al menos otra hoja además de la activa.'); return false; }
+    hojasAgrupadas = sel; iniciarBaseGrupo(); renderTabs();
+    var prot = sel.filter(function (h) { return sheetProtegida[h]; });
+    document.getElementById('saveStatus').textContent = '🗂 ' + sel.length + ' hojas agrupadas' + (prot.length ? ' (las protegidas no se cambian)' : '');
+  } }]);
+  document.getElementById('grpTodas').addEventListener('click', function () { document.querySelectorAll('.grpChk').forEach(function (c) { c.checked = true; }); });
+  var q = document.getElementById('grpQuitar'); if (q) q.addEventListener('click', function () { document.getElementById('mcrPanelOv').classList.remove('show'); desagruparHojas(); });
+}
+document.getElementById('btnTabAgrupar').addEventListener('click', function () { document.getElementById('tabMenuOverlay').classList.remove('show'); abrirAgruparHojas(); });
 document.getElementById('btnTabOcultar').addEventListener('click', function () {
   document.getElementById('tabMenuOverlay').classList.remove('show');
   if (ocultarHoja(tabMenuTarget)) document.getElementById('saveStatus').textContent = '🙈 Hoja "' + tabMenuTarget + '" oculta (se muestra en 👁 Hojas y libro)';
@@ -22114,14 +23170,14 @@ document.getElementById('caAddBtn').addEventListener('click', function () {
 // ══════════════════════════════════════════════
 function renderValidRulesList() {
   var wrap = document.getElementById('validRulesList');
-  var vals = sheetValidations[activeSheet] || {}, msjs = mensajesEntradaHoja(activeSheet);
+  var vals = sheetValidations[activeSheet] || {}, msjs = mensajesEntradaHoja(activeSheet), reglas = reglasValidacionHoja(activeSheet);
   var ranges = Object.keys(vals);
-  Object.keys(msjs).forEach(function (r) { if (ranges.indexOf(r) === -1) ranges.push(r); });
+  Object.keys(msjs).concat(Object.keys(reglas)).forEach(function (r) { if (ranges.indexOf(r) === -1) ranges.push(r); });
   if (!ranges.length) { wrap.innerHTML = '<div style="font-size:11.5px;color:#888;">Sin validaciones en esta hoja todavía.</div>'; return; }
   var escV = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
   wrap.innerHTML = ranges.map(function (r) {
     var m = msjs[r];
-    return '<div class="validRuleItem"><span><b>' + r + '</b>: ' + (vals[r] ? escV(vals[r].join(', ')) : '<i>cualquier valor</i>') + (m ? '<br><small>💬 ' + escV((m.titulo ? m.titulo + ': ' : '') + m.texto) + '</small>' : '') + '</span><button class="validRuleDel" data-range="' + r + '">🗑</button></div>';
+    return '<div class="validRuleItem"><span><b>' + r + '</b>: ' + (vals[r] ? escV(vals[r].join(', ')) : (reglas[r] ? escV(descripcionReglaVal(reglas[r])) + ' <small>(' + ({ detener: '⛔', advertencia: '⚠', informacion: 'ℹ' }[reglas[r].estilo] || '⛔') + ')</small>' : '<i>cualquier valor</i>')) + (m ? '<br><small>💬 ' + escV((m.titulo ? m.titulo + ': ' : '') + m.texto) + '</small>' : '') + '</span><button class="validRuleDel" data-range="' + r + '">🗑</button></div>';
   }).join('');
   wrap.querySelectorAll('.validRuleDel').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -22129,6 +23185,7 @@ function renderValidRulesList() {
       delete sheetValidations[activeSheet][btn.dataset.range];
       if (sheetValidacionNativa[activeSheet]) delete sheetValidacionNativa[activeSheet][btn.dataset.range];
       delete mensajesEntradaHoja(activeSheet, true)[btn.dataset.range];
+      delete reglasValidacionHoja(activeSheet, true)[btn.dataset.range];
       renderValidRulesList(); buildTable(); autoSave();
     });
   });
@@ -22139,6 +23196,15 @@ document.getElementById('btnValidacion').addEventListener('click', function () {
   document.getElementById('validList').value = '';
   document.getElementById('validNativa').checked = false;
   var rngIni = document.getElementById('validRange').value.toUpperCase(), mIni = mensajesEntradaHoja(activeSheet)[rngIni];
+  var rgIni = reglasValidacionHoja(activeSheet)[rngIni] || {};
+  document.getElementById('validTipo').value = rgIni.tipo || 'lista';
+  document.getElementById('validOp').value = rgIni.op || 'entre';
+  document.getElementById('validV1').value = rgIni.v1 || ''; document.getElementById('validV2').value = rgIni.v2 || '';
+  document.getElementById('validFormula').value = rgIni.formula || '';
+  document.getElementById('validEstilo').value = rgIni.estilo || 'detener';
+  document.getElementById('validErrTitulo').value = rgIni.errTitulo || ''; document.getElementById('validErrMsg').value = rgIni.errMsg || '';
+  document.getElementById('validOmitir').checked = rgIni.omitirBlancos !== false;
+  refrescarCamposValidacion();
   document.getElementById('validMsjTitulo').value = mIni ? mIni.titulo || '' : '';
   document.getElementById('validMsjTexto').value = mIni ? mIni.texto || '' : '';
   if (!sheetValidations[activeSheet]) sheetValidations[activeSheet] = {};
@@ -22146,9 +23212,54 @@ document.getElementById('btnValidacion').addEventListener('click', function () {
   document.getElementById('validOverlay').classList.add('show');
 });
 document.getElementById('validCancel').addEventListener('click', function () { document.getElementById('validOverlay').classList.remove('show'); });
+function refrescarCamposValidacion() {
+  var t = document.getElementById('validTipo').value, op = document.getElementById('validOp').value;
+  document.getElementById('validBoxLista').style.display = t === 'lista' ? '' : 'none';
+  document.getElementById('validBoxRegla').style.display = t === 'lista' ? 'none' : '';
+  document.getElementById('validBoxOp').style.display = t === 'formula' ? 'none' : '';
+  document.getElementById('validBoxFormula').style.display = t === 'formula' ? '' : 'none';
+  var dos = op === 'entre' || op === 'noEntre';
+  document.getElementById('validV2Box').style.display = dos ? '' : 'none';
+  document.getElementById('validV1Lbl').textContent = dos ? 'Mínimo' : 'Valor';
+  var ph = { fecha: ['01/01/2026', '31/12/2026'], hora: ['08:00', '17:00'], longitud: ['9', '12'], entero: ['1', '100'], decimal: ['0', '1000000'] }[t] || ['', ''];
+  document.getElementById('validV1').placeholder = 'Ej: ' + ph[0]; document.getElementById('validV2').placeholder = 'Ej: ' + ph[1];
+}
+document.getElementById('validTipo').addEventListener('change', refrescarCamposValidacion);
+document.getElementById('validOp').addEventListener('change', refrescarCamposValidacion);
+document.getElementById('validCirculos').addEventListener('click', function () {
+  circulosValidacionActivos = true; var n = pintarCirculosValidacion();
+  document.getElementById('saveStatus').textContent = n ? '⭕ ' + n + ' dato(s) no válido(s) marcados en rojo' : '✅ No hay datos no válidos en esta hoja';
+  if (n) document.getElementById('validOverlay').classList.remove('show');
+});
+document.getElementById('validBorrarCirculos').addEventListener('click', function () { circulosValidacionActivos = false; pintarCirculosValidacion(); document.getElementById('saveStatus').textContent = 'Círculos borrados'; });
 document.getElementById('validAddBtn').addEventListener('click', function () {
   var range = document.getElementById('validRange').value.trim().toUpperCase();
   if (!condRangeToIds(range).length) { alert('Rango inválido. Ej: C2:C20 o una celda como C2.'); return; }
+  var tipoV = document.getElementById('validTipo').value;
+  if (tipoV !== 'lista') {
+    var regla = { tipo: tipoV, op: document.getElementById('validOp').value, v1: document.getElementById('validV1').value.trim(), v2: document.getElementById('validV2').value.trim(),
+      formula: document.getElementById('validFormula').value.trim(), estilo: document.getElementById('validEstilo').value, errTitulo: document.getElementById('validErrTitulo').value.trim(),
+      errMsg: document.getElementById('validErrMsg').value.trim(), omitirBlancos: document.getElementById('validOmitir').checked };
+    if (tipoV === 'formula') {
+      if (!regla.formula) { alert('Escribí la fórmula, ej: =B2>0'); return; }
+      if (regla.formula.charAt(0) !== '=') regla.formula = '=' + regla.formula;
+      delete regla.op; delete regla.v1; delete regla.v2;
+    } else {
+      var dos = regla.op === 'entre' || regla.op === 'noEntre';
+      if (!isFinite(limiteVal(tipoV, regla.v1)) || (dos && !isFinite(limiteVal(tipoV, regla.v2)))) { alert(tipoV === 'fecha' ? 'Escribí las fechas como 01/01/2026.' : tipoV === 'hora' ? 'Escribí las horas como 08:00 o 17:30.' : 'Escribí los límites como números.'); return; }
+      if (!dos) delete regla.v2;
+      delete regla.formula;
+    }
+    snapshot();
+    reglasValidacionHoja(activeSheet, true)[range] = regla;
+    var tmR = mensajesEntradaHoja(activeSheet, true), mT = document.getElementById('validMsjTitulo').value.trim(), mX = document.getElementById('validMsjTexto').value.trim();
+    if (mT || mX) tmR[range] = { titulo: mT, texto: mX };
+    if (sheetValidations[activeSheet]) delete sheetValidations[activeSheet][range];
+    renderValidRulesList(); autoSave();
+    if (circulosValidacionActivos) pintarCirculosValidacion();
+    document.getElementById('saveStatus').textContent = '✅ Validación en ' + range + ': ' + descripcionReglaVal(regla);
+    return;
+  }
   var raw = document.getElementById('validList').value;
   var list = raw.split(/[\n,]/).map(function (s) { return s.trim(); }).filter(function (s) { return s !== ''; });
   var msjT = document.getElementById('validMsjTitulo').value.trim(), msjX = document.getElementById('validMsjTexto').value.trim();
@@ -22159,6 +23270,7 @@ document.getElementById('validAddBtn').addEventListener('click', function () {
   document.getElementById('validMsjTitulo').value = ''; document.getElementById('validMsjTexto').value = '';
   if (!list.length) { renderValidRulesList(); autoSave(); document.getElementById('saveStatus').textContent = '💬 Mensaje de entrada guardado para ' + range; return; }
   if (!sheetValidations[activeSheet]) sheetValidations[activeSheet] = {};
+  delete reglasValidacionHoja(activeSheet, true)[range];
   sheetValidations[activeSheet][range] = list;
   if (!sheetValidacionNativa[activeSheet]) sheetValidacionNativa[activeSheet] = {};
   if (document.getElementById('validNativa').checked) sheetValidacionNativa[activeSheet][range] = true;
@@ -22322,6 +23434,122 @@ function mostrarSugerenciasColumna(id, texto) {
   b.addEventListener('click', function () { autocompletarActivo = !autocompletarActivo; try { localStorage.setItem('kcn_autocompletar', autocompletarActivo ? '1' : '0'); } catch (e) {} pintar(); document.getElementById('saveStatus').textContent = 'Autocompletar ' + (autocompletarActivo ? 'activado' : 'desactivado'); });
   pintar();
 })();
+// ══════════════════════════════════════════════
+// VALIDACIÓN DE DATOS COMPLETA (como Datos ▸ Validación de datos de Excel)
+// Además de las listas: número entero, decimal, fecha, hora, largo del texto y fórmula propia,
+// con su aviso (Detener, Advertencia o Información) y "Rodear con un círculo datos no válidos".
+// Se guarda con la hoja: colWidths[hoja].valReglas = { 'B2:B20': { tipo, op, v1, v2, formula, estilo, errTitulo, errMsg, omitirBlancos } }
+// ══════════════════════════════════════════════
+var TIPOS_VALIDACION = { lista: 'Lista', entero: 'Número entero', decimal: 'Decimal', fecha: 'Fecha', hora: 'Hora', longitud: 'Longitud del texto', formula: 'Personalizada (fórmula)' };
+var OPS_VALIDACION = { entre: 'entre', noEntre: 'no está entre', igual: 'igual a', distinto: 'distinto de', mayor: 'mayor que', menor: 'menor que', mayorIgual: 'mayor o igual que', menorIgual: 'menor o igual que' };
+var circulosValidacionActivos = false;
+function reglasValidacionHoja(h, crear) {
+  var w = colWidths[h] || (crear ? (colWidths[h] = {}) : null);
+  if (!w) return {};
+  if (!w.valReglas) { if (!crear) return {}; w.valReglas = {}; }
+  return w.valReglas;
+}
+function reglaValidacionDeCelda(id, h) {
+  var m = reglasValidacionHoja(h || activeSheet), ks = Object.keys(m);
+  for (var i = 0; i < ks.length; i++) if (condRangeToIds(ks[i]).indexOf(id) >= 0) return { rango: ks[i], regla: m[ks[i]] };
+  return null;
+}
+function horaAMinutosVal(t) {
+  var m = /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(a\.?\s*m\.?|p\.?\s*m\.?)?$/i.exec(String(t).trim());
+  if (!m) { var n = parseFloat(limpiaNum(t)); return isFinite(n) && n >= 0 && n < 1 ? n * 1440 : NaN; }
+  var h = +m[1] % 24, pm = m[4] && /p/i.test(m[4]); if (m[4]) h = h % 12 + (pm ? 12 : 0);
+  return h * 60 + +m[2] + (m[3] ? +m[3] / 60 : 0);
+}
+function valorComparableVal(tipo, v) {
+  if (tipo === 'fecha') { var t = parsearFechaFlexible(v); return t === null ? NaN : t; }
+  if (tipo === 'hora') return horaAMinutosVal(v);
+  if (tipo === 'longitud') return String(v).length;
+  var n = numeroDeValorCalc(v); if (!isFinite(n)) n = parseFloat(limpiaNum(v));
+  return isFinite(n) ? n : NaN;
+}
+function limiteVal(tipo, x) {
+  var s = String(x == null ? '' : x).trim();
+  if (s.charAt(0) === '=') { try { s = String(evaluarFormulaSuelta(s)); } catch (e) { return NaN; } }
+  if (tipo === 'longitud' || tipo === 'entero' || tipo === 'decimal') { var n = parseFloat(limpiaNum(s)); return isFinite(n) ? n : NaN; }
+  return valorComparableVal(tipo, s);
+}
+// Evalúa una fórmula suelta (sin celda) usando una celda auxiliar fuera de la vista
+function evaluarFormulaSuelta(f, idBase, idCelda) {
+  var aux = cellId(MAX_FILAS_HOJA - 1, MAX_COLUMNAS - 1), d = sheetData[activeSheet] || (sheetData[activeSheet] = {}), antes = d[aux];
+  var formula = f;
+  if (idBase && idCelda) {
+    var a = /^([A-Z]+)(\d+)$/.exec(idBase), b = /^([A-Z]+)(\d+)$/.exec(idCelda);
+    if (a && b) formula = ajustarFormulaRelativa(f, +b[2] - +a[2], colIndex(b[1]) - colIndex(a[1]));
+  }
+  var cacheAntes = cacheCalculo; cacheCalculo = null;
+  try { d[aux] = formula; return computeValue(aux); }
+  finally { if (antes === undefined) delete d[aux]; else d[aux] = antes; cacheCalculo = cacheAntes; }
+}
+// ¿El valor cumple la regla? (para "fórmula", el valor ya tiene que estar escrito en la celda)
+function cumpleReglaValidacion(regla, rango, id, val) {
+  var v = String(val == null ? '' : val);
+  if (v.trim() === '') return regla.omitirBlancos !== false;
+  if (regla.tipo === 'formula') {
+    var base = condRangeToIds(rango)[0];
+    var r = evaluarFormulaSuelta(regla.formula, base, id);
+    return r === true || String(r).toUpperCase() === 'VERDADERO' || String(r).toUpperCase() === 'TRUE' || (isFinite(parseFloat(r)) && parseFloat(r) !== 0);
+  }
+  var x = valorComparableVal(regla.tipo, v);
+  if (!isFinite(x)) return false;
+  if (regla.tipo === 'entero' && Math.round(x) !== x) return false;
+  var a = limiteVal(regla.tipo, regla.v1), b = limiteVal(regla.tipo, regla.v2);
+  switch (regla.op) {
+    case 'entre': return x >= Math.min(a, b) && x <= Math.max(a, b);
+    case 'noEntre': return x < Math.min(a, b) || x > Math.max(a, b);
+    case 'igual': return x === a;
+    case 'distinto': return x !== a;
+    case 'mayor': return x > a;
+    case 'menor': return x < a;
+    case 'mayorIgual': return x >= a;
+    case 'menorIgual': return x <= a;
+  }
+  return true;
+}
+function descripcionReglaVal(r) {
+  if (r.tipo === 'formula') return 'Fórmula: ' + r.formula;
+  return TIPOS_VALIDACION[r.tipo] + ' ' + OPS_VALIDACION[r.op] + ' ' + r.v1 + (r.op === 'entre' || r.op === 'noEntre' ? ' y ' + r.v2 : '');
+}
+// Se llama al confirmar una celda: devuelve true si el valor se queda, false si hay que deshacerlo
+function validarAlConfirmar(id, val, anterior) {
+  if (val === anterior || String(val).charAt(0) === '=') return true;
+  var rr = reglaValidacionDeCelda(id); if (!rr) return true;
+  var d = sheetData[activeSheet] || (sheetData[activeSheet] = {}), previo = d[id];
+  if (val === '') delete d[id]; else d[id] = val;
+  var ok;
+  try { ok = cumpleReglaValidacion(rr.regla, rr.rango, id, val); } catch (e) { ok = true; }
+  if (previo === undefined) delete d[id]; else d[id] = previo;
+  if (ok) return true;
+  var r = rr.regla, titulo = r.errTitulo || 'Valor no válido', msj = r.errMsg || ('El valor "' + val + '" no cumple la validación de ' + rr.rango + ': ' + descripcionReglaVal(r) + '.');
+  if (r.estilo === 'informacion') { alert('ℹ ' + titulo + '\n\n' + msj); return true; }
+  if (r.estilo === 'advertencia') return confirm('⚠ ' + titulo + '\n\n' + msj + '\n\n¿Querés dejarlo así de todos modos?');
+  alert('⛔ ' + titulo + '\n\n' + msj);
+  return false;
+}
+// "Rodear con un círculo datos no válidos": revisa listas y reglas de la hoja activa
+function celdasNoValidas() {
+  var malas = [], listas = sheetValidations[activeSheet] || {}, reglas = reglasValidacionHoja(activeSheet), cacheAntes = cacheCalculo;
+  Object.keys(listas).forEach(function (rg) {
+    var l = (listas[rg] || []).map(function (x) { return String(x).toLowerCase(); });
+    condRangeToIds(rg).forEach(function (id) { var v = String(computeValue(id)); if (v !== '' && l.indexOf(v.toLowerCase()) === -1) malas.push(id); });
+  });
+  Object.keys(reglas).forEach(function (rg) {
+    condRangeToIds(rg).forEach(function (id) { var v = computeValue(id); try { if (!cumpleReglaValidacion(reglas[rg], rg, id, v)) malas.push(id); } catch (e) {} });
+  });
+  cacheCalculo = cacheAntes;
+  return malas.filter(function (x, i, a) { return a.indexOf(x) === i; });
+}
+function pintarCirculosValidacion() {
+  document.querySelectorAll('.cell.valInvalida').forEach(function (e) { e.classList.remove('valInvalida'); });
+  if (!circulosValidacionActivos) return 0;
+  var malas = celdasNoValidas();
+  malas.forEach(function (id) { var el = document.getElementById('cell_' + id); if (el) el.classList.add('valInvalida'); });
+  return malas.length;
+}
 function checkValidationOnCommit(id, val) {
   var list = getValidationListForCell(id);
   if (!list || val === '') return;
@@ -26580,6 +27808,12 @@ function generarYCompartirPdfReporte(paraImprimir, orientacion, rango, opciones)
     }
   }
 
+  // Marca de agua (BORRADOR, CONFIDENCIAL o el logo) en todas las páginas
+  if (opcionesLibro.marcaAgua && (opcionesLibro.marcaAgua.texto || opcionesLibro.marcaAgua.logo)) {
+    var totalPagMarca = doc.internal.getNumberOfPages();
+    for (var pMa = 1; pMa <= totalPagMarca; pMa++) { doc.setPage(pMa); dibujarMarcaAguaPdf(doc, pageW, pageH); }
+  }
+
   if (vistaPrevia) return { doc: doc, pageW: pageW, pageH: pageH };
   var pdfDataUri = doc.output('datauristring');
   var pdfBase64 = pdfDataUri.split(',')[1];
@@ -26626,11 +27860,24 @@ document.getElementById('btnPdfReporte').addEventListener('click', function () {
   actualizarVistaPrevioLogoPdf();
   document.getElementById('pdfEncabezadoInput').value = pdfEncabezadoTexto || '';
   document.getElementById('pdfPiePaginaInput').value = pdfPiePaginaTexto || '';
+  var ma = opcionesLibro.marcaAgua || {};
+  document.getElementById('pdfMarcaTexto').value = ma.texto || '';
+  document.getElementById('pdfMarcaColor').value = ma.color || '#c00000';
+  document.getElementById('pdfMarcaOp').value = String(ma.opacidad || 0.15);
+  document.getElementById('pdfMarcaLogo').checked = !!ma.logo;
   document.getElementById('pdfExportOverlay').classList.add('show');
 });
 document.getElementById('pdfEncabezadoInput').addEventListener('input', function () {
   pdfEncabezadoTexto = this.value; autoSave();
 });
+function guardarMarcaAguaPdf() {
+  var t = document.getElementById('pdfMarcaTexto').value.trim(), logo = document.getElementById('pdfMarcaLogo').checked;
+  if (!t && !logo) delete opcionesLibro.marcaAgua;
+  else opcionesLibro.marcaAgua = { texto: t, color: document.getElementById('pdfMarcaColor').value, opacidad: parseFloat(document.getElementById('pdfMarcaOp').value) || 0.15, logo: logo };
+  autoSave();
+}
+['pdfMarcaTexto', 'pdfMarcaColor', 'pdfMarcaOp', 'pdfMarcaLogo'].forEach(function (idM) { var el = document.getElementById(idM); el.addEventListener('input', guardarMarcaAguaPdf); el.addEventListener('change', guardarMarcaAguaPdf); });
+document.getElementById('pdfMarcaLogo').addEventListener('change', function () { if (this.checked && !logoPdfDataUrl) { alert('Primero cargá un logo arriba ("Logo en el encabezado").'); this.checked = false; guardarMarcaAguaPdf(); } });
 document.getElementById('pdfPiePaginaInput').addEventListener('input', function () {
   pdfPiePaginaTexto = this.value; autoSave();
 });
@@ -28492,6 +29739,7 @@ function guardarMatrizEnNube() {
 // PERSISTENCIA
 // ══════════════════════════════════════════════
 function autoSave() {
+  try { if (typeof propagarCambiosGrupo === 'function') propagarCambiosGrupo(); } catch (eGr) {}
   try { registrarHistorialLocal(); } catch (eHist) {}
   try { localStorage.setItem('mcr_ultima_edicion', String(Date.now())); } catch (eUlt) {}
   // Si se estaba grabando una macro y hubo un snapshot() pendiente de cerrar,
@@ -28788,6 +30036,34 @@ function alternarDividir(forzar) {
 // PdfLienzo imita las pocas funciones de jsPDF que usa el generador del reporte (texto, líneas,
 // rectángulos, colores, logo y páginas) y guarda cada instrucción por página. Después cada página
 // se dibuja en un <canvas>. Las medidas van en milímetros, igual que en el PDF.
+// ── Marca de agua del PDF (Diseño de página ▸ Marca de agua) ──
+// Se guarda con el libro: opcionesLibro.marcaAgua = { texto, color, opacidad, logo }
+function dibujarMarcaAguaPdf(doc, pageW, pageH) {
+  var m = opcionesLibro.marcaAgua || {};
+  var op = Math.max(0.04, Math.min(0.6, Number(m.opacidad) || 0.15)), conAlfa = false;
+  try { if (doc.GState && doc.setGState) { doc.setGState(new doc.GState({ opacity: op })); conAlfa = true; } } catch (e) {}
+  if (m.logo && logoPdfDataUrl) {
+    try {
+      var pr = doc.getImageProperties(logoPdfDataUrl), w = pageW * 0.6, h = pr && pr.width ? w * pr.height / pr.width : w * 0.5;
+      if (h > pageH * 0.5) { w = w * pageH * 0.5 / h; h = pageH * 0.5; }
+      doc.addImage(logoPdfDataUrl, /png/i.test(logoPdfDataUrl.slice(0, 30)) ? 'PNG' : 'JPEG', (pageW - w) / 2, (pageH - h) / 2, w, h);
+    } catch (e2) {}
+  }
+  var t = String(m.texto || '').trim();
+  if (t) {
+    var rgb = hexARgb(m.color || '#c00000') || [192, 0, 0];
+    if (!conAlfa) rgb = rgb.map(function (v) { return Math.round(255 - (255 - v) * op); });
+    var diag = Math.sqrt(pageW * pageW + pageH * pageH), ang = Math.atan2(pageH, pageW) * 180 / Math.PI;
+    var tam = Math.max(18, Math.min(120, 0.6 * diag / (t.length * 0.3528 * 0.6)));
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(tam); doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+    var anchoT = doc.getTextWidth(t), rad = ang * Math.PI / 180, altoT = tam * 0.3528 * 0.35;
+    // Se arranca del extremo izquierdo para que el centro del texto quede en el centro de la hoja
+    var x0 = pageW / 2 - Math.cos(rad) * anchoT / 2 + Math.sin(rad) * altoT, y0 = pageH / 2 + Math.sin(rad) * anchoT / 2 + Math.cos(rad) * altoT;
+    doc.text(t, x0, y0, { angle: ang });
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(0, 0, 0);
+  }
+  if (conAlfa) { try { doc.setGState(new doc.GState({ opacity: 1 })); } catch (e3) {} }
+}
 function PdfLienzo(opts) {
   this.paginas = [[]];
   this.actual = 0;
@@ -28815,6 +30091,8 @@ PdfLienzo.prototype = {
     return (/italic/.test(st) ? 'italic ' : '') + (/bold/.test(st) ? 'bold ' : '') + (e.fontSize * 0.3528 * escala) + 'px ' + PdfLienzo._familia(e.font);
   },
   setFontSize: function (n) { this.estado.fontSize = n; return this; },
+  GState: function (o) { return o || {}; },
+  setGState: function (g) { this.estado.alpha = g && g.opacity != null ? g.opacity : 1; return this; },
   setFont: function (f, st) { this.estado.font = f || this.estado.font; this.estado.style = st || 'normal'; return this; },
   setFillColor: function () { this.estado.fill = PdfLienzo._color.apply(null, arguments); return this; },
   setDrawColor: function () { this.estado.draw = PdfLienzo._color.apply(null, arguments); return this; },
@@ -28838,6 +30116,7 @@ PdfLienzo.prototype = {
     (this.paginas[numPagina] || []).forEach(function (o) {
       var e = o.e;
       ctx.save();
+      ctx.globalAlpha = e.alpha == null ? 1 : e.alpha;
       if (o.k === 'rect') {
         var x = o.x * escala, y = o.y * escala, w = o.w * escala, h = o.h * escala;
         if (/F/.test(o.st)) { ctx.fillStyle = e.fill; ctx.fillRect(x, y, w, h); }
@@ -29536,7 +30815,7 @@ var RB_MAPA = {};
   m('insertar', 'btnFilasColumnas btnAddRow btnDelRow btnAddCol btnInsertarTabla btnChart btnEditarGrafico btnFormas btnImagen btnDashboard btnComparativoMensual btnTablaDinamica btnSegmentadores');
   m('insertar', 'btnTablaFormato btnTablaFila');
   m('revisar', 'btnAccesibilidad btnInspDoc btnPanelComentarios');
-  m('vista', 'btnDisenoPagina btnSaltoPagina btnZoomSel btnZoom100 btnCuadricula btnEncabezados btnEnfoque btnDividir');
+  m('vista', 'btnDisenoPagina btnSaltoPagina btnFondoHoja btnZoomSel btnZoom100 btnCuadricula btnEncabezados btnEnfoque btnDividir');
   m('archivo', 'btnSello btnVersiones');
   m('datos', 'btnDesdeImagen btnAnalizarDatos btnCombinar btnRelacionar');
   m('contabilidad', 'btnCongelarFilas btnCongelarColumnas btnDescongelar btnWhatIf btnValidacionDatos btnFormatoCondicional btnTablaDinamica btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
@@ -29816,14 +31095,82 @@ document.getElementById('btnBackup').addEventListener('click', function () {
 document.getElementById('backupClose').addEventListener('click', function () {
   document.getElementById('backupOverlay').classList.remove('show');
 });
+// ══════════════════════════════════════════════
+// CIFRAR CON CONTRASEÑA (Archivo ▸ Información ▸ Proteger libro ▸ Cifrar con contraseña)
+// Los respaldos (.json) del libro se guardan cifrados con AES-256-GCM; la clave sale de la
+// contraseña con PBKDF2 (SHA-256, 250 000 vueltas). Sin la contraseña no se pueden abrir y
+// NO hay forma de recuperarla. La contraseña no se guarda en ningún lado: se pide una vez
+// por sesión cuando hace falta.
+// ══════════════════════════════════════════════
+var claveCifradoLibro = null;
+function bytesAB64(b) { var s = ''; b = new Uint8Array(b); for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
+function b64ABytes(t) { var s = atob(t), b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; }
+function cifradoDisponible() { return !!(window.crypto && crypto.subtle && window.TextEncoder); }
+function claveDeContrasena(clave, sal) {
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(clave), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: 250000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  });
+}
+function cifrarTextoLibro(texto, clave) {
+  var sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  return claveDeContrasena(clave, sal).then(function (k) { return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, new TextEncoder().encode(texto)); })
+    .then(function (c) { return { app: 'MatrizContableCR', cifrado: 'AES-256-GCM/PBKDF2-SHA256', vueltas: 250000, sal: bytesAB64(sal), iv: bytesAB64(iv), datos: bytesAB64(c) }; });
+}
+function descifrarTextoLibro(paq, clave) {
+  return claveDeContrasena(clave, b64ABytes(paq.sal)).then(function (k) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ABytes(paq.iv) }, k, b64ABytes(paq.datos)); })
+    .then(function (p) { return new TextDecoder().decode(p); });
+}
+function pedirContrasenaLibro(titulo, texto) {
+  return new Promise(function (ok, cancel) {
+    var html = '<div class="mcrNota">' + texto + '</div><label class="mcrF">Contraseña</label><input id="cifClave" class="mcrI" type="password" autocomplete="current-password">';
+    var listo = false;
+    abrirPanel(titulo, html, [{ texto: 'Cancelar', accion: function () { listo = true; cancel(new Error('cancelado')); } }, { texto: 'Aceptar', ok: true, accion: function () {
+      var c = document.getElementById('cifClave').value; if (!c) { alert('Escribí la contraseña.'); return false; }
+      listo = true; ok(c);
+    } }]);
+    setTimeout(function () { var e = document.getElementById('cifClave'); if (e) { e.focus(); e.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { var b = Array.from(document.querySelectorAll('#mcrPanelOv button')).filter(function (x) { return x.textContent === 'Aceptar'; })[0]; if (b) b.click(); } }); } }, 50);
+  });
+}
+function actualizarBotonCifrado() { var b = document.getElementById('btnCifrarLibro'); if (b) { b.textContent = opcionesLibro.cifrarArchivos ? '🔐 Cifrado: Sí' : '🔐 Cifrar con contraseña'; b.classList.toggle('active', !!opcionesLibro.cifrarArchivos); } }
+function abrirCifrarLibro() {
+  if (!cifradoDisponible()) { alert('Este navegador no permite cifrar (falta Web Crypto).'); return; }
+  var activo = !!opcionesLibro.cifrarArchivos;
+  var html = '<div class="mcrNota">' + (activo ? '🔐 Los respaldos de este libro se guardan <b>cifrados</b>. Para abrirlos hace falta la contraseña.' : 'Los respaldos (💾 Guardar respaldo .json) se van a guardar cifrados: nadie los puede abrir sin la contraseña, ni siquiera con un editor de texto.') + '</div>' +
+    '<label class="mcrF">' + (activo ? 'Nueva contraseña' : 'Contraseña') + '</label><input id="cifN1" class="mcrI" type="password" autocomplete="new-password">' +
+    '<label class="mcrF">Repetila</label><input id="cifN2" class="mcrI" type="password" autocomplete="new-password">' +
+    '<div class="mcrNota" style="color:#b45309;">⚠ Si olvidás la contraseña, el respaldo no se puede recuperar. Anotala en un lugar seguro. Mayúsculas y minúsculas cuentan.</div>' +
+    (activo ? '<button type="button" class="egAccion" id="cifQuitar">🔓 Quitar el cifrado (los próximos respaldos salen sin contraseña)</button>' : '');
+  abrirPanel('🔐 Cifrar con contraseña', html, [{ texto: 'Cancelar' }, { texto: activo ? 'Cambiar contraseña' : 'Cifrar', ok: true, accion: function () {
+    var a = document.getElementById('cifN1').value, b = document.getElementById('cifN2').value;
+    if (a.length < 4) { alert('Usá al menos 4 caracteres.'); return false; }
+    if (a !== b) { alert('Las dos contraseñas no coinciden.'); return false; }
+    claveCifradoLibro = a; opcionesLibro.cifrarArchivos = true; autoSave(); actualizarBotonCifrado();
+    document.getElementById('saveStatus').textContent = '🔐 Los respaldos de este libro se guardan cifrados';
+  } }]);
+  var q = document.getElementById('cifQuitar');
+  if (q) q.addEventListener('click', function () {
+    if (!confirm('¿Quitar el cifrado? Los respaldos que guardés desde ahora se van a poder abrir sin contraseña.')) return;
+    opcionesLibro.cifrarArchivos = false; claveCifradoLibro = null; autoSave(); actualizarBotonCifrado();
+    document.getElementById('mcrPanelOv').classList.remove('show');
+    document.getElementById('saveStatus').textContent = '🔓 Cifrado quitado';
+  });
+}
 // ── Respaldo en archivo (.json) ───────────────────────────────────────
 document.getElementById('backupArchivoGuardarBtn').addEventListener('click', function () {
   var paquete = { app: 'MatrizContableCR', version: 1, fecha: new Date().toISOString(), filas: ROWS, columnas: COLS, estado: estadoActualComoObjeto() };
   var ahora = new Date(), nombre = 'respaldo-matriz-' + ahora.getFullYear() + '-' + String(ahora.getMonth() + 1).padStart(2, '0') + '-' + String(ahora.getDate()).padStart(2, '0') + '.json';
-  try {
-    guardarArchivoNativo(nombre, utf8ToBase64(JSON.stringify(paquete)), 'application/json');
-    document.getElementById('saveStatus').textContent = 'Respaldo guardado: ' + nombre;
-  } catch (e) { alert('No se pudo crear el respaldo (' + e.message + ').'); }
+  var guardar = function (obj, cifrado) {
+    try {
+      guardarArchivoNativo(nombre, utf8ToBase64(JSON.stringify(obj)), 'application/json');
+      document.getElementById('saveStatus').textContent = (cifrado ? '🔐 Respaldo cifrado guardado: ' : 'Respaldo guardado: ') + nombre;
+    } catch (e) { alert('No se pudo crear el respaldo (' + e.message + ').'); }
+  };
+  if (!opcionesLibro.cifrarArchivos) { guardar(paquete, false); return; }
+  if (!cifradoDisponible()) { alert('Este navegador no permite cifrar; el respaldo no se guardó.'); return; }
+  (claveCifradoLibro ? Promise.resolve(claveCifradoLibro) : pedirContrasenaLibro('🔐 Contraseña del libro', 'Este libro guarda sus respaldos cifrados. Escribí la contraseña para cifrar este respaldo.'))
+    .then(function (clave) { claveCifradoLibro = clave; return cifrarTextoLibro(JSON.stringify(paquete), clave); })
+    .then(function (cif) { cif.fecha = paquete.fecha; guardar(cif, true); })
+    .catch(function (e) { if (e && e.message !== 'cancelado') alert('No se pudo cifrar el respaldo: ' + e.message); });
 });
 document.getElementById('backupArchivoRestaurarBtn').addEventListener('click', function () {
   document.getElementById('backupArchivoInput').click();
@@ -29835,6 +31182,22 @@ document.getElementById('backupArchivoInput').addEventListener('change', functio
   lector.onload = function (ev) {
     var paquete;
     try { paquete = JSON.parse(ev.target.result); } catch (err) { alert('Ese archivo no es un respaldo válido (no se pudo leer).'); e.target.value = ''; return; }
+    if (paquete && paquete.cifrado && paquete.datos) {
+      if (!cifradoDisponible()) { alert('Este respaldo está cifrado y este navegador no puede descifrarlo.'); e.target.value = ''; return; }
+      var intentar = function (aviso) {
+        pedirContrasenaLibro('🔐 Respaldo cifrado', aviso).then(function (clave) {
+          return descifrarTextoLibro(paquete, clave).then(function (txt) { claveCifradoLibro = clave; restaurarPaqueteRespaldo(JSON.parse(txt), e.target, true); }, function () { intentar('❌ La contraseña no es correcta. Probá de nuevo (mayúsculas y minúsculas cuentan).'); });
+        }).catch(function () { e.target.value = ''; });
+      };
+      intentar('Este respaldo está protegido. Escribí la contraseña para abrirlo.');
+      return;
+    }
+    restaurarPaqueteRespaldo(paquete, e.target, false);
+  };
+  lector.readAsText(archivo);
+});
+function restaurarPaqueteRespaldo(paquete, input, eraCifrado) {
+    var e = { target: input };
     var estado = paquete && paquete.estado ? paquete.estado : paquete;
     var valido = estado && Array.isArray(estado.sheets) && estado.sheets.length && estado.sheetData && typeof estado.sheetData === 'object';
     if (!valido) { alert('Ese archivo no parece un respaldo de Matriz Contable CR.'); e.target.value = ''; return; }
@@ -29847,12 +31210,11 @@ document.getElementById('backupArchivoInput').addEventListener('change', functio
       cargarEstadoDesdeObjeto(estado);
       renderTabs(); autoSave();
       document.getElementById('backupOverlay').classList.remove('show');
-      document.getElementById('saveStatus').textContent = 'Respaldo restaurado (' + estado.sheets.length + ' hojas)';
+      if (eraCifrado) { opcionesLibro.cifrarArchivos = true; autoSave(); actualizarBotonCifrado(); }
+      document.getElementById('saveStatus').textContent = (eraCifrado ? '🔐 ' : '') + 'Respaldo restaurado (' + estado.sheets.length + ' hojas)';
     } catch (err2) { alert('No se pudo restaurar el respaldo: ' + err2.message); }
     e.target.value = '';
-  };
-  lector.readAsText(archivo);
-});
+}
 document.getElementById('backupCrearAhoraBtn').addEventListener('click', function () {
   var nota = prompt('Ponele una nota a este backup (opcional, ej. "Antes de cierre de mes"):', '') || '';
   crearBackup(false, nota);
@@ -30573,6 +31935,354 @@ function resolverBuscarObjetivo(celdaFormula, valorObjetivo, celdaVariable) {
     celdaVariable: celdaVariable, celdaFormula: celdaFormula,
   };
 }
+// ══════════════════════════════════════════════
+// HERRAMIENTAS PARA ANÁLISIS DE DATOS (Datos ▸ Análisis de datos de Excel)
+// Cada herramienta arma su tabla de resultados (valores, no fórmulas) en una hoja nueva
+// o desde una celda, con los mismos rótulos que usa Excel en español.
+// ══════════════════════════════════════════════
+// ── Distribuciones (beta incompleta regularizada → t y F) ──
+function lnGammaAd(x) {
+  var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  var y = x, t = x + 5.5; t -= (x + 0.5) * Math.log(t);
+  var s = 1.000000000190015; for (var j = 0; j < 6; j++) s += c[j] / ++y;
+  return -t + Math.log(2.5066282746310005 * s / x);
+}
+function betaCfAd(a, b, x) {
+  var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < 1e-300) d = 1e-300; d = 1 / d; var h = d;
+  for (var m = 1; m <= 300; m++) {
+    var m2 = 2 * m, aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d;
+    var del = d * c; h *= del; if (Math.abs(del - 1) < 3e-14) break;
+  }
+  return h;
+}
+function betaIncAd(x, a, b) {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  var bt = Math.exp(lnGammaAd(a + b) - lnGammaAd(a) - lnGammaAd(b) + a * Math.log(x) + b * Math.log(1 - x));
+  return x < (a + 1) / (a + b + 2) ? bt * betaCfAd(a, b, x) / a : 1 - bt * betaCfAd(b, a, 1 - x) / b;
+}
+function tDosColasAd(t, gl) { return betaIncAd(gl / (gl + t * t), gl / 2, 0.5); }          // P(|T| ≥ t)
+function fCola(F, d1, d2) { return F <= 0 ? 1 : betaIncAd(d2 / (d2 + d1 * F), d2 / 2, d1 / 2); } // P(F ≥ f)
+function biseccionAd(fn, objetivo, lo, hi) { for (var i = 0; i < 200; i++) { var m = (lo + hi) / 2; if (fn(m) > objetivo) lo = m; else hi = m; } return (lo + hi) / 2; }
+function tInvDosColas(p, gl) { return biseccionAd(function (t) { return tDosColasAd(t, gl); }, p, 0, 1e4); }
+function fInvCola(p, d1, d2) { return biseccionAd(function (f) { return fCola(f, d1, d2); }, p, 0, 1e6); }
+// ── Utilidades ──
+function sumaAd(a) { return a.reduce(function (s, x) { return s + x; }, 0); }
+function mediaAd(a) { return a.length ? sumaAd(a) / a.length : NaN; }
+function varAd(a) { var m = mediaAd(a); return a.length > 1 ? a.reduce(function (s, x) { return s + (x - m) * (x - m); }, 0) / (a.length - 1) : NaN; }
+function invertirMatrizAd(M) {
+  var n = M.length, A = M.map(function (f, i) { return f.concat(M.map(function (_, j) { return i === j ? 1 : 0; })); });
+  for (var c = 0; c < n; c++) {
+    var piv = c; for (var r = c + 1; r < n; r++) if (Math.abs(A[r][c]) > Math.abs(A[piv][c])) piv = r;
+    if (Math.abs(A[piv][c]) < 1e-12) return null;
+    var t = A[c]; A[c] = A[piv]; A[piv] = t;
+    var v = A[c][c]; for (var k = 0; k < 2 * n; k++) A[c][k] /= v;
+    for (var r2 = 0; r2 < n; r2++) if (r2 !== c) { var f = A[r2][c]; for (var k2 = 0; k2 < 2 * n; k2++) A[r2][k2] -= f * A[c][k2]; }
+  }
+  return A.map(function (f) { return f.slice(n); });
+}
+// Lee un rango: columnas con sus números (y el rótulo si la primera fila lo es)
+function columnasDeRangoAd(txt, conRotulos, porFilas) {
+  var R = partirRangoConHojaAvz(txt);
+  if (!R) return null;
+  var b = R.b, cols = [];
+  var nSer = porFilas ? b.maxR - b.minR + 1 : b.maxC - b.minC + 1;
+  for (var k = 0; k < nSer; k++) {
+    var nom = '', nums = [], vals = [];
+    var largo = porFilas ? b.maxC - b.minC + 1 : b.maxR - b.minR + 1;
+    for (var i = 0; i < largo; i++) {
+      var r = porFilas ? b.minR + k : b.minR + i, c = porFilas ? b.minC + i : b.minC + k;
+      var v = computeValueEnHoja(R.hoja, cellId(r, c));
+      if (i === 0 && conRotulos) { nom = String(v == null ? '' : v); continue; }
+      var n = numeroDeValorCalc(v); if (!isFinite(n)) n = toNum(v);
+      vals.push(v === '' || v == null ? null : (isFinite(n) && String(v).trim() !== '' ? n : null));
+      if (isFinite(n) && String(v).trim() !== '') nums.push(n);
+    }
+    cols.push({ nombre: nom || ((porFilas ? 'Fila ' : 'Columna ') + (k + 1)), nums: nums, vals: vals });
+  }
+  return cols;
+}
+function numeroAd(v) { return typeof v === 'number' ? (isFinite(v) ? String(+v.toPrecision(15)) : '#N/A') : v; }
+// Escribe la tabla de resultados (matriz de filas) en una hoja nueva o desde una celda
+function escribirResultadoAd(filas, destino, titulo, negritas) {
+  var hoja = activeSheet, r0 = 0, c0 = 0;
+  if (destino && destino.trim()) {
+    var D = partirRangoConHojaAvz(destino);
+    if (!D) return 'La celda de salida no es válida (ej: H1 o Resultados!A1).';
+    hoja = D.hoja; r0 = D.b.minR; c0 = D.b.minC;
+    if (sheetProtegida[hoja]) return '🔒 La hoja de salida está protegida.';
+    snapshot();
+  } else {
+    var nombre = titulo, k = 2; while (sheets.indexOf(nombre) !== -1) nombre = titulo + ' ' + k++;
+    snapshot();
+    crearHojaVaciaConNombre(nombre); hoja = nombre;
+  }
+  var d = sheetData[hoja] || (sheetData[hoja] = {}), f = sheetFormats[hoja] || (sheetFormats[hoja] = {});
+  filas.forEach(function (fila, i) {
+    (fila || []).forEach(function (v, j) {
+      var id = cellId(r0 + i, c0 + j);
+      if (v === '' || v === null || v === undefined) { delete d[id]; return; }
+      d[id] = numeroAd(v);
+      if (typeof v === 'number' && isFinite(v) && v !== 0 && Math.abs(v) < 1e-4) f[id] = Object.assign({}, f[id], { numFormat: { type: 'scientific', decimals: 5 }, align: 'right' });
+      else if (typeof v === 'number' && isFinite(v) && Math.abs(v) < 1e15 && v % 1 !== 0) f[id] = Object.assign({}, f[id], { numFormat: { type: 'number', decimals: Math.abs(v) < 0.01 ? 6 : 4 }, align: 'right' });
+    });
+    if ((negritas || []).indexOf(i) !== -1) (fila || []).forEach(function (v, j) { var id = cellId(r0 + i, c0 + j); f[id] = Object.assign({}, f[id], { bold: true }); });
+  });
+  colWidths[hoja] = colWidths[hoja] || {};
+  var maxC = filas.reduce(function (m, x) { return Math.max(m, (x || []).length); }, 0);
+  for (var c = 0; c < maxC; c++) if (typeof colWidths[hoja][c0 + c] !== 'number') colWidths[hoja][c0 + c] = c === 0 ? 170 : 115;
+  activeSheet = hoja; buildTable(); renderTabs(); autoSave();
+  return '';
+}
+function crearHojaVaciaConNombre(name) {
+  sheets.push(name); sheetData[name] = {}; sheetFormats[name] = {}; sheetNotes[name] = {}; sheetAttachments[name] = {}; sheetProtegida[name] = false; sheetProtegidaHash[name] = null; colWidths[name] = {}; sheetMerges[name] = []; sheetFreeze[name] = { row: 0, col: 0 }; sheetCondFormats[name] = []; sheetValidations[name] = {}; sheetHiddenRows[name] = []; sheetHiddenCols[name] = []; sheetGroupsRow[name] = []; sheetGroupsCol[name] = []; sheetSparklines[name] = {}; sheetSlicers[name] = []; sheetEscenarios[name] = []; sheetCondFormatsAvanzado[name] = []; sheetControles[name] = {}; sheetValidacionNativa[name] = {}; sheetPivoteConfig[name] = null; sheetAutoFiltro[name] = null; sheetCeldasDesbloqueadas[name] = [];
+}
+// ── Herramientas ──
+var HERRAMIENTAS_AD = {
+  descriptiva: { nombre: 'Estadística descriptiva', campos: ['entrada', 'rotulos', 'porFilas', 'confianza'], hacer: function (o) {
+    var cols = o.cols, filas = [[]], neg = [0];
+    cols.forEach(function (c) { filas[0].push(c.nombre, ''); });
+    filas.push([]);
+    var nombres = ['Media', 'Error típico', 'Mediana', 'Moda', 'Desviación estándar', 'Varianza de la muestra', 'Curtosis', 'Coeficiente de asimetría', 'Rango', 'Mínimo', 'Máximo', 'Suma', 'Cuenta', 'Nivel de confianza(' + o.confianza + '%)'];
+    nombres.forEach(function (nm, i) { filas[i + 2] = []; });
+    cols.forEach(function (c) {
+      var a = c.nums.slice(), n = a.length, m = mediaAd(a), s2 = varAd(a), s = Math.sqrt(s2);
+      var ord = a.slice().sort(function (x, y) { return x - y; });
+      var med = n ? (n % 2 ? ord[(n - 1) / 2] : (ord[n / 2 - 1] + ord[n / 2]) / 2) : NaN;
+      var cuenta = {}, moda = '#N/A', mx = 1; a.forEach(function (x) { cuenta[x] = (cuenta[x] || 0) + 1; if (cuenta[x] > mx) { mx = cuenta[x]; moda = x; } });
+      var m4 = 0, m3 = 0; a.forEach(function (x) { m3 += Math.pow((x - m) / s, 3); m4 += Math.pow((x - m) / s, 4); });
+      var kurt = n > 3 ? n * (n + 1) / ((n - 1) * (n - 2) * (n - 3)) * m4 - 3 * (n - 1) * (n - 1) / ((n - 2) * (n - 3)) : '#DIV/0!';
+      var asim = n > 2 ? n / ((n - 1) * (n - 2)) * m3 : '#DIV/0!';
+      var conf = n > 1 ? tInvDosColas(1 - o.confianza / 100, n - 1) * s / Math.sqrt(n) : '#N/A';
+      var vals = [m, s / Math.sqrt(n), med, moda, s, s2, kurt, asim, ord[n - 1] - ord[0], ord[0], ord[n - 1], sumaAd(a), n, conf];
+      nombres.forEach(function (nm, i) { filas[i + 2].push(nm, vals[i]); });
+    });
+    return { filas: filas, negritas: neg };
+  } },
+  correlacion: { nombre: 'Coeficiente de correlación', campos: ['entrada', 'rotulos', 'porFilas'], hacer: function (o) { return matrizParesAd(o.cols, function (x, y) {
+    var mx = mediaAd(x), my = mediaAd(y), sxy = 0, sx = 0, sy = 0;
+    for (var i = 0; i < x.length; i++) { sxy += (x[i] - mx) * (y[i] - my); sx += (x[i] - mx) * (x[i] - mx); sy += (y[i] - my) * (y[i] - my); }
+    return sxy / Math.sqrt(sx * sy);
+  }); } },
+  covarianza: { nombre: 'Covarianza', campos: ['entrada', 'rotulos', 'porFilas'], hacer: function (o) { return matrizParesAd(o.cols, function (x, y) {
+    var mx = mediaAd(x), my = mediaAd(y), s = 0; for (var i = 0; i < x.length; i++) s += (x[i] - mx) * (y[i] - my); return s / x.length;
+  }); } },
+  regresion: { nombre: 'Regresión', campos: ['entradaY', 'entradaX', 'rotulos', 'confianza', 'residuos'], hacer: function (o) {
+    var Y = o.colsY[0], Xs = o.colsX, n = Y.vals.length, k = Xs.length;
+    var filasOk = []; for (var i = 0; i < n; i++) if (Y.vals[i] !== null && Xs.every(function (c) { return c.vals[i] !== null && c.vals[i] !== undefined; })) filasOk.push(i);
+    n = filasOk.length;
+    if (n <= k + 1) return 'Hacen falta más observaciones que variables X (tenés ' + n + ' filas completas).';
+    var X = filasOk.map(function (i) { return [1].concat(Xs.map(function (c) { return c.vals[i]; })); }), y = filasOk.map(function (i) { return Y.vals[i]; });
+    var p = k + 1, XtX = [], Xty = [];
+    for (var a = 0; a < p; a++) { XtX[a] = []; Xty[a] = 0; for (var bb = 0; bb < p; bb++) { var s = 0; for (var r = 0; r < n; r++) s += X[r][a] * X[r][bb]; XtX[a][bb] = s; } for (var r1 = 0; r1 < n; r1++) Xty[a] += X[r1][a] * y[r1]; }
+    var inv = invertirMatrizAd(XtX); if (!inv) return 'Las variables X son colineales (una es combinación de otra): no se puede calcular.';
+    var beta = inv.map(function (f) { return f.reduce(function (s, v, j) { return s + v * Xty[j]; }, 0); });
+    var pred = X.map(function (f) { return f.reduce(function (s, v, j) { return s + v * beta[j]; }, 0); });
+    var my = mediaAd(y), SCT = 0, SCE = 0; y.forEach(function (v, i) { SCT += (v - my) * (v - my); SCE += (v - pred[i]) * (v - pred[i]); });
+    var SCR = SCT - SCE, glR = k, glE = n - k - 1, MCR = SCR / glR, MCE = SCE / glE, F = MCR / MCE, R2 = SCR / SCT;
+    var tcrit = tInvDosColas(1 - o.confianza / 100, glE), t95 = tInvDosColas(0.05, glE);
+    var filas = [['Resumen'], [], ['Estadísticas de la regresión'], ['Coeficiente de correlación múltiple', Math.sqrt(R2)], ['Coeficiente de determinación R^2', R2],
+      ['R^2  ajustado', 1 - (1 - R2) * (n - 1) / glE], ['Error típico', Math.sqrt(MCE)], ['Observaciones', n], [],
+      ['ANÁLISIS DE VARIANZA'], ['', 'Grados de libertad', 'Suma de cuadrados', 'Promedio de los cuadrados', 'F', 'Valor crítico de F'],
+      ['Regresión', glR, SCR, MCR, F, fCola(F, glR, glE)], ['Residuos', glE, SCE, MCE], ['Total', n - 1, SCT], [],
+      ['', 'Coeficientes', 'Error típico', 'Estadístico t', 'Probabilidad', 'Inferior 95%', 'Superior 95%'].concat(o.confianza !== 95 ? ['Inferior ' + o.confianza + '%', 'Superior ' + o.confianza + '%'] : [])];
+    beta.forEach(function (bj, j) {
+      var et = Math.sqrt(MCE * inv[j][j]), t = bj / et;
+      var f = [j === 0 ? 'Intercepción' : Xs[j - 1].nombre, bj, et, t, tDosColasAd(Math.abs(t), glE), bj - t95 * et, bj + t95 * et];
+      if (o.confianza !== 95) f.push(bj - tcrit * et, bj + tcrit * et);
+      filas.push(f);
+    });
+    var neg = [0, 2, 9, 10, 15];
+    if (o.residuos) {
+      filas.push([], ['Análisis de los residuales'], ['Observación', 'Pronóstico ' + Y.nombre, 'Residuos', 'Residuos estándares']);
+      neg.push(filas.length - 2, filas.length - 1);
+      var sRes = Math.sqrt(SCE / (n - 1));
+      pred.forEach(function (pv, i) { filas.push([i + 1, pv, y[i] - pv, (y[i] - pv) / sRes]); });
+    }
+    return { filas: filas, negritas: neg };
+  } },
+  pruebaT: { nombre: 'Prueba t', campos: ['entrada1', 'entrada2', 'rotulos', 'tipoT', 'difHip', 'alfa'], hacer: function (o) {
+    var x = o.cols1[0].nums, y = o.cols2[0].nums, n1 = x.length, n2 = y.length, m1 = mediaAd(x), m2 = mediaAd(y), v1 = varAd(x), v2 = varAd(y), D = o.difHip, t, gl, extra = [];
+    var titulo = { iguales: 'Prueba t para dos muestras suponiendo varianzas iguales', desiguales: 'Prueba t para dos muestras suponiendo varianzas desiguales', emparejadas: 'Prueba t para medias de dos muestras emparejadas' }[o.tipoT];
+    if (o.tipoT === 'emparejadas') {
+      var a = o.cols1[0].vals, bv = o.cols2[0].vals, dif = [], pa = [], pb = [];
+      for (var i = 0; i < Math.min(a.length, bv.length); i++) if (a[i] !== null && bv[i] !== null) { dif.push(a[i] - bv[i]); pa.push(a[i]); pb.push(bv[i]); }
+      if (dif.length < 2) return 'Hacen falta al menos 2 pares completos.';
+      var md = mediaAd(dif), sd = Math.sqrt(varAd(dif)); gl = dif.length - 1; t = (md - D) / (sd / Math.sqrt(dif.length));
+      var mx2 = mediaAd(pa), my2 = mediaAd(pb), sxy = 0, sx = 0, sy = 0; for (var j = 0; j < pa.length; j++) { sxy += (pa[j] - mx2) * (pb[j] - my2); sx += (pa[j] - mx2) * (pa[j] - mx2); sy += (pb[j] - my2) * (pb[j] - my2); }
+      m1 = mediaAd(pa); m2 = mediaAd(pb); v1 = varAd(pa); v2 = varAd(pb); n1 = n2 = pa.length;
+      extra = [['Coeficiente de correlación de Pearson', sxy / Math.sqrt(sx * sy)]];
+    } else if (o.tipoT === 'iguales') {
+      gl = n1 + n2 - 2; var sp = ((n1 - 1) * v1 + (n2 - 1) * v2) / gl; t = (m1 - m2 - D) / Math.sqrt(sp * (1 / n1 + 1 / n2));
+      extra = [['Varianza agrupada', sp]];
+    } else {
+      var q1 = v1 / n1, q2 = v2 / n2; t = (m1 - m2 - D) / Math.sqrt(q1 + q2);
+      gl = Math.round((q1 + q2) * (q1 + q2) / (q1 * q1 / (n1 - 1) + q2 * q2 / (n2 - 1)));
+    }
+    var p2 = tDosColasAd(Math.abs(t), gl);
+    var filas = [[titulo], [], ['', o.cols1[0].nombre, o.cols2[0].nombre], ['Media', m1, m2], ['Varianza', v1, v2], ['Observaciones', n1, n2]]
+      .concat(extra.map(function (e) { return o.tipoT === 'iguales' ? [e[0], e[1], ''] : e; }))
+      .concat([['Diferencia hipotética de las medias', D], ['Grados de libertad', gl], ['Estadístico t', t], ['P(T<=t) una cola', p2 / 2],
+        ['Valor crítico de t (una cola)', tInvDosColas(2 * o.alfa, gl)], ['P(T<=t) dos colas', p2], ['Valor crítico de t (dos colas)', tInvDosColas(o.alfa, gl)]]);
+    return { filas: filas, negritas: [0, 2] };
+  } },
+  anova: { nombre: 'Análisis de varianza de un factor', campos: ['entrada', 'rotulos', 'porFilas', 'alfa'], hacer: function (o) {
+    var g = o.cols.filter(function (c) { return c.nums.length; });
+    if (g.length < 2) return 'Hacen falta al menos 2 grupos (columnas) con datos.';
+    var todos = []; g.forEach(function (c) { todos = todos.concat(c.nums); });
+    var mt = mediaAd(todos), SCE = 0, SCD = 0;
+    g.forEach(function (c) { var m = mediaAd(c.nums); SCE += c.nums.length * (m - mt) * (m - mt); c.nums.forEach(function (x) { SCD += (x - m) * (x - m); }); });
+    var gl1 = g.length - 1, gl2 = todos.length - g.length, F = (SCE / gl1) / (SCD / gl2);
+    var filas = [['Análisis de varianza de un factor'], [], ['RESUMEN'], ['Grupos', 'Cuenta', 'Suma', 'Promedio', 'Varianza']];
+    g.forEach(function (c) { filas.push([c.nombre, c.nums.length, sumaAd(c.nums), mediaAd(c.nums), varAd(c.nums)]); });
+    filas.push([], [], ['ANÁLISIS DE VARIANZA']);
+    var iA = filas.length;
+    filas.push(['Origen de las variaciones', 'Suma de cuadrados', 'Grados de libertad', 'Promedio de los cuadrados', 'F', 'Probabilidad', 'Valor crítico para F'],
+      ['Entre grupos', SCE, gl1, SCE / gl1, F, fCola(F, gl1, gl2), fInvCola(o.alfa, gl1, gl2)], ['Dentro de los grupos', SCD, gl2, SCD / gl2], [], ['Total', SCE + SCD, todos.length - 1]);
+    return { filas: filas, negritas: [0, 2, 3, iA - 1, iA] };
+  } },
+  histograma: { nombre: 'Histograma', campos: ['entrada', 'clases', 'rotulos'], hacer: function (o) {
+    var a = []; o.cols.forEach(function (c) { a = a.concat(c.nums); });
+    if (!a.length) return 'El rango de entrada no tiene números.';
+    var lim = [];
+    if (o.colsClases) o.colsClases.forEach(function (c) { lim = lim.concat(c.nums); });
+    if (!lim.length) {
+      var mn = Math.min.apply(null, a), mx = Math.max.apply(null, a), k = Math.max(1, Math.ceil(Math.log2(a.length) + 1)), paso = (mx - mn) / k || 1;
+      for (var i = 1; i <= k; i++) lim.push(+(mn + paso * i).toPrecision(12));
+      lim[lim.length - 1] = mx;
+    }
+    lim.sort(function (x, y) { return x - y; });
+    var frec = lim.map(function () { return 0; }), mayor = 0;
+    a.forEach(function (x) { var j = 0; while (j < lim.length && x > lim[j]) j++; if (j < lim.length) frec[j]++; else mayor++; });
+    var filas = [['Clase', 'Frecuencia', '% acumulado']], acum = 0;
+    lim.forEach(function (l, i) { acum += frec[i]; filas.push([l, frec[i], acum / a.length]); });
+    filas.push(['y mayor...', mayor, (acum + mayor) / a.length]);
+    return { filas: filas, negritas: [0], pct: 2 };
+  } },
+  mediaMovil: { nombre: 'Media móvil', campos: ['entrada', 'rotulos', 'intervalo'], hacer: function (o) {
+    var a = o.cols[0].nums, n = o.intervalo;
+    if (n < 2 || n > a.length) return 'El intervalo tiene que estar entre 2 y la cantidad de datos (' + a.length + ').';
+    var filas = [['Media móvil (' + n + ')', 'Error típico']];
+    a.forEach(function (x, i) {
+      if (i < n - 1) { filas.push(['#N/A', '#N/A']); return; }
+      var ventana = a.slice(i - n + 1, i + 1), m = mediaAd(ventana), err = '#N/A';
+      if (i >= 2 * n - 2) { var s = 0; for (var j = i - n + 1; j <= i; j++) { var mj = mediaAd(a.slice(j - n + 1, j + 1)); s += (a[j] - mj) * (a[j] - mj); } err = Math.sqrt(s / n); }
+      filas.push([m, err]);
+    });
+    return { filas: filas, negritas: [0] };
+  } },
+  muestreo: { nombre: 'Muestra', campos: ['entrada', 'rotulos', 'metodo', 'cantidad'], hacer: function (o) {
+    var a = []; o.cols.forEach(function (c) { a = a.concat(c.nums); });
+    if (!a.length) return 'El rango de entrada no tiene números.';
+    var out = [];
+    if (o.metodo === 'periodico') { for (var i = o.cantidad - 1; i < a.length; i += o.cantidad) out.push(a[i]); }
+    else for (var j = 0; j < o.cantidad; j++) out.push(a[Math.floor(Math.random() * a.length)]);
+    return { filas: [['Muestra']].concat(out.map(function (x) { return [x]; })), negritas: [0] };
+  } },
+  aleatorios: { nombre: 'Números aleatorios', campos: ['variables', 'filasN', 'distribucion', 'p1', 'p2'], hacer: function (o) {
+    var filas = [];
+    for (var r = 0; r < o.filasN; r++) {
+      var f = [];
+      for (var c = 0; c < o.variables; c++) {
+        if (o.distribucion === 'normal') { var u = 1 - Math.random(), v = Math.random(); f.push(o.p1 + o.p2 * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)); }
+        else if (o.distribucion === 'entero') f.push(Math.floor(o.p1 + Math.random() * (o.p2 - o.p1 + 1)));
+        else f.push(o.p1 + Math.random() * (o.p2 - o.p1));
+      }
+      filas.push(f);
+    }
+    return { filas: filas, negritas: [] };
+  } }
+};
+function matrizParesAd(cols, fn) {
+  var filas = [[''].concat(cols.map(function (c) { return c.nombre; }))];
+  cols.forEach(function (ci, i) {
+    var f = [ci.nombre];
+    cols.forEach(function (cj, j) {
+      if (j > i) { f.push(''); return; }
+      var x = [], y = []; for (var k = 0; k < Math.min(ci.vals.length, cj.vals.length); k++) if (ci.vals[k] !== null && cj.vals[k] !== null) { x.push(ci.vals[k]); y.push(cj.vals[k]); }
+      f.push(x.length > 1 ? fn(x, y) : '#DIV/0!');
+    });
+    filas.push(f);
+  });
+  return { filas: filas, negritas: [0] };
+}
+function abrirAnalisisDatos(clave) {
+  var sel = function (id, ops, val) { return '<select id="' + id + '" class="mcrI">' + ops.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === val ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };
+  if (!clave) {
+    var html = '<div class="mcrNota">Escogé una herramienta. El resultado sale en una hoja nueva (o desde la celda que digás), igual que en Excel.</div>' +
+      Object.keys(HERRAMIENTAS_AD).map(function (k) { return '<button type="button" class="egAccion adHerr" data-k="' + k + '">' + HERRAMIENTAS_AD[k].nombre + '</button>'; }).join('');
+    abrirPanel('📊 Análisis de datos', html, [{ texto: 'Cerrar', ok: true }]);
+    document.querySelectorAll('.adHerr').forEach(function (b) { b.addEventListener('click', function () { abrirAnalisisDatos(b.dataset.k); }); });
+    return;
+  }
+  var H = HERRAMIENTAS_AD[clave], lim = limitesDeSeleccionOCelda();
+  var sug = lim && (lim.maxR > lim.minR || lim.maxC > lim.minC) ? cellId(lim.minR, lim.minC) + ':' + cellId(lim.maxR, lim.maxC) : '';
+  var inp = function (id, lab, val, ph) { return '<label class="mcrF">' + lab + '</label><input id="' + id + '" class="mcrI" type="text" value="' + (val || '') + '" placeholder="' + (ph || '') + '">'; };
+  var piezas = {
+    entrada: inp('adEnt', 'Rango de entrada', sug, 'Ej: B1:D50'),
+    entradaY: inp('adY', 'Rango Y de entrada (lo que querés explicar)', '', 'Ej: B1:B50'),
+    entradaX: inp('adX', 'Rango X de entrada (una o varias columnas)', '', 'Ej: C1:E50'),
+    entrada1: inp('ad1', 'Rango para la variable 1', '', 'Ej: B1:B30'),
+    entrada2: inp('ad2', 'Rango para la variable 2', '', 'Ej: C1:C30'),
+    clases: inp('adClases', 'Rango de clases (opcional)', '', 'Vacío = automático'),
+    rotulos: '<label class="egChk"><input type="checkbox" id="adRot" checked> Rótulos en la primera fila</label>',
+    porFilas: '<label class="egChk"><input type="checkbox" id="adFilas"> Datos agrupados por filas (no por columnas)</label>',
+    confianza: '<label class="mcrF">Nivel de confianza (%)</label><input id="adConf" class="mcrI" type="number" value="95" min="1" max="99.99">',
+    residuos: '<label class="egChk"><input type="checkbox" id="adRes"> Incluir residuos</label>',
+    tipoT: '<label class="mcrF">Tipo de prueba</label>' + sel('adTipoT', [['iguales', 'Dos muestras, varianzas iguales'], ['desiguales', 'Dos muestras, varianzas desiguales'], ['emparejadas', 'Muestras emparejadas (antes / después)']], 'iguales'),
+    difHip: '<label class="mcrF">Diferencia hipotética de las medias</label><input id="adDif" class="mcrI" type="text" value="0">',
+    alfa: '<label class="mcrF">Alfa</label><input id="adAlfa" class="mcrI" type="text" value="0,05">',
+    intervalo: '<label class="mcrF">Intervalo</label><input id="adInt" class="mcrI" type="number" value="3" min="2">',
+    metodo: '<label class="mcrF">Método</label>' + sel('adMet', [['aleatorio', 'Aleatorio'], ['periodico', 'Periódico (cada N datos)']], 'aleatorio'),
+    cantidad: '<label class="mcrF">Cantidad de muestras / período</label><input id="adCant" class="mcrI" type="number" value="10" min="1">',
+    variables: '<label class="mcrF">Número de variables (columnas)</label><input id="adVars" class="mcrI" type="number" value="1" min="1" max="50">',
+    filasN: '<label class="mcrF">Cantidad de números aleatorios (filas)</label><input id="adFilN" class="mcrI" type="number" value="20" min="1" max="10000">',
+    distribucion: '<label class="mcrF">Distribución</label>' + sel('adDist', [['uniforme', 'Uniforme (entre A y B)'], ['entero', 'Enteros (entre A y B)'], ['normal', 'Normal (media A, desviación B)']], 'uniforme'),
+    p1: '<div class="egDos"><div><label class="mcrF">A</label><input id="adP1" class="mcrI" type="text" value="0"></div>',
+    p2: '<div><label class="mcrF">B</label><input id="adP2" class="mcrI" type="text" value="1"></div></div>'
+  };
+  var html2 = H.campos.map(function (c) { return piezas[c]; }).join('') +
+    '<label class="mcrF">Salida</label>' + sel('adDest', [['nueva', 'En una hoja nueva'], ['celda', 'Desde una celda…']], 'nueva') +
+    '<input id="adCelda" class="mcrI" type="text" placeholder="Ej: H1 o Resultados!A1" style="display:none;margin-top:6px;">';
+  abrirPanel('📊 ' + H.nombre, html2, [{ texto: '← Herramientas', accion: function () { setTimeout(function () { abrirAnalisisDatos(); }, 0); } }, { texto: 'Aceptar', ok: true, accion: function () {
+    var v = function (id) { var e = document.getElementById(id); return e ? e.value : ''; };
+    var chk = function (id) { var e = document.getElementById(id); return !!(e && e.checked); };
+    var num = function (id, def) { var x = parseFloat(limpiaNum(v(id))); return isFinite(x) ? x : def; };
+    var o = { confianza: num('adConf', 95), alfa: num('adAlfa', 0.05), difHip: num('adDif', 0), residuos: chk('adRes'), tipoT: v('adTipoT'), intervalo: Math.round(num('adInt', 3)),
+      metodo: v('adMet'), cantidad: Math.max(1, Math.round(num('adCant', 10))), variables: Math.max(1, Math.min(50, Math.round(num('adVars', 1)))), filasN: Math.max(1, Math.min(10000, Math.round(num('adFilN', 20)))),
+      distribucion: v('adDist'), p1: num('adP1', 0), p2: num('adP2', 1) };
+    var rot = chk('adRot'), porF = chk('adFilas');
+    var leer = function (id, nombreCampo) {
+      if (!document.getElementById(id)) return true;
+      var t = v(id).trim(); if (!t) { if (id === 'adClases') return true; alert('Falta el ' + nombreCampo + '.'); return false; }
+      var c = columnasDeRangoAd(t, rot && id !== 'adClases', porF); if (!c) { alert('El ' + nombreCampo + ' no es válido.'); return false; }
+      return c;
+    };
+    var ent = leer('adEnt', 'rango de entrada'); if (!ent) return false; if (ent !== true) o.cols = ent;
+    var cy = leer('adY', 'rango Y'); if (!cy) return false; if (cy !== true) { o.colsY = cy; if (cy.length !== 1) { alert('El rango Y tiene que ser una sola columna.'); return false; } }
+    var cx = leer('adX', 'rango X'); if (!cx) return false; if (cx !== true) o.colsX = cx;
+    var c1 = leer('ad1', 'rango de la variable 1'); if (!c1) return false; if (c1 !== true) o.cols1 = c1;
+    var c2 = leer('ad2', 'rango de la variable 2'); if (!c2) return false; if (c2 !== true) o.cols2 = c2;
+    var cc = leer('adClases', 'rango de clases'); if (!cc) return false; if (cc !== true) o.colsClases = cc;
+    var res = H.hacer(o);
+    if (typeof res === 'string') { alert(res); return false; }
+    var err = escribirResultadoAd(res.filas, v('adDest') === 'celda' ? (v('adCelda') || ' ') : '', H.nombre.slice(0, 26), res.negritas);
+    if (err) { alert(err); return false; }
+    if (res.pct !== undefined) {
+      var f = sheetFormats[activeSheet], lim2 = res.filas.length;
+      var b0 = v('adDest') === 'celda' && partirRangoConHojaAvz(v('adCelda')) ? partirRangoConHojaAvz(v('adCelda')).b : { minR: 0, minC: 0 };
+      for (var r = 1; r < lim2; r++) { var id = cellId(b0.minR + r, b0.minC + res.pct); f[id] = Object.assign({}, f[id], { percent: true }); delete f[id].numFormat; }
+      renderAllCells(); autoSave();
+    }
+    document.getElementById('saveStatus').textContent = '📊 ' + H.nombre + ': listo';
+  } }]);
+  var dSel = document.getElementById('adDest');
+  dSel.addEventListener('change', function () { document.getElementById('adCelda').style.display = dSel.value === 'celda' ? '' : 'none'; });
+}
+document.getElementById('btnAnalisisDatos').addEventListener('click', function () { abrirAnalisisDatos(); });
 document.getElementById('btnBuscarObjetivo').addEventListener('click', function () {
   document.getElementById('buscarObjetivoOverlay').classList.add('show');
   document.getElementById('boResultado').innerHTML = '';
@@ -32505,6 +34215,8 @@ document.getElementById('ecuLatex').addEventListener('keydown', function (e) {
 // ── Permitir editar ciertas celdas aunque la hoja esté protegida ──
 document.getElementById('raOcultarFormulas').addEventListener('click', alternarOcultarFormulas);
 document.getElementById('btnOcultarFormulas').addEventListener('click', alternarOcultarFormulas);
+document.getElementById('btnCifrarLibro').addEventListener('click', function () { abrirCifrarLibro(); });
+setTimeout(function () { if (typeof actualizarBotonCifrado === 'function') actualizarBotonCifrado(); }, 0);
 document.getElementById('raDesbloquearCeldas').addEventListener('click', function () {
   var bounds = currentRangeBounds();
   if (!bounds) { alert('Seleccioná primero la celda o el rango que querés dejar editable.'); return; }
@@ -32561,6 +34273,47 @@ document.getElementById('raAutofit').addEventListener('click', function () {
   document.getElementById('rangeActionsBar').classList.remove('show');
   buildTable(); autoSave();
 });
+// ══════════════════════════════════════════════
+// ESQUEMA AUTOMÁTICO (Datos ▸ Agrupar ▸ Autoesquema de Excel): busca las fórmulas de
+// subtotal (SUMA / SUBTOTALES de un rango justo arriba o a la izquierda) y agrupa sus
+// filas o columnas de detalle con los botones −/+. Quedan los grupos más chicos que no se
+// cruzan entre sí (el esquema de la hoja tiene un solo nivel).
+// ══════════════════════════════════════════════
+var RX_SUBTOTAL_ESQ = /^=\s*(SUMA|SUM|SUBTOTALES|SUBTOTAL|AGREGAR|AGGREGATE)\s*\(\s*(?:\d+\s*[;,]\s*(?:\d+\s*[;,]\s*)?)?\$?([A-Z]+)\$?(\d+)\s*:\s*\$?([A-Z]+)\$?(\d+)\s*\)\s*$/i;
+function detectarEsquema(hoja) {
+  var d = sheetData[hoja] || {}, filas = [], cols = [];
+  Object.keys(d).forEach(function (id) {
+    var v = d[id]; if (typeof v !== 'string') return;
+    var m = RX_SUBTOTAL_ESQ.exec(v), mc = /^([A-Z]+)(\d+)$/.exec(id); if (!m || !mc) return;
+    var r = +mc[2] - 1, c = colIndex(mc[1]), c1 = colIndex(m[2].toUpperCase()), r1 = +m[3] - 1, c2 = colIndex(m[4].toUpperCase()), r2 = +m[5] - 1;
+    if (c1 === c2 && c1 === c && r2 === r - 1 && r2 > r1) filas.push({ from: Math.max(0, r1 - 1), to: r2 });         // detalle arriba del total
+    else if (r1 === r2 && r1 === r && c2 === c - 1 && c2 > c1) cols.push({ from: Math.max(0, c1 - 1), to: c2 });  // detalle a la izquierda
+  });
+  function elegir(lista) {
+    var unicos = {}; lista.forEach(function (g) { unicos[g.from + ':' + g.to] = g; });
+    var gs = Object.keys(unicos).map(function (k) { return unicos[k]; }).sort(function (a, b) { return (a.to - a.from) - (b.to - b.from) || a.from - b.from; });
+    var out = [];
+    gs.forEach(function (g) { if (g.to > g.from && !out.some(function (o) { return !(o.to < g.from || o.from > g.to); })) out.push({ from: g.from, to: g.to, collapsed: false }); });
+    return out.sort(function (a, b) { return a.from - b.from; });
+  }
+  return { filas: elegir(filas), cols: elegir(cols) };
+}
+function aplicarEsquemaAutomatico() {
+  var e = detectarEsquema(activeSheet);
+  if (!e.filas.length && !e.cols.length) { alert('No encontré fórmulas de subtotal para armar el esquema.\n\nEl esquema automático busca totales como =SUMA(B2:B9) justo debajo de sus filas (o a la derecha de sus columnas).'); return; }
+  if (((sheetGroupsRow[activeSheet] || []).length || (sheetGroupsCol[activeSheet] || []).length) && !confirm('Esto reemplaza los grupos que ya tiene la hoja. ¿Seguir?')) return;
+  snapshot();
+  sheetGroupsRow[activeSheet] = e.filas; sheetGroupsCol[activeSheet] = e.cols;
+  buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = '📑 Esquema automático: ' + e.filas.length + ' grupo(s) de filas' + (e.cols.length ? ' y ' + e.cols.length + ' de columnas' : '') + '. Usá los botones −/+ para colapsar.';
+}
+function borrarEsquema() {
+  if (!(sheetGroupsRow[activeSheet] || []).length && !(sheetGroupsCol[activeSheet] || []).length) { document.getElementById('saveStatus').textContent = 'La hoja no tiene esquema'; return; }
+  snapshot(); sheetGroupsRow[activeSheet] = []; sheetGroupsCol[activeSheet] = []; buildTable(); autoSave();
+  document.getElementById('saveStatus').textContent = 'Esquema borrado';
+}
+document.getElementById('btnEsquemaAuto').addEventListener('click', aplicarEsquemaAutomatico);
+document.getElementById('btnBorrarEsquema').addEventListener('click', borrarEsquema);
 document.getElementById('raAgruparFilas').addEventListener('click', function () {
   agruparFilas();
   document.getElementById('rangeActionsBar').classList.remove('show');
@@ -32702,6 +34455,7 @@ function abrirFiltroAvanzado() {
   if (q) q.addEventListener('click', function () { document.getElementById('mcrPanelOv').classList.remove('show'); quitarFiltroAvanzado(); });
 }
 document.getElementById('btnFiltroAvanzado').addEventListener('click', abrirFiltroAvanzado);
+document.getElementById('btnRelaciones').addEventListener('click', abrirRelaciones);
 document.getElementById('btnAutofiltro').addEventListener('click', function () {
   snapshot();
   if (sheetAutoFiltro[activeSheet]) {
