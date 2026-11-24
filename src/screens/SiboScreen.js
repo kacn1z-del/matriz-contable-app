@@ -7,7 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLang } from '../context/LangContext'
 
-const SIBO_CHAT_URL = 'https://matriz-contable-app.vercel.app/api/sibo-chat'
+// Mismo servidor que usa Sibö dentro de la hoja (Cloudflare Worker con la IA de Anthropic).
+// La dirección vieja de Vercel ya no responde: por eso la tarjeta caía siempre en las respuestas locales.
+const SIBO_CHAT_URL = 'https://matriz-fe-worker.kacn1z.workers.dev/sibo-chat'
+const TIEMPO_MAXIMO_MS = 45000
 const HISTORIAL_KEY = 'kcn_sibo_historial_nativo'
 
 // ─── Respuestas locales de respaldo, por si no hay conexión ─────
@@ -61,31 +64,45 @@ export default function SiboScreen({ navigation }) {
     setTexto('')
     setEnviando(true)
 
+    const controlador = new AbortController()
+    const temporizador = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS)
+    let textoRespuesta = ''
     try {
-      const historialParaApi = listaConUsuario.slice(-10).map((m) => ({ user: m.usuario, texto: m.texto }))
+      // Mismo formato que la hoja: { user, texto }, sin el saludo inicial ni el mensaje actual
+      const historialParaApi = listaConUsuario
+        .filter((m) => m.id !== 'bienvenida')
+        .slice(-11, -1)
+        .map((m) => ({ user: m.usuario, texto: m.texto }))
       const respuesta = await fetch(SIBO_CHAT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: contenido, history: historialParaApi.slice(0, -1) }),
+        body: JSON.stringify({
+          message: contenido,
+          history: historialParaApi,
+          sheetContext: 'El usuario escribe desde la pantalla de Sibö de la app (fuera de la hoja), así que no hay hoja activa. Respondé en texto normal, sin bloques de acciones.',
+        }),
+        signal: controlador.signal,
       })
-      const datos = await respuesta.json()
-      const textoRespuesta = datos.text || respuestaLocal(contenido)
-      const nuevoBot = { id: 'b' + Date.now(), usuario: false, texto: textoRespuesta }
-      setMensajes((prev) => {
-        const actualizada = [...prev, nuevoBot]
-        guardarHistorial(actualizada)
-        return actualizada
-      })
+      let datos = {}
+      try { datos = await respuesta.json() } catch (e) {}
+      if (respuesta.ok && datos.text) {
+        // Por si la IA igual manda un bloque ```acciones```, acá no se puede aplicar: lo quitamos
+        textoRespuesta = String(datos.text).replace(/```acciones[\s\S]*?```/g, '').trim() || String(datos.text)
+      } else {
+        textoRespuesta = respuestaLocal(contenido) + '\n\n(Sibö IA no respondió' + (datos.error ? ': ' + datos.error : ' — código ' + respuesta.status) + ')'
+      }
     } catch (error) {
-      const nuevoBot = { id: 'b' + Date.now(), usuario: false, texto: respuestaLocal(contenido) }
-      setMensajes((prev) => {
-        const actualizada = [...prev, nuevoBot]
-        guardarHistorial(actualizada)
-        return actualizada
-      })
+      textoRespuesta = respuestaLocal(contenido) + (error && error.name === 'AbortError' ? '\n\n(Sibö tardó demasiado en responder; probá de nuevo.)' : '')
     } finally {
-      setEnviando(false)
+      clearTimeout(temporizador)
     }
+    const nuevoBot = { id: 'b' + Date.now(), usuario: false, texto: textoRespuesta }
+    setMensajes((prev) => {
+      const actualizada = [...prev, nuevoBot]
+      guardarHistorial(actualizada)
+      return actualizada
+    })
+    setEnviando(false)
   }
 
   return (
