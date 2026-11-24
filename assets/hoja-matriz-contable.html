@@ -420,6 +420,28 @@
   .pqNuevo { border: 1px dashed #b6d7a8; border-radius: 8px; padding: 6px 8px; margin: 8px 0; background: #fbfdf9; }
   .pqNuevo .mcrI { margin-bottom: 6px; }
   .lpItem.pqErr { border-color: #fca5a5; background: #fef2f2; }
+  .siboAcciones { border: 1.5px solid #86efac; background: #f0fdf4 !important; }
+  .siboAccTit { font-weight: 700; color: #14532d; margin-bottom: 6px; }
+  .siboAcc { background: #fff; border: 1px solid #dcfce7; border-radius: 8px; padding: 7px 8px; margin-bottom: 6px; font-size: 12.5px; }
+  .siboAcc { overflow: hidden; }
+  .siboTab { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: 4px; font-size: 12px; }
+  .siboTab td:first-child, .siboTab th:first-child { text-align: left; width: 42%; }
+  .siboTab td:nth-child(2), .siboTab td:nth-child(3) { white-space: nowrap; font-size: 11.5px; }
+  .siboTab th { text-align: left; color: #6b7280; font-weight: 600; border-bottom: 1px solid #e5e7eb; padding: 2px 4px; }
+  .siboTab td { padding: 2px 4px; border-bottom: 1px solid #f1f5f9; }
+  .siboTab td:nth-child(2), .siboTab td:nth-child(3), .siboTab th:nth-child(2), .siboTab th:nth-child(3) { text-align: right; }
+  .siboCeldas { margin-top: 4px; line-height: 1.5; }
+  .siboAviso { color: #b45309; font-size: 12px; margin: 4px 0; }
+  .siboBotones { display: flex; gap: 8px; margin-top: 6px; }
+  .siboBotones button { flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: 700; background: #1f7a44; color: #fff; }
+  .siboBotones button + button { background: #e5e7eb; color: #1f2937; }
+  .siboBotones button:disabled { opacity: .45; }
+  #siboErrBtn { position: absolute; right: 44px; top: 50%; transform: translateY(-50%); z-index: 3; border: 1px solid #fcd34d; background: #fffbeb; color: #92400e; border-radius: 999px; padding: 3px 9px; font-size: 12px; font-weight: 600; }
+  .rtsRes { margin-top: 10px; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+  .rtsFila { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; }
+  .rtsFila.rtsTot { background: #dcfce7; font-weight: 700; }
+  .rtsRes .mcrNota { padding: 0 10px 8px; }
+  tr.dcNo td { color: #9ca3af; }
   .hdLista { display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
   .hdItem { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: none; border-bottom: 1px solid #f1f5f9; background: #fff; text-align: left; font-size: 13.5px; }
   .hdItem:last-child { border-bottom: none; }
@@ -1528,6 +1550,12 @@
     #tabsRow button, #tabsRow .tab { padding-top: 3px; padding-bottom: 3px; }
   }
 
+.vcItem{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #eef2ee;font-size:13px}
+.vcItem input{margin-top:3px;flex:none}
+.vcItem span{flex:1;line-height:1.35}
+.vcItem small{color:#6b7280}
+.vcG{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid #d1d5db;background:#fff;font-weight:800;color:#1a73e8}
+#ecMsg{resize:vertical;font-family:inherit}
 </style>
 </head>
 <body>
@@ -1815,6 +1843,11 @@
         <button id="btnReporteContador">📑 Reporte para el contador</button>
         <button id="btnCuentasCobrar">⏳ Cuentas por cobrar</button>
         <button id="btnEstadosFinancieros">📈 Estados financieros</button>
+        <button id="btnEEFFNiif" title="Los 5 estados de la NIIF para PYMES con notas, listos para el PDF">🏛 EEFF NIIF PYMES</button>
+        <button id="btnKardex" title="Kárdex de inventario con costo promedio ponderado y asiento de costo de ventas">📦 Kárdex</button>
+        <button id="btnDiferencial" title="Revaluar las cuentas en dólares al tipo de cambio del BCCR y registrar el diferencial cambiario">💱 Diferencial cambiario</button>
+        <button id="btnCierreAnual" title="Asiento de cierre del año, meses cerrados y archivo con asiento de apertura">📕 Cierre anual</button>
+        <button id="btnRegimenSimplificado" title="Cálculo trimestral del régimen de tributación simplificada (renta + IVA sobre compras)">🧾 Régimen simplificado</button>
         <button id="btnAsientosFacturas">🧮 Asientos de facturas</button>
         <button id="btnFlujoCaja" title="Gráfico de flujo de caja acumulado (últimos 30 días)">📈 Flujo de caja</button>
         <button id="btnCongelarFilas" title="Congelar filas de encabezado">🔒 Congelar Filas</button>
@@ -1918,7 +1951,7 @@
         <button id="btnLeerXml">📄 Leer XML de compras</button>
         <button id="btnPresupuesto">🎯 Presupuesto vs real</button>
         <button id="btnRecurrentes">🔁 Facturas recurrentes</button>
-        <button id="btnCobros">📲 Cobrar por WhatsApp</button>
+        <button id="btnCobros" title="Estado de cuenta en PDF por cliente (antigüedad de saldos) listo para mandar por WhatsApp con el mensaje de cobro">📲 Cobrar por WhatsApp</button>
       </div>
     </div>
     <div class="rbSec" style="--rbc:#475569;">
@@ -10975,6 +11008,7 @@ function renderAllCellsInterno() {
   if (typeof aplicarFondoHoja === 'function') aplicarFondoHoja();
   if (typeof comparacionActiva !== 'undefined' && comparacionActiva) pintarResaltadoComparacion();
   if (typeof pintarTiposDatos === 'function') pintarTiposDatos();
+  if (window.revisarBotonErrorSibo) window.revisarBotonErrorSibo();
   if (typeof circulosValidacionActivos !== 'undefined' && circulosValidacionActivos) pintarCirculosValidacion();
   Object.keys(notes).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -13497,18 +13531,20 @@ function siboEnviarTexto(texto) {
   fetchViaXHR(SIBO_CHAT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: texto, history: hist.slice(0, -1), sheetContext: siboSnapshotHoja() }),
+    body: JSON.stringify({ message: texto, history: hist.slice(0, -1), sheetContext: siboSnapshotHoja() + '\n' + (function () { try { return contextoExtraSibo(); } catch (e) { return ''; } })() + '\n\n' + INSTRUCCIONES_ACCIONES_SIBO }),
   })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       var el = document.getElementById('siboTypingIndicator');
       if (el) el.remove();
       var respuesta = data.text || siboBuscarRespuesta(texto);
+      var ext = extraerAccionesSibo(respuesta);
+      respuesta = ext.texto || (ext.acciones ? 'Esto es lo que propongo:' : respuesta);
       var h2 = siboGetHistorial();
-      h2.push({ user: false, texto: respuesta });
+      h2.push({ user: false, texto: respuesta + (ext.acciones ? ' (propuse ' + ext.acciones.length + ' acción(es) para aplicar)' : '') });
       siboGuardarHistorial(h2);
       siboRenderMensaje(respuesta, false);
-      siboOfrecerInsertar(respuesta);
+      if (ext.acciones) siboMostrarAcciones(ext.acciones); else siboOfrecerInsertar(respuesta);
     })
     .catch(function () {
       // Sin conexión al servidor: usamos la base de respuestas local como respaldo
@@ -13529,6 +13565,196 @@ function renderSiboChips() {
     btn.addEventListener('click', function () { siboEnviarTexto(btn.textContent); });
   });
 }
+// ══════════════════════════════════════════════
+// SIBÖ ✦ CON ACCIONES
+// 1) Asientos desde texto ("pagué ₡45 000 de luz con el BN")
+// 2) Más contexto: celda y selección, Catálogo y saldos
+// 3) "¿Por qué?" en celdas con error
+// 4) Cambios en varias celdas o una hoja nueva
+// Sibö propone; nada se aplica sin que toqués ✅ Aplicar. Las propuestas
+// vienen en un bloque ```acciones {json}``` dentro de la respuesta.
+// ══════════════════════════════════════════════
+var INSTRUCCIONES_ACCIONES_SIBO = [
+  'INSTRUCCIONES DE LA APP (no las menciones al usuario):',
+  'Si el usuario pide registrar algo en la contabilidad, cambiar o llenar celdas, o crear una tabla u hoja, además de tu explicación breve agregá AL FINAL un solo bloque así:',
+  '```acciones',
+  '{"acciones":[',
+  ' {"tipo":"asiento","fecha":"dd/mm/aaaa","descripcion":"texto","lineas":[{"codigo":"5.2.03","debe":45000},{"codigo":"1.1.02","haber":45000}]},',
+  ' {"tipo":"celdas","hoja":"NombreHoja","celdas":{"B2":"=SUMA(B3:B10)","C2":"texto"}},',
+  ' {"tipo":"hoja","nombre":"Nombre","filas":[["Encabezado1","Encabezado2"],["valor","=FORMULA"]]}',
+  ']}',
+  '```',
+  'Reglas: en los asientos usá SOLO códigos del Catálogo que te paso; si falta una cuenta, decilo en vez de inventarla. Debe y Haber tienen que sumar igual. Los montos van como números sin símbolos (45000, 1250.5). La fecha por omisión es hoy. Si el pago o cobro no dice el medio, preguntá si fue por caja o banco antes de proponer.',
+  'Las fórmulas van en español con ";" como separador (=SUMA(A1:A5), =SI(A1>0;"sí";"no")). No propongas acciones si el usuario solo pregunta algo.'
+].join('\n');
+function textoCorto(v, n) { v = String(v == null ? '' : v); return v.length > n ? v.slice(0, n - 1) + '…' : v; }
+function contextoExtraSibo() {
+  var partes = [], hoy = new Date();
+  partes.push('Hoy es ' + textoDeFecha(hoy) + '.');
+  // Celda y selección
+  var id = document.getElementById('cellRef').textContent, raw = (sheetData[activeSheet] || {})[id];
+  partes.push('Celda seleccionada: ' + activeSheet + '!' + id + (raw !== undefined ? ' contenido="' + textoCorto(raw, 200) + '"' + (String(raw).charAt(0) === '=' ? ' resultado="' + textoCorto(computeValue(id), 80) + '"' : '') : ' (vacía)'));
+  var b = limitesDeSeleccionOCelda();
+  if (b && (b.maxR > b.minR || b.maxC > b.minC)) {
+    var vals = [], n = 0;
+    for (var r = b.minR; r <= b.maxR && n < 80; r++) for (var c = b.minC; c <= b.maxC && n < 80; c++, n++) { var v = computeValue(cellId(r, c)); if (v !== '') vals.push(cellId(r, c) + '=' + textoCorto(v, 40)); }
+    partes.push('Selección ' + cellId(b.minR, b.minC) + ':' + cellId(b.maxR, b.maxC) + ': ' + vals.join(' | '));
+  }
+  partes.push('Hojas del libro: ' + sheets.join(', '));
+  // Catálogo y saldos
+  if (sheets.indexOf('Catalogo') !== -1) {
+    var cat = catalogoContable(), cods = Object.keys(cat).slice(0, 160);
+    partes.push('CATÁLOGO (código nombre [tipo]): ' + cods.map(function (k) { return k + ' ' + cat[k].nombre + ' [' + cat[k].tipo + ']'; }).join('; '));
+    if (sheets.indexOf('Diario') !== -1) {
+      var movs = movimientosContables();
+      var s = saldosPorCuenta(movs), lista = Object.keys(s).map(function (k) { return { k: k, v: saldoNatural(s[k], cat[k]) }; }).filter(function (x) { return Math.abs(x.v) >= 0.005; }).slice(0, 80);
+      partes.push('SALDOS ACUMULADOS (saldo normal de cada cuenta): ' + lista.map(function (x) { return x.k + ' ' + ((cat[x.k] || {}).nombre || '') + ' = ' + r2c(x.v); }).join('; '));
+      var mes = claveMes(hoy), ing = 0, gas = 0, ivaC = 0, ivaD = 0, anio = hoy.getFullYear(), ingA = 0, gasA = 0;
+      movs.forEach(function (m) {
+        if (!m.fecha) return; var c2 = cat[m.codigo] || {}, t = tipoNormal(c2.tipo), neto = m.haber - m.debe;
+        var enMes = claveMes(m.fecha) === mes, enAnio = m.fecha.getFullYear() === anio && !/^cierre-/.test(m.origen);
+        if (t === 'Ingreso') { if (enMes) ing += neto; if (enAnio) ingA += neto; }
+        if (t === 'Costo' || t === 'Gasto') { if (enMes) gas -= neto; if (enAnio) gasA -= neto; }
+        if (enMes && /iva/i.test(c2.nombre || '')) { if (t === 'Activo') ivaC += m.debe - m.haber; if (t === 'Pasivo') ivaD += m.haber - m.debe; }
+      });
+      partes.push('RESUMEN: este mes (' + mes + ') ingresos ' + r2c(ing) + ', costos y gastos ' + r2c(gas) + ', IVA cobrado ' + r2c(ivaD) + ', IVA pagado ' + r2c(ivaC) + ', IVA a pagar ' + r2c(ivaD - ivaC) + '. Año ' + anio + ': ingresos ' + r2c(ingA) + ', costos y gastos ' + r2c(gasA) + ', utilidad ' + r2c(ingA - gasA) + '. Líneas en el Diario: ' + movs.length + '.');
+    }
+  } else partes.push('Este libro todavía no tiene Catálogo ni Diario (se crean con 📋 Plantillas ▸ Libros contables).');
+  return partes.join('\n');
+}
+// Separa el bloque de acciones del texto de la respuesta
+function extraerAccionesSibo(texto) {
+  var t = String(texto || ''), acciones = null;
+  var rx = /```\s*acciones\s*([\s\S]*?)```|<acciones>([\s\S]*?)<\/acciones>/i, m = rx.exec(t);
+  if (m) {
+    var json = (m[1] || m[2] || '').trim().replace(/^json\s*/i, '');
+    try { var o = JSON.parse(json); acciones = Array.isArray(o) ? o : (o.acciones || null); } catch (e) {
+      try { var limpio = json.replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&'); var o2 = JSON.parse(limpio); acciones = Array.isArray(o2) ? o2 : (o2.acciones || null); } catch (e2) { acciones = null; }
+    }
+    t = t.replace(m[0], '').trim();
+  }
+  return { texto: t, acciones: acciones && acciones.length ? acciones : null };
+}
+function revisarAccionSibo(a) {
+  var cat = sheets.indexOf('Catalogo') !== -1 ? catalogoContable() : {}, avisos = [];
+  if (a.tipo === 'asiento') {
+    var td = 0, th = 0;
+    (a.lineas || []).forEach(function (l) {
+      td += Number(l.debe) || 0; th += Number(l.haber) || 0;
+      if (!cat[String(l.codigo || '').trim()]) avisos.push('la cuenta ' + l.codigo + ' no está en el Catálogo');
+    });
+    if (!(a.lineas || []).length) avisos.push('no trae líneas');
+    if (Math.abs(td - th) >= 0.01) avisos.push('Debe (' + fmtMontoCR(td) + ') y Haber (' + fmtMontoCR(th) + ') no suman igual');
+    if (isNaN(fechaDe(String(a.fecha || '')).getTime())) avisos.push('la fecha no es válida');
+    if (sheets.indexOf('Diario') === -1) avisos.push('el libro no tiene Diario');
+  } else if (a.tipo === 'celdas') {
+    var h = a.hoja || activeSheet;
+    if (sheets.indexOf(h) === -1) avisos.push('no existe la hoja ' + h);
+    else if (sheetProtegida[h]) avisos.push('la hoja ' + h + ' está protegida');
+    Object.keys(a.celdas || {}).forEach(function (k) { if (!/^[A-Z]{1,3}\d+$/i.test(k)) avisos.push(k + ' no es una celda'); });
+    if (!Object.keys(a.celdas || {}).length) avisos.push('no trae celdas');
+  } else if (a.tipo === 'hoja') {
+    if (!Array.isArray(a.filas) || !a.filas.length) avisos.push('no trae filas');
+  } else avisos.push('acción desconocida (' + a.tipo + ')');
+  return avisos;
+}
+function describirAccionSibo(a) {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var cat = sheets.indexOf('Catalogo') !== -1 ? catalogoContable() : {};
+  if (a.tipo === 'asiento') {
+    return '<b>📘 Asiento ' + esc(a.fecha || '') + '</b> — ' + esc(a.descripcion || '') + '<table class="siboTab"><tr><th>Cuenta</th><th>Debe</th><th>Haber</th></tr>' +
+      (a.lineas || []).map(function (l) { var c = cat[String(l.codigo).trim()]; return '<tr><td>' + esc(l.codigo) + ' ' + esc(c ? c.nombre : '¿?') + '</td><td>' + (Number(l.debe) ? fmtMontoCR(l.debe) : '') + '</td><td>' + (Number(l.haber) ? fmtMontoCR(l.haber) : '') + '</td></tr>'; }).join('') + '</table>';
+  }
+  if (a.tipo === 'celdas') {
+    var ks = Object.keys(a.celdas || {});
+    return '<b>✏️ ' + ks.length + ' celda(s) en ' + esc(a.hoja || activeSheet) + '</b><div class="siboCeldas">' + ks.slice(0, 12).map(function (k) { return '<code>' + esc(k.toUpperCase()) + '</code> ' + esc(textoCorto(a.celdas[k], 60)); }).join('<br>') + (ks.length > 12 ? '<br>… y ' + (ks.length - 12) + ' más' : '') + '</div>';
+  }
+  if (a.tipo === 'hoja') return '<b>📄 Hoja nueva "' + esc(a.nombre || 'Sibö') + '"</b> con ' + (a.filas || []).length + ' fila(s): ' + esc((a.filas && a.filas[0] || []).join(' · '));
+  return esc(JSON.stringify(a));
+}
+function aplicarAccionesSibo(acciones) {
+  snapshot();
+  var hechas = [], fallas = [];
+  acciones.forEach(function (a) {
+    var av = revisarAccionSibo(a);
+    if (av.length) { fallas.push(av.join(', ')); return; }
+    if (a.tipo === 'asiento') {
+      var L = a.lineas.map(function (l) { return { codigo: String(l.codigo).trim(), debe: r2c(Number(l.debe) || 0), haber: r2c(Number(l.haber) || 0) }; });
+      var f = textoDeFecha(fechaDe(String(a.fecha)));
+      var res = escribirAsientoSeguro(f, String(a.descripcion || 'Asiento de Sibö'), L, 'sibo-' + Date.now().toString(36));
+      if (res === 'ok') hechas.push('asiento de ' + fmtMontoCR(L.reduce(function (t, l) { return t + l.debe; }, 0)) + ' en el Diario');
+      else fallas.push(res === 'cerrado' ? 'el mes del asiento está cerrado' : 'no hay espacio en el Diario');
+    } else if (a.tipo === 'celdas') {
+      var h = a.hoja || activeSheet, d = sheetData[h] || (sheetData[h] = {}), n = 0;
+      Object.keys(a.celdas).forEach(function (k) { var id = k.toUpperCase(), v = String(a.celdas[k] == null ? '' : a.celdas[k]); if (v === '') delete d[id]; else d[id] = v; marcarCeldaSucia(h, id); n++; });
+      hechas.push(n + ' celda(s) en ' + h);
+    } else if (a.tipo === 'hoja') {
+      var nom = String(a.nombre || 'Sibö').slice(0, 31).replace(/[\\\/?*\[\]:]/g, ''), k = 2, base = nom;
+      while (sheets.indexOf(nom) !== -1) nom = base + ' (' + (k++) + ')';
+      crearHojaVaciaConNombre(nom);
+      var dd = sheetData[nom], ff = sheetFormats[nom];
+      a.filas.forEach(function (fila, r) { (fila || []).forEach(function (v, c) { if (v !== '' && v !== null && v !== undefined) dd[cellId(r, c)] = String(v); }); });
+      (a.filas[0] || []).forEach(function (v, c) { ff[cellId(0, c)] = { bold: true, bgColor: '#e2efda', border: true }; });
+      activeSheet = nom; renderTabs();
+      hechas.push('hoja "' + nom + '"');
+    }
+  });
+  buildTable(); renderAllCells(); autoSave();
+  return { hechas: hechas, fallas: fallas };
+}
+function siboMostrarAcciones(acciones) {
+  var wrap = document.getElementById('siboMessages'), div = document.createElement('div');
+  div.className = 'siboMsgBot siboAcciones';
+  var problemas = [];
+  acciones.forEach(function (a) { var av = revisarAccionSibo(a); if (av.length) problemas.push(av.join(', ')); });
+  var idOk = 'siboOk_' + Date.now(), idNo = 'siboNo_' + Date.now();
+  div.innerHTML = '<div class="siboAccTit">✦ Sibö propone:</div>' + acciones.map(function (a) { return '<div class="siboAcc">' + describirAccionSibo(a) + '</div>'; }).join('') +
+    (problemas.length ? '<div class="siboAviso">⚠ ' + problemas.join('<br>⚠ ') + '</div>' : '') +
+    '<div class="siboBotones"><button id="' + idOk + '"' + (problemas.length === acciones.length ? ' disabled' : '') + '>✅ Aplicar</button><button id="' + idNo + '">✕ Descartar</button></div>';
+  wrap.appendChild(div); wrap.scrollTop = wrap.scrollHeight;
+  document.getElementById(idOk).addEventListener('click', function () {
+    var r = aplicarAccionesSibo(acciones);
+    div.querySelector('.siboBotones').innerHTML = '<span class="mcrOk">✔ Hecho: ' + (r.hechas.join(', ') || 'nada') + '</span>' + (r.fallas.length ? '<br><span class="mcrMal">No se aplicó: ' + r.fallas.join('; ') + '</span>' : '');
+    var h = siboGetHistorial(); h.push({ user: false, texto: '(La app aplicó: ' + (r.hechas.join(', ') || 'nada') + ')' }); siboGuardarHistorial(h);
+    document.getElementById('saveStatus').textContent = '✦ Sibö: ' + (r.hechas.join(', ') || 'sin cambios');
+  });
+  document.getElementById(idNo).addEventListener('click', function () { div.querySelector('.siboBotones').innerHTML = '<span style="opacity:.6">Descartado</span>'; });
+}
+// ── 3) "¿Por qué?" en celdas con error ──
+function refsDeFormula(f) {
+  var out = [], vistos = {};
+  String(f || '').replace(/"(?:[^"]|"")*"/g, '').replace(/((?:'[^']+'|[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*)!)?\$?([A-Z]{1,3})\$?(\d+)(?::\$?([A-Z]{1,3})\$?(\d+))?/g, function (m0, pre, c1, r1, c2, r2) {
+    var k = m0.replace(/\$/g, ''); if (vistos[k]) return; vistos[k] = 1; out.push({ texto: k, hoja: pre ? hojaDeReferencia(pre) : activeSheet, a: c1 + r1, b: c2 ? c2 + r2 : null });
+  });
+  return out.slice(0, 20);
+}
+function preguntarErrorASibo(id) {
+  var raw = (sheetData[activeSheet] || {})[id], val = computeValue(id);
+  var detalle = refsDeFormula(raw).map(function (r) {
+    if (!r.b) return r.texto + ' = "' + textoCorto(computeValueEnHoja(r.hoja, r.a), 40) + '"';
+    var vals = []; getCells(r.a, r.b).slice(0, 12).forEach(function (c) { vals.push(c + '="' + textoCorto(computeValueEnHoja(r.hoja, c), 25) + '"'); });
+    return r.texto + ': ' + vals.join(', ') + (getCells(r.a, r.b).length > 12 ? '…' : '');
+  }).join('\n');
+  var msg = 'La celda ' + id + ' de la hoja ' + activeSheet + ' da ' + val + '. Fórmula: ' + raw + '\nValores que usa:\n' + (detalle || '(no usa otras celdas)') + '\n¿Por qué da ese error y cómo lo arreglo? Si la corrección es cambiar la fórmula, proponela como acción.';
+  document.getElementById('btnSibo').click();
+  siboEnviarTexto(msg);
+}
+(function () {
+  var bar = document.getElementById('formulaBarRow');
+  if (!bar) return;
+  var b = document.createElement('button');
+  b.id = 'siboErrBtn'; b.type = 'button'; b.textContent = '✦ ¿Por qué?'; b.title = 'Preguntarle a Sibö por qué esta celda da error';
+  b.style.display = 'none';
+  bar.appendChild(b);
+  b.addEventListener('click', function () { preguntarErrorASibo(document.getElementById('cellRef').textContent); });
+  var revisar = function () {
+    var id = document.getElementById('cellRef').textContent, raw = (sheetData[activeSheet] || {})[id];
+    var v = typeof raw === 'string' && raw.charAt(0) === '=' ? String(computeValue(id)) : '';
+    b.style.display = /^#[A-Z\/0-9!?_]+/.test(v.trim()) && v.trim() !== '#OCUPADO!' ? '' : 'none';
+  };
+  new MutationObserver(revisar).observe(document.getElementById('cellRef'), { childList: true, characterData: true, subtree: true });
+  window.revisarBotonErrorSibo = revisar;
+})();
 document.getElementById('btnSibo').addEventListener('click', function () {
   renderSiboChips();
   siboRenderHistorial();
@@ -16452,6 +16678,7 @@ function commitCell(el) {
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
   if (val !== anterior) marcarCeldaSucia(activeSheet, id);
   if (val !== '') { var tCrecio = expandirTablasConCelda(activeSheet, id); if (tCrecio) { llenarColumnasCalculadasFila(rangosNombrados[tCrecio], filaDe(id)); document.getElementById('saveStatus').textContent = '📋 La tabla ' + tCrecio + ' creció una fila'; } }
+  if (activeSheet === 'Kardex' && val !== anterior && colDe(id) <= 6 && filaDe(id) >= KX_FILA1) { recalcularKardex(true); setTimeout(function () { renderAllCells(); }, 0); }
   if (val !== anterior) { var nCalc = columnaCalculadaTrasEditar(activeSheet, id, val, anterior); if (nCalc) { document.getElementById('saveStatus').textContent = '📋 Columna calculada: la fórmula se copió a ' + nCalc + ' fila(s) de la tabla (↶ para deshacer)'; setTimeout(function () { renderAllCells(); }, 0); } }
   registrarCambioAuditoria(id, anterior, val);
   checkValidationOnCommit(id, val);
@@ -22368,6 +22595,775 @@ function crearEstadosFinancieros(silencioso) {
   if (!silencioso) { buildTable(); renderTabs(); autoSave(); document.getElementById('saveStatus').textContent = '✓ Estados financieros actualizados'; }
 }
 document.getElementById('btnEstadosFinancieros').addEventListener('click', function () { snapshot(); crearEstadosFinancieros(false); });
+// ══════════════════════════════════════════════
+// CONTABILIDAD PLUS: Kárdex con costo promedio, diferencial cambiario,
+// cierre anual, estados financieros NIIF para PYMES y régimen simplificado.
+// Todo trabaja sobre las hojas Catalogo y Diario de los libros conectados.
+// ══════════════════════════════════════════════
+function fmtMontoCR(n) { return (Math.round((Number(n) || 0) * 100) / 100).toLocaleString('es-CR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function numContable(v) { var t = String(v == null ? '' : v).trim(); if (!t) return 0; var n = toNum(t); return isNaN(n) ? 0 : n; }
+function catalogoContable() {
+  var cat = sheetData.Catalogo || {}, out = {};
+  for (var r = 2; r < 400; r++) {
+    var cod = String(cat[cellId(r, 0)] || '').trim();
+    if (!cod) { if (r > 70) break; continue; }
+    out[cod] = { codigo: cod, nombre: String(cat[cellId(r, 1)] || '').trim(), tipo: String(cat[cellId(r, 2)] || '').trim(), moneda: String(cat[cellId(r, 3)] || '').trim().toUpperCase(), fila: r };
+  }
+  return out;
+}
+function tipoNormal(t) {
+  var x = String(t || '').toLowerCase();
+  if (/^act/.test(x)) return 'Activo'; if (/^pas/.test(x)) return 'Pasivo'; if (/^pat|^cap/.test(x)) return 'Patrimonio';
+  if (/^ing/.test(x)) return 'Ingreso'; if (/^cos/.test(x)) return 'Costo'; if (/^gas/.test(x)) return 'Gasto';
+  return '';
+}
+function esDeudora(tipo) { var t = tipoNormal(tipo); return t === 'Activo' || t === 'Costo' || t === 'Gasto'; }
+function movimientosContables() {
+  var d = sheetData.Diario || {}, out = [];
+  for (var r = 3; r < 20000; r++) {
+    if (d[cellId(r, 9)] === undefined && r > 3 + 500 && !d[cellId(r, 2)]) break;
+    if (d[cellId(r, 9)] === undefined && !d[cellId(r, 2)]) { if (r > 5000) break; continue; }
+    var cod = String(d[cellId(r, 2)] || '').trim();
+    var debe = numContable(d[cellId(r, 5)]), haber = numContable(d[cellId(r, 6)]);
+    if (!cod || (!debe && !haber)) continue;
+    var ft = String(d[cellId(r, 0)] || '').trim(), fd = fechaDe(ft);
+    out.push({ r: r, fecha: isNaN(fd.getTime()) ? null : fd, fechaTxt: ft, asiento: String(d[cellId(r, 1)] || '').trim(), codigo: cod, desc: String(d[cellId(r, 4)] || ''), debe: debe, haber: haber, origen: String(d[cellId(r, 10)] || '') });
+  }
+  return out;
+}
+// Saldos por cuenta: { codigo: { debe, haber } } de los movimientos que pasan el filtro
+function saldosPorCuenta(movs, filtro) {
+  var s = {};
+  movs.forEach(function (m) { if (filtro && !filtro(m)) return; var x = s[m.codigo] || (s[m.codigo] = { debe: 0, haber: 0 }); x.debe += m.debe; x.haber += m.haber; });
+  return s;
+}
+// Saldo con su signo natural (positivo = saldo normal de la cuenta)
+function saldoNatural(s, cuenta) { if (!s) return 0; return esDeudora(cuenta && cuenta.tipo) ? s.debe - s.haber : s.haber - s.debe; }
+function finDeDia(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59); }
+function textoFechaCR(d) { return textoDeFecha(d); }
+function requiereLibros() {
+  if (sheets.indexOf('Catalogo') === -1 || sheets.indexOf('Diario') === -1) { if (!asegurarSistemaContable()) return false; }
+  return true;
+}
+function borrarAsientoPorOrigen(origen) {
+  var d = sheetData.Diario || {}, n = 0;
+  for (var r = 3; r < 20000; r++) {
+    if (d[cellId(r, 9)] === undefined && r > 600) break;
+    if (String(d[cellId(r, 10)] || '') === origen) { [0, 1, 2, 4, 5, 6, 10].forEach(function (c) { delete d[cellId(r, c)]; }); marcarCeldaSucia('Diario', cellId(r, 2)); n++; }
+  }
+  return n;
+}
+function asientoExiste(origen) { return movimientosContables().some(function (m) { return m.origen === origen; }); }
+function escribirAsientoSeguro(fecha, desc, lineas, origen) {
+  var limpias = lineas.filter(function (l) { return Math.abs(l.debe || 0) >= 0.005 || Math.abs(l.haber || 0) >= 0.005; });
+  if (!limpias.length) return 'vacio';
+  var td = 0, th = 0; limpias.forEach(function (l) { td += r2c(l.debe || 0); th += r2c(l.haber || 0); });
+  // Ajuste de céntimos por redondeo, contra la última línea
+  var dif = r2c(td - th);
+  if (Math.abs(dif) >= 0.005 && Math.abs(dif) < 0.05) { var ul = limpias[limpias.length - 1]; if (ul.haber) ul.haber = r2c(ul.haber + dif); else ul.debe = r2c(ul.debe - dif); }
+  var antesCerrado = escribirAsientoEnDiario.cerrado || 0;
+  if (!escribirAsientoEnDiario(fecha, desc, limpias, origen)) return (escribirAsientoEnDiario.cerrado || 0) > antesCerrado ? 'cerrado' : 'espacio';
+  return 'ok';
+}
+function avisoAsiento(res) {
+  if (res === 'cerrado') alert('🔒 Ese mes está cerrado. Reabrilo en "Cierre mensual" para registrar el asiento.');
+  else if (res === 'espacio') alert('No queda espacio en el Diario. Archivá un año con 📕 Cierre anual o agregá filas al Diario.');
+  return res === 'ok';
+}
+
+// ══════════════════════════════════════════════
+// 1) KÁRDEX DE INVENTARIO — costo promedio ponderado
+// Hoja "Kardex": A Fecha · B Código · C Producto · D Movimiento · E Cantidad ·
+// F Costo unitario (en entradas) · G Documento. Lo de H a M lo calcula la app:
+// existencia, costo promedio, valor de entrada, costo de la salida, saldo y avisos.
+// A la derecha (O:S) queda el inventario valorizado por producto.
+// ══════════════════════════════════════════════
+var KX_FILA1 = 3;
+function crearHojaKardex() {
+  if (sheets.indexOf('Kardex') !== -1) { activeSheet = 'Kardex'; renderTabs(); buildTable(); renderAllCells(); return; }
+  snapshot();
+  crearHojaVaciaConNombre('Kardex');
+  var d = sheetData.Kardex, f = sheetFormats.Kardex;
+  d.A1 = '📦 KÁRDEX DE INVENTARIO — costo promedio ponderado (se recalcula solo)';
+  for (var c = 0; c < 13; c++) f[cellId(0, c)] = { bold: true, bgColor: '#374151', fontColor: '#ffffff', fontSize: 14 };
+  (sheetMerges.Kardex = sheetMerges.Kardex || []).push({ r1: 0, c1: 0, r2: 0, c2: 12 });
+  d.A2 = 'Escribí de A a G. Movimiento: Entrada, Salida, Devolución venta, Devolución compra o Ajuste (cantidad con signo). El costo unitario solo hace falta en las entradas.';
+  f.A2 = { fontColor: '#6b7280', fontSize: 11 };
+  ['Fecha', 'Código', 'Producto', 'Movimiento', 'Cantidad', 'Costo unitario', 'Documento', 'Existencia', 'Costo promedio', 'Valor entrada', 'Costo salida', 'Saldo valorizado', 'Aviso'].forEach(function (t, c) {
+    d[cellId(2, c)] = t; f[cellId(2, c)] = { bold: true, bgColor: c < 7 ? '#e5e7eb' : '#dcfce7', border: true };
+  });
+  ['Código', 'Producto', 'Existencia', 'Costo promedio', 'Valor total'].forEach(function (t, i) { d[cellId(2, 14 + i)] = t; f[cellId(2, 14 + i)] = { bold: true, bgColor: '#dbeafe', border: true }; });
+  d[cellId(1, 14)] = 'INVENTARIO VALORIZADO'; f[cellId(1, 14)] = { bold: true, fontColor: '#1e3a8a' };
+  var hoy = textoDeFecha(new Date());
+  [[hoy, 'P-001', 'Arroz 1 kg', 'Entrada', '100', '850', 'FC-1'], [hoy, 'P-001', 'Arroz 1 kg', 'Salida', '30', '', 'Venta'], [hoy, 'P-001', 'Arroz 1 kg', 'Entrada', '50', '910', 'FC-2']].forEach(function (fila, i) {
+    fila.forEach(function (v, c) { if (v !== '') d[cellId(KX_FILA1 + i, c)] = v; });
+  });
+  colWidths.Kardex = { 0: 85, 1: 70, 2: 170, 3: 110, 4: 75, 5: 95, 6: 85, 7: 85, 8: 100, 9: 100, 10: 100, 11: 115, 12: 160, 13: 20, 14: 70, 15: 170, 16: 85, 17: 100, 18: 115 };
+  sheetFreeze.Kardex = { row: 3, col: 0 };
+  activeSheet = 'Kardex';
+  recalcularKardex(true);
+  renderTabs(); buildTable(); renderAllCells(); autoSave();
+  document.getElementById('saveStatus').textContent = '📦 Kárdex listo: borrá el ejemplo y escribí tus movimientos';
+}
+function tipoMovKardex(t) {
+  var x = String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (/dev.*vent/.test(x)) return 'devVenta';
+  if (/dev.*comp/.test(x)) return 'devCompra';
+  if (/^aj/.test(x)) return 'ajuste';
+  if (/^(e|compra|ingreso|inv.*inicial|saldo inicial)/.test(x)) return 'entrada';
+  if (/^(s|venta|consumo|egreso|baja)/.test(x)) return 'salida';
+  return '';
+}
+function recalcularKardex(silencioso) {
+  if (sheets.indexOf('Kardex') === -1) return null;
+  var d = sheetData.Kardex, f = sheetFormats.Kardex || (sheetFormats.Kardex = {});
+  var filas = [];
+  for (var r = KX_FILA1; r < KX_FILA1 + 20000; r++) {
+    var vacia = [0, 1, 2, 3, 4, 5, 6].every(function (c) { return !String(d[cellId(r, c)] || '').trim(); });
+    if (vacia) { if (r > KX_FILA1 + 50 && [0, 1, 2, 3, 4].every(function (c) { return !d[cellId(r + 1, c)] && !d[cellId(r + 2, c)]; })) break; [7, 8, 9, 10, 11, 12].forEach(function (c) { delete d[cellId(r, c)]; }); continue; }
+    var fd = fechaDe(String(d[cellId(r, 0)] || ''));
+    filas.push({ r: r, fecha: isNaN(fd.getTime()) ? null : fd.getTime(), clave: String(d[cellId(r, 1)] || d[cellId(r, 2)] || '').trim().toUpperCase(), nombre: String(d[cellId(r, 2)] || '').trim(), tipo: tipoMovKardex(d[cellId(r, 3)]), cant: numContable(d[cellId(r, 4)]), costo: numContable(d[cellId(r, 5)]) });
+  }
+  // Orden cronológico (las filas sin fecha se quedan en su lugar relativo)
+  var orden = filas.slice().sort(function (a, b) { if (a.fecha !== null && b.fecha !== null && a.fecha !== b.fecha) return a.fecha - b.fecha; return a.r - b.r; });
+  var prod = {};
+  orden.forEach(function (x) {
+    var p = prod[x.clave] || (prod[x.clave] = { clave: x.clave, nombre: x.nombre, q: 0, v: 0, codigo: String(d[cellId(x.r, 1)] || '').trim() });
+    if (x.nombre) p.nombre = x.nombre;
+    var prom = p.q > 0 ? p.v / p.q : 0, ventr = '', csal = '', aviso = '';
+    if (!x.clave) aviso = '⚠ Falta código o producto';
+    else if (!x.tipo) aviso = '⚠ Movimiento desconocido';
+    else if (x.tipo === 'entrada' || x.tipo === 'devVenta' || (x.tipo === 'ajuste' && x.cant > 0)) {
+      var cu = x.tipo === 'entrada' ? x.costo : prom;
+      if (x.tipo === 'entrada' && !x.costo) aviso = '⚠ Entrada sin costo unitario';
+      var val = Math.abs(x.cant) * cu;
+      if (p.q < 0) { p.q += Math.abs(x.cant); p.v = p.q * cu; } else { p.q += Math.abs(x.cant); p.v += val; }
+      if (cu) p.ultimo = cu;
+      ventr = val;
+    } else {
+      var q = Math.abs(x.cant);
+      // sin existencia: se usa el último costo conocido para no dejar la salida en cero
+      var cu2 = x.tipo === 'devCompra' && x.costo ? x.costo : (prom || p.ultimo || 0);
+      if (q > p.q + 1e-9) aviso = '⚠ Sale más de lo que hay (' + fmtNum(p.q) + ')';
+      var costoSal = q * cu2;
+      p.q -= q; p.v -= costoSal; csal = costoSal;
+      if (p.q > 0) p.ultimo = p.v / p.q;
+      if (Math.abs(p.q) < 1e-9) { p.q = 0; p.v = 0; }
+    }
+    x.res = { existencia: p.q, prom: p.q > 0 ? p.v / p.q : (prom || 0), ventr: ventr, csal: csal, saldo: p.v, aviso: aviso };
+  });
+  var dinero = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+  filas.forEach(function (x) {
+    var res = x.res || {};
+    d[cellId(x.r, 7)] = String(Math.round((res.existencia || 0) * 10000) / 10000);
+    d[cellId(x.r, 8)] = String(r2c(res.prom || 0));
+    if (res.ventr !== '' && res.ventr !== undefined) d[cellId(x.r, 9)] = String(r2c(res.ventr)); else delete d[cellId(x.r, 9)];
+    if (res.csal !== '' && res.csal !== undefined) d[cellId(x.r, 10)] = String(r2c(res.csal)); else delete d[cellId(x.r, 10)];
+    d[cellId(x.r, 11)] = String(r2c(res.saldo || 0));
+    if (res.aviso) d[cellId(x.r, 12)] = res.aviso; else delete d[cellId(x.r, 12)];
+    [8, 9, 10, 11].forEach(function (c) { f[cellId(x.r, c)] = Object.assign({}, f[cellId(x.r, c)] || {}, dinero, { bgColor: '#f0fdf4' }); });
+    f[cellId(x.r, 7)] = Object.assign({}, f[cellId(x.r, 7)] || {}, { bgColor: '#f0fdf4' });
+    f[cellId(x.r, 12)] = Object.assign({}, f[cellId(x.r, 12)] || {}, { fontColor: '#b45309' });
+  });
+  // Inventario valorizado (O:S)
+  for (var rr = 3; rr < 3 + 2000; rr++) { if (!d[cellId(rr, 14)] && !d[cellId(rr, 15)] && !d[cellId(rr, 18)]) { if (rr > 3 + Object.keys(prod).length + 3) break; } [14, 15, 16, 17, 18].forEach(function (c) { delete d[cellId(rr, c)]; }); }
+  var lista = Object.keys(prod).filter(Boolean).sort().map(function (k) { return prod[k]; }), total = 0;
+  lista.forEach(function (p, i) {
+    var r = 3 + i;
+    d[cellId(r, 14)] = p.codigo || p.clave; d[cellId(r, 15)] = p.nombre; d[cellId(r, 16)] = String(Math.round(p.q * 10000) / 10000);
+    d[cellId(r, 17)] = String(r2c(p.q > 0 ? p.v / p.q : 0)); d[cellId(r, 18)] = String(r2c(p.v)); total += p.v;
+    f[cellId(r, 17)] = Object.assign({}, f[cellId(r, 17)] || {}, dinero); f[cellId(r, 18)] = Object.assign({}, f[cellId(r, 18)] || {}, dinero);
+  });
+  var rt = 3 + lista.length;
+  d[cellId(rt, 15)] = 'TOTAL INVENTARIO'; d[cellId(rt, 18)] = String(r2c(total));
+  f[cellId(rt, 15)] = { bold: true }; f[cellId(rt, 18)] = Object.assign({ bold: true, bgColor: '#dbeafe' }, dinero);
+  for (var cc = 7; cc <= 18; cc++) for (var r3 = KX_FILA1; r3 < KX_FILA1 + filas.length + lista.length + 5; r3++) if (d[cellId(r3, cc)] !== undefined) marcarCeldaSucia('Kardex', cellId(r3, cc));
+  if (!silencioso) { renderAllCells(); autoSave(); }
+  return { productos: lista.length, total: total, filas: filas };
+}
+function abrirKardex() {
+  if (sheets.indexOf('Kardex') === -1) { crearHojaKardex(); return; }
+  var res = recalcularKardex(true);
+  activeSheet = 'Kardex'; renderTabs(); buildTable(); renderAllCells();
+  var hoy = new Date(), mesSug = hoy.getFullYear() + '-' + dosDig(hoy.getMonth() + 1);
+  var html = '<div class="mcrNota">El kárdex se recalcula solo cada vez que escribís en la hoja. Inventario actual: <b>₡' + fmtMontoCR(res.total) + '</b> en ' + res.productos + ' producto(s).</div>' +
+    '<label class="mcrF">Mes del asiento</label><input id="kxMes" class="mcrI" type="month" value="' + mesSug + '">' +
+    '<label class="egChk" style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="kxCosto" checked> Costo de ventas: Debe Costo de ventas / Haber Inventario</label>' +
+    '<label class="egChk" style="display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" id="kxCompras"> Compras: Debe Inventario / Haber Proveedores (solo si no las registraste ya con 📄 Importar XML)</label>';
+  abrirPanel('📦 Kárdex — asiento del mes', html, [{ texto: 'Cerrar' }, { texto: 'Registrar asiento', ok: true, accion: function () {
+    if (!requiereLibros()) return false;
+    var mes = document.getElementById('kxMes').value, conCosto = document.getElementById('kxCosto').checked, conCompras = document.getElementById('kxCompras').checked;
+    if (!/^\d{4}-\d{2}$/.test(mes)) { alert('Escogé el mes.'); return false; }
+    var costo = 0, compras = 0;
+    recalcularKardex(true).filas.forEach(function (x) {
+      if (x.fecha === null || claveMes(new Date(x.fecha)) !== mes || !x.res) return;
+      if (x.res.csal !== '' && x.tipo !== 'devCompra' && x.tipo !== 'ajuste') costo += x.res.csal || 0;
+      if (x.tipo === 'devVenta') costo -= x.res.ventr || 0;
+      if (x.tipo === 'entrada') compras += x.res.ventr || 0;
+      if (x.tipo === 'devCompra') compras -= x.res.csal || 0;
+    });
+    var origen = 'kardex-' + mes;
+    if (asientoExiste(origen)) { if (!confirm('Ya hay un asiento del kárdex de ' + mes + '. ¿Lo reemplazo?')) return false; }
+    snapshot();
+    borrarAsientoPorOrigen(origen);
+    var cInv = asegurarCuentaEnCatalogo(['1.1.05', 'Inventario', 'Activo']), cCV = asegurarCuentaEnCatalogo(['5.1.01', 'Costo de ventas', 'Costo']), cProv = asegurarCuentaEnCatalogo(CUENTAS_AUTO.proveedores);
+    var L = [];
+    if (conCompras && compras) L.push({ codigo: cInv, debe: r2c(compras) }, { codigo: cProv, haber: r2c(compras) });
+    if (conCosto && costo) L.push({ codigo: cCV, debe: r2c(costo) }, { codigo: cInv, haber: r2c(costo) });
+    if (!L.length) { alert('No hay movimientos en ' + mes + ' para registrar.'); return false; }
+    var p = mes.split('-'), fin = textoDeFecha(new Date(parseInt(p[0], 10), parseInt(p[1], 10), 0));
+    if (!avisoAsiento(escribirAsientoSeguro(fin, 'Kárdex ' + mes + ' — costo de ventas' + (conCompras ? ' y compras' : ''), L, origen))) return false;
+    autoSave();
+    document.getElementById('saveStatus').textContent = '📦 Asiento del kárdex ' + mes + ': costo de ventas ₡' + fmtMontoCR(costo) + (conCompras ? ', compras ₡' + fmtMontoCR(compras) : '');
+  } }]);
+}
+
+// ══════════════════════════════════════════════
+// 2) DIFERENCIAL CAMBIARIO — revaluación de cuentas en dólares
+// En el Catálogo, columna D (Moneda) = USD marca las cuentas en dólares.
+// Se escribe el saldo en US$ de cada una (se recuerda del mes anterior) y,
+// con el tipo de cambio del BCCR al cierre (compra para activos, venta para
+// pasivos), se ajusta el saldo en colones contra Diferencial cambiario.
+// ══════════════════════════════════════════════
+function asegurarColumnaMonedaCatalogo() {
+  var cat = sheetData.Catalogo || {};
+  if (!cat[cellId(1, 3)]) { cat[cellId(1, 3)] = 'Moneda'; (sheetFormats.Catalogo = sheetFormats.Catalogo || {})[cellId(1, 3)] = { bold: true, bgColor: '#dbeafe', border: true }; }
+}
+function abrirDiferencialCambiario() {
+  if (!requiereLibros()) return;
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  var hoy = new Date(), finMesAnt = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
+  var estado = { fecha: finMesAnt };
+  var memo = opcionesLibro.diferencial = opcionesLibro.diferencial || {};
+  function pintar() {
+    var cat = catalogoContable(), movs = movimientosContables(), corte = finDeDia(estado.fecha);
+    var saldos = saldosPorCuenta(movs, function (m) { return m.fecha && m.fecha <= corte; });
+    var mes = claveMes(estado.fecha), previo = memo.ultimo || {};
+    var tcIso = isoDeFechaTC(estado.fecha), tc = estado.tc || buscarTCHistorico(tcIso) || null;
+    if (!tc && !estado.pidiendo) { estado.pidiendo = true; pedirTCMes(tcIso.slice(0, 7), function () { estado.pidiendo = false; estado.tc = buscarTCHistorico(tcIso) || estado.tc; if (estado.tc) pintar(); }); }
+    var cuentas = Object.keys(cat).map(function (k) { return cat[k]; }).filter(function (c) { var t = tipoNormal(c.tipo); return t === 'Activo' || t === 'Pasivo'; });
+    var html = '<div class="mcrNota">Marcá las cuentas que se llevan en <b>dólares</b> y escribí su saldo en US$ al cierre (estado de cuenta del banco, saldo del cliente o del préstamo). Activos al tipo de <b>compra</b>, pasivos al de <b>venta</b>.</div>' +
+      '<div class="egDos"><div><label class="mcrF">Fecha de cierre</label><input id="dcFecha" class="mcrI" type="date" value="' + isoDeFechaTC(estado.fecha) + '"></div>' +
+      '<div><label class="mcrF">TC compra / venta</label><div style="display:flex;gap:4px"><input id="dcCompra" class="mcrI" inputmode="decimal" value="' + (tc ? fmtNum(tc.compra) : '') + '" placeholder="compra"><input id="dcVenta" class="mcrI" inputmode="decimal" value="' + (tc ? fmtNum(tc.venta) : '') + '" placeholder="venta"></div></div></div>' +
+      (tc ? '' : '<div class="mcrNota">⏳ Buscando el tipo de cambio del BCCR para esa fecha… (o escribilo vos)</div>') +
+      '<div class="pqVista" style="max-height:300px"><table><thead><tr><th>US$</th><th>Cuenta</th><th>Saldo ₡ libros</th><th>Saldo US$</th><th>Ajuste ₡</th></tr></thead><tbody>' +
+      cuentas.map(function (c) {
+        var s = saldoNatural(saldos[c.codigo], c), usd = previo[c.codigo] !== undefined ? previo[c.codigo] : '';
+        if (memo[mes] && memo[mes][c.codigo] !== undefined) usd = memo[mes][c.codigo];
+        var esUsd = c.moneda === 'USD';
+        return '<tr data-cod="' + esc(c.codigo) + '" data-saldo="' + s + '" data-tipo="' + tipoNormal(c.tipo) + '"' + (esUsd ? '' : ' class="dcNo"') + '><td><input type="checkbox" class="dcUsd"' + (esUsd ? ' checked' : '') + '></td><td>' + esc(c.codigo) + ' ' + esc(c.nombre) + '<br><small>' + tipoNormal(c.tipo) + '</small></td><td>' + fmtMontoCR(s) + '</td>' +
+          '<td><input class="mcrI dcMonto" inputmode="decimal" style="width:90px;padding:6px" value="' + esc(usd === '' ? '' : fmtNum(usd)) + '"' + (esUsd ? '' : ' disabled') + '></td><td class="dcAj"></td></tr>';
+      }).join('') + '</tbody></table></div><div id="dcResumen" class="mcrNota"></div>';
+    abrirPanel('💱 Diferencial cambiario', html, [{ texto: 'Cerrar' }, { texto: 'Registrar asiento', ok: true, accion: registrar }]);
+    var recalcular = function () {
+      var tcC = numContable(document.getElementById('dcCompra').value), tcV = numContable(document.getElementById('dcVenta').value), gan = 0, per = 0;
+      document.querySelectorAll('#mcrPanelBody tr[data-cod]').forEach(function (tr) {
+        var usd = tr.querySelector('.dcUsd').checked, inp = tr.querySelector('.dcMonto'), celda = tr.querySelector('.dcAj');
+        inp.disabled = !usd; tr.classList.toggle('dcNo', !usd);
+        if (!usd || inp.value.trim() === '') { celda.textContent = ''; tr.dataset.ajuste = '0'; return; }
+        var tcU = tr.dataset.tipo === 'Pasivo' ? tcV : tcC, valor = numContable(inp.value) * tcU, aj = r2c(valor - parseFloat(tr.dataset.saldo));
+        tr.dataset.ajuste = String(aj);
+        celda.textContent = (aj > 0 ? '+' : '') + fmtMontoCR(aj);
+        // Activo que sube o pasivo que baja: ganancia
+        var efecto = tr.dataset.tipo === 'Pasivo' ? -aj : aj;
+        if (efecto > 0) gan += efecto; else per -= efecto;
+        celda.style.color = efecto >= 0 ? '#15803d' : '#b91c1c';
+      });
+      document.getElementById('dcResumen').innerHTML = 'Ganancia por diferencial: <b class="mcrOk">₡' + fmtMontoCR(gan) + '</b> · Pérdida: <b class="mcrMal">₡' + fmtMontoCR(per) + '</b> · Neto: <b>₡' + fmtMontoCR(gan - per) + '</b>';
+    };
+    document.querySelectorAll('#mcrPanelBody .dcUsd, #mcrPanelBody .dcMonto, #dcCompra, #dcVenta').forEach(function (e) { e.addEventListener('input', recalcular); e.addEventListener('change', recalcular); });
+    document.getElementById('dcFecha').addEventListener('change', function () { var v = fechaDe(this.value); if (!isNaN(v.getTime())) { estado.fecha = v; estado.tc = null; pintar(); } });
+    recalcular();
+  }
+  function registrar() {
+    var mes = claveMes(estado.fecha), cat = catalogoContable(), L = [], gan = 0, per = 0, usdMemo = {};
+    var tcC = numContable(document.getElementById('dcCompra').value), tcV = numContable(document.getElementById('dcVenta').value);
+    if (!tcC || !tcV) { alert('Falta el tipo de cambio de compra o de venta.'); return false; }
+    snapshot();
+    asegurarColumnaMonedaCatalogo();
+    document.querySelectorAll('#mcrPanelBody tr[data-cod]').forEach(function (tr) {
+      var cod = tr.dataset.cod, usd = tr.querySelector('.dcUsd').checked, c = cat[cod];
+      if (c) { if (usd) sheetData.Catalogo[cellId(c.fila, 3)] = 'USD'; else if (c.moneda === 'USD') delete sheetData.Catalogo[cellId(c.fila, 3)]; }
+      var inp = tr.querySelector('.dcMonto');
+      if (!usd || inp.value.trim() === '') return;
+      usdMemo[cod] = numContable(inp.value);
+      var aj = parseFloat(tr.dataset.ajuste) || 0;
+      if (Math.abs(aj) < 0.005) return;
+      if (aj > 0) L.push({ codigo: cod, debe: aj }); else L.push({ codigo: cod, haber: -aj });
+      var efecto = tr.dataset.tipo === 'Pasivo' ? -aj : aj;
+      if (efecto > 0) gan += efecto; else per -= efecto;
+    });
+    memo[mes] = usdMemo; memo.ultimo = Object.assign({}, memo.ultimo || {}, usdMemo);
+    if (!L.length) { autoSave(); alert('No hay diferencias que registrar (o no marcaste cuentas en dólares).'); return false; }
+    // Las ganancias y pérdidas van por separado, como pide la NIC 21 / sección 30 NIIF PYMES
+    if (gan) L.push({ codigo: asegurarCuentaEnCatalogo(['4.2.01', 'Diferencial cambiario (ganancia)', 'Ingreso']), haber: r2c(gan) });
+    if (per) L.push({ codigo: asegurarCuentaEnCatalogo(['5.3.01', 'Diferencial cambiario (pérdida)', 'Gasto']), debe: r2c(per) });
+    var origen = 'difcambio-' + mes;
+    if (asientoExiste(origen) && !confirm('Ya hay un asiento de diferencial cambiario de ' + mes + '. ¿Lo reemplazo?')) return false;
+    borrarAsientoPorOrigen(origen);
+    if (!avisoAsiento(escribirAsientoSeguro(textoDeFecha(estado.fecha), 'Diferencial cambiario ' + mes + ' (TC compra ' + fmtNum(tcC) + ' / venta ' + fmtNum(tcV) + ')', L, origen))) return false;
+    autoSave(); renderAllCells();
+    document.getElementById('saveStatus').textContent = '💱 Diferencial cambiario ' + mes + ': ganancia ₡' + fmtMontoCR(gan) + ', pérdida ₡' + fmtMontoCR(per);
+  }
+  pintar();
+}
+
+// ══════════════════════════════════════════════
+// 3) CIERRE ANUAL
+// Asiento de cierre (ingresos, costos y gastos a Utilidades acumuladas),
+// meses cerrados y, si se quiere, archivar el año en una hoja aparte y dejar
+// en el Diario solo el asiento de apertura con los saldos de balance.
+// ══════════════════════════════════════════════
+function abrirCierreAnual() {
+  if (!requiereLibros()) return;
+  var movs = movimientosContables();
+  var anios = {}; movs.forEach(function (m) { if (m.fecha) anios[m.fecha.getFullYear()] = 1; });
+  var lista = Object.keys(anios).sort(), sug = lista.length ? lista[lista.length - 1] : String(new Date().getFullYear());
+  if (lista.length > 1 && new Date().getMonth() < 9) sug = lista[lista.length - 2];
+  var cat = catalogoContable(), patr = Object.keys(cat).filter(function (k) { return tipoNormal(cat[k].tipo) === 'Patrimonio'; });
+  var sugUA = patr.filter(function (k) { return /utilidad|resultado|acumulad/i.test(cat[k].nombre); })[0] || '3.1.02';
+  var html = '<div class="mcrNota">Pasa el saldo de todas las cuentas de <b>Ingreso, Costo y Gasto</b> del año a <b>Utilidades acumuladas</b>, así el Estado de Resultados del año nuevo arranca en cero. El Balance no cambia.</div>' +
+    '<div class="egDos"><div><label class="mcrF">Período fiscal que termina el</label><input id="caFecha" class="mcrI" type="date" value="' + sug + '-12-31"></div>' +
+    '<div><label class="mcrF">Cuenta de utilidades acumuladas</label><select id="caCuenta" class="mcrI">' + (patr.length ? patr : ['3.1.02']).map(function (k) { return '<option value="' + k + '"' + (k === sugUA ? ' selected' : '') + '>' + k + ' ' + ((cat[k] || {}).nombre || 'Utilidades acumuladas') + '</option>'; }).join('') + '</select></div></div>' +
+    '<label class="egChk" style="display:flex;gap:6px;align-items:center;margin-top:10px"><input type="checkbox" id="caMeses" checked> Cerrar los 12 meses (nadie podrá cambiar asientos de ese año)</label>' +
+    '<label class="egChk" style="display:flex;gap:6px;align-items:flex-start;margin-top:8px"><input type="checkbox" id="caArchivar"> <span>Archivar el año: los asientos se copian a una hoja <b>Diario AAAA</b> y en el Diario queda solo el <b>asiento de apertura</b> con los saldos del balance (libera espacio y arranca limpio).</span></label>' +
+    '<div id="caVista" class="mcrNota"></div>';
+  abrirPanel('📕 Cierre anual', html, [{ texto: 'Cancelar' }, { texto: 'Hacer el cierre', ok: true, accion: hacer }]);
+  function calcular() {
+    var fin = fechaDe(document.getElementById('caFecha').value);
+    if (isNaN(fin.getTime())) return null;
+    var ini = new Date(fin.getFullYear() - 1, fin.getMonth(), fin.getDate() + 1), corte = finDeDia(fin);
+    var origenCierre = 'cierre-' + isoDeFechaTC(fin);
+    var mv = movimientosContables(), catx = catalogoContable();
+    var s = saldosPorCuenta(mv, function (m) { return m.fecha && m.fecha >= ini && m.fecha <= corte && m.origen !== origenCierre; });
+    var L = [], ing = 0, cg = 0;
+    Object.keys(s).forEach(function (k) {
+      var c = catx[k], t = tipoNormal(c && c.tipo), neto = r2c(s[k].debe - s[k].haber);
+      if (!(t === 'Ingreso' || t === 'Costo' || t === 'Gasto') || Math.abs(neto) < 0.005) return;
+      if (neto > 0) L.push({ codigo: k, haber: neto }); else L.push({ codigo: k, debe: -neto });
+      if (t === 'Ingreso') ing -= neto; else cg += neto;
+    });
+    var utilidad = r2c(ing - cg);
+    return { ini: ini, fin: fin, corte: corte, origen: origenCierre, lineas: L, utilidad: utilidad, ingresos: ing, gastos: cg, sinFecha: mv.filter(function (m) { return !m.fecha; }).length };
+  }
+  function vista() {
+    var c = calcular(), el = document.getElementById('caVista');
+    if (!c) { el.textContent = ''; return; }
+    el.innerHTML = 'Del ' + textoDeFecha(c.ini) + ' al ' + textoDeFecha(c.fin) + ': ingresos ₡' + fmtMontoCR(c.ingresos) + ', costos y gastos ₡' + fmtMontoCR(c.gastos) +
+      ' → <b>' + (c.utilidad >= 0 ? 'utilidad' : 'pérdida') + ' ₡' + fmtMontoCR(Math.abs(c.utilidad)) + '</b>' + (c.sinFecha ? '<br>⚠ ' + c.sinFecha + ' línea(s) del Diario no tienen fecha válida y no entran.' : '') +
+      (asientoExiste(c.origen) ? '<br>⚠ Ese año ya tiene asiento de cierre: se va a reemplazar.' : '');
+  }
+  document.getElementById('caFecha').addEventListener('change', vista);
+  vista();
+  function hacer() {
+    var c = calcular();
+    if (!c) { alert('Escogé la fecha de cierre.'); return false; }
+    if (!c.lineas.length) { alert('No hay ingresos, costos ni gastos en ese período.'); return false; }
+    var cuentaUA = document.getElementById('caCuenta').value, conMeses = document.getElementById('caMeses').checked, archivar = document.getElementById('caArchivar').checked;
+    if (archivar && !confirm('Se van a sacar del Diario todos los asientos hasta el ' + textoDeFecha(c.fin) + ' (quedan copiados en la hoja "Diario ' + c.fin.getFullYear() + '"). ¿Seguir?')) return false;
+    snapshot();
+    // Los meses del año se reabren un momento para poder registrar el cierre
+    var catD = sheetData.Catalogo, cerradosAntes = [];
+    for (var r = 2; r < 80; r++) { var v = String(catD[cellId(r, 4)] || ''); if (/^\d{4}-\d{2}$/.test(v) && v.slice(0, 4) === String(c.fin.getFullYear())) { cerradosAntes.push(v); delete catD[cellId(r, 4)]; } }
+    borrarAsientoPorOrigen(c.origen);
+    var L = c.lineas.slice();
+    asegurarCuentaEnCatalogo([cuentaUA, 'Utilidades acumuladas', 'Patrimonio']);
+    if (c.utilidad > 0) L.push({ codigo: cuentaUA, haber: c.utilidad }); else if (c.utilidad < 0) L.push({ codigo: cuentaUA, debe: -c.utilidad });
+    var res = escribirAsientoSeguro(textoDeFecha(c.fin), 'Asiento de cierre del período ' + textoDeFecha(c.ini) + ' al ' + textoDeFecha(c.fin), L, c.origen);
+    if (res !== 'ok') { undo(); avisoAsiento(res); return false; }
+    var msg = '📕 Cierre ' + c.fin.getFullYear() + ': ' + (c.utilidad >= 0 ? 'utilidad' : 'pérdida') + ' ₡' + fmtMontoCR(Math.abs(c.utilidad)) + ' a ' + cuentaUA;
+    if (archivar) msg += ' · ' + archivarAnio(c);
+    if (conMeses || cerradosAntes.length) {
+      var meses = {}; cerradosAntes.forEach(function (m) { meses[m] = 1; });
+      if (conMeses) for (var mm = 0; mm < 12; mm++) { var dm = new Date(c.ini.getFullYear(), c.ini.getMonth() + mm, 1); meses[claveMes(dm)] = 1; }
+      var yaCerrados = mesesCerrados();
+      Object.keys(meses).forEach(function (m) { if (yaCerrados[m]) return; for (var r2 = 2; r2 < 80; r2++) if (!catD[cellId(r2, 4)]) { catD[cellId(r2, 4)] = m; break; } });
+    }
+    if (typeof crearEstadosFinancieros === 'function' && sheets.indexOf('EstadoResultados') !== -1) crearEstadosFinancieros(true);
+    buildTable(); renderAllCells(); autoSave();
+    document.getElementById('saveStatus').textContent = msg;
+  }
+}
+function archivarAnio(c) {
+  var d = sheetData.Diario, cat = catalogoContable();
+  var nombre = 'Diario ' + c.fin.getFullYear(), k = 2; while (sheets.indexOf(nombre) !== -1) nombre = 'Diario ' + c.fin.getFullYear() + ' (' + (k++) + ')';
+  var movs = movimientosContables(), viejos = movs.filter(function (m) { return m.fecha && m.fecha <= c.corte; });
+  // Saldos de balance al cierre (después del asiento de cierre, los de resultados quedan en cero)
+  var s = saldosPorCuenta(viejos);
+  // Hoja de archivo (valores)
+  crearHojaVaciaConNombre(nombre);
+  var A = sheetData[nombre], fA = sheetFormats[nombre];
+  A.A1 = '📚 ' + nombre.toUpperCase() + ' — archivo del período ' + textoDeFecha(c.ini) + ' al ' + textoDeFecha(c.fin);
+  fA.A1 = { bold: true, fontSize: 14, fontColor: '#1d4ed8' };
+  ['Fecha', 'N° Asiento', 'Código', 'Cuenta', 'Descripción', 'Debe (₡)', 'Haber (₡)', 'Origen'].forEach(function (t, i) { A[cellId(2, i)] = t; fA[cellId(2, i)] = { bold: true, bgColor: '#dbeafe', border: true }; });
+  var td = 0, th = 0;
+  viejos.forEach(function (m, i) {
+    var r = 3 + i;
+    A[cellId(r, 0)] = m.fechaTxt; A[cellId(r, 1)] = m.asiento; A[cellId(r, 2)] = m.codigo; A[cellId(r, 3)] = (cat[m.codigo] || {}).nombre || ''; A[cellId(r, 4)] = m.desc;
+    if (m.debe) A[cellId(r, 5)] = String(r2c(m.debe)); if (m.haber) A[cellId(r, 6)] = String(r2c(m.haber)); if (m.origen) A[cellId(r, 7)] = m.origen;
+    td += m.debe; th += m.haber;
+  });
+  var rt = 3 + viejos.length;
+  A[cellId(rt, 4)] = 'TOTALES'; A[cellId(rt, 5)] = String(r2c(td)); A[cellId(rt, 6)] = String(r2c(th));
+  [4, 5, 6].forEach(function (cc) { fA[cellId(rt, cc)] = { bold: true, bgColor: '#bfdbfe' }; });
+  for (var rr = 3; rr <= rt; rr++) { fA[cellId(rr, 5)] = Object.assign({}, fA[cellId(rr, 5)] || {}, { numFormat: { type: 'number', decimals: 2, thousands: true } }); fA[cellId(rr, 6)] = Object.assign({}, fA[cellId(rr, 6)] || {}, { numFormat: { type: 'number', decimals: 2, thousands: true } }); }
+  colWidths[nombre] = { 0: 80, 1: 70, 2: 70, 3: 190, 4: 240, 5: 100, 6: 100, 7: 100 };
+  sheetFreeze[nombre] = { row: 3, col: 0 };
+  // Saca del Diario lo archivado, guarda los asientos posteriores y los vuelve a numerar
+  var posteriores = movs.filter(function (m) { return !(m.fecha && m.fecha <= c.corte); });
+  for (var r3 = 3; r3 < 20000; r3++) { if (d[cellId(r3, 9)] === undefined && r3 > 600) break; [0, 1, 2, 4, 5, 6, 10].forEach(function (cc) { delete d[cellId(r3, cc)]; }); }
+  var apertura = [];
+  Object.keys(s).forEach(function (kk) {
+    var cta = cat[kk], t = tipoNormal(cta && cta.tipo), neto = r2c(s[kk].debe - s[kk].haber);
+    if (Math.abs(neto) < 0.005) return;
+    if (t !== 'Activo' && t !== 'Pasivo' && t !== 'Patrimonio' && t !== '') return; // resultados ya quedaron en cero
+    if (neto > 0) apertura.push({ codigo: kk, debe: neto }); else apertura.push({ codigo: kk, haber: -neto });
+  });
+  var fApertura = textoDeFecha(new Date(c.fin.getFullYear(), c.fin.getMonth(), c.fin.getDate() + 1));
+  var okA = apertura.length ? escribirAsientoEnDiario(fApertura, 'Asiento de apertura (saldos al ' + textoDeFecha(c.fin) + ')', apertura, 'apertura-' + isoDeFechaTC(c.fin)) : true;
+  var mapa = {}, sig = siguienteNumeroAsiento();
+  var porAsiento = {}; posteriores.forEach(function (m) { (porAsiento[m.asiento] = porAsiento[m.asiento] || []).push(m); });
+  Object.keys(porAsiento).sort(function (a, b) { return porAsiento[a][0].r - porAsiento[b][0].r; }).forEach(function (num) {
+    var grupo = porAsiento[num], r0 = primeraFilaLibreDiario();
+    grupo.forEach(function (m, i) {
+      var rr2 = r0 + i;
+      d[cellId(rr2, 0)] = m.fechaTxt; d[cellId(rr2, 1)] = String(sig); d[cellId(rr2, 2)] = m.codigo; d[cellId(rr2, 4)] = m.desc;
+      if (m.debe) d[cellId(rr2, 5)] = String(r2c(m.debe)); if (m.haber) d[cellId(rr2, 6)] = String(r2c(m.haber)); if (m.origen) d[cellId(rr2, 10)] = m.origen;
+    });
+    mapa[num] = sig; sig++;
+  });
+  for (var r4 = 3; r4 < 3 + 600; r4++) [0, 1, 2, 4, 5, 6].forEach(function (cc) { marcarCeldaSucia('Diario', cellId(r4, cc)); });
+  return viejos.length + ' líneas archivadas en "' + nombre + '"' + (okA ? ', apertura con ' + apertura.length + ' cuentas' : ', ⚠ sin espacio para la apertura');
+}
+
+// ══════════════════════════════════════════════
+// 4) ESTADOS FINANCIEROS NIIF PARA PYMES
+// Estado de situación financiera (comparativo con el inicio), estado de
+// resultados, estado de cambios en el patrimonio, estado de flujos de efectivo
+// por el método indirecto y notas. Se arma en una hoja con valores y se
+// exporta con 📄 PDF como cualquier hoja.
+// ══════════════════════════════════════════════
+function esEfectivo(c) { return /^1\.1\.0?[12]$/.test(c.codigo) || /caja|banco|efectivo/i.test(c.nombre); }
+function esCorriente(c) { var t = tipoNormal(c.tipo); if (t === 'Activo') return /^1\.1/.test(c.codigo) || /^11/.test(c.codigo.replace(/\D/g, '')); if (t === 'Pasivo') return /^2\.1/.test(c.codigo) || /^21/.test(c.codigo.replace(/\D/g, '')); return false; }
+function esDepreciacion(c) { return /deprec|amortiz/i.test(c.nombre) && (tipoNormal(c.tipo) === 'Gasto' || tipoNormal(c.tipo) === 'Costo'); }
+function calcularEEFF(ini, fin) {
+  var cat = catalogoContable(), movs = movimientosContables(), corteIni = new Date(ini.getFullYear(), ini.getMonth(), ini.getDate()), corteFin = finDeDia(fin);
+  var esCierreDelPeriodo = function (m) { return /^cierre-/.test(m.origen) && m.fecha && m.fecha >= corteIni && m.fecha <= corteFin; };
+  var esApertura = function (m) { return /^apertura-/.test(m.origen) && m.fecha && Math.abs(m.fecha - corteIni) < 86400000; };
+  // Saldo inicial: todo lo anterior al inicio, más una apertura con fecha de inicio
+  var sIni = saldosPorCuenta(movs, function (m) { return m.fecha && (m.fecha < corteIni || esApertura(m)); });
+  var sPer = saldosPorCuenta(movs, function (m) { return m.fecha && m.fecha >= corteIni && m.fecha <= corteFin && !esCierreDelPeriodo(m) && !esApertura(m); });
+  var sFin = {}; Object.keys(sIni).concat(Object.keys(sPer)).forEach(function (k) { var a = sIni[k] || { debe: 0, haber: 0 }, b = sPer[k] || { debe: 0, haber: 0 }; sFin[k] = { debe: a.debe + b.debe, haber: a.haber + b.haber }; });
+  var cuentas = Object.keys(cat).map(function (k) { return cat[k]; });
+  Object.keys(sFin).forEach(function (k) { if (!cat[k]) cuentas.push({ codigo: k, nombre: '(cuenta sin catálogo)', tipo: '' }); });
+  cuentas.sort(function (a, b) { return a.codigo < b.codigo ? -1 : a.codigo > b.codigo ? 1 : 0; });
+  var linea = function (c, s) { return { codigo: c.codigo, nombre: c.nombre, valor: r2c(saldoNatural(s[c.codigo], c)) }; };
+  var grupo = function (fn, s) { return cuentas.filter(fn).map(function (c) { return linea(c, s); }).filter(function (l) { return Math.abs(l.valor) >= 0.005; }); };
+  var suma = function (arr) { return r2c(arr.reduce(function (t, l) { return t + l.valor; }, 0)); };
+  var T = function (t) { return function (c) { return tipoNormal(c.tipo) === t; }; };
+  var ER = { ingresos: grupo(T('Ingreso'), sPer), costos: grupo(T('Costo'), sPer), gastos: grupo(T('Gasto'), sPer) };
+  ER.totIng = suma(ER.ingresos); ER.totCosto = suma(ER.costos); ER.bruta = r2c(ER.totIng - ER.totCosto); ER.totGasto = suma(ER.gastos); ER.neta = r2c(ER.bruta - ER.totGasto);
+  // Resultados de años anteriores que no se cerraron: van a utilidades acumuladas
+  var resAntes = r2c(cuentas.filter(function (c) { var t = tipoNormal(c.tipo); return t === 'Ingreso' || t === 'Costo' || t === 'Gasto'; }).reduce(function (t, c) { var s = sIni[c.codigo]; if (!s) return t; return t + (s.haber - s.debe); }, 0));
+  function balance(s, utilidad) {
+    var B = {
+      ac: grupo(function (c) { return T('Activo')(c) && esCorriente(c); }, s), anc: grupo(function (c) { return T('Activo')(c) && !esCorriente(c); }, s),
+      pc: grupo(function (c) { return T('Pasivo')(c) && esCorriente(c); }, s), pnc: grupo(function (c) { return T('Pasivo')(c) && !esCorriente(c); }, s),
+      pat: grupo(T('Patrimonio'), s), sinTipo: grupo(function (c) { return !tipoNormal(c.tipo); }, s)
+    };
+    B.totAC = suma(B.ac); B.totANC = suma(B.anc); B.totA = r2c(B.totAC + B.totANC); B.totPC = suma(B.pc); B.totPNC = suma(B.pnc); B.totP = r2c(B.totPC + B.totPNC);
+    B.resAnt = resAntes; B.utilidad = utilidad; B.totPat = r2c(suma(B.pat) + resAntes + utilidad); B.totPP = r2c(B.totP + B.totPat);
+    B.efectivo = r2c(cuentas.filter(function (c) { return T('Activo')(c) && esEfectivo(c); }).reduce(function (t, c) { return t + saldoNatural(s[c.codigo], c); }, 0));
+    return B;
+  }
+  var BI = balance(sIni, 0), BF = balance(sFin, ER.neta);
+  // Flujo de efectivo (método indirecto)
+  var dep = r2c(cuentas.filter(esDepreciacion).reduce(function (t, c) { return t + saldoNatural(sPer[c.codigo], c); }, 0));
+  var variacion = function (fn) { return r2c(cuentas.filter(fn).reduce(function (t, c) { return t + saldoNatural(sFin[c.codigo], c) - saldoNatural(sIni[c.codigo], c); }, 0)); };
+  var ajustesCT = cuentas.filter(function (c) { return (T('Activo')(c) && esCorriente(c) && !esEfectivo(c)) || (T('Pasivo')(c) && esCorriente(c)); }).map(function (c) {
+    var v = r2c(saldoNatural(sFin[c.codigo], c) - saldoNatural(sIni[c.codigo], c));
+    return { nombre: (T('Activo')(c) ? (v > 0 ? 'Aumento' : 'Disminución') : (v > 0 ? 'Aumento' : 'Disminución')) + ' en ' + c.nombre, valor: T('Activo')(c) ? -v : v };
+  }).filter(function (l) { return Math.abs(l.valor) >= 0.005; });
+  var FE = { utilidad: ER.neta, dep: dep, ajustesCT: ajustesCT };
+  FE.operacion = r2c(ER.neta + dep + suma(ajustesCT));
+  FE.inversion = r2c(-(variacion(function (c) { return T('Activo')(c) && !esCorriente(c); }) + dep));
+  var varPNC = variacion(function (c) { return T('Pasivo')(c) && !esCorriente(c); }), varPat = variacion(T('Patrimonio'));
+  FE.financiamiento = r2c(varPNC + varPat); FE.varPNC = varPNC; FE.varPat = varPat;
+  FE.neto = r2c(FE.operacion + FE.inversion + FE.financiamiento); FE.efIni = BI.efectivo; FE.efFin = BF.efectivo;
+  FE.cuadra = Math.abs(FE.efIni + FE.neto - FE.efFin) < 1;
+  // Cambios en el patrimonio: capital vs. resultados acumulados
+  var esCapital = function (c) { return T('Patrimonio')(c) && /capital|aporte|acciones/i.test(c.nombre); };
+  var capIni = r2c(cuentas.filter(esCapital).reduce(function (t, c) { return t + saldoNatural(sIni[c.codigo], c); }, 0));
+  var capFin = r2c(cuentas.filter(esCapital).reduce(function (t, c) { return t + saldoNatural(sFin[c.codigo], c); }, 0));
+  var otrasIni = r2c(cuentas.filter(function (c) { return T('Patrimonio')(c) && !esCapital(c); }).reduce(function (t, c) { return t + saldoNatural(sIni[c.codigo], c); }, 0) + resAntes);
+  var otrasFin = r2c(cuentas.filter(function (c) { return T('Patrimonio')(c) && !esCapital(c); }).reduce(function (t, c) { return t + saldoNatural(sFin[c.codigo], c); }, 0) + resAntes);
+  var CP = { capIni: capIni, capMov: r2c(capFin - capIni), capFin: capFin, uaIni: otrasIni, uaMov: r2c(otrasFin - otrasIni), utilidad: ER.neta, uaFin: r2c(otrasFin + ER.neta) };
+  CP.totIni = r2c(capIni + otrasIni); CP.totFin = r2c(capFin + otrasFin + ER.neta);
+  return { ini: ini, fin: fin, ER: ER, BI: BI, BF: BF, FE: FE, CP: CP, cuentas: cuentas, sFin: sFin, sinFecha: movs.filter(function (m) { return !m.fecha; }).length };
+}
+function generarHojaEEFF(R, entidad) {
+  var nombre = 'EEFF ' + R.fin.getFullYear(), k = 2; if (sheets.indexOf(nombre) !== -1) { if (!confirm('La hoja "' + nombre + '" ya existe. ¿La reemplazo con los datos de hoy?')) { nombre = 'EEFF ' + R.fin.getFullYear() + ' (' + k + ')'; while (sheets.indexOf(nombre) !== -1) nombre = 'EEFF ' + R.fin.getFullYear() + ' (' + (++k) + ')'; } }
+  if (sheets.indexOf(nombre) === -1) crearHojaVaciaConNombre(nombre);
+  var d = sheetData[nombre] = {}, f = sheetFormats[nombre] = {}, M = sheetMerges[nombre] = [], r = 0;
+  var DIN = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+  var fIni = textoDeFecha(R.ini), fFin = textoDeFecha(R.fin), fAntes = textoDeFecha(new Date(R.ini.getFullYear(), R.ini.getMonth(), R.ini.getDate() - 1));
+  var saltos = [];
+  function txt(t, est) { d[cellId(r, 0)] = t; if (est) f[cellId(r, 0)] = est; r++; }
+  function encabezado(titulo) {
+    if (r > 0) { saltos.push(r); }
+    d[cellId(r, 0)] = entidad.nombre || 'NOMBRE DE LA ENTIDAD'; f[cellId(r, 0)] = { bold: true, fontSize: 14, align: 'center' }; M.push({ r1: r, c1: 0, r2: r, c2: 2 }); r++;
+    if (entidad.cedula) { d[cellId(r, 0)] = 'Cédula ' + entidad.cedula; f[cellId(r, 0)] = { align: 'center', fontColor: '#4b5563' }; M.push({ r1: r, c1: 0, r2: r, c2: 2 }); r++; }
+    d[cellId(r, 0)] = titulo; f[cellId(r, 0)] = { bold: true, fontSize: 13, align: 'center', fontColor: '#14532d' }; M.push({ r1: r, c1: 0, r2: r, c2: 2 }); r++;
+    d[cellId(r, 0)] = 'Expresado en colones costarricenses (₡)'; f[cellId(r, 0)] = { align: 'center', fontColor: '#6b7280', fontSize: 11 }; M.push({ r1: r, c1: 0, r2: r, c2: 2 }); r++;
+    r++;
+  }
+  function cab(cols) { cols.forEach(function (t, i) { d[cellId(r, i)] = t; f[cellId(r, i)] = { bold: true, bgColor: '#e2efda', border: true, align: i ? 'right' : 'left' }; }); r++; }
+  function fila(t, v1, v2, est) {
+    d[cellId(r, 0)] = t; if (est) f[cellId(r, 0)] = est;
+    if (v1 !== undefined && v1 !== null) { d[cellId(r, 1)] = String(r2c(v1)); f[cellId(r, 1)] = Object.assign({}, DIN, est || {}); }
+    if (v2 !== undefined && v2 !== null) { d[cellId(r, 2)] = String(r2c(v2)); f[cellId(r, 2)] = Object.assign({}, DIN, est || {}); }
+    r++;
+  }
+  var B = { bold: true }, TOT = { bold: true, bgColor: '#f1f5f9', border: true }, GRAN = { bold: true, bgColor: '#dcfce7', border: true };
+  var valorIni = function (lista, cod) { var x = lista.filter(function (l) { return l.codigo === cod; })[0]; return x ? x.valor : 0; };
+  function bloqueBal(titulo, finL, iniL, totF, totI) {
+    txt(titulo, B);
+    var cods = {}; finL.concat(iniL).forEach(function (l) { cods[l.codigo] = l.nombre; });
+    Object.keys(cods).sort().forEach(function (cd) { fila('   ' + cods[cd], valorIni(finL, cd), valorIni(iniL, cd)); });
+    fila('Total ' + titulo.toLowerCase(), totF, totI, TOT);
+  }
+  // ── Estado de situación financiera ──
+  encabezado('ESTADO DE SITUACIÓN FINANCIERA al ' + fFin);
+  cab(['', 'Al ' + fFin, 'Al ' + fAntes]);
+  txt('ACTIVOS', { bold: true, fontColor: '#1e3a8a' });
+  bloqueBal('Activos corrientes', R.BF.ac, R.BI.ac, R.BF.totAC, R.BI.totAC);
+  bloqueBal('Activos no corrientes', R.BF.anc, R.BI.anc, R.BF.totANC, R.BI.totANC);
+  fila('TOTAL ACTIVOS', R.BF.totA, R.BI.totA, GRAN); r++;
+  txt('PASIVOS', { bold: true, fontColor: '#991b1b' });
+  bloqueBal('Pasivos corrientes', R.BF.pc, R.BI.pc, R.BF.totPC, R.BI.totPC);
+  bloqueBal('Pasivos no corrientes', R.BF.pnc, R.BI.pnc, R.BF.totPNC, R.BI.totPNC);
+  fila('Total pasivos', R.BF.totP, R.BI.totP, TOT); r++;
+  txt('PATRIMONIO', { bold: true, fontColor: '#6d28d9' });
+  var codsP = {}; R.BF.pat.concat(R.BI.pat).forEach(function (l) { codsP[l.codigo] = l.nombre; });
+  Object.keys(codsP).sort().forEach(function (cd) { fila('   ' + codsP[cd], valorIni(R.BF.pat, cd), valorIni(R.BI.pat, cd)); });
+  if (Math.abs(R.BF.resAnt) >= 0.005) fila('   Resultados de períodos anteriores sin cerrar', R.BF.resAnt, R.BI.resAnt);
+  fila('   Utilidad (pérdida) del período', R.BF.utilidad, 0);
+  fila('Total patrimonio', R.BF.totPat, R.BI.totPat, TOT);
+  fila('TOTAL PASIVO Y PATRIMONIO', R.BF.totPP, R.BI.totP + R.BI.totPat, GRAN);
+  var dif = r2c(R.BF.totA - R.BF.totPP);
+  txt(Math.abs(dif) < 0.01 ? '✓ Activo = Pasivo + Patrimonio' : '⚠ No cuadra por ₡' + fmtMontoCR(dif) + ' — revisá asientos descuadrados o cuentas sin tipo en el Catálogo', { fontColor: Math.abs(dif) < 0.01 ? '#15803d' : '#b91c1c', bold: true });
+  // ── Estado de resultados ──
+  encabezado('ESTADO DE RESULTADOS del ' + fIni + ' al ' + fFin);
+  cab(['', 'Período', '% de ingresos']);
+  var pct = function (v) { return R.ER.totIng ? r2c(v / R.ER.totIng * 100) : null; };
+  txt('Ingresos de actividades ordinarias', B);
+  R.ER.ingresos.forEach(function (l) { fila('   ' + l.nombre, l.valor, pct(l.valor)); });
+  fila('Total ingresos', R.ER.totIng, 100, TOT);
+  txt('Costo de ventas', B);
+  R.ER.costos.forEach(function (l) { fila('   ' + l.nombre, l.valor, pct(l.valor)); });
+  fila('UTILIDAD BRUTA', R.ER.bruta, pct(R.ER.bruta), TOT);
+  txt('Gastos de operación', B);
+  R.ER.gastos.forEach(function (l) { fila('   ' + l.nombre, l.valor, pct(l.valor)); });
+  fila('Total gastos', R.ER.totGasto, pct(R.ER.totGasto), TOT);
+  fila(R.ER.neta >= 0 ? 'UTILIDAD NETA DEL PERÍODO' : 'PÉRDIDA NETA DEL PERÍODO', R.ER.neta, pct(R.ER.neta), GRAN);
+  txt('Nota: la utilidad es antes del impuesto sobre la renta si ese gasto no está registrado en el Diario.', { fontColor: '#6b7280', fontSize: 10 });
+  // ── Cambios en el patrimonio ──
+  encabezado('ESTADO DE CAMBIOS EN EL PATRIMONIO del ' + fIni + ' al ' + fFin);
+  ['', 'Capital', 'Resultados acumulados', 'Total'].forEach(function (t, i) { d[cellId(r, i)] = t; f[cellId(r, i)] = { bold: true, bgColor: '#e2efda', border: true, align: i ? 'right' : 'left' }; }); r++;
+  var fila4 = function (t, a, b2, est) { d[cellId(r, 0)] = t; [a, b2, r2c(a + b2)].forEach(function (v, i) { d[cellId(r, i + 1)] = String(r2c(v)); f[cellId(r, i + 1)] = Object.assign({}, DIN, est || {}); }); if (est) f[cellId(r, 0)] = est; r++; };
+  fila4('Saldo al ' + fAntes, R.CP.capIni, R.CP.uaIni, TOT);
+  fila4('Aportes (retiros) de capital', R.CP.capMov, 0);
+  fila4('Dividendos, reservas y otros movimientos', 0, R.CP.uaMov);
+  fila4('Utilidad (pérdida) del período', 0, R.CP.utilidad);
+  fila4('Saldo al ' + fFin, R.CP.capFin, R.CP.uaFin, GRAN);
+  // ── Flujos de efectivo ──
+  encabezado('ESTADO DE FLUJOS DE EFECTIVO (método indirecto) del ' + fIni + ' al ' + fFin);
+  cab(['', 'Período', '']);
+  txt('Actividades de operación', B);
+  fila('   Utilidad (pérdida) neta', R.FE.utilidad);
+  if (R.FE.dep) fila('   Más: depreciación y amortización', R.FE.dep);
+  if (R.FE.ajustesCT.length) txt('   Cambios en el capital de trabajo:', { fontColor: '#4b5563' });
+  R.FE.ajustesCT.forEach(function (l) { fila('      ' + l.nombre, l.valor); });
+  fila('Efectivo neto de actividades de operación', R.FE.operacion, null, TOT);
+  txt('Actividades de inversión', B);
+  fila('   Adquisición (venta) neta de activos no corrientes', R.FE.inversion);
+  fila('Efectivo neto de actividades de inversión', R.FE.inversion, null, TOT);
+  txt('Actividades de financiamiento', B);
+  if (R.FE.varPNC) fila('   Préstamos y deudas a largo plazo (neto)', R.FE.varPNC);
+  if (R.FE.varPat) fila('   Aportes, retiros y dividendos (neto)', R.FE.varPat);
+  fila('Efectivo neto de actividades de financiamiento', R.FE.financiamiento, null, TOT);
+  fila('AUMENTO (DISMINUCIÓN) NETO DEL EFECTIVO', R.FE.neto, null, GRAN);
+  fila('Efectivo al inicio del período', R.FE.efIni);
+  fila('Efectivo al final del período', R.FE.efFin, null, TOT);
+  txt(R.FE.cuadra ? '✓ El flujo cuadra con el efectivo del balance' : '⚠ El flujo no cuadra con el efectivo del balance (diferencia ₡' + fmtMontoCR(R.FE.efIni + R.FE.neto - R.FE.efFin) + '): revisá que el Catálogo tenga bien el tipo de cada cuenta', { bold: true, fontColor: R.FE.cuadra ? '#15803d' : '#b91c1c' });
+  // ── Notas ──
+  encabezado('NOTAS A LOS ESTADOS FINANCIEROS al ' + fFin);
+  var nota = 1;
+  var parrafo = function (t) { d[cellId(r, 0)] = t; f[cellId(r, 0)] = { wrap: true }; M.push({ r1: r, c1: 0, r2: r, c2: 2 }); r++; };
+  var tituloNota = function (t) { txt('Nota ' + (nota++) + ' — ' + t, { bold: true, fontColor: '#14532d' }); };
+  tituloNota('Información general');
+  parrafo((entidad.nombre || 'La entidad') + (entidad.cedula ? ', cédula ' + entidad.cedula + ',' : '') + ' ' + (entidad.actividad ? 'se dedica a ' + entidad.actividad + '. ' : '') + 'Los estados financieros cubren el período del ' + fIni + ' al ' + fFin + ' y están expresados en colones costarricenses (₡).');
+  tituloNota('Base de preparación y políticas contables');
+  parrafo('Los estados financieros se prepararon de acuerdo con la Norma Internacional de Información Financiera para Pequeñas y Medianas Entidades (NIIF para las PYMES), sobre la base del costo histórico.');
+  parrafo('Efectivo: comprende caja y depósitos bancarios a la vista. Cuentas por cobrar: se reconocen al valor de la factura menos cualquier estimación por incobrables. Inventarios: al menor entre el costo y el precio de venta estimado menos los costos de venta; el costo se determina por el método de costo promedio ponderado.');
+  parrafo('Propiedad, planta y equipo: al costo menos depreciación acumulada, por el método de línea recta según su vida útil. Ingresos: se reconocen cuando se transfieren los riesgos y beneficios de los bienes o se presta el servicio. Moneda extranjera: las partidas monetarias en dólares se convierten al tipo de cambio de referencia del BCCR al cierre y las diferencias se llevan a resultados.');
+  var notaDetalle = function (titulo, filtro) {
+    var lista = R.cuentas.filter(filtro).map(function (c) { return { nombre: c.codigo + ' ' + c.nombre, valor: r2c(saldoNatural(R.sFin[c.codigo], c)) }; }).filter(function (l) { return Math.abs(l.valor) >= 0.005; });
+    if (!lista.length) return;
+    tituloNota(titulo);
+    lista.forEach(function (l) { fila('   ' + l.nombre, l.valor); });
+    fila('   Total', r2c(lista.reduce(function (t, l) { return t + l.valor; }, 0)), null, TOT);
+  };
+  var TT = function (t) { return function (c) { return tipoNormal(c.tipo) === t; }; };
+  notaDetalle('Efectivo', function (c) { return TT('Activo')(c) && esEfectivo(c); });
+  notaDetalle('Cuentas por cobrar y otros activos corrientes', function (c) { return TT('Activo')(c) && esCorriente(c) && !esEfectivo(c) && !/inventar|mercader/i.test(c.nombre); });
+  notaDetalle('Inventarios', function (c) { return TT('Activo')(c) && /inventar|mercader/i.test(c.nombre); });
+  notaDetalle('Propiedad, planta y equipo y otros activos no corrientes', function (c) { return TT('Activo')(c) && !esCorriente(c); });
+  notaDetalle('Cuentas por pagar y otros pasivos corrientes', function (c) { return TT('Pasivo')(c) && esCorriente(c); });
+  notaDetalle('Pasivos no corrientes', function (c) { return TT('Pasivo')(c) && !esCorriente(c); });
+  notaDetalle('Patrimonio', TT('Patrimonio'));
+  r++;
+  txt('_____________________________                _____________________________', { fontColor: '#6b7280' });
+  txt((entidad.representante || 'Representante legal') + '                                        ' + (entidad.contador || 'Contador(a)'), { fontColor: '#4b5563' });
+  colWidths[nombre] = { 0: 360, 1: 140, 2: 140, 3: 120 };
+  // Cada estado empieza en página nueva al exportar a PDF
+  colWidths[nombre].pagina = { saltosF: saltos.slice(), saltosC: [] };
+  activeSheet = nombre;
+  return nombre;
+}
+function abrirEEFFNiif() {
+  if (!requiereLibros()) return;
+  var movs = movimientosContables();
+  var ultimo = movs.reduce(function (m, x) { return x.fecha && (!m || x.fecha > m) ? x.fecha : m; }, null) || new Date();
+  var ent = opcionesLibro.entidad = opcionesLibro.entidad || {};
+  if (!ent.nombre) { var en = document.getElementById('fe-emisor-nombre'), ec = document.getElementById('fe-emisor-cedula'); if (en && en.value) ent.nombre = en.value; if (ec && ec.value) ent.cedula = ec.value; }
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+  var html = '<div class="mcrNota">Arma los <b>5 estados</b> de la NIIF para PYMES con lo que hay en el Diario: situación financiera (comparativa), resultados, cambios en el patrimonio, flujos de efectivo (método indirecto) y notas. Después exportás la hoja con 📄 PDF.</div>' +
+    '<div class="egDos"><div><label class="mcrF">Desde</label><input id="ef1" class="mcrI" type="date" value="' + ultimo.getFullYear() + '-01-01"></div><div><label class="mcrF">Hasta</label><input id="ef2" class="mcrI" type="date" value="' + ultimo.getFullYear() + '-12-31"></div></div>' +
+    '<label class="mcrF">Nombre de la entidad</label><input id="efNom" class="mcrI" value="' + esc(ent.nombre) + '">' +
+    '<div class="egDos"><div><label class="mcrF">Cédula</label><input id="efCed" class="mcrI" value="' + esc(ent.cedula) + '"></div><div><label class="mcrF">Actividad</label><input id="efAct" class="mcrI" value="' + esc(ent.actividad) + '" placeholder="comercio al por menor…"></div></div>' +
+    '<div class="egDos"><div><label class="mcrF">Representante legal</label><input id="efRep" class="mcrI" value="' + esc(ent.representante) + '"></div><div><label class="mcrF">Contador(a)</label><input id="efCont" class="mcrI" value="' + esc(ent.contador) + '"></div></div>';
+  abrirPanel('🏛 Estados financieros NIIF PYMES', html, [{ texto: 'Cancelar' }, { texto: 'Generar', ok: true, accion: function () {
+    var ini = fechaDe(document.getElementById('ef1').value), fin = fechaDe(document.getElementById('ef2').value);
+    if (isNaN(ini.getTime()) || isNaN(fin.getTime()) || fin < ini) { alert('Revisá las fechas.'); return false; }
+    ent.nombre = document.getElementById('efNom').value.trim(); ent.cedula = document.getElementById('efCed').value.trim(); ent.actividad = document.getElementById('efAct').value.trim();
+    ent.representante = document.getElementById('efRep').value.trim(); ent.contador = document.getElementById('efCont').value.trim();
+    snapshot();
+    var R = calcularEEFF(ini, fin), hoja = generarHojaEEFF(R, ent);
+    renderTabs(); buildTable(); renderAllCells(); autoSave();
+    document.getElementById('saveStatus').textContent = '🏛 Estados financieros en la hoja "' + hoja + '"' + (R.FE.cuadra ? '' : ' · ⚠ el flujo no cuadra, revisá los tipos del Catálogo');
+  } }]);
+}
+
+// ══════════════════════════════════════════════
+// 5) RÉGIMEN DE TRIBUTACIÓN SIMPLIFICADA (trimestral)
+// Impuesto = compras del trimestre (con IVA) × factor de la actividad, para
+// renta y para IVA. Con TRIBU-CR se declara en los formularios 104 / 105 (renta)
+// y 153 (IVA). Los factores se pueden cambiar y se guardan con el libro.
+// ══════════════════════════════════════════════
+var FACTORES_RTS = [
+  ['Comercio minorista (pulpería, minisúper, bazar)', 1, 2, true], ['Bar, cantina o taberna', 2, 4], ['Soda, restaurante o café', 2, 4], ['Panadería', 1, 2],
+  ['Repostería y pastelería', 1, 2.5], ['Pequeño productor agrícola (feria del agricultor)', 1, 2, true], ['Vivero', 2, 2.5], ['Calzado, maletas y bolsos artesanales', 1, 2.6],
+  ['Muebles artesanales', 1, 6.5], ['Productos metálicos estructurales', 1, 5.2], ['Bisutería', 2, 3], ['Artesanías y obras de arte', 2, 3], ['Barro, loza, cerámica y porcelana', 1, 2],
+  ['Textiles para personas', 2, 3], ['Textiles y accesorios para mascotas', 2, 3], ['Floristería', 1, 5.8], ['Estudio fotográfico', 1, 2], ['Serigrafía', 2, 3], ['Sublimación', 2, 3],
+  ['Pesca artesanal en pequeña escala', 2.5, 2], ['Pesca artesanal en mediana escala', 3.3, 2]
+];
+var LIMITE_COMPRAS_RTS = 85969200; // 2026: 186 salarios base al año
+function comprasDelDiario(desde, hasta) {
+  var movs = movimientosContables(), porAs = {}, total = 0, n = 0;
+  movs.forEach(function (m) { if (!m.fecha || m.fecha < desde || m.fecha > hasta) return; if (!/^(xml-|compra)/.test(m.origen)) return; (porAs[m.origen + '|' + m.asiento] = porAs[m.origen + '|' + m.asiento] || []).push(m); });
+  Object.keys(porAs).forEach(function (k) { var deb = porAs[k].reduce(function (t, m) { return t + m.debe; }, 0); var esNC = /NC recibida/i.test(porAs[k][0].desc); total += esNC ? -deb : deb; n++; });
+  return { total: r2c(total), comprobantes: n };
+}
+function abrirRegimenSimplificado() {
+  var hoy = new Date(), trimAnt = Math.floor(hoy.getMonth() / 3) - 1, anio = hoy.getFullYear();
+  if (trimAnt < 0) { trimAnt = 3; anio--; }
+  var cfg = opcionesLibro.rts = opcionesLibro.rts || { actividad: 0 };
+  var factores = cfg.factores || FACTORES_RTS;
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+  var html = '<div class="mcrNota">Régimen de Tributación Simplificada: el impuesto sale de multiplicar las <b>compras del trimestre (con IVA)</b> por el factor de la actividad, para renta y para IVA. No se cobra IVA en las ventas.</div>' +
+    '<label class="mcrF">Actividad</label><select id="rtsAct" class="mcrI">' + factores.map(function (a, i) { return '<option value="' + i + '"' + (i === cfg.actividad ? ' selected' : '') + '>' + esc(a[0]) + ' — renta ' + fmtNum(a[1]) + '% · IVA ' + fmtNum(a[2]) + '%</option>'; }).join('') + '</select>' +
+    '<div class="egDos"><div><label class="mcrF">Trimestre</label><select id="rtsTri" class="mcrI">' + ['I (ene–mar)', 'II (abr–jun)', 'III (jul–set)', 'IV (oct–dic)'].map(function (t, i) { return '<option value="' + i + '"' + (i === trimAnt ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></div>' +
+    '<div><label class="mcrF">Año</label><input id="rtsAnio" class="mcrI" type="number" value="' + anio + '"></div></div>' +
+    '<label class="mcrF">Compras del trimestre con IVA (₡)</label><input id="rtsCompras" class="mcrI" inputmode="decimal">' +
+    '<div id="rtsOrigen" class="mcrNota"></div>' +
+    '<div id="rtsTarifas" style="display:none"><div class="mcrNota">En esta actividad el factor de IVA depende de la tarifa de lo que comprás: 2% sobre compras al 13%, 0,33% sobre las de 2% y 0,125% sobre las de 1%. Repartí las compras:</div>' +
+    '<div class="egDos"><div><label class="mcrF">Compras al 13%</label><input id="rts13" class="mcrI" inputmode="decimal"></div><div><label class="mcrF">Compras al 2%</label><input id="rts2" class="mcrI" inputmode="decimal"></div></div>' +
+    '<div class="egDos"><div><label class="mcrF">Compras al 1%</label><input id="rts1" class="mcrI" inputmode="decimal"></div><div><label class="mcrF">Exentas / canasta</label><input id="rts0" class="mcrI" inputmode="decimal"></div></div></div>' +
+    '<div id="rtsRes" class="rtsRes"></div>' +
+    '<label class="egChk" style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="rtsAsiento" ' + (sheets.indexOf('Diario') !== -1 ? 'checked' : '') + '> Registrar la provisión en el Diario (gasto de impuestos / impuestos por pagar)</label>' +
+    '<div class="mcrNota">Factores del Reglamento del RTS (reforma vigente desde el 13/10/2025). Si Hacienda los cambia, editá el factor abajo.</div>' +
+    '<div class="egDos"><div><label class="mcrF">Factor renta %</label><input id="rtsFR" class="mcrI" inputmode="decimal"></div><div><label class="mcrF">Factor IVA %</label><input id="rtsFI" class="mcrI" inputmode="decimal"></div></div>';
+  abrirPanel('🧾 Régimen simplificado (trimestral)', html, [{ texto: 'Cerrar' }, { texto: 'Crear hoja de la declaración', ok: true, accion: guardar }]);
+  var g = function (id) { return document.getElementById(id); };
+  var periodo = function () { var t = parseInt(g('rtsTri').value, 10), a = parseInt(g('rtsAnio').value, 10); return { t: t, a: a, ini: new Date(a, t * 3, 1), fin: finDeDia(new Date(a, t * 3 + 3, 0)), vence: new Date(a, t * 3 + 3, 15) }; };
+  var cargarCompras = function () {
+    var p = periodo(), c = sheets.indexOf('Diario') !== -1 ? comprasDelDiario(p.ini, p.fin) : { total: 0, comprobantes: 0 };
+    g('rtsCompras').value = c.total ? fmtNum(c.total) : '';
+    g('rtsOrigen').textContent = c.comprobantes ? 'Tomadas del Diario: ' + c.comprobantes + ' compra(s) registradas con 📄 Importar XML o como compra manual. Podés corregir el monto.' : 'No encontré compras registradas en el Diario para ese trimestre: escribí el total de tus facturas de compra.';
+    var a = factores[parseInt(g('rtsAct').value, 10)];
+    g('rtsFR').value = fmtNum(a[1]); g('rtsFI').value = fmtNum(a[2]);
+    g('rtsTarifas').style.display = a[3] ? '' : 'none';
+    calcular();
+  };
+  var calcular = function () {
+    var a = factores[parseInt(g('rtsAct').value, 10)], p = periodo();
+    var compras = numContable(g('rtsCompras').value), fr = numContable(g('rtsFR').value), fi = numContable(g('rtsFI').value);
+    var renta = r2c(compras * fr / 100), iva;
+    if (a[3]) {
+      var c13 = numContable(g('rts13').value), c2 = numContable(g('rts2').value), c1 = numContable(g('rts1').value);
+      iva = (c13 || c2 || c1) ? r2c(c13 * fi / 100 + c2 * 0.33 / 100 + c1 * 0.125 / 100) : r2c(compras * fi / 100);
+    } else iva = r2c(compras * fi / 100);
+    var total = r2c(renta + iva);
+    var anual = compras * 4;
+    g('rtsRes').innerHTML = '<div class="rtsFila"><span>Impuesto sobre la renta (form. ' + (/^3/.test(String((opcionesLibro.entidad || {}).cedula || '').replace(/\D/g, '')) ? '105' : '104') + ')</span><b>₡' + fmtMontoCR(renta) + '</b></div>' +
+      '<div class="rtsFila"><span>IVA simplificado (form. 153)</span><b>₡' + fmtMontoCR(iva) + '</b></div>' +
+      '<div class="rtsFila rtsTot"><span>Total a pagar</span><b>₡' + fmtMontoCR(total) + '</b></div>' +
+      '<div class="mcrNota">Vence el <b>' + textoDeFecha(p.vence) + '</b> (15 días naturales después del trimestre; si cae en fin de semana o feriado, pasa al siguiente día hábil).' +
+      (anual > LIMITE_COMPRAS_RTS ? '<br>⚠ A este ritmo las compras del año pasarían el límite del régimen (₡' + fmtMontoCR(LIMITE_COMPRAS_RTS) + ' en 2026): revisá si te toca pasar al régimen general.' : '') + '</div>';
+    return { a: a, p: p, compras: compras, fr: fr, fi: fi, renta: renta, iva: iva, total: total };
+  };
+  ['rtsAct', 'rtsTri', 'rtsAnio'].forEach(function (id) { g(id).addEventListener('change', cargarCompras); });
+  ['rtsCompras', 'rtsFR', 'rtsFI', 'rts13', 'rts2', 'rts1', 'rts0'].forEach(function (id) { g(id).addEventListener('input', calcular); });
+  cargarCompras();
+  function guardar() {
+    var c = calcular();
+    if (!c.compras) { alert('Escribí el monto de las compras del trimestre.'); return false; }
+    cfg.actividad = parseInt(g('rtsAct').value, 10);
+    if (c.fr !== c.a[1] || c.fi !== c.a[2]) { cfg.factores = factores.map(function (x) { return x.slice(); }); cfg.factores[cfg.actividad][1] = c.fr; cfg.factores[cfg.actividad][2] = c.fi; }
+    snapshot();
+    var tri = ['I', 'II', 'III', 'IV'][c.p.t], nombre = 'RTS T' + (c.p.t + 1) + '-' + c.p.a;
+    if (sheets.indexOf(nombre) === -1) crearHojaVaciaConNombre(nombre);
+    var d = sheetData[nombre] = {}, f = sheetFormats[nombre] = {}, DIN = { numFormat: { type: 'number', decimals: 2, thousands: true } };
+    var filas = [
+      ['🧾 RÉGIMEN DE TRIBUTACIÓN SIMPLIFICADA — trimestre ' + tri + ' ' + c.p.a], [(opcionesLibro.entidad || {}).nombre || ''], ['Período', textoDeFecha(c.p.ini) + ' al ' + textoDeFecha(c.p.fin)], ['Actividad', c.a[0]], [''],
+      ['Compras del trimestre (con IVA)', String(c.compras)], ['Factor de renta', c.fr + '%'], ['Impuesto sobre la renta', String(c.renta)], ['Factor de IVA', c.fi + '%' + (c.a[3] ? ' (según tarifa de las compras)' : '')], ['IVA simplificado', String(c.iva)],
+      ['TOTAL A PAGAR', String(c.total)], [''], ['Fecha límite', textoDeFecha(c.p.vence)], ['Formularios (TRIBU-CR)', 'Renta: 104 (persona física) o 105 (persona jurídica) · IVA: 153'],
+      ['Nota', 'Conservá por 5 años los comprobantes de compra usados para el cálculo.']
+    ];
+    filas.forEach(function (fl, r) { fl.forEach(function (v, cc) { if (v !== '') d[cellId(r, cc)] = v; }); });
+    f.A1 = { bold: true, fontSize: 14, fontColor: '#14532d' }; f.A2 = { bold: true };
+    [5, 7, 9, 10].forEach(function (r) { f[cellId(r, 1)] = Object.assign({}, DIN, r === 10 ? { bold: true, bgColor: '#dcfce7' } : {}); });
+    f[cellId(10, 0)] = { bold: true, bgColor: '#dcfce7' };
+    colWidths[nombre] = { 0: 260, 1: 280 };
+    if (g('rtsAsiento').checked && sheets.indexOf('Diario') !== -1) {
+      var origen = 'rts-' + c.p.a + '-T' + (c.p.t + 1);
+      borrarAsientoPorOrigen(origen);
+      var res = escribirAsientoSeguro(textoDeFecha(c.p.fin), 'Impuestos régimen simplificado T' + (c.p.t + 1) + '-' + c.p.a, [
+        { codigo: asegurarCuentaEnCatalogo(['5.2.10', 'Impuestos régimen simplificado (renta e IVA)', 'Gasto']), debe: c.total },
+        { codigo: asegurarCuentaEnCatalogo(['2.1.06', 'Impuestos por pagar', 'Pasivo']), haber: c.total }
+      ], origen);
+      if (res !== 'ok') avisoAsiento(res);
+    }
+    activeSheet = nombre; renderTabs(); buildTable(); renderAllCells(); autoSave();
+    document.getElementById('saveStatus').textContent = '🧾 RTS T' + (c.p.t + 1) + '-' + c.p.a + ': total ₡' + fmtMontoCR(c.total) + ', vence ' + textoDeFecha(c.p.vence);
+  }
+}
+document.getElementById('btnKardex').addEventListener('click', abrirKardex);
+document.getElementById('btnDiferencial').addEventListener('click', abrirDiferencialCambiario);
+document.getElementById('btnCierreAnual').addEventListener('click', abrirCierreAnual);
+document.getElementById('btnEEFFNiif').addEventListener('click', abrirEEFFNiif);
+document.getElementById('btnRegimenSimplificado').addEventListener('click', abrirRegimenSimplificado);
 
 // ══════════════════════════════════════════════
 // CUENTAS POR COBRAR CON ANTIGÜEDAD (30 / 60 / 90 días)
@@ -23761,7 +24757,7 @@ document.getElementById('btnVencimientos').addEventListener('click', function ()
     var color = it.dias <= 3 ? '#b91c1c' : it.dias <= 10 ? '#b45309' : '#15803d';
     return '<div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #eef2ee;"><div style="min-width:62px;text-align:center;border-radius:10px;padding:6px 4px;background:' + color + '1a;color:' + color + ';font-weight:800;"><div style="font-size:18px;line-height:1">' + (it.dias === 0 ? 'HOY' : it.dias) + '</div><div style="font-size:10px;">' + (it.dias === 0 ? '' : (it.dias === 1 ? 'día' : 'días')) + '</div></div><div><div style="font-weight:700;">' + escHtml(it.nombre) + '</div><div class="mcrNota" style="margin:2px 0 0;">' + it.fecha.toLocaleDateString('es-CR') + (it.nota ? ' · ' + escHtml(it.nota) : '') + '</div></div></div>';
   }).join('');
-  abrirPanel('🗓 Próximos vencimientos', filas + '<div class="mcrNota">En la app del teléfono recibís un aviso 3 días antes y otro el mismo día (si diste permiso de notificaciones). Las fechas son las habituales: verificá siempre las vigentes en hacienda.go.cr y ccss.sa.cr.</div>', [{ texto: 'Cerrar', ok: true }]);
+  abrirPanel('🗓 Próximos vencimientos', filas + '<div class="mcrNota">En la app del teléfono recibís un aviso 3 días antes y otro el mismo día (si diste permiso de notificaciones). Las fechas son las habituales: verificá siempre las vigentes en hacienda.go.cr y ccss.sa.cr.</div>', [{ texto: '📅 Al calendario del teléfono', accion: function () { abrirVencimientosCalendario(); return false; } }, { texto: 'Cerrar', ok: true }]);
 });
 
 document.getElementById('btnD101').addEventListener('click', function () {
@@ -37682,7 +38678,294 @@ async function abrirCobros() {
     });
   });
 }
-document.getElementById('btnCobros').addEventListener('click', abrirCobros);
+// El botón ahora abre el estado de cuenta (PDF + WhatsApp); abrirCobros queda como respaldo.
+// ══════════════════════════════════════════════
+// 7) VENCIMIENTOS AL CALENDARIO (iPhone, Android, Outlook)
+// Genera un archivo .ics con eventos que se repiten (D-104, CCSS, D-101,
+// aguinaldo…) y avisos N días antes y el mismo día. En iPhone se abre con
+// Calendario (“Agregar todos”); en Android también hay un botón por evento
+// que abre Google Calendar con el evento listo.
+// ══════════════════════════════════════════════
+var VENCIMIENTOS_CAL = [
+  { id: 'd104', nombre: 'IVA D-104 (declaración y pago)', regla: 'FREQ=MONTHLY;BYMONTHDAY=15', mes: null, dia: 15, nota: 'Declaración y pago del IVA del mes anterior en TRIBU-CR.', on: true },
+  { id: 'ccssPres', nombre: 'CCSS: presentar la planilla', regla: 'FREQ=MONTHLY;BYMONTHDAY=4', mes: null, dia: 4, nota: 'La planilla se presenta del 26 al cuarto día hábil del mes siguiente (Oficina Virtual CCSS).', on: true },
+  { id: 'ccssPago', nombre: 'CCSS: pagar la planilla', regla: 'FREQ=MONTHLY;BYMONTHDAY=20', mes: null, dia: 20, nota: 'El pago de la factura de la CCSS se hace entre el 16 y el 20 de cada mes.', on: true },
+  { id: 'd101', nombre: 'Renta anual D-101', regla: 'FREQ=YEARLY;BYMONTH=3;BYMONTHDAY=15', mes: 3, dia: 15, nota: 'Declaración anual del impuesto sobre la renta (período fiscal enero–diciembre).', on: true },
+  { id: 'aguinaldo', nombre: 'Pago del aguinaldo', regla: 'FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=20', mes: 12, dia: 20, nota: 'Se paga a más tardar el 20 de diciembre.', on: true },
+  { id: 'd151', nombre: 'D-151 declaración informativa', regla: 'FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=28', mes: 2, dia: 28, nota: 'Clientes, proveedores y gastos específicos del año anterior.', on: false },
+  { id: 'rts', nombre: 'Régimen simplificado (trimestral)', regla: 'FREQ=YEARLY;BYMONTH=1,4,7,10;BYMONTHDAY=15', mes: [1, 4, 7, 10], dia: 15, nota: 'Formularios 104/105 (renta) y 153 (IVA) del trimestre anterior.', on: false },
+  { id: 'ppRenta', nombre: 'Pago parcial de renta (jun/sep)', regla: 'FREQ=YEARLY;BYMONTH=6,9;BYMONTHDAY=30', mes: [6, 9], dia: 30, nota: 'Pagos parciales del impuesto sobre la renta (actividad lucrativa).', on: false },
+  { id: 'ppRentaDic', nombre: 'Pago parcial de renta (diciembre)', regla: 'FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=31', mes: 12, dia: 31, nota: 'Último pago parcial del impuesto sobre la renta del año.', on: false },
+  { id: 'cierre', nombre: 'Cierre contable del mes', regla: 'FREQ=MONTHLY;BYMONTHDAY=3', mes: null, dia: 3, nota: 'Revisar el Diario, conciliar bancos y cerrar el mes anterior.', on: false }
+];
+function proximaFechaVenc(v, desde) {
+  var hoy = new Date(desde.getFullYear(), desde.getMonth(), desde.getDate());
+  for (var k = 0; k < 400; k++) {
+    var d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + k);
+    if (d.getDate() !== v.dia) continue;
+    var m = d.getMonth() + 1;
+    if (v.mes === null || (Array.isArray(v.mes) ? v.mes.indexOf(m) !== -1 : v.mes === m)) return d;
+  }
+  return null;
+}
+function fechaIcs(d) { return d.getFullYear() + dosDig(d.getMonth() + 1) + dosDig(d.getDate()); }
+function textoIcs(t) { return String(t || '').replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
+// Pliega líneas largas a 75 bytes (RFC 5545) sin partir caracteres con tilde ni emojis
+function plegarIcs(linea) {
+  var out = [], actual = '', bytes = 0;
+  Array.from(linea).forEach(function (ch) {
+    var b = unescape(encodeURIComponent(ch)).length;
+    if (bytes + b > 74) { out.push(actual); actual = ' '; bytes = 1; }
+    actual += ch; bytes += b;
+  });
+  out.push(actual);
+  return out.join('\r\n');
+}
+function generarIcsVencimientos(lista, diasAntes, horaAviso) {
+  var ahora = new Date(), sello = ahora.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  var empresa = ((opcionesLibro.entidad || {}).nombre || '').trim();
+  var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Matriz Contable CR//Vencimientos//ES', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Vencimientos fiscales CR', 'X-WR-TIMEZONE:America/Costa_Rica'];
+  lista.forEach(function (v) {
+    var d = proximaFechaVenc(v, ahora); if (!d) return;
+    var fin = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+    L.push('BEGIN:VEVENT', 'UID:mcr-' + v.id + '-' + (empresa ? empresa.replace(/[^A-Za-z0-9]/g, '').slice(0, 20) + '-' : '') + 'cr@matrizcontable', 'DTSTAMP:' + sello,
+      'DTSTART;VALUE=DATE:' + fechaIcs(d), 'DTEND;VALUE=DATE:' + fechaIcs(fin), 'RRULE:' + v.regla,
+      plegarIcs('SUMMARY:' + textoIcs('🇨🇷 ' + v.nombre + (empresa ? ' — ' + empresa : ''))),
+      plegarIcs('DESCRIPTION:' + textoIcs(v.nota + ' Si cae en fin de semana o feriado, se corre al siguiente día hábil. Verificá siempre las fechas vigentes en Hacienda/CCSS.')),
+      'TRANSP:TRANSPARENT');
+    // Avisos: N días antes a la hora escogida, y el mismo día
+    var h = parseInt(String(horaAviso || '08:00').split(':')[0], 10) || 8, mi = parseInt(String(horaAviso || '08:00').split(':')[1], 10) || 0;
+    if (diasAntes > 0) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + textoIcs('En ' + diasAntes + ' días: ' + v.nombre), 'TRIGGER:-P' + (diasAntes - 1) + 'DT' + (24 - h - (mi ? 1 : 0)) + 'H' + (mi ? (60 - mi) + 'M' : ''), 'END:VALARM');
+    L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + textoIcs('Hoy vence: ' + v.nombre), 'TRIGGER:PT' + h + 'H' + (mi ? mi + 'M' : ''), 'END:VALARM');
+    L.push('END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.join('\r\n') + '\r\n';
+}
+function enlaceGoogleCalendar(v) {
+  var d = proximaFechaVenc(v, new Date()), fin = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('🇨🇷 ' + v.nombre) + '&dates=' + fechaIcs(d) + '/' + fechaIcs(fin) +
+    '&details=' + encodeURIComponent(v.nota) + '&recur=' + encodeURIComponent('RRULE:' + v.regla) + '&ctz=America/Costa_Rica';
+}
+function abrirVencimientosCalendario() {
+  var cfg = opcionesLibro.vencCal = opcionesLibro.vencCal || {};
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var hoy = new Date();
+  var esAndroid = /Android/i.test(navigator.userAgent);
+  var html = '<div class="mcrNota">Escogé qué fechas querés en el calendario del teléfono. Se agregan como eventos que se repiten solos, con un aviso unos días antes y otro el mismo día.</div>' +
+    VENCIMIENTOS_CAL.map(function (v) {
+      var on = cfg[v.id] !== undefined ? cfg[v.id] : v.on, d = proximaFechaVenc(v, hoy);
+      return '<label class="vcItem"><input type="checkbox" class="vcSel" value="' + v.id + '"' + (on ? ' checked' : '') + '><span><b>' + esc(v.nombre) + '</b><br><small>Próximo: ' + (d ? textoDeFecha(d) : '—') + ' · ' + esc(v.nota) + '</small></span>' +
+        '<button type="button" class="vcG" data-g="' + v.id + '" title="Agregar a Google Calendar">G</button></label>';
+    }).join('') +
+    '<div class="egDos"><div><label class="mcrF">Avisar con</label><select id="vcDias" class="mcrI">' + [1, 2, 3, 5, 7].map(function (n) { return '<option value="' + n + '"' + (n === (cfg.dias || 3) ? ' selected' : '') + '>' + n + ' día(s) de anticipación</option>'; }).join('') + '</select></div>' +
+    '<div><label class="mcrF">Hora del aviso</label><input id="vcHora" class="mcrI" type="time" value="' + (cfg.hora || '08:00') + '"></div></div>' +
+    '<div class="mcrNota">📱 <b>iPhone:</b> tocá “Agregar al calendario” y luego <b>Agregar todos</b>. <br>🤖 <b>Android:</b> el archivo se abre con Calendario de Samsung u otra app; con Google Calendar usá el botón <b>G</b> de cada fecha.' + (esAndroid ? ' (Estás en Android.)' : '') + '<br>Las fechas son las habituales; si caen en fin de semana o feriado se corren al día hábil siguiente.</div>';
+  abrirPanel('🗓 Vencimientos al calendario', html, [{ texto: 'Cerrar' }, { texto: '📅 Agregar al calendario', ok: true, accion: function () {
+    var sel = [].slice.call(document.querySelectorAll('.vcSel')).filter(function (c) { return c.checked; }).map(function (c) { return c.value; });
+    if (!sel.length) { alert('Marcá al menos una fecha.'); return false; }
+    VENCIMIENTOS_CAL.forEach(function (v) { cfg[v.id] = sel.indexOf(v.id) !== -1; });
+    cfg.dias = parseInt(document.getElementById('vcDias').value, 10); cfg.hora = document.getElementById('vcHora').value || '08:00';
+    autoSave();
+    var ics = generarIcsVencimientos(VENCIMIENTOS_CAL.filter(function (v) { return sel.indexOf(v.id) !== -1; }), cfg.dias, cfg.hora);
+    descargarIcs(ics, 'vencimientos-fiscales-cr.ics');
+    document.getElementById('saveStatus').textContent = '🗓 ' + sel.length + ' vencimiento(s) listos para el calendario (aviso ' + cfg.dias + ' día(s) antes, ' + cfg.hora + ')';
+  } }]);
+  document.querySelectorAll('.vcG').forEach(function (b) { b.addEventListener('click', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    var v = VENCIMIENTOS_CAL.filter(function (x) { return x.id === b.dataset.g; })[0];
+    abrirEnlaceExterno(enlaceGoogleCalendar(v));
+  }); });
+}
+function descargarIcs(ics, nombre) {
+  if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) { guardarArchivoNativo(nombre, utf8ToBase64(ics), 'text/calendar'); return; }
+  // En Safari de iPhone, abrir el .ics como data-URL muestra directo “Agregar todos” al Calendario
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+    window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+    return;
+  }
+  var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = nombre; document.body.appendChild(a); a.click();
+  setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 4000);
+}
+
+// ══════════════════════════════════════════════
+// 8) ESTADO DE CUENTA POR WHATSAPP
+// Con la antigüedad de saldos (hoja CuentasPorCobrar o el historial de
+// facturas), arma un PDF de estado de cuenta del cliente y lo deja listo
+// para mandarlo por WhatsApp con un mensaje de cobro.
+// ══════════════════════════════════════════════
+function facturasPorCobrarDeHoja() {
+  if (sheets.indexOf('CuentasPorCobrar') === -1) return null;
+  var d = sheetData.CuentasPorCobrar || {}, out = [];
+  for (var r = 12; r < 5000; r++) {
+    var cli = String(computeValueEnHoja('CuentasPorCobrar', cellId(r, 0)) || '').trim();
+    if (!cli) { if (!d[cellId(r + 1, 0)] && !d[cellId(r + 2, 0)]) break; continue; }
+    var saldo = numContable(computeValueEnHoja('CuentasPorCobrar', cellId(r, 7)));
+    if (!(saldo > 0.005)) continue;
+    var em = fechaDe(String(computeValueEnHoja('CuentasPorCobrar', cellId(r, 3)))), ve = fechaDe(String(computeValueEnHoja('CuentasPorCobrar', cellId(r, 4))));
+    out.push({ cliente: cli, cedula: String(computeValueEnHoja('CuentasPorCobrar', cellId(r, 1)) || '').trim(), factura: String(computeValueEnHoja('CuentasPorCobrar', cellId(r, 2)) || ''),
+      emision: em, vence: ve, total: numContable(computeValueEnHoja('CuentasPorCobrar', cellId(r, 5))), cobrado: numContable(computeValueEnHoja('CuentasPorCobrar', cellId(r, 6))), saldo: saldo,
+      dias: parseInt(computeValueEnHoja('CuentasPorCobrar', cellId(r, 8)), 10) || 0, tramo: String(computeValueEnHoja('CuentasPorCobrar', cellId(r, 9)) || '') });
+  }
+  return out;
+}
+function agruparPorCliente(facturas) {
+  var g = {}, orden = [];
+  facturas.forEach(function (f) {
+    var k = (f.cedula || f.cliente).toLowerCase();
+    if (!g[k]) { g[k] = { clave: k, cliente: f.cliente, cedula: f.cedula, telefono: f.telefono || '', email: f.email || '', facturas: [], saldo: 0, vencido: 0, maxDias: -99999 }; orden.push(k); }
+    g[k].facturas.push(f); g[k].saldo += f.saldo; if (f.dias > 0) g[k].vencido += f.saldo; g[k].maxDias = Math.max(g[k].maxDias, f.dias);
+    if (!g[k].telefono && f.telefono) g[k].telefono = f.telefono;
+  });
+  orden.forEach(function (k) {
+    if (!g[k].telefono && g[k].cedula) { try { var t = telefonoDeCliente(g[k].cedula, historialHaciendaCache || []); if (t) g[k].telefono = t; } catch (e) {} }
+  });
+  return orden.map(function (k) { return g[k]; }).sort(function (a, b) { return b.vencido - a.vencido || b.saldo - a.saldo; });
+}
+function mensajeCobroPorDefecto(c, ent) {
+  var lineas = c.facturas.slice().sort(function (a, b) { return b.dias - a.dias; }).map(function (x) {
+    return '• Factura ' + x.factura + (x.vence && !isNaN(x.vence) ? ' (vence ' + textoDeFecha(x.vence) + ')' : '') + ': ₡' + fmtMontoCR(x.saldo) + (x.dias > 0 ? ' — ' + x.dias + ' día(s) de atraso' : '');
+  });
+  return 'Hola ' + c.cliente + ', le saludamos de ' + (ent.nombre || 'nuestra empresa') + '. Le adjuntamos su estado de cuenta al ' + textoDeFecha(new Date()) + ':\n' + lineas.join('\n') +
+    '\nTotal pendiente: ₡' + fmtMontoCR(c.saldo) + (c.vencido > 0 ? ' (vencido: ₡' + fmtMontoCR(c.vencido) + ')' : '') + '.' +
+    (ent.iban ? '\nPuede pagar a la cuenta ' + ent.iban + (ent.sinpe ? ' o por SINPE Móvil al ' + ent.sinpe : '') + (ent.nombre ? ', a nombre de ' + ent.nombre : '') + '.' : (ent.sinpe ? '\nPuede pagar por SINPE Móvil al ' + ent.sinpe + '.' : '')) +
+    '\nSi ya realizó el pago, por favor envíenos el comprobante. ¡Muchas gracias!';
+}
+function construirEstadoCuentaPdf(c, ent, mensaje) {
+  var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
+  if (!jsPDFLib) { alert('No se pudo cargar el generador de PDF. Revisá tu conexión a internet.'); return null; }
+  var doc = pdfSeguro(new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' })), W = 210, y = 16;
+  var anchoLogo = dibujarLogoPdf(doc, 14, 10, 18, 40);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.setTextColor(20, 83, 45);
+  doc.text(ent.nombre || 'Estado de cuenta', 14 + (anchoLogo ? anchoLogo + 4 : 0), 16);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(90);
+  var lineaEnt = [ent.cedula ? 'Cédula ' + ent.cedula : '', ent.telefono || '', ent.email || ''].filter(Boolean).join('  ·  ');
+  if (lineaEnt) doc.text(lineaEnt, 14 + (anchoLogo ? anchoLogo + 4 : 0), 21);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(30);
+  doc.text('ESTADO DE CUENTA', W - 14, 16, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(90);
+  doc.text('Al ' + textoDeFecha(new Date()), W - 14, 21, { align: 'right' });
+  y = 32;
+  doc.setDrawColor(200); doc.setFillColor(240, 249, 232); doc.roundedRect(14, y, W - 28, 16, 2, 2, 'F');
+  doc.setTextColor(30); doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text(c.cliente, 18, y + 6.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text((c.cedula ? 'Cédula ' + c.cedula : '') + (c.telefono ? '   Tel. ' + c.telefono : ''), 18, y + 12);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('SALDO PENDIENTE', W - 18, y + 6, { align: 'right' });
+  doc.setFontSize(13); doc.setTextColor(c.vencido > 0 ? 185 : 20, c.vencido > 0 ? 28 : 83, c.vencido > 0 ? 28 : 45); doc.text('₡' + fmtMontoCR(c.saldo), W - 18, y + 12.5, { align: 'right' });
+  y += 24;
+  var cols = [{ t: 'Factura', x: 14, w: 26 }, { t: 'Emisión', x: 40, w: 22 }, { t: 'Vence', x: 62, w: 22 }, { t: 'Total', x: 84, w: 28, der: 1 }, { t: 'Abonos', x: 112, w: 26, der: 1 }, { t: 'Saldo', x: 138, w: 28, der: 1 }, { t: 'Atraso', x: 166, w: 30, der: 1 }];
+  var cab = function () { doc.setFillColor(36, 95, 9); doc.rect(14, y - 4.5, W - 28, 7, 'F'); doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); cols.forEach(function (k) { doc.text(k.t, k.der ? k.x + k.w - 1.5 : k.x + 1.5, y, k.der ? { align: 'right' } : undefined); }); y += 6; doc.setFont('helvetica', 'normal'); doc.setTextColor(30); };
+  cab();
+  c.facturas.slice().sort(function (a, b) { return (a.vence || 0) - (b.vence || 0); }).forEach(function (f, i) {
+    if (y > 265) { doc.addPage(); y = 20; cab(); }
+    if (i % 2) { doc.setFillColor(247, 250, 245); doc.rect(14, y - 4, W - 28, 6, 'F'); }
+    var vals = [f.factura, f.emision && !isNaN(f.emision) ? textoDeFecha(f.emision) : '', f.vence && !isNaN(f.vence) ? textoDeFecha(f.vence) : '', fmtMontoCR(f.total), fmtMontoCR(f.cobrado), fmtMontoCR(f.saldo), f.dias > 0 ? f.dias + ' días' : 'Al día'];
+    cols.forEach(function (k, j) {
+      if (j === 6) doc.setTextColor(f.dias > 60 ? 185 : f.dias > 0 ? 180 : 21, f.dias > 60 ? 28 : f.dias > 0 ? 83 : 128, f.dias > 60 ? 28 : f.dias > 0 ? 9 : 61);
+      doc.text(String(vals[j]), k.der ? k.x + k.w - 1.5 : k.x + 1.5, y, k.der ? { align: 'right' } : undefined);
+      doc.setTextColor(30);
+    });
+    y += 6;
+  });
+  y += 4; doc.setDrawColor(36, 95, 9); doc.line(112, y - 3, W - 14, y - 3);
+  doc.setFont('helvetica', 'bold'); doc.text('Total pendiente', 136, y + 1, { align: 'right' }); doc.text('₡' + fmtMontoCR(c.saldo), 164.5, y + 1, { align: 'right' });
+  y += 10;
+  // Resumen por antigüedad
+  var tramos = {}; TRAMOS_CXC.forEach(function (t) { tramos[t] = 0; });
+  c.facturas.forEach(function (f) { var t = f.tramo || tramoDeDias(f.dias); tramos[t] = (tramos[t] || 0) + f.saldo; });
+  doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.text('Antigüedad del saldo', 14, y); y += 5; doc.setFont('helvetica', 'normal');
+  var x = 14, anchoT = (W - 28) / TRAMOS_CXC.length;
+  TRAMOS_CXC.forEach(function (t, i) {
+    doc.setFillColor(i === 0 ? 220 : i < 3 ? 254 : 254, i === 0 ? 252 : i < 3 ? 243 : 226, i === 0 ? 231 : i < 3 ? 199 : 226);
+    doc.roundedRect(x + 1, y, anchoT - 2, 13, 1.5, 1.5, 'F');
+    doc.setTextColor(80); doc.setFontSize(7.5); doc.text(t, x + anchoT / 2, y + 4.5, { align: 'center' });
+    doc.setTextColor(30); doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.text('₡' + fmtMontoCR(tramos[t] || 0), x + anchoT / 2, y + 10, { align: 'center' }); doc.setFont('helvetica', 'normal');
+    x += anchoT;
+  });
+  y += 22;
+  if (ent.iban) { doc.setFontSize(9.5); doc.setFont('helvetica', 'bold'); doc.text('Forma de pago', 14, y); doc.setFont('helvetica', 'normal'); y += 5; doc.text('Depósito o SINPE a la cuenta ' + ent.iban + (ent.nombre ? ' a nombre de ' + ent.nombre : '') + (ent.sinpe ? ' · SINPE Móvil ' + ent.sinpe : '') + '.', 14, y, { maxWidth: W - 28 }); y += 10; }
+  doc.setTextColor(110); doc.setFontSize(8.5);
+  doc.text('Si ya realizó el pago, le agradecemos enviarnos el comprobante para aplicarlo. Este estado de cuenta no sustituye los comprobantes electrónicos emitidos.', 14, y, { maxWidth: W - 28 });
+  return doc;
+}
+function abrirEstadoCuentaWhatsApp() {
+  var desdeHoja = facturasPorCobrarDeHoja();
+  var arrancar = function (facturas, origen) {
+    if (!facturas || !facturas.length) { alert('No hay facturas pendientes de cobro' + (origen ? ' en ' + origen : '') + '.'); return; }
+    var clientes = agruparPorCliente(facturas), ent = opcionesLibro.entidad = opcionesLibro.entidad || {};
+    if (!ent.nombre) { var en = document.getElementById('fe-emisor-nombre'), ec = document.getElementById('fe-emisor-cedula'), et = document.getElementById('fe-emisor-telefono'); if (en && en.value) ent.nombre = en.value; if (ec && ec.value) ent.cedula = ec.value; if (et && et.value) ent.telefono = et.value; }
+    var tels = opcionesLibro.telefonosClientes = opcionesLibro.telefonosClientes || {};
+    var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    var html = '<div class="mcrNota">' + clientes.length + ' cliente(s) con saldo, ordenados por lo vencido (' + esc(origen) + ').</div>' +
+      '<label class="mcrF">Cliente</label><select id="ecCli" class="mcrI">' + clientes.map(function (c, i) { return '<option value="' + i + '">' + esc(c.cliente) + ' — ₡' + fmtMontoCR(c.saldo) + (c.vencido ? ' (vencido ₡' + fmtMontoCR(c.vencido) + ')' : '') + '</option>'; }).join('') + '</select>' +
+      '<div id="ecResumen" class="mcrNota"></div>' +
+      '<label class="mcrF">WhatsApp del cliente</label><input id="ecTel" class="mcrI" inputmode="tel" placeholder="8888-8888">' +
+      '<label class="mcrF">Mensaje</label><textarea id="ecMsg" class="mcrI" rows="5"></textarea>' +
+      '<details style="margin-top:6px"><summary style="font-size:13px">Datos de tu negocio para el PDF</summary>' +
+      '<div class="egDos"><div><input id="ecNom" class="mcrI" placeholder="Nombre del negocio" value="' + esc(ent.nombre) + '"></div><div><input id="ecCed" class="mcrI" placeholder="Cédula" value="' + esc(ent.cedula) + '"></div></div>' +
+      '<div class="egDos"><div><input id="ecIban" class="mcrI" placeholder="Cuenta IBAN para pagos" value="' + esc(ent.iban) + '"></div><div><input id="ecSinpe" class="mcrI" placeholder="SINPE Móvil" value="' + esc(ent.sinpe) + '"></div></div></details>' +
+      '<div class="egDos" style="margin-top:8px"><button type="button" class="egAccion" id="ecCompartir">📤 Compartir PDF</button><button type="button" class="egAccion" id="ecWa">💬 Abrir WhatsApp</button></div>' +
+      '<div class="mcrNota">📤 abre el menú de compartir del teléfono con el PDF y el mensaje (escogé WhatsApp). 💬 abre el chat del cliente con el mensaje escrito; el PDF queda descargado para adjuntarlo.</div>';
+    abrirPanel('💬 Estado de cuenta por WhatsApp', html, [{ texto: 'Cerrar', ok: true }]);
+    var g = function (id) { return document.getElementById(id); }, msgTocado = false;
+    var actual = function () { return clientes[parseInt(g('ecCli').value, 10)]; };
+    var leerEnt = function () { ent.nombre = g('ecNom').value.trim(); ent.cedula = g('ecCed').value.trim(); ent.iban = g('ecIban').value.trim(); ent.sinpe = g('ecSinpe').value.trim(); };
+    var pintar = function () {
+      var c = actual();
+      g('ecTel').value = tels[c.clave] || c.telefono || '';
+      if (!msgTocado) g('ecMsg').value = mensajeCobroPorDefecto(c, ent);
+      g('ecResumen').innerHTML = c.facturas.length + ' factura(s) · saldo <b>₡' + fmtMontoCR(c.saldo) + '</b>' + (c.vencido ? ' · vencido <b class="mcrMal">₡' + fmtMontoCR(c.vencido) + '</b> (hasta ' + c.maxDias + ' días)' : ' · <span class="mcrOk">al día</span>');
+    };
+    g('ecCli').addEventListener('change', function () { msgTocado = false; pintar(); });
+    g('ecMsg').addEventListener('input', function () { msgTocado = true; });
+    ['ecNom', 'ecIban', 'ecSinpe'].forEach(function (id) { g(id).addEventListener('change', function () { leerEnt(); if (!msgTocado) pintar(); }); });
+    var preparar = function () {
+      leerEnt();
+      var c = actual(), tel = g('ecTel').value.trim();
+      if (tel) tels[c.clave] = tel;
+      autoSave();
+      var doc = construirEstadoCuentaPdf(c, ent, g('ecMsg').value);
+      if (!doc) return null;
+      var nombre = 'Estado de cuenta - ' + c.cliente.replace(/[\\\/:*?"<>|]/g, '').slice(0, 40) + ' - ' + isoDeFechaTC(new Date()) + '.pdf';
+      return { c: c, tel: tel, doc: doc, nombre: nombre, msg: g('ecMsg').value };
+    };
+    g('ecCompartir').addEventListener('click', function () {
+      var p = preparar(); if (!p) return;
+      var blob = p.doc.output('blob'), archivo = null;
+      try { archivo = new File([blob], p.nombre, { type: 'application/pdf' }); } catch (e) {}
+      if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) {
+        navigator.share({ files: [archivo], text: p.msg, title: 'Estado de cuenta' }).catch(function () {});
+      } else {
+        guardarArchivoNativo(p.nombre, p.doc.output('datauristring').split(',')[1], 'application/pdf');
+        document.getElementById('saveStatus').textContent = '📄 PDF listo: ' + p.nombre + (window.ReactNativeWebView ? '' : ' (descargado)');
+      }
+      registrarEnvioEstado(p);
+    });
+    g('ecWa').addEventListener('click', function () {
+      var p = preparar(); if (!p) return;
+      var num = telefonoWhatsApp(p.tel);
+      if (!num) { alert('Escribí el número de WhatsApp del cliente.'); return; }
+      guardarArchivoNativo(p.nombre, p.doc.output('datauristring').split(',')[1], 'application/pdf');
+      abrirEnlaceExterno('https://wa.me/' + num + '?text=' + encodeURIComponent(p.msg));
+      registrarEnvioEstado(p);
+    });
+    pintar();
+  };
+  if (desdeHoja && desdeHoja.length) { arrancar(desdeHoja, 'hoja CuentasPorCobrar'); return; }
+  if (typeof currentUser !== 'undefined' && currentUser && typeof cargarHistorialHacienda === 'function') {
+    document.getElementById('saveStatus').textContent = 'Leyendo facturas…';
+    Promise.resolve(cargarHistorialHacienda()).catch(function () {}).then(function () { arrancar(calcularCuentasPorCobrar(historialHaciendaCache || [], new Date(), false), 'tus facturas de Hacienda'); });
+    return;
+  }
+  alert('Primero generá la antigüedad de saldos con ⏳ Cuentas por cobrar (o iniciá sesión para leer tus facturas).');
+}
+function registrarEnvioEstado(p) {
+  var lista = opcionesLibro.cobrosEnviados = opcionesLibro.cobrosEnviados || [];
+  lista.push({ fecha: Date.now(), cliente: p.c.cliente, saldo: r2c(p.c.saldo) });
+  if (lista.length > 200) lista.splice(0, lista.length - 200);
+  autoSave();
+}
+document.getElementById('btnCobros').addEventListener('click', abrirEstadoCuentaWhatsApp);
 // ══════════════════════════════════════════════
 // LECTOR DE XML DE FACTURAS RECIBIDAS
 // ══════════════════════════════════════════════
