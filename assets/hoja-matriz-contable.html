@@ -411,6 +411,44 @@
   .lpItem span { flex: 1; word-break: break-word; }
   .lpItem.fijo { background: #f9fafb; color: #6b7280; }
   .lpItem button { border: none; background: none; font-size: 15px; }
+  .pqVista { overflow: auto; max-height: 260px; border: 1px solid #e5e7eb; border-radius: 8px; margin: 4px 0; }
+  .pqVista table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+  .pqVista th { position: sticky; top: 0; background: #e2efda; color: #1d5c08; text-align: left; padding: 5px 7px; border-bottom: 1px solid #c6dfb4; white-space: nowrap; }
+  .pqVista td { padding: 4px 7px; border-bottom: 1px solid #f1f1f1; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+  .pqCols { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 4px 0 8px; font-size: 13px; }
+  .pqCols label { display: flex; align-items: center; gap: 4px; }
+  .pqNuevo { border: 1px dashed #b6d7a8; border-radius: 8px; padding: 6px 8px; margin: 8px 0; background: #fbfdf9; }
+  .pqNuevo .mcrI { margin-bottom: 6px; }
+  .lpItem.pqErr { border-color: #fca5a5; background: #fef2f2; }
+  #sheetTable .cell.tipoDato { padding-left: 24px; }
+  #sheetTable .cell.tipoDato::before { position: absolute; left: 3px; top: 50%; transform: translateY(-50%); font-size: 13px; line-height: 1; cursor: pointer; }
+  #sheetTable .cell.tipoDato.cedula::before { content: '🏛'; }
+  #sheetTable .cell.tipoDato.moneda::before { content: '💱'; }
+  #sheetTable .cell.tipoDato.vincError::before { content: '⚠'; color: #b45309; }
+  .tdTarjeta { border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+  .tdFila { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+  .tdFila:last-child { border-bottom: none; }
+  .tdFila span { width: 120px; color: #6b7280; flex-shrink: 0; }
+  .tdFila b { flex: 1; font-weight: 600; word-break: break-word; }
+  .tdFila button { border: none; background: #f0f9e8; color: #245f09; border-radius: 6px; padding: 3px 8px; }
+  .tdOpcion { display: block; padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 6px; font-size: 13.5px; }
+  .tdOpcion small { color: #6b7280; margin-left: 22px; }
+  .saTipos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin-bottom: 8px; }
+  .saTipo { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1.5px solid #e5e7eb; border-radius: 8px; background: #fff; font-size: 12.5px; text-align: left; }
+  .saTipo span { font-size: 20px; width: 24px; text-align: center; color: #245f09; }
+  .saTipo.on { border-color: #2d7a0c; background: #f0f9e8; font-weight: 600; }
+  .saColores { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .saColor { width: 46px; height: 26px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 0 0 1px #d1d5db; }
+  .saColor.on { box-shadow: 0 0 0 2px #111827; }
+  .cell.cmpDif.valor { background-color: #fff2cc !important; }
+  .cell.cmpDif.formula { background-color: #dbeafe !important; }
+  .cell.cmpDif.nueva { background-color: #dcfce7 !important; }
+  .cell.cmpDif.borrada { box-shadow: inset 0 0 0 2px #ef4444; }
+  .cmpTag { display: inline-block; padding: 1px 6px; border-radius: 6px; font-size: 11px; }
+  .cmpTag.valor, .cmpFila.valor td:nth-child(2) { background: #fff2cc; }
+  .cmpTag.formula, .cmpFila.formula td:nth-child(2) { background: #dbeafe; }
+  .cmpTag.nueva, .cmpFila.nueva td:nth-child(2) { background: #dcfce7; }
+  .cmpTag.borrada, .cmpFila.borrada td:nth-child(2) { background: #fee2e2; }
   .psItem { display: flex; align-items: center; gap: 4px; padding: 4px 6px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 4px; }
   .psItem.oculto { opacity: .55; }
   .psItem .psNom { flex: 1; text-align: left; border: none; background: none; font-size: 13px; padding: 6px 2px; color: #1f2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -663,6 +701,21 @@
   .cell.cursor-remoto-3 { outline: 2px solid #c0392b; outline-offset: -2px; }
   .cell.cursor-remoto-4 { outline: 2px solid #16a085; outline-offset: -2px; }
   .cell.cursor-remoto-5 { outline: 2px solid #d35400; outline-offset: -2px; }
+  .cell.rango-remoto-0 { background-color: rgba(230, 126, 34, .13) !important; }
+  .cell.rango-remoto-1 { background-color: rgba(142, 68, 173, .13) !important; }
+  .cell.rango-remoto-2 { background-color: rgba(41, 128, 185, .13) !important; }
+  .cell.rango-remoto-3 { background-color: rgba(192, 57, 43, .13) !important; }
+  .cell.rango-remoto-4 { background-color: rgba(22, 160, 133, .13) !important; }
+  .cell.rango-remoto-5 { background-color: rgba(211, 84, 0, .13) !important; }
+  .cursorRemotoTag.escribiendo { animation: presParpadeo 1.2s infinite; }
+  @keyframes presParpadeo { 50% { opacity: .55; } }
+  #presenciaChip { display: inline-flex; align-items: center; gap: 0; cursor: pointer; margin-left: auto; }
+  .presAvatar { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 700; border: 2px solid #fff; margin-left: -5px; flex-shrink: 0; }
+  #presenciaChip .presAvatar:first-child { margin-left: 0; }
+  .lpItem .presAvatar { margin-left: 0; width: 28px; height: 28px; font-size: 13px; }
+  .presAvatar.escribiendo { box-shadow: 0 0 0 2px #fde047; }
+  .presMas { font-size: 11px; margin-left: 4px; color: #555; }
+  .tab.conOtros { box-shadow: inset 0 -3px 0 var(--colorOtro, #e67e22); }
   .cursorRemotoTag {
     position: absolute; top: -16px; left: -2px; font-size: 9px; color: #fff;
     padding: 1px 5px; border-radius: 3px 3px 3px 0; white-space: nowrap;
@@ -1630,6 +1683,7 @@
         <button id="btnInspDoc" title="Revisar el libro antes de compartirlo: comentarios, hojas ocultas, datos personales, vínculos, nombres rotos…">🕵 Inspeccionar documento</button>
         <button id="btnSello" title="Sellá el libro al cerrar el mes: si alguien cambia algo después, se detecta y se muestra qué cambió">🔏 Sellado del libro</button>
         <button id="btnVersiones" title="Historial de versiones guardado en este dispositivo: comparar y restaurar el libro, una hoja o una celda">📜 Historial de versiones</button>
+        <button id="btnCompararLibros" title="Comparar este libro con otro archivo (respaldo, Excel o CSV) celda por celda">⚖ Comparar libros</button>
         <button id="btnParalelo" title="Dividir la pantalla y ver otra hoja abajo, con desplazamiento sincrónico (Ver en paralelo)">🪟 Ver en paralelo</button>
         <button id="btnZoomSel" title="Agrandar o achicar la hoja para que el rango seleccionado llene la pantalla">🔍 Zoom a la selección</button>
         <button id="btnZoom100" title="Volver al zoom normal (100%)">🔍 Zoom 100%</button>
@@ -1652,6 +1706,9 @@
         <button id="btnEsquemaAuto" title="Agrupar solo las filas de detalle de cada subtotal (=SUMA de las filas de arriba), con botones −/+">📑 Esquema automático</button>
         <button id="btnBorrarEsquema" title="Quitar todos los grupos −/+ de la hoja">✕ Borrar esquema</button>
         <button id="btnRelaciones" title="Unir dos tablas por una columna clave para usarlas juntas en la tabla dinámica (Modelo de datos)">🔗 Relaciones</button>
+        <button id="btnTiposDatos" title="Tipos de datos vinculados: una cédula trae nombre, régimen y estado de Hacienda; una moneda, su tipo de cambio (=B2.Nombre)">🔗 Tipos de datos</button>
+        <button id="btnConsultas" title="Editor de consultas (como Power Query): pasos guardados para limpiar y transformar una tabla">🧩 Consultas</button>
+        <button id="btnActualizarConsultas" title="Repetir los pasos de todas las consultas con los datos de hoy">🔄 Actualizar consultas</button>
         <button id="btnFiltroAvanzado" title="Filtrar con un rango de criterios (Y/O), copiar el resultado a otro lugar o quedarse con registros únicos">🔍 Filtro avanzado</button>
         <button id="btnTotales">Σ Totales</button>
         <button id="btnSegmentadores">🔘 Segmentadores</button>
@@ -1694,6 +1751,7 @@
         <button id="btnSimbolo" title="Insertar símbolos que cuesta encontrar en el teclado: ₡ € ± × ÷ ≤ ≥ ✓ → ½ ° ©…">Ω Símbolo</button>
         <button id="btnEcuacion" title="Insertar una ecuación con fracciones, raíces, sumatorias, exponentes… (como Insertar → Ecuación de Excel)">π Ecuación</button>
         <button id="btnFormas">🔷 Formas</button>
+        <button id="btnSmartArt" title="Diagramas desde una lista: organigrama, proceso, ciclo, pirámide, radial (SmartArt de Excel)">🔷 SmartArt</button>
         <button id="btnPanelSeleccion" title="Ver todos los objetos de la hoja: orden (frente/atrás), agrupar y ocultar">☰ Panel de selección</button>
         <button id="btnCtrlNumero" title="Control de número ▲▼ ligado a la celda seleccionada">🔢 Control de número</button>
         <button id="btnCtrlDeslizante" title="Barra deslizante ligada a la celda seleccionada">🎚 Barra deslizante</button>
@@ -2049,6 +2107,7 @@
     </div>
     <button id="calcPill" style="display:none;margin-left:6px;padding:3px 9px;border-radius:999px;border:1px solid #f59e0b;background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;">🧮 Calcular</button>
     <span id="saveStatus">Listo</span>
+    <span id="presenciaChip" role="button" style="display:none"></span>
   </div>
 
   <div id="quickBar"><div id="quickBarList"></div><button id="quickBarEdit" title="Elegir botones favoritos" aria-label="Elegir botones favoritos">⭐</button></div>
@@ -2957,6 +3016,7 @@
       <button class="formaBtn" data-forma="line" style="padding:12px;border-radius:8px;border:1.5px solid #cce9ae;background:#f4fbec;font-size:13px;">╱ Línea</button>
       <button class="formaBtn" data-forma="text" style="padding:12px;border-radius:8px;border:1.5px solid #cce9ae;background:#f4fbec;font-size:13px;grid-column:1 / span 2;">🅣 Cuadro de texto</button>
       <button class="formaBtn" data-forma="camara" style="padding:12px;border-radius:8px;border:1.5px solid #cce9ae;background:#f4fbec;font-size:13px;grid-column:1 / span 2;">📸 Imagen vinculada (Cámara): foto en vivo de un rango</button>
+      <button class="formaBtn" data-forma="smartart" style="padding:12px;border-radius:8px;border:1.5px solid #cce9ae;background:#f4fbec;font-size:13px;grid-column:1 / span 2;">🔷 SmartArt: organigrama, proceso, ciclo, pirámide…</button>
     </div>
   </div>
 </div>
@@ -4437,7 +4497,7 @@ var REGEX_FUNCIONES = {};
 // ── Funciones propias (estilo LAMBDA con nombre) ──
 // Se guardan en colWidths.__funciones = { NOMBRE: { params: ['a','b'], cuerpo: 'a*b' } }.
 // Al calcular, NOMBRE(x;y) se reescribe como LET(a;x;b;y;cuerpo), que ya sabe resolver el motor.
-var FN_MOTOR_NOMBRES = ["IMAGEN", "IMAGE", "ABS", "ACCRINT", "ACCRINTM", "ADDDAYS", "ADDMONTHS", "ADDRESS", "AGE", "AGREGAR.DIAS", "AGREGAR.MESES", "AGUINALDO", "AND", "APILARH", "APILARV", "ARABIC", "ARABIGO", "ARCHIVOMAKEARRAY", "AREAS", "ARRAYTOTEXT", "ASC", "ASEN", "ASENO", "ASIN", "ATAN2", "AVERAGE", "AVERAGEA", "AVERAGEIF", "AÑO", "AÑO.BISIESTO", "BASE", "BASE.IVA", "BDCONTAR", "BDCONTARA", "BDEXTRAER", "BDMAX", "BDMIN", "BDPROMEDIO", "BDSUMA", "BESSELJ", "BESSELY", "BETA.DIST", "BETA.INV", "BIN.A.DEC", "BIN2DEC", "BINOM.DIST", "BINOM.DIST.RANGE", "BINOM.INV", "BIT.O", "BIT.XO", "BIT.Y", "BITAND", "BITOR", "BITXOR", "BUSCAR.NESIMO", "BUSCAR.REGEX", "BUSCAR.ULTIMA", "BUSCARH", "BUSCARV", "BUSCARX", "BYCOL", "BYROW", "CAMBIAR", "CAPITALIZAR", "CAR", "CARACTER", "CARGAS.SOCIALES", "CEILING", "CEILING.MATH", "CELDA", "CELL", "CESANTIA", "CHAR", "CHEBYSHEV", "CHISQ.DIST.RT", "CHISQ.INV", "CHISQ.INV.RT", "CHISQ.TEST", "CHOOSE", "CHOOSECOLS", "CHOOSEROWS", "CLEAN", "COCIENTE", "COCIENTE.EXACTO", "CODE", "CODIGO", "COEF.DE.CORREL", "COEFICIENTE.ASIMETRIA", "COEFICIENTE.R2", "COINCIDIR", "COINCIDIR.TEXTO", "COINCIDIRX", "COLUMN", "COLUMNA", "COLUMNAS", "COLUMNS", "COMBIN", "COMBINAT", "CONCAT", "CONCATENAR", "CONCATENATE", "CONFIDENCE", "CONFIDENCE.NORM", "CONFIDENCE.T", "CONJUNTOCUBO", "CONTAR", "CONTAR.BLANCO", "CONTAR.OCURRENCIAS", "CONTAR.PALABRAS", "CONTAR.RANGO", "CONTAR.SI", "CONTAR.SI.CONJUNTO", "CONTAR.UNICOS", "CONTARA", "CONTARA.VALORES", "CONV.DECIMAL", "CONV.EN.FRACCION", "CONVERT", "CONVERTIR", "CORREL", "COSH", "COUNT", "COUNT.UNIQUE", "COUNTA", "COUNTALL", "COUNTBLANK", "COUNTIF", "COUNTIFS", "COUPDAYS", "COUPNUM", "COVARIANCE.P", "COVARIANCE.S", "COVARIANZA.M", "COVARIANZA.P", "CRECIMIENTO", "CUARTIL", "CUARTIL.EXC", "CUARTIL.INC", "CUBEKPIMEMBER", "CUBEMEMBER", "CUBEMEMBERPROPERTY", "CUBERANKEDMEMBER", "CUBESET", "CUBESETCOUNT", "CUBEVALUE", "CUMIPMT", "CUMPRINC", "CUPON.DIAS", "CUPON.NUM", "CURTOSIS", "D101", "DATE", "DATEDIF", "DATEVALUE", "DAVERAGE", "DAY", "DAYNAME", "DAYS", "DAYSDIFF", "DB", "DCOUNT", "DCOUNTA", "DDB", "DEC.A.BIN", "DEC.A.HEX", "DEC.A.OCT", "DEC2BIN", "DEC2HEX", "DEC2OCT", "DEGREES", "DELTA", "DERECHA", "DERECHAB", "DESREF", "DESREF.DINAMICO", "DESVEST", "DESVEST.M", "DESVEST.P", "DESVESTA", "DESVESTP", "DESVESTPA", "DETECTARIDIOMA", "DETECTLANGUAGE", "DGET", "DIA.LAB", "DIA.LAB.INTL", "DIAS", "DIAS.EN.MES", "DIAS.LAB", "DIAS.LAB.INTL", "DIAS360", "DIASEM", "DIFERENCIA.DIAS", "DIRECCION", "DISC", "DIST.POISSON", "DISTR.BETA", "DISTR.BETA.INV.N", "DISTR.BETA.N", "DISTR.BINOM", "DISTR.BINOM.N", "DISTR.BINOM.NEG", "DISTR.BINOM.NEG.N", "DISTR.BINOM.SERIE", "DISTR.CHICUAD.CD", "DISTR.EXP", "DISTR.EXP.N", "DISTR.F.CD", "DISTR.F.N", "DISTR.GAMMA", "DISTR.GAMMA.N", "DISTR.HIPERGEOM", "DISTR.HIPERGEOM.N", "DISTR.LOGNORM", "DISTR.LOGNORM.N", "DISTR.NORM", "DISTR.NORM.ESTAND", "DISTR.NORM.ESTAND.N", "DISTR.NORM.N", "DISTR.POISSON", "DISTR.T.2C", "DISTR.T.CD", "DISTR.T.N", "DISTR.WEIBULL", "DIVIDIRTEXTO", "DMAX", "DMIN", "DOLLAR", "DOLLARDE", "DOLLARFR", "DROP", "DSUM", "DURACION", "DURACION.MODIF", "DURATION", "DVS", "EDAD", "EDATE", "EFFECT", "ELEGIR", "ELEGIRCOLS", "ELEGIRFILAS", "ENCODEURL", "ENCOL", "ENCONTRAR", "ENCONTRARB", "ENFILA", "ENMASCARAR", "ENTERO", "ENTERO.SUPERIOR", "EOMONTH", "ERF.PRECISE", "ERFC", "ERFC.PRECISE", "ERROR.TIPICO.XY", "ERROR.TYPE", "ES.FORMULA.TEXTO", "ES.IMPAR", "ES.MULTIPLO", "ES.NUMERO.ENTERO", "ES.PAR", "ESAÑO.BISIESTO", "ESBLANCO", "ESERROR", "ESFORMULA", "ESLOGICO", "ESNOTEXTO", "ESNUMERO", "ESPACIOS", "ESREF", "ESTEXTO", "ESTIMACION.LINEAL", "ESTIMACION.LOGARITMICA", "EVEN", "EXACT", "EXCLUIR", "EXP", "EXPAND", "EXPANDIR", "EXPON.DIST", "EXTRAE", "EXTRAEB", "F.DIST.RT", "F.INV", "F.INV.RT", "F.TEST", "FACT", "FACT.DOBLE", "FACTDOUBLE", "FECHA", "FECHA.MES", "FECHANUMERO", "FIELDVALUE", "FILA", "FILAS", "FILTER", "FILTERXML", "FILTRAR", "FIN.MES", "FIND", "FINDB", "FISHERINV", "FLOOR", "FLOOR.MATH", "FORECAST", "FORECAST.ETS", "FORECAST.LINEAR", "FORMATNUMBER", "FORMATO.NUMERO", "FORMULATEXT", "FORMULATEXTO", "FRAC.AÑO", "FRACCION", "FRECUENCIA", "FREQUENCY", "FUN.ERROR.COMPL", "FUN.ERROR.COMPL.EXACTO", "FUN.ERROR.EXACTO", "FUNCION.GAMMA", "FV", "FVSCHEDULE", "GAMMA.DIST", "GAMMA.INV", "GAMMA.LN", "GAMMA.LN.EXACTO", "GAMMALN", "GAMMALN.PRECISE", "GCD", "GEOMEAN", "GESTEP", "GETPIVOTDATA", "GRADOS", "GROWTH", "HALLAR", "HALLARB", "HARMEAN", "HEX.A.DEC", "HEX2DEC", "HIPERVINCULO", "HLOOKUP", "HOJA", "HOJAS", "HORA", "HORANUMERO", "HOUR", "HSTACK", "HYPERLINK", "HYPGEOM.DIST", "IF", "IFERROR", "IFNA", "IFS", "IGUAL", "IMPORTARDATOSDINAMICOS", "IMPUESTO.D101", "IMPUESTO.RENTA", "INDEX", "INDICE", "INDIRECT", "INDIRECTO", "INFO", "INICIO.MES", "INT", "INT.ACUM", "INT.ACUM.V", "INT.EFECTIVO", "INT.PAGO.DIR", "INTERCEPT", "INTERSECCION.EJE", "INTERVALO.CONFIANZA", "INTERVALO.CONFIANZA.NORM", "INTERVALO.CONFIANZA.T", "INTRATE", "INV.BETA", "INV.CHICUAD", "INV.CHICUAD.CD", "INV.F", "INV.F.CD", "INV.GAMMA", "INV.LOGNORM", "INV.NORM", "INV.NORM.ESTAND", "INV.T", "INV.T.2C", "INVERTIR.TEXTO", "IPMT", "IRR", "ISBLANK", "ISERROR", "ISEVEN", "ISFORMULA", "ISINT", "ISLOGICAL", "ISMULTIPLE", "ISNONTEXT", "ISNUMBER", "ISO.CEILING", "ISO.NUM.DE.SEMANA", "ISODD", "ISOWEEKNUM", "ISPMT", "ISREF", "ISTEXT", "IVA", "IVA.INCLUIDO", "IZQUIERDA", "IZQUIERDAB", "JERARQUIA", "JERARQUIA.EQV", "JERARQUIA.MEDIA", "JIS", "K.ESIMO.MAYOR", "K.ESIMO.MENOR", "KURT", "LAMBDA", "LARGE", "LARGO", "LARGOB", "LASTMATCH", "LCM", "LEFT", "LEFTB", "LEN", "LENB", "LET", "LETRA.DE.TES.PRECIO", "LETRA.DE.TES.RENDTO", "LIMPIAR", "LINEST", "LN", "LOG", "LOG.GAMMA", "LOG10", "LOGEST", "LOGNORM.DIST", "LOGNORM.INV", "LOWER", "M.C.D", "M.C.M", "MAKEARRAY", "MAP", "MASK", "MATCH", "MATRIZALEAT", "MATRIZATEXTO", "MAX", "MAX.SI.CONJUNTO", "MAXA", "MAXIFS", "MAXIMO", "MAYOR.O.IGUAL", "MAYUSC", "MDETERM", "MDURATION", "MEDIA.ACOTADA", "MEDIA.ARMONICA", "MEDIA.GEOMETRICA", "MEDIA.PONDERADA", "MEDIAN", "MEDIANA", "MES", "MID", "MIDB", "MIEMBROCUBO", "MIEMBROKPICUBO", "MIEMBRORANGOCUBO", "MIN", "MIN.SI.CONJUNTO", "MINA", "MINIFS", "MINIMO", "MINUSC", "MINUTE", "MINUTO", "MIRR", "MMULT", "MOD", "MODA", "MODA.VARIOS", "MODE", "MODE.MULT", "MONEDA", "MONEDA.CR", "MONTH", "MONTHNAME", "MONTHSTART", "MONTO.SIN.IVA", "MROUND", "MULTIPLO.INFERIOR", "MULTIPLO.INFERIOR.MAT", "MULTIPLO.SUPERIOR", "MULTIPLO.SUPERIOR.ISO", "MULTIPLO.SUPERIOR.MAT", "MUNIT", "NEGBINOM.DIST", "NETWORKDAYS", "NETWORKDAYS.INTL", "NO", "NOD", "NOMBRE.DIA", "NOMBRE.MES", "NOMINAL", "NOMPROPIO", "NORM.DIST", "NORM.INV", "NORM.S.DIST", "NORM.S.INV", "NORMA.EUCLIDEA", "NORMALIZE", "NOT", "NPER", "NPV", "NSHORA", "NUM.DE.SEMANA", "NUMBERTEXT", "NUMBERVALUE", "NUMERO.A.TEXTO", "NUMERO.ALEATORIO", "NUMERO.DECIMAL", "NUMERO.ROMANO", "O", "OB", "OCT.A.DEC", "OCT2DEC", "ODD", "OFFSET", "OR", "ORDENAR", "P.DURACION", "PADLEFT", "PADRIGHT", "PADRON", "PAGO", "PAGO.INT.ENTRE", "PAGO.PRINC.ENTRE", "PAGOINT", "PAGOPRIN", "PDURATION", "PEARSON", "PENDIENTE", "PER", "PERCENTIL.EXC", "PERCENTIL.INC", "PERCENTILE", "PERCENTILE.EXC", "PERCENTRANK", "PERCENTRANK.EXC", "PERCENTRANK.INC", "PERMUT", "PERMUTACIONES", "PERMUTACIONES.A", "PERMUTATIONA", "PERS", "PI", "PISO", "PLANILLA.CCSS", "PLANILLACCSS", "PMT", "POISSON.DIST", "POSICION.TEXTO", "POTENCIA", "POTENCIA.DE.DIEZ", "POWER", "PPMT", "PREAVISO", "PRECIO", "PRECIO.DESCUENTO", "PRECIO.VENCIMIENTO", "PRICE", "PRICEDISC", "PRICEMAT", "PROB", "PROBABILIDAD", "PRODUCT", "PRODUCTO", "PROMEDIO", "PROMEDIO.SI", "PROMEDIOA", "PRONOSTICO", "PRONOSTICO.ETS", "PRONOSTICO.LINEAL", "PROPER", "PROPIEDADMIEMBROCUBO", "PRUEBA.CHICUAD", "PRUEBA.F", "PRUEBA.F.N", "PRUEBA.FISHER.INV", "PRUEBA.T", "PRUEBA.T.N", "PRUEBA.Z", "PRUEBA.Z.N", "PV", "QUARTER", "QUARTILE", "QUARTILE.EXC", "QUOTIENT", "RADIANES", "RADIANS", "RAIZ", "RANDARRAY", "RANGO.PERCENTIL", "RANGO.PERCENTIL.EXC", "RANGO.PERCENTIL.INC", "RANK", "RANK.AVG", "RATE", "RDTR", "RECORTAR.RANGO", "RECUENTOCONJUNTOCUBO", "REDOND.MULT", "REDONDEA.IMPAR", "REDONDEA.PAR", "REDONDEAR", "REDONDEAR.MAS", "REDONDEAR.MENOS", "REDUCE", "REEMPLAZAR", "REEMPLAZARB", "REEMPLAZARTODO", "REGEXEXTRACCION", "REGEXEXTRACT", "REGEXPRUEBA", "REGEXREEMPLAZAR", "REGEXREPLACE", "REGEXTEST", "RELLENAR.DER", "RELLENAR.IZQ", "RENDTO", "RENDTO.DESC", "RENDTO.VENCIMIENTO", "RENTA.TRABAJO", "REPETIR", "REPLACE", "REPLACEB", "REPT", "RESIDUO", "RETENCIONFUENTE", "REVERSETEXT", "RIGHT", "RIGHTB", "ROMAN", "ROUND", "ROUNDDOWN", "ROUNDUP", "ROW", "ROWS", "RRI", "RSQ", "RTD", "SCAN", "SEARCH", "SEARCHB", "SECOND", "SECUENCIA", "SEGUNDO", "SENH", "SENO", "SEPARAR.TEXTO", "SEQUENCE", "SERIESSUM", "SERVICIOWEB", "SHEET", "SHEETS", "SI", "SI.CONJUNTO", "SI.ERROR", "SI.ND", "SIFECHA", "SIGN", "SIGNO", "SIN", "SINH", "SKEW", "SLN", "SLOPE", "SMALL", "SORT", "SPLIT", "SQRT", "STDEV", "STDEV.P", "STDEV.S", "STDEVA", "STDEVPA", "STEYX", "SUBSTITUTE", "SUBTOTAL", "SUBTOTALES", "SUM", "SUMA", "SUMA.CUADRADOS", "SUMA.SERIES", "SUMAPRODUCTO", "SUMAR.CUADRADOS.DIFERENCIAS", "SUMAR.DIAGONAL", "SUMAR.SI", "SUMAR.SI.CONJUNTO", "SUMAR.X2.MAS.Y2", "SUMAR.X2.MENOS.Y2", "SUMIF", "SUMIFS", "SUMPRODUCT", "SUMSQ", "SUMX2MY2", "SUMX2PY2", "SUMXMY2", "SUSTITUIR", "SWITCH", "T.DIST.2T", "T.DIST.RT", "T.INV", "T.INV.2T", "T.TEST", "TAKE", "TANH", "TASA", "TASA.DESC", "TASA.EQUIVALENTE", "TASA.INT", "TASA.NOMINAL", "TBILLPRICE", "TBILLYIELD", "TC.BCCR", "TECHO", "TENDENCIA", "TEXT", "TEXTAFTER", "TEXTBEFORE", "TEXTJOIN", "TEXTMATCH", "TEXTO", "TEXTOANTES", "TEXTODESPUES", "TEXTSPLIT", "TIME", "TIMEVALUE", "TIPIFICAR", "TIPO", "TIPO.CAMBIO", "TIPO.DE.ERROR", "TIPOCAMBIO", "TIR", "TIRM", "TOCOL", "TOMAR", "TOROW", "TRACE", "TRANSPONER", "TRANSPOSE", "TREND", "TRIM", "TRIMESTRE", "TRIMMEAN", "TRIMRANGE", "TRUNC", "TRUNCAR", "TYPE", "UNICODE", "UNICOS", "UNIQUE", "UNIRCADENAS", "UPPER", "URLCODIF", "VA", "VALIDACEDULA", "VALOR", "VALOR.CAMPO", "VALOR.NUMERO", "VALORCUBO", "VALUE", "VAR", "VAR.M", "VAR.P", "VAR.S", "VARA", "VARIANZA", "VARP", "VARPA", "VDB", "VERDADERO.SI", "VF", "VF.PLAN", "VLOOKUP", "VNA", "VSTACK", "WAVERAGE", "WEBSERVICE", "WEEKDAY", "WEEKNUM", "WEIBULL.DIST", "WORDCOUNT", "WORKDAY", "WORKDAY.INTL", "XLOOKUP", "XMATCH", "XMLFILTRO", "Y", "YEAR", "YEARFRAC", "YIELD", "YIELDDISC", "YIELDMAT", "Z.TEST", "TIR.NO.PER", "XIRR", "VNA.NO.PER", "XNPV", "SYD", "AMORTIZ.LIN", "AMORLINC", "AMORTIZ.PROGRE", "AMORDEGRC", "AGREGAR", "AGGREGATE", "PORCENTAJEDE", "PERCENTOF", "COMPLEJO", "COMPLEX", "VALOR.A.TEXTO", "VALUETOTEXT", "ORDENARPOR", "SORTBY", "AJUSTARFILAS", "WRAPROWS", "AJUSTARCOLS", "WRAPCOLS", "AGRUPARPOR", "GROUPBY", "MINVERSA", "MINVERSE"];
+var FN_MOTOR_NOMBRES = ["IMAGEN", "IMAGE", "ABS", "ACCRINT", "ACCRINTM", "ADDDAYS", "ADDMONTHS", "ADDRESS", "AGE", "AGREGAR.DIAS", "AGREGAR.MESES", "AGUINALDO", "AND", "APILARH", "APILARV", "ARABIC", "ARABIGO", "ARCHIVOMAKEARRAY", "AREAS", "ARRAYTOTEXT", "ASC", "ASEN", "ASENO", "ASIN", "ATAN2", "AVERAGE", "AVERAGEA", "AVERAGEIF", "AÑO", "AÑO.BISIESTO", "BASE", "BASE.IVA", "BDCONTAR", "BDCONTARA", "BDEXTRAER", "BDMAX", "BDMIN", "BDPROMEDIO", "BDSUMA", "BESSELJ", "BESSELY", "BETA.DIST", "BETA.INV", "BIN.A.DEC", "BIN2DEC", "BINOM.DIST", "BINOM.DIST.RANGE", "BINOM.INV", "BIT.O", "BIT.XO", "BIT.Y", "BITAND", "BITOR", "BITXOR", "BUSCAR.NESIMO", "BUSCAR.REGEX", "BUSCAR.ULTIMA", "BUSCARH", "BUSCARV", "BUSCARX", "BYCOL", "BYROW", "CAMBIAR", "CAPITALIZAR", "CAR", "CARACTER", "CARGAS.SOCIALES", "CEILING", "CEILING.MATH", "CELDA", "CELL", "CESANTIA", "CHAR", "CHEBYSHEV", "CHISQ.DIST.RT", "CHISQ.INV", "CHISQ.INV.RT", "CHISQ.TEST", "CHOOSE", "CHOOSECOLS", "CHOOSEROWS", "CLEAN", "COCIENTE", "COCIENTE.EXACTO", "CODE", "CODIGO", "COEF.DE.CORREL", "COEFICIENTE.ASIMETRIA", "COEFICIENTE.R2", "COINCIDIR", "COINCIDIR.TEXTO", "COINCIDIRX", "COLUMN", "COLUMNA", "COLUMNAS", "COLUMNS", "COMBIN", "COMBINAT", "CONCAT", "CONCATENAR", "CONCATENATE", "CONFIDENCE", "CONFIDENCE.NORM", "CONFIDENCE.T", "CONJUNTOCUBO", "CONTAR", "CONTAR.BLANCO", "CONTAR.OCURRENCIAS", "CONTAR.PALABRAS", "CONTAR.RANGO", "CONTAR.SI", "CONTAR.SI.CONJUNTO", "CONTAR.UNICOS", "CONTARA", "CONTARA.VALORES", "CONV.DECIMAL", "CONV.EN.FRACCION", "CONVERT", "CONVERTIR", "CORREL", "COSH", "COUNT", "COUNT.UNIQUE", "COUNTA", "COUNTALL", "COUNTBLANK", "COUNTIF", "COUNTIFS", "COUPDAYS", "COUPNUM", "COVARIANCE.P", "COVARIANCE.S", "COVARIANZA.M", "COVARIANZA.P", "CRECIMIENTO", "CUARTIL", "CUARTIL.EXC", "CUARTIL.INC", "CUBEKPIMEMBER", "CUBEMEMBER", "CUBEMEMBERPROPERTY", "CUBERANKEDMEMBER", "CUBESET", "CUBESETCOUNT", "CUBEVALUE", "CUMIPMT", "CUMPRINC", "CUPON.DIAS", "CUPON.NUM", "CURTOSIS", "D101", "DATE", "DATEDIF", "DATEVALUE", "DAVERAGE", "DAY", "DAYNAME", "DAYS", "DAYSDIFF", "DB", "DCOUNT", "DCOUNTA", "DDB", "DEC.A.BIN", "DEC.A.HEX", "DEC.A.OCT", "DEC2BIN", "DEC2HEX", "DEC2OCT", "DEGREES", "DELTA", "DERECHA", "DERECHAB", "DESREF", "DESREF.DINAMICO", "DESVEST", "DESVEST.M", "DESVEST.P", "DESVESTA", "DESVESTP", "DESVESTPA", "DETECTARIDIOMA", "DETECTLANGUAGE", "DGET", "DIA.LAB", "DIA.LAB.INTL", "DIAS", "DIAS.EN.MES", "DIAS.LAB", "DIAS.LAB.INTL", "DIAS360", "DIASEM", "DIFERENCIA.DIAS", "DIRECCION", "DISC", "DIST.POISSON", "DISTR.BETA", "DISTR.BETA.INV.N", "DISTR.BETA.N", "DISTR.BINOM", "DISTR.BINOM.N", "DISTR.BINOM.NEG", "DISTR.BINOM.NEG.N", "DISTR.BINOM.SERIE", "DISTR.CHICUAD.CD", "DISTR.EXP", "DISTR.EXP.N", "DISTR.F.CD", "DISTR.F.N", "DISTR.GAMMA", "DISTR.GAMMA.N", "DISTR.HIPERGEOM", "DISTR.HIPERGEOM.N", "DISTR.LOGNORM", "DISTR.LOGNORM.N", "DISTR.NORM", "DISTR.NORM.ESTAND", "DISTR.NORM.ESTAND.N", "DISTR.NORM.N", "DISTR.POISSON", "DISTR.T.2C", "DISTR.T.CD", "DISTR.T.N", "DISTR.WEIBULL", "DIVIDIRTEXTO", "DMAX", "DMIN", "DOLLAR", "DOLLARDE", "DOLLARFR", "DROP", "DSUM", "DURACION", "DURACION.MODIF", "DURATION", "DVS", "EDAD", "EDATE", "EFFECT", "ELEGIR", "ELEGIRCOLS", "ELEGIRFILAS", "ENCODEURL", "ENCOL", "ENCONTRAR", "ENCONTRARB", "ENFILA", "ENMASCARAR", "ENTERO", "ENTERO.SUPERIOR", "EOMONTH", "ERF.PRECISE", "ERFC", "ERFC.PRECISE", "ERROR.TIPICO.XY", "ERROR.TYPE", "ES.FORMULA.TEXTO", "ES.IMPAR", "ES.MULTIPLO", "ES.NUMERO.ENTERO", "ES.PAR", "ESAÑO.BISIESTO", "ESBLANCO", "ESERROR", "ESFORMULA", "ESLOGICO", "ESNOTEXTO", "ESNUMERO", "ESPACIOS", "ESREF", "ESTEXTO", "ESTIMACION.LINEAL", "ESTIMACION.LOGARITMICA", "EVEN", "EXACT", "EXCLUIR", "EXP", "EXPAND", "EXPANDIR", "EXPON.DIST", "EXTRAE", "EXTRAEB", "F.DIST.RT", "F.INV", "F.INV.RT", "F.TEST", "FACT", "FACT.DOBLE", "FACTDOUBLE", "FECHA", "FECHA.MES", "FECHANUMERO", "FIELDVALUE", "FILA", "FILAS", "FILTER", "FILTERXML", "FILTRAR", "FIN.MES", "FIND", "FINDB", "FISHERINV", "FLOOR", "FLOOR.MATH", "FORECAST", "FORECAST.ETS", "FORECAST.LINEAR", "FORMATNUMBER", "FORMATO.NUMERO", "FORMULATEXT", "FORMULATEXTO", "FRAC.AÑO", "FRACCION", "FRECUENCIA", "FREQUENCY", "FUN.ERROR.COMPL", "FUN.ERROR.COMPL.EXACTO", "FUN.ERROR.EXACTO", "FUNCION.GAMMA", "FV", "FVSCHEDULE", "GAMMA.DIST", "GAMMA.INV", "GAMMA.LN", "GAMMA.LN.EXACTO", "GAMMALN", "GAMMALN.PRECISE", "GCD", "GEOMEAN", "GESTEP", "GETPIVOTDATA", "GRADOS", "GROWTH", "HALLAR", "HALLARB", "HARMEAN", "HEX.A.DEC", "HEX2DEC", "HIPERVINCULO", "HLOOKUP", "HOJA", "HOJAS", "HORA", "HORANUMERO", "HOUR", "HSTACK", "HYPERLINK", "HYPGEOM.DIST", "IF", "IFERROR", "IFNA", "IFS", "IGUAL", "IMPORTARDATOSDINAMICOS", "IMPUESTO.D101", "IMPUESTO.RENTA", "INDEX", "INDICE", "INDIRECT", "INDIRECTO", "INFO", "INICIO.MES", "INT", "INT.ACUM", "INT.ACUM.V", "INT.EFECTIVO", "INT.PAGO.DIR", "INTERCEPT", "INTERSECCION.EJE", "INTERVALO.CONFIANZA", "INTERVALO.CONFIANZA.NORM", "INTERVALO.CONFIANZA.T", "INTRATE", "INV.BETA", "INV.CHICUAD", "INV.CHICUAD.CD", "INV.F", "INV.F.CD", "INV.GAMMA", "INV.LOGNORM", "INV.NORM", "INV.NORM.ESTAND", "INV.T", "INV.T.2C", "INVERTIR.TEXTO", "IPMT", "IRR", "ISBLANK", "ISERROR", "ISEVEN", "ISFORMULA", "ISINT", "ISLOGICAL", "ISMULTIPLE", "ISNONTEXT", "ISNUMBER", "ISO.CEILING", "ISO.NUM.DE.SEMANA", "ISODD", "ISOWEEKNUM", "ISPMT", "ISREF", "ISTEXT", "IVA", "IVA.INCLUIDO", "IZQUIERDA", "IZQUIERDAB", "JERARQUIA", "JERARQUIA.EQV", "JERARQUIA.MEDIA", "JIS", "K.ESIMO.MAYOR", "K.ESIMO.MENOR", "KURT", "LAMBDA", "LARGE", "LARGO", "LARGOB", "LASTMATCH", "LCM", "LEFT", "LEFTB", "LEN", "LENB", "LET", "LETRA.DE.TES.PRECIO", "LETRA.DE.TES.RENDTO", "LIMPIAR", "LINEST", "LN", "LOG", "LOG.GAMMA", "LOG10", "LOGEST", "LOGNORM.DIST", "LOGNORM.INV", "LOWER", "M.C.D", "M.C.M", "MAKEARRAY", "MAP", "MASK", "MATCH", "MATRIZALEAT", "MATRIZATEXTO", "MAX", "MAX.SI.CONJUNTO", "MAXA", "MAXIFS", "MAXIMO", "MAYOR.O.IGUAL", "MAYUSC", "MDETERM", "MDURATION", "MEDIA.ACOTADA", "MEDIA.ARMONICA", "MEDIA.GEOMETRICA", "MEDIA.PONDERADA", "MEDIAN", "MEDIANA", "MES", "MID", "MIDB", "MIEMBROCUBO", "MIEMBROKPICUBO", "MIEMBRORANGOCUBO", "MIN", "MIN.SI.CONJUNTO", "MINA", "MINIFS", "MINIMO", "MINUSC", "MINUTE", "MINUTO", "MIRR", "MMULT", "MOD", "MODA", "MODA.VARIOS", "MODE", "MODE.MULT", "MONEDA", "MONEDA.CR", "MONTH", "MONTHNAME", "MONTHSTART", "MONTO.SIN.IVA", "MROUND", "MULTIPLO.INFERIOR", "MULTIPLO.INFERIOR.MAT", "MULTIPLO.SUPERIOR", "MULTIPLO.SUPERIOR.ISO", "MULTIPLO.SUPERIOR.MAT", "MUNIT", "NEGBINOM.DIST", "NETWORKDAYS", "NETWORKDAYS.INTL", "NO", "NOD", "NOMBRE.DIA", "NOMBRE.MES", "NOMINAL", "NOMPROPIO", "NORM.DIST", "NORM.INV", "NORM.S.DIST", "NORM.S.INV", "NORMA.EUCLIDEA", "NORMALIZE", "NOT", "NPER", "NPV", "NSHORA", "NUM.DE.SEMANA", "NUMBERTEXT", "NUMBERVALUE", "NUMERO.A.TEXTO", "NUMERO.ALEATORIO", "NUMERO.DECIMAL", "NUMERO.ROMANO", "O", "OB", "OCT.A.DEC", "OCT2DEC", "ODD", "OFFSET", "OR", "ORDENAR", "P.DURACION", "PADLEFT", "PADRIGHT", "PADRON", "PAGO", "PAGO.INT.ENTRE", "PAGO.PRINC.ENTRE", "PAGOINT", "PAGOPRIN", "PDURATION", "PEARSON", "PENDIENTE", "PER", "PERCENTIL.EXC", "PERCENTIL.INC", "PERCENTILE", "PERCENTILE.EXC", "PERCENTRANK", "PERCENTRANK.EXC", "PERCENTRANK.INC", "PERMUT", "PERMUTACIONES", "PERMUTACIONES.A", "PERMUTATIONA", "PERS", "PI", "PISO", "PLANILLA.CCSS", "PLANILLACCSS", "PMT", "POISSON.DIST", "POSICION.TEXTO", "POTENCIA", "POTENCIA.DE.DIEZ", "POWER", "PPMT", "PREAVISO", "PRECIO", "PRECIO.DESCUENTO", "PRECIO.VENCIMIENTO", "PRICE", "PRICEDISC", "PRICEMAT", "PROB", "PROBABILIDAD", "PRODUCT", "PRODUCTO", "PROMEDIO", "PROMEDIO.SI", "PROMEDIOA", "PRONOSTICO", "PRONOSTICO.ETS", "PRONOSTICO.LINEAL", "PROPER", "PROPIEDADMIEMBROCUBO", "PRUEBA.CHICUAD", "PRUEBA.F", "PRUEBA.F.N", "PRUEBA.FISHER.INV", "PRUEBA.T", "PRUEBA.T.N", "PRUEBA.Z", "PRUEBA.Z.N", "PV", "QUARTER", "QUARTILE", "QUARTILE.EXC", "QUOTIENT", "RADIANES", "RADIANS", "RAIZ", "RANDARRAY", "RANGO.PERCENTIL", "RANGO.PERCENTIL.EXC", "RANGO.PERCENTIL.INC", "RANK", "RANK.AVG", "RATE", "RDTR", "RECORTAR.RANGO", "RECUENTOCONJUNTOCUBO", "REDOND.MULT", "REDONDEA.IMPAR", "REDONDEA.PAR", "REDONDEAR", "REDONDEAR.MAS", "REDONDEAR.MENOS", "REDUCE", "REEMPLAZAR", "REEMPLAZARB", "REEMPLAZARTODO", "REGEXEXTRACCION", "REGEXEXTRACT", "REGEXPRUEBA", "REGEXREEMPLAZAR", "REGEXREPLACE", "REGEXTEST", "RELLENAR.DER", "RELLENAR.IZQ", "RENDTO", "RENDTO.DESC", "RENDTO.VENCIMIENTO", "RENTA.TRABAJO", "REPETIR", "REPLACE", "REPLACEB", "REPT", "RESIDUO", "RETENCIONFUENTE", "REVERSETEXT", "RIGHT", "RIGHTB", "ROMAN", "ROUND", "ROUNDDOWN", "ROUNDUP", "ROW", "ROWS", "RRI", "RSQ", "RTD", "SCAN", "SEARCH", "SEARCHB", "SECOND", "SECUENCIA", "SEGUNDO", "SENH", "SENO", "SEPARAR.TEXTO", "SEQUENCE", "SERIESSUM", "SERVICIOWEB", "SHEET", "SHEETS", "SI", "SI.CONJUNTO", "SI.ERROR", "SI.ND", "SIFECHA", "SIGN", "SIGNO", "SIN", "SINH", "SKEW", "SLN", "SLOPE", "SMALL", "SORT", "SPLIT", "SQRT", "STDEV", "STDEV.P", "STDEV.S", "STDEVA", "STDEVPA", "STEYX", "SUBSTITUTE", "SUBTOTAL", "SUBTOTALES", "SUM", "SUMA", "SUMA.CUADRADOS", "SUMA.SERIES", "SUMAPRODUCTO", "SUMAR.CUADRADOS.DIFERENCIAS", "SUMAR.DIAGONAL", "SUMAR.SI", "SUMAR.SI.CONJUNTO", "SUMAR.X2.MAS.Y2", "SUMAR.X2.MENOS.Y2", "SUMIF", "SUMIFS", "SUMPRODUCT", "SUMSQ", "SUMX2MY2", "SUMX2PY2", "SUMXMY2", "SUSTITUIR", "SWITCH", "T.DIST.2T", "T.DIST.RT", "T.INV", "T.INV.2T", "T.TEST", "TAKE", "TANH", "TASA", "TASA.DESC", "TASA.EQUIVALENTE", "TASA.INT", "TASA.NOMINAL", "TBILLPRICE", "TBILLYIELD", "TC.BCCR", "TECHO", "TENDENCIA", "TEXT", "TEXTAFTER", "TEXTBEFORE", "TEXTJOIN", "TEXTMATCH", "TEXTO", "TEXTOANTES", "TEXTODESPUES", "TEXTSPLIT", "TIME", "TIMEVALUE", "TIPIFICAR", "TIPO", "TIPO.CAMBIO", "TIPO.DE.ERROR", "TIPOCAMBIO", "TIR", "TIRM", "TOCOL", "TOMAR", "TOROW", "TRACE", "TRANSPONER", "TRANSPOSE", "TREND", "TRIM", "TRIMESTRE", "TRIMMEAN", "TRIMRANGE", "TRUNC", "TRUNCAR", "TYPE", "UNICODE", "UNICOS", "UNIQUE", "UNIRCADENAS", "UPPER", "URLCODIF", "VA", "VALIDACEDULA", "VALOR", "VALOR.CAMPO", "VALOR.NUMERO", "VALORCUBO", "VALUE", "VAR", "VAR.M", "VAR.P", "VAR.S", "VARA", "VARIANZA", "VARP", "VARPA", "VDB", "VERDADERO.SI", "VF", "VF.PLAN", "VLOOKUP", "VNA", "VSTACK", "WAVERAGE", "WEBSERVICE", "WEEKDAY", "WEEKNUM", "WEIBULL.DIST", "WORDCOUNT", "WORKDAY", "WORKDAY.INTL", "XLOOKUP", "XMATCH", "XMLFILTRO", "Y", "YEAR", "YEARFRAC", "YIELD", "YIELDDISC", "YIELDMAT", "Z.TEST", "TIR.NO.PER", "XIRR", "VNA.NO.PER", "XNPV", "SYD", "AMORTIZ.LIN", "AMORLINC", "AMORTIZ.PROGRE", "AMORDEGRC", "AGREGAR", "AGGREGATE", "PORCENTAJEDE", "PERCENTOF", "COMPLEJO", "COMPLEX", "VALOR.A.TEXTO", "VALUETOTEXT", "ORDENARPOR", "SORTBY", "AJUSTARFILAS", "WRAPROWS", "AJUSTARCOLS", "WRAPCOLS", "AGRUPARPOR", "GROUPBY", "MINVERSA", "MINVERSE", "PIVOTARPOR", "PIVOTBY", "RECORTARINTERVALOS", "TRADUCIR", "TRANSLATE", "HISTORIALCOTIZACIONES", "STOCKHISTORY", "TTEST", "CAMPOVALOR"];
 function funcionesPropias() { return (colWidths.__funciones && typeof colWidths.__funciones === 'object' && !Array.isArray(colWidths.__funciones)) ? colWidths.__funciones : {}; }
 function expandirFuncionesPropias(expr, prof) {
   var F = funcionesPropias(); prof = prof || 0;
@@ -4469,7 +4529,48 @@ function expandirFuncionesPropias(expr, prof) {
   }
   return out;
 }
+// Coma decimal de Excel en español dentro de cuentas: =A1*1,13 o =REDONDEAR(A1*1,13;2).
+// La coma se toma como decimal cuando no puede ser separador de argumentos:
+// fuera de una función, dentro de paréntesis normales, o en una función cuyos
+// argumentos ya van separados por ";". En =SUMA(1,2) (estilo inglés) se deja igual.
+function normalizarComaDecimal(expr) {
+  if (typeof expr !== 'string' || expr.indexOf(',') === -1) return expr;
+  var pila = [], out = '', i = 0, n = expr.length;
+  function llamadaConPuntoYComa(desde) {
+    for (var k = desde, prof = 0, cad = false; k < n; k++) {
+      var c = expr.charAt(k);
+      if (c === '"') { cad = !cad; continue; }
+      if (cad) continue;
+      if (c === '(') prof++;
+      else if (c === ')') { if (prof === 0) return false; prof--; }
+      else if (c === ';' && prof === 0) return true;
+    }
+    return false;
+  }
+  while (i < n) {
+    var ch = expr.charAt(i);
+    if (ch === '"') { var j = expr.indexOf('"', i + 1); while (j !== -1 && expr.charAt(j + 1) === '"') j = expr.indexOf('"', j + 2); if (j === -1) j = n - 1; out += expr.slice(i, j + 1); i = j + 1; continue; }
+    if (ch === '(') {
+      var esFuncion = /[A-Za-z0-9_.ÁÉÍÓÚÑáéíóúñ]/.test(expr.charAt(i - 1) || '');
+      pila.push(esFuncion ? (llamadaConPuntoYComa(i + 1) ? 'fnPyC' : 'fn') : 'par');
+      out += ch; i++; continue;
+    }
+    if (ch === ')') { pila.pop(); out += ch; i++; continue; }
+    if (ch === ',' && /\d/.test(expr.charAt(i + 1) || '')) {
+      var ctx = pila.length ? pila[pila.length - 1] : 'top';
+      if (ctx !== 'fn') {
+        // el número de la izquierda tiene que ser un número suelto, no parte de una referencia (A1) ni de otro número con coma
+        var m = /(^|[^A-Za-z0-9_$.,:!])(\d+)$/.exec(out);
+        if (m) { out += '.'; i++; continue; }
+      }
+    }
+    out += ch; i++;
+  }
+  return out;
+}
 function computeExpr(expr) {
+  expr = normalizarComaDecimal(expr);
+  expr = expandirCamposVinculados(expr);
   expr = quitarDolaresDeRefs(expr);
   expr = sustituirRangosNombrados(expr);
   expr = expandirFuncionesPropias(expr);
@@ -5061,13 +5162,36 @@ if ((inner = matchFn('SIGNO|SIGN')) !== null) { var sv = resolveNum(splitArgs(in
 if ((inner = matchFn('COCIENTE|QUOTIENT')) !== null) { args = splitArgs(inner); return fmtNum(Math.trunc(resolveNum(args[0]) / resolveNum(args[1]))); }
 if ((inner = matchFn('COMBINAT|COMBIN')) !== null) { args = splitArgs(inner); var nn = resolveNum(args[0]), kk = resolveNum(args[1]); var r2 = 1; for (var i4 = 0; i4 < kk; i4++) r2 = r2 * (nn - i4) / (i4 + 1); return fmtNum(Math.round(r2)); }
 if ((inner = matchFn('SUMAPRODUCTO|SUMPRODUCT')) !== null) {
+      // Como Excel: cada argumento puede ser un rango o una expresión con rangos,
+      // por ejemplo =SUMAPRODUCTO((A1:A10>1)*(B1:B10="Sí");C1:C10). Los textos y los
+      // VERDADERO/FALSO sueltos cuentan como 0 (por eso en Excel se usa -- o *1).
       args = splitArgs(inner);
-      if (args.length === 1 && isRange(args[0])) { return fmtNum(rangeNums(args[0]).reduce(function(a, b) { return a + b; }, 0)); }
-      if (args.length >= 2 && isRange(args[0]) && isRange(args[1])) {
-        var n1 = rangeNums(args[0]), n3 = rangeNums(args[1]); var sp = 0;
-        for (var i5 = 0; i5 < Math.min(n1.length, n3.length); i5++) sp += n1[i5] * n3[i5];
-        return fmtNum(sp);
+      if (!args.length) return '#VALOR!';
+      var listasSP = [];
+      for (var aSP = 0; aSP < args.length; aSP++) {
+        var vSP = evaluarExprArreglo(args[aSP]);
+        if (vSP === null) return '#VALOR!';
+        if (vSP.error) return vSP.error;
+        var numsSP = [];
+        for (var jSP = 0; jSP < vSP.length; jSP++) {
+          var xSP = vSP[jSP];
+          if (typeof xSP === 'number') { numsSP.push(xSP); continue; }
+          if (typeof xSP === 'boolean') { numsSP.push(0); continue; }
+          var tSP = String(xSP == null ? '' : xSP).trim();
+          if (tSP.charAt(0) === '#') return tSP;
+          numsSP.push(tSP !== '' && /^[-+]?[\d\s.,]+$/.test(tSP) && !isNaN(parseFloat(limpiaNum(tSP))) ? parseFloat(limpiaNum(tSP)) : 0);
+        }
+        listasSP.push(numsSP);
       }
+      var largoSP = listasSP[0].length;
+      if (listasSP.some(function (l) { return l.length !== largoSP; })) return '#VALOR!';
+      var totalSP = 0;
+      for (var iSP = 0; iSP < largoSP; iSP++) {
+        var prodSP = 1;
+        for (var kSP = 0; kSP < listasSP.length; kSP++) prodSP *= listasSP[kSP][iSP];
+        totalSP += prodSP;
+      }
+      return fmtNum(totalSP);
     }
 if ((inner = matchFn('SUBTOTALES|SUBTOTAL')) !== null) {
       args = splitArgs(inner); var fnNum = parseInt(resolveNum(args[0]));
@@ -5853,31 +5977,10 @@ if ((inner = matchFn('BASE')) !== null) {
     }
 if ((inner = matchFn('CONVERTIR|CONVERT')) !== null) {
       args = splitArgs(inner);
-      var val2 = resolveNum(args[0]);
-      var from = String(resolveArg(args[1])).toLowerCase();
-      var to   = String(resolveArg(args[2])).toLowerCase();
-      var convMap = {
-        // Longitud
-        'km_m':1000,'m_km':0.001,'mi_km':1.60934,'km_mi':0.621371,
-        'm_ft':3.28084,'ft_m':0.3048,'in_cm':2.54,'cm_in':0.393701,
-        // Peso
-        'kg_lb':2.20462,'lb_kg':0.453592,'oz_g':28.3495,'g_oz':0.035274,
-        // Temperatura
-        'c_f':null,'f_c':null,'c_k':null,'k_c':null,
-        // Área
-        'ha_m2':10000,'m2_ha':0.0001,
-        // Volumen
-        'l_gal':0.264172,'gal_l':3.78541,
-        // Velocidad
-        'kmh_ms':0.277778,'ms_kmh':3.6,
-      };
-      var key = from+'_'+to;
-      if (key === 'c_f') return fmtNum(val2*9/5+32);
-      if (key === 'f_c') return fmtNum((val2-32)*5/9);
-      if (key === 'c_k') return fmtNum(val2+273.15);
-      if (key === 'k_c') return fmtNum(val2-273.15);
-      if (convMap[key] != null) return fmtNum(val2 * convMap[key]);
-      return '#N/A';
+      var valConv = resolveNum(args[0]);
+      if (isNaN(valConv)) return '#VALOR!';
+      var resConv = convertirUnidades(valConv, String(resolveArg(args[1])).trim(), String(resolveArg(args[2])).trim());
+      return typeof resConv === 'string' ? resConv : fmtNum(resConv);
     }
 if ((inner = matchFn('BIN\.A\.DEC|BIN2DEC')) !== null) {
       return String(parseInt(String(resolveArg(splitArgs(inner)[0])), 2));
@@ -6522,12 +6625,25 @@ if ((inner = matchFn('VALOR\\.A\\.TEXTO|VALUETOTEXT')) !== null) {
     }
 // Versión anidada de las funciones de matriz nuevas (=SUMA(ORDENARPOR(...)) etc.):
 // devuelve los valores separados por "; ", igual que ORDENAR o UNICOS.
-if ((inner = matchFn('ORDENARPOR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|MINVERSA|MINVERSE')) !== null) {
+if ((inner = matchFn('ORDENARPOR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE')) !== null) {
       var nomArr = NOMBRES_ARRAY_NUEVOS[exprUp.slice(0, exprUp.indexOf('(')).trim()] || exprUp.slice(0, exprUp.indexOf('(')).trim();
       var filasArr = calcularFormulaArray(hojaFormulaActual || activeSheet, nomArr, inner);
       var planoArr = [];
       filasArr.forEach(function (f) { f.forEach(function (v) { planoArr.push(v); }); });
       return planoArr.join('; ');
+    }
+if ((inner = matchFn('CAMPOVALOR|FIELDVALUE')) !== null) {
+      // CAMPOVALOR(celda; "campo") — dato de una celda vinculada (cédula o moneda)
+      args = splitArgs(inner);
+      return valorCampoVinculado(args[0], String(resolveArg(args[1] || '')));
+    }
+if ((inner = matchFn('TRADUCIR|TRANSLATE')) !== null) {
+      // TRADUCIR(texto; [idioma_origen]; [idioma_destino]) — necesita internet
+      args = splitArgs(inner);
+      var txtTr = resolveArg(args[0] || '');
+      var oTr = args[1] !== undefined && String(args[1]).trim() !== '' ? String(resolveArg(args[1])) : '';
+      var dTr = args[2] !== undefined && String(args[2]).trim() !== '' ? String(resolveArg(args[2])) : 'es';
+      return traducirTexto(String(txtTr), oTr, dTr);
     }
 if((inner=matchFn('DIAS360'))!==null){
       args=splitArgs(inner);
@@ -6811,16 +6927,38 @@ if ((inner=matchFn('INV\.CHICUAD\.CD|INV\.CHICUAD|CHISQ\.INV\.RT|CHISQ\.INV'))!=
       var z3=normInv4(p8);
       return fmtNum(Math.max(0,k3*Math.pow(1-h+z3*Math.sqrt(h),3)));
     }
-if ((inner=matchFn('PRUEBA\.T\.N|PRUEBA\.T|T\.TEST'))!==null) {
+if ((inner=matchFn('PRUEBA\\.T\\.N|PRUEBA\\.T|T\\.TEST|TTEST'))!==null) {
+      // PRUEBA.T(matriz1; matriz2; colas; tipo) — tipo 1: pareada, 2: varianzas iguales, 3: varianzas distintas (Welch)
       args=splitArgs(inner);
-      var y1=isRange(args[0])?rangeNums(args[0]):[],x1=isRange(args[1])?rangeNums(args[1]):[];
-      var n1=Math.min(y1.length,x1.length);
-      var my=y1.reduce(function(a,b){return a+b;},0)/n1,mx=x1.reduce(function(a,b){return a+b;},0)/n1;
-      var sy=y1.reduce(function(s,v){return s+(v-my)*(v-my);},0)/(n1-1);
-      var sx=x1.reduce(function(s,v){return s+(v-mx)*(v-mx);},0)/(n1-1);
-      var t3=Math.abs(my-mx)/Math.sqrt((sy+sx)/n1);
-      var df3=n1-1;
-      return fmtNum(2*(1-normCDF(t3*Math.sqrt(df3/(df3+t3*t3)))));
+      if (!isRange(args[0]) || !isRange(args[1])) return '#VALOR!';
+      var colasT=Math.floor(resolveNum(args[2])), tipoT=Math.floor(resolveNum(args[3]));
+      if ((colasT!==1&&colasT!==2) || tipoT<1 || tipoT>3) return '#NUM!';
+      var va=rangeVals(args[0]), vb=rangeVals(args[1]);
+      function esNumT(v){ var t=String(v==null?'':v).trim(); return t!==''&&/^[-+]?[\d\s.,]+(e[-+]?\d+)?$/i.test(t)&&!isNaN(parseFloat(limpiaNum(t))); }
+      var tT, glT;
+      if (tipoT===1) {
+        if (va.length!==vb.length) return '#N/A';
+        var dif=[]; for (var iT=0;iT<va.length;iT++) if (esNumT(va[iT])&&esNumT(vb[iT])) dif.push(toNum(va[iT])-toNum(vb[iT]));
+        if (dif.length<2) return '#DIV/0!';
+        var vd=varAd(dif); if (!vd) return '#DIV/0!';
+        tT=mediaAd(dif)/Math.sqrt(vd/dif.length); glT=dif.length-1;
+      } else {
+        var xa=va.filter(esNumT).map(toNum), xb=vb.filter(esNumT).map(toNum);
+        if (xa.length<2||xb.length<2) return '#DIV/0!';
+        var s1=varAd(xa), s2=varAd(xb), n1T=xa.length, n2T=xb.length;
+        if (tipoT===2) {
+          var sp=((n1T-1)*s1+(n2T-1)*s2)/(n1T+n2T-2);
+          if (!sp) return '#DIV/0!';
+          tT=(mediaAd(xa)-mediaAd(xb))/Math.sqrt(sp*(1/n1T+1/n2T)); glT=n1T+n2T-2;
+        } else {
+          var se=s1/n1T+s2/n2T;
+          if (!se) return '#DIV/0!';
+          tT=(mediaAd(xa)-mediaAd(xb))/Math.sqrt(se);
+          glT=se*se/((s1/n1T)*(s1/n1T)/(n1T-1)+(s2/n2T)*(s2/n2T)/(n2T-1));
+        }
+      }
+      var pT=tDosColasAd(Math.abs(tT),glT);
+      return fmtNum(colasT===1?pT/2:pT);
     }
 if ((inner=matchFn('PRUEBA\.F\.N|PRUEBA\.F|F\.TEST'))!==null) {
       args=splitArgs(inner);
@@ -7853,7 +7991,7 @@ function pronosticoEts(valores, tiempos, objetivo) {
   }
   return mejor.nivel + h * mejor.tend;
 }
-var NOMBRES_ARRAY_NUEVOS = { SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA' };
+var NOMBRES_ARRAY_NUEVOS = { SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA', PIVOTBY: 'PIVOTARPOR', TRIMRANGE: 'RECORTARINTERVALOS', STOCKHISTORY: 'HISTORIALCOTIZACIONES' };
 function numeroDeValorFin(v) {
   if (typeof v === 'number') return v;
   if (v === true) return 1;
@@ -7991,9 +8129,308 @@ function agregadoPorNombre(nombre, valores) {
   var r = agregarCalculo(fn, nums, cont, null);
   return typeof r === 'string' ? r : fmtNum(r);
 }
+// ══════════════════════════════════════════════
+// Evaluador de expresiones con rangos, como hace Excel dentro de
+// SUMAPRODUCTO: (A1:A10>1)*(B1:B10="Sí")*C1:C10, --(A1:A3>0), A1:A3*2…
+// Devuelve una lista plana de valores (números, textos o booleanos)
+// o null si la expresión no se puede leer así.
+// ══════════════════════════════════════════════
+function evaluarExprArreglo(texto) {
+  var s = String(texto || ''), pos = 0;
+  function espacios() { while (pos < s.length && /\s/.test(s.charAt(pos))) pos++; }
+  function mira(t) { espacios(); return s.substr(pos, t.length) === t; }
+  function toma(t) { if (mira(t)) { pos += t.length; return true; } return false; }
+  function aNum(v) {
+    if (typeof v === 'boolean') return v ? 1 : 0;
+    if (typeof v === 'number') return v;
+    var t = String(v == null ? '' : v).trim();
+    if (t === 'VERDADERO' || t === 'TRUE') return 1;
+    if (t === 'FALSO' || t === 'FALSE') return 0;
+    if (t === '') return 0;
+    if (t.charAt(0) === '#') throw new Error(t);
+    var n = parseFloat(limpiaNum(t));
+    if (isNaN(n)) throw new Error('#VALOR!');
+    return n;
+  }
+  function aplicar(a, b, fn) {
+    var la = a.length, lb = b.length;
+    if (la === 1 && lb === 1) return [fn(a[0], b[0])];
+    if (la === 1) return b.map(function (y) { return fn(a[0], y); });
+    if (lb === 1) return a.map(function (x) { return fn(x, b[0]); });
+    if (la !== lb) throw new Error('#VALOR!');
+    return a.map(function (x, i) { return fn(x, b[i]); });
+  }
+  function comparar(x, y, op) {
+    var nx = typeof x === 'number' || (typeof x === 'string' && x.trim() !== '' && !isNaN(parseFloat(limpiaNum(x))) && /^[-+]?[\d\s.,]+$/.test(x.trim()));
+    var ny = typeof y === 'number' || (typeof y === 'string' && y.trim() !== '' && !isNaN(parseFloat(limpiaNum(y))) && /^[-+]?[\d\s.,]+$/.test(y.trim()));
+    var c;
+    if (nx && ny) { var a = aNum(x), b = aNum(y); c = a < b ? -1 : a > b ? 1 : 0; }
+    else { var ta = String(x == null ? '' : x).toLowerCase(), tb = String(y == null ? '' : y).toLowerCase(); c = ta < tb ? -1 : ta > tb ? 1 : 0; }
+    switch (op) { case '=': return c === 0; case '<>': return c !== 0; case '<': return c < 0; case '>': return c > 0; case '<=': return c <= 0; case '>=': return c >= 0; }
+    return false;
+  }
+  function primario() {
+    espacios();
+    var ch = s.charAt(pos);
+    if (ch === '(') { pos++; var v = comparacion(); if (!toma(')')) throw new Error('#VALOR!'); return v; }
+    if (ch === '"') {
+      var fin = pos + 1, txt = '';
+      while (fin < s.length) { if (s.charAt(fin) === '"') { if (s.charAt(fin + 1) === '"') { txt += '"'; fin += 2; continue; } break; } txt += s.charAt(fin); fin++; }
+      pos = fin + 1; return [txt];
+    }
+    var mNum = /^\d+(?:[.,]\d+)?(?:[eE][-+]?\d+)?/.exec(s.slice(pos));
+    if (mNum) { pos += mNum[0].length; return [parseFloat(mNum[0].replace(',', '.'))]; }
+    // Rango (con hoja opcional) o celda
+    var mRef = /^(?:(?:'[^']+'|[A-Za-zÁÉÍÓÚÑáéíóúñ0-9_.]+)!)?[A-Za-z]{1,3}\d+(?::[A-Za-z]{1,3}\d+)?(?![A-Za-z0-9_(])/.exec(s.slice(pos));
+    if (mRef) {
+      pos += mRef[0].length;
+      if (mRef[0].indexOf(':') !== -1) return rangeVals(mRef[0]);
+      return [resolveArg(mRef[0])];
+    }
+    var mBool = /^(VERDADERO|FALSO|TRUE|FALSE)(?![A-Za-z0-9_.(])/i.exec(s.slice(pos));
+    if (mBool) { pos += mBool[0].length; return [/^(VERDADERO|TRUE)$/i.test(mBool[0])]; }
+    // Función: si es de las que devuelven varios valores, se toman todos; si no, su resultado
+    var mFn = /^[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*\(/.exec(s.slice(pos));
+    if (mFn) {
+      var ini = pos, p = 0, k = pos + mFn[0].length - 1, cad = false;
+      for (; k < s.length; k++) { var c2 = s.charAt(k); if (c2 === '"') cad = !cad; if (cad) continue; if (c2 === '(') p++; else if (c2 === ')') { p--; if (p === 0) break; } }
+      if (p !== 0) throw new Error('#VALOR!');
+      var llamada = s.slice(ini, k + 1); pos = k + 1;
+      var anidada = valoresDeFuncionArrayAnidada(llamada);
+      if (anidada) return anidada;
+      var r = computeExpr(llamada);
+      return typeof r === 'string' && r.indexOf('; ') !== -1 ? r.split('; ') : [r];
+    }
+    throw new Error('#VALOR!');
+  }
+  function unario() {
+    if (toma('-')) return unario().map(function (v) { return -aNum(v); });
+    if (toma('+')) return unario();
+    return primario();
+  }
+  function potencia() {
+    var a = unario();
+    while (toma('^')) { var b = unario(); a = aplicar(a, b, function (x, y) { return Math.pow(aNum(x), aNum(y)); }); }
+    return a;
+  }
+  function producto() {
+    var a = potencia();
+    for (;;) {
+      if (toma('*')) { var b = potencia(); a = aplicar(a, b, function (x, y) { return aNum(x) * aNum(y); }); }
+      else if (toma('/')) { var d = potencia(); a = aplicar(a, d, function (x, y) { var q = aNum(y); if (q === 0) throw new Error('#DIV/0!'); return aNum(x) / q; }); }
+      else return a;
+    }
+  }
+  function suma() {
+    var a = producto();
+    for (;;) {
+      if (toma('+')) { var b = producto(); a = aplicar(a, b, function (x, y) { return aNum(x) + aNum(y); }); }
+      else if (mira('-')) { pos++; var c = producto(); a = aplicar(a, c, function (x, y) { return aNum(x) - aNum(y); }); }
+      else if (toma('&')) { var t = producto(); a = aplicar(a, t, function (x, y) { return String(x) + String(y); }); }
+      else return a;
+    }
+  }
+  function comparacion() {
+    var a = suma();
+    var ops = ['<>', '<=', '>=', '=', '<', '>'];
+    for (var i = 0; i < ops.length; i++) {
+      if (toma(ops[i])) { var op = ops[i], b = suma(); return aplicar(a, b, function (x, y) { return comparar(x, y, op); }); }
+    }
+    return a;
+  }
+  try {
+    var res = comparacion();
+    espacios();
+    if (pos !== s.length) return null;
+    return res;
+  } catch (e) {
+    var msg = String(e && e.message || '');
+    return msg.charAt(0) === '#' ? { error: msg } : null;
+  }
+}
+// ══════════════════════════════════════════════
+// CONVERTIR (CONVERT) con las unidades y prefijos de Excel.
+// Cada unidad: [categoría, valor en la unidad base de su categoría, ¿acepta prefijo?]
+// ══════════════════════════════════════════════
+var UNIDADES_CONVERTIR = {
+  // Masa (base: gramo)
+  g: ['masa', 1, 1], sg: ['masa', 14593.902937206, 0], lbm: ['masa', 453.59237, 0], u: ['masa', 1.66053906660e-24, 1],
+  ozm: ['masa', 28.349523125, 0], grain: ['masa', 0.06479891, 0], cwt: ['masa', 45359.237, 0], shweight: ['masa', 45359.237, 0],
+  uk_cwt: ['masa', 50802.34544, 0], lcwt: ['masa', 50802.34544, 0], hweight: ['masa', 50802.34544, 0], stone: ['masa', 6350.29318, 0],
+  ton: ['masa', 907184.74, 0], uk_ton: ['masa', 1016046.9088, 0], LTON: ['masa', 1016046.9088, 0], brton: ['masa', 1016046.9088, 0],
+  // Distancia (base: metro)
+  m: ['dist', 1, 1], mi: ['dist', 1609.344, 0], Nmi: ['dist', 1852, 0], 'in': ['dist', 0.0254, 0], ft: ['dist', 0.3048, 0],
+  yd: ['dist', 0.9144, 0], ang: ['dist', 1e-10, 1], ell: ['dist', 1.143, 0], ly: ['dist', 9460730472580800, 1],
+  parsec: ['dist', 30856775814913673, 1], pc: ['dist', 30856775814913673, 1], Picapt: ['dist', 0.0254 / 72, 0], Pica: ['dist', 0.0254 / 72, 0],
+  pica: ['dist', 0.0254 / 6, 0], survey_mi: ['dist', 1609.3472186944373, 0],
+  // Tiempo (base: segundo)
+  yr: ['tiempo', 31557600, 0], day: ['tiempo', 86400, 0], d: ['tiempo', 86400, 0], hr: ['tiempo', 3600, 0], mn: ['tiempo', 60, 0],
+  min: ['tiempo', 60, 0], sec: ['tiempo', 1, 1], s: ['tiempo', 1, 1],
+  // Presión (base: pascal)
+  Pa: ['presion', 1, 1], p: ['presion', 1, 1], atm: ['presion', 101325, 1], at: ['presion', 101325, 1], mmHg: ['presion', 133.322, 1],
+  psi: ['presion', 6894.75729316836, 0], Torr: ['presion', 133.322368421053, 0],
+  // Fuerza (base: newton)
+  N: ['fuerza', 1, 1], dyn: ['fuerza', 1e-5, 1], dy: ['fuerza', 1e-5, 1], lbf: ['fuerza', 4.4482216152605, 0], pond: ['fuerza', 0.00980665, 1],
+  // Energía (base: joule)
+  J: ['energia', 1, 1], e: ['energia', 1e-7, 1], c: ['energia', 4.184, 1], cal: ['energia', 4.1868, 1], eV: ['energia', 1.602176634e-19, 1],
+  ev: ['energia', 1.602176634e-19, 1], HPh: ['energia', 2684519.53769617, 0], hh: ['energia', 2684519.53769617, 0], Wh: ['energia', 3600, 1],
+  wh: ['energia', 3600, 1], flb: ['energia', 0.0421401100938048, 0], BTU: ['energia', 1055.05585262, 0], btu: ['energia', 1055.05585262, 0],
+  // Potencia (base: vatio)
+  HP: ['potencia', 745.69987158227, 0], h: ['potencia', 745.69987158227, 0], PS: ['potencia', 735.49875, 0], W: ['potencia', 1, 1], w: ['potencia', 1, 1],
+  // Magnetismo (base: tesla)
+  T: ['magnet', 1, 1], ga: ['magnet', 1e-4, 1],
+  // Volumen (base: litro)
+  tsp: ['vol', 0.00492892159375, 0], tspm: ['vol', 0.005, 0], tbs: ['vol', 0.01478676478125, 0], oz: ['vol', 0.0295735295625, 0],
+  cup: ['vol', 0.2365882365, 0], pt: ['vol', 0.473176473, 0], us_pt: ['vol', 0.473176473, 0], uk_pt: ['vol', 0.56826125, 0],
+  qt: ['vol', 0.946352946, 0], uk_qt: ['vol', 1.1365225, 0], gal: ['vol', 3.785411784, 0], uk_gal: ['vol', 4.54609, 0],
+  l: ['vol', 1, 1], L: ['vol', 1, 1], lt: ['vol', 1, 1], ang3: ['vol', 1e-27, 1], ang3_: ['vol', 1e-27, 1], barrel: ['vol', 158.987294928, 0],
+  bushel: ['vol', 35.23907016688, 0], ft3: ['vol', 28.316846592, 0], in3: ['vol', 0.016387064, 0], ly3: ['vol', 8.46786664623715e50, 0],
+  m3: ['vol', 1000, 1], mi3: ['vol', 4168181825440.58, 0], yd3: ['vol', 764.554857984, 0], Nmi3: ['vol', 6352182208000, 0],
+  Picapt3: ['vol', 4.39039566186557e-8, 0], Pica3: ['vol', 4.39039566186557e-8, 0], GRT: ['vol', 2831.6846592, 0], regton: ['vol', 2831.6846592, 0],
+  MTON: ['vol', 1132.6738636800, 0],
+  // Área (base: metro cuadrado)
+  uk_acre: ['area', 4046.8564224, 0], us_acre: ['area', 4046.87260987425, 0], ang2: ['area', 1e-20, 1], ar: ['area', 100, 1],
+  ft2: ['area', 0.09290304, 0], ha: ['area', 10000, 0], in2: ['area', 0.00064516, 0], ly2: ['area', 8.95054210748189e31, 0],
+  m2: ['area', 1, 1], Morgen: ['area', 2500, 0], mi2: ['area', 2589988.110336, 0], Nmi2: ['area', 3429904, 0],
+  Picapt2: ['area', 1.24452160493827e-7, 0], Pica2: ['area', 1.24452160493827e-7, 0], yd2: ['area', 0.83612736, 0],
+  // Información (base: bit)
+  bit: ['info', 1, 1], byte: ['info', 8, 1],
+  // Velocidad (base: metro por segundo)
+  admkn: ['vel', 0.514773333333333, 0], kn: ['vel', 0.514444444444444, 0], 'm/h': ['vel', 1 / 3600, 1], 'm/hr': ['vel', 1 / 3600, 1],
+  'm/s': ['vel', 1, 1], 'm/sec': ['vel', 1, 1], mph: ['vel', 0.44704, 0]
+};
+var PREFIJOS_CONVERTIR = { Y: 1e24, Z: 1e21, E: 1e18, P: 1e15, T: 1e12, G: 1e9, M: 1e6, k: 1e3, h: 1e2, da: 10, e: 10, d: 0.1, c: 0.01, m: 1e-3, u: 1e-6, n: 1e-9, p: 1e-12, f: 1e-15, a: 1e-18, z: 1e-21, y: 1e-24,
+  ki: 1024, Mi: Math.pow(2, 20), Gi: Math.pow(2, 30), Ti: Math.pow(2, 40), Pi: Math.pow(2, 50), Ei: Math.pow(2, 60), Zi: Math.pow(2, 70), Yi: Math.pow(2, 80) };
+var TEMPERATURAS_CONVERTIR = { C: 'C', cel: 'C', F: 'F', fah: 'F', K: 'K', kel: 'K', Rank: 'R', Reau: 'Re' };
+function unidadConvertir(u) {
+  if (UNIDADES_CONVERTIR[u]) return { cat: UNIDADES_CONVERTIR[u][0], f: UNIDADES_CONVERTIR[u][1] };
+  if (TEMPERATURAS_CONVERTIR[u]) return { cat: 'temp', t: TEMPERATURAS_CONVERTIR[u], f: 1 };
+  var prefs = Object.keys(PREFIJOS_CONVERTIR).sort(function (a, b) { return b.length - a.length; });
+  for (var i = 0; i < prefs.length; i++) {
+    var pr = prefs[i];
+    if (u.indexOf(pr) !== 0 || u.length <= pr.length) continue;
+    var base = u.slice(pr.length);
+    var binario = pr.length === 2 && pr.charAt(1) === 'i';
+    if (UNIDADES_CONVERTIR[base] && UNIDADES_CONVERTIR[base][2] && (!binario || UNIDADES_CONVERTIR[base][0] === 'info')) {
+      var factor = PREFIJOS_CONVERTIR[pr];
+      // m2, m3 y ang2/3: el prefijo también se eleva (km2 = 10^6 m2)
+      var exp = /2$/.test(base) ? 2 : /3$/.test(base) ? 3 : 1;
+      return { cat: UNIDADES_CONVERTIR[base][0], f: UNIDADES_CONVERTIR[base][1] * Math.pow(factor, exp) };
+    }
+    if (TEMPERATURAS_CONVERTIR[base] === 'K' && !binario) return { cat: 'temp', t: 'K', f: PREFIJOS_CONVERTIR[pr] };
+  }
+  return null;
+}
+function convertirUnidades(valor, desde, hasta) {
+  // Nombres viejos de la app (en minúscula): se siguen aceptando
+  var viejos = { kmh: 'km/h', ms: 'm/s', lb: 'lbm' };
+  if (/^[cfk]$/.test(desde) && /^[cfk]$/.test(hasta)) { desde = desde.toUpperCase(); hasta = hasta.toUpperCase(); }
+  var ud = unidadConvertir(desde) || (viejos[desde] && unidadConvertir(viejos[desde])) || unidadConvertir(desde.toLowerCase());
+  var uh = unidadConvertir(hasta) || (viejos[hasta] && unidadConvertir(viejos[hasta])) || unidadConvertir(hasta.toLowerCase());
+  if (!ud || !uh || ud.cat !== uh.cat) return '#N/A';
+  if (ud.cat === 'temp') {
+    var kel;
+    var v = valor * ud.f;
+    if (ud.t === 'C') kel = v + 273.15; else if (ud.t === 'F') kel = (v - 32) * 5 / 9 + 273.15; else if (ud.t === 'R') kel = v * 5 / 9;
+    else if (ud.t === 'Re') kel = v * 1.25 + 273.15; else kel = v;
+    var r;
+    if (uh.t === 'C') r = kel - 273.15; else if (uh.t === 'F') r = (kel - 273.15) * 9 / 5 + 32; else if (uh.t === 'R') r = kel * 9 / 5;
+    else if (uh.t === 'Re') r = (kel - 273.15) * 0.8; else r = kel;
+    return r / uh.f;
+  }
+  return valor * ud.f / uh.f;
+}
+// ══════════════════════════════════════════════
+// Funciones que traen datos de internet (TRADUCIR, HISTORIALCOTIZACIONES).
+// La fórmula se calcula al instante, pero el dato llega después: mientras
+// tanto la celda muestra #OCUPADO! (como #BUSY! en Excel) y, cuando llega,
+// la hoja se vuelve a pintar sola. Sin internet: #CONECTAR!
+// ══════════════════════════════════════════════
+var datosRedCache = {}, datosRedPendiente = {};
+function datoDeRed(clave, url, transformar) {
+  if (Object.prototype.hasOwnProperty.call(datosRedCache, clave)) return datosRedCache[clave];
+  if (!datosRedPendiente[clave]) {
+    datosRedPendiente[clave] = true;
+    var listo = function (valor) {
+      datosRedCache[clave] = valor;
+      delete datosRedPendiente[clave];
+      if (typeof renderAllCells === 'function') renderAllCells();
+    };
+    var pedido;
+    try { pedido = typeof fetchViaXHR === 'function' ? fetchViaXHR(url, { method: 'GET' }) : fetch(url); }
+    catch (e) { listo({ error: '#CONECTAR!' }); return undefined; }
+    pedido.then(function (r) { return r.json(); })
+      .then(function (datos) {
+        var v;
+        try { v = transformar(datos); } catch (e) { v = { error: '#CONECTAR!' }; }
+        listo(v === undefined || v === null ? { error: '#CONECTAR!' } : v);
+      })
+      .catch(function () { listo({ error: '#CONECTAR!' }); });
+  }
+  return undefined;
+}
+// Códigos de idioma: acepta "es", "en", "fr"… o el nombre ("español", "inglés")
+function codigoIdiomaTraducir(t) {
+  var x = String(t || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  var mapa = { espanol: 'es', spanish: 'es', ingles: 'en', english: 'en', frances: 'fr', french: 'fr', portugues: 'pt', portuguese: 'pt',
+    aleman: 'de', german: 'de', italiano: 'it', italian: 'it', chino: 'zh-CN', chinese: 'zh-CN', japones: 'ja', japanese: 'ja',
+    coreano: 'ko', korean: 'ko', ruso: 'ru', russian: 'ru', arabe: 'ar', arabic: 'ar', holandes: 'nl', dutch: 'nl' };
+  return mapa[x] || x;
+}
+function traducirTexto(texto, origen, destino) {
+  if (String(texto).trim() === '') return '';
+  var o = origen ? codigoIdiomaTraducir(origen) : 'autodetect';
+  var d = destino ? codigoIdiomaTraducir(destino) : 'es';
+  if (o === d) return String(texto);
+  var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(String(texto).slice(0, 500)) + '&langpair=' + encodeURIComponent((o === 'autodetect' ? 'Autodetect' : o) + '|' + d);
+  var r = datoDeRed('tr|' + o + '|' + d + '|' + texto, url, function (j) {
+    var t = j && j.responseData && j.responseData.translatedText;
+    if (!t || (j.responseStatus && Number(j.responseStatus) !== 200)) return { error: '#VALOR!' };
+    var tmp = document.createElement('textarea'); tmp.innerHTML = t; return tmp.value;
+  });
+  if (r === undefined) return '#OCUPADO!';
+  if (r && r.error) return r.error;
+  return r;
+}
+// HISTORIALCOTIZACIONES(acción; inicio; [fin]; [intervalo 0 diario/1 semanal/2 mensual]; [encabezados 0/1/2]; [propiedades…])
+// Propiedades: 0 Fecha, 1 Cierre, 2 Apertura, 3 Alto, 4 Bajo, 5 Volumen. Por omisión: Fecha y Cierre.
+function historialCotizaciones(args) {
+  var simbolo = String(resolveArg(args[0] || '')).trim().toUpperCase().replace(/^X[A-Z]{3}:/, '');
+  if (!simbolo) return [['#VALOR!']];
+  var ini = serialDeValorFin(resolveArg(args[1] || ''));
+  var fin = args[2] !== undefined && String(args[2]).trim() !== '' ? serialDeValorFin(resolveArg(args[2])) : ini;
+  if (isNaN(ini) || isNaN(fin)) return [['#VALOR!']];
+  if (fin < ini) { var tmp = ini; ini = fin; fin = tmp; }
+  var intervalo = args[3] !== undefined && String(args[3]).trim() !== '' ? Math.round(resolveNum(args[3])) : 0;
+  var encab = args[4] !== undefined && String(args[4]).trim() !== '' ? Math.round(resolveNum(args[4])) : 1;
+  var props = [];
+  for (var i = 5; i < args.length; i++) if (String(args[i]).trim() !== '') props.push(Math.round(resolveNum(args[i])));
+  if (!props.length) props = [0, 1];
+  if (props.some(function (p) { return p < 0 || p > 5; }) || [0, 1, 2].indexOf(intervalo) === -1) return [['#VALOR!']];
+  var aUnix = function (serial) { return Math.round((serial - 25569) * 86400); };
+  var urlYahoo = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(simbolo) +
+    '?period1=' + aUnix(ini) + '&period2=' + (aUnix(fin) + 86400) + '&interval=' + ['1d', '1wk', '1mo'][intervalo];
+  var url = WEBPROXY_URL + '?url=' + encodeURIComponent(urlYahoo);
+  var datos = datoDeRed('hc|' + simbolo + '|' + ini + '|' + fin + '|' + intervalo, url, function (j) {
+    var res = j && j.chart && j.chart.result && j.chart.result[0];
+    if (!res || !res.timestamp) return { error: '#N/A' };
+    var q = res.indicators.quote[0];
+    return res.timestamp.map(function (ts, k) {
+      var f = new Date(ts * 1000);
+      var fecha = ('0' + f.getUTCDate()).slice(-2) + '/' + ('0' + (f.getUTCMonth() + 1)).slice(-2) + '/' + f.getUTCFullYear();
+      return [fecha, q.close[k], q.open[k], q.high[k], q.low[k], q.volume[k]];
+    }).filter(function (f) { return f[1] !== null && f[1] !== undefined; });
+  });
+  if (datos === undefined) return [['#OCUPADO!']];
+  if (datos.error) return [[datos.error]];
+  var titulos = ['Fecha', 'Cierre', 'Apertura', 'Alto', 'Bajo', 'Volumen'];
+  var out = datos.map(function (f) { return props.map(function (p) { return p === 0 ? f[0] : fmtNum(Math.round(f[p] * 10000) / 10000); }); });
+  if (encab >= 1) out.unshift(props.map(function (p) { return titulos[p]; }));
+  return out.length ? out : [['#N/A']];
+}
 function formulaArrayInfo(crudo) {
   if (typeof crudo !== 'string' || crudo.charAt(0) !== '=') return null;
-  var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENARPOR|ORDENAR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|MINVERSA|MINVERSE)\s*\(/i);
+  var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENARPOR|ORDENAR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE)\s*\(/i);
   if (!m) return null;
   var nombre = m[1].toUpperCase();
   if (NOMBRES_ARRAY_NUEVOS[nombre]) nombre = NOMBRES_ARRAY_NUEVOS[nombre];
@@ -8202,6 +8639,73 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
     if (!inv) return [['#NUM!']];
     return inv.map(function (f) { return f.map(function (x) { return fmtNum(Math.abs(x) < 1e-13 ? 0 : x); }); });
   }
+  // ── PIVOTARPOR(filas; columnas; valores; función; [encabezados]; [total_filas]; [orden_filas]; [total_cols]; [orden_cols]) ──
+  if (nombre === 'PIVOTARPOR') {
+    if (!args[0] || !isRange(args[0]) || !args[1] || !isRange(args[1]) || !args[2] || !isRange(args[2])) return [['#VALOR!']];
+    var kf = matrizDeRangoFin(args[0]), kc = matrizDeRangoFin(args[1]), vp = matrizDeRangoFin(args[2]);
+    if (kf.length !== kc.length || kf.length !== vp.length) return [['#VALOR!']];
+    var fnP = (args[3] || 'SUMA').trim().replace(/^"|"$/g, '');
+    var opc = function (i, def) { return args[i] !== undefined && String(args[i]).trim() !== '' ? Math.round(resolveNum(args[i])) : def; };
+    var encP = opc(4, 0), totF = opc(5, 1), ordF = opc(6, 1), totC = opc(7, 1), ordC = opc(8, 1);
+    if (encP === 1 || encP === 3) { kf.shift(); kc.shift(); vp.shift(); }
+    var clavesF = {}, listaF = [], clavesC = {}, listaC = [], celdas = {};
+    for (var i = 0; i < kf.length; i++) {
+      var tf = kf[i].join(' | '), tc = kc[i].join(' | ');
+      if (tf.replace(/[ |]/g, '') === '' || tc.replace(/[ |]/g, '') === '') continue;
+      if (!clavesF[tf]) { clavesF[tf] = kf[i]; listaF.push(tf); }
+      if (!clavesC[tc]) { clavesC[tc] = true; listaC.push(tc); }
+      var kk = tf + '\u0001' + tc;
+      (celdas[kk] = celdas[kk] || []).push(vp[i][0]);
+    }
+    var ordenar = function (lista, ord) { if (ord === 0) return; lista.sort(function (a, b) { var c = compararValoresOrdenables(a, b); return ord < 0 ? -c : c; }); };
+    ordenar(listaF, ordF); ordenar(listaC, ordC);
+    var anchoF = kf[0] ? kf[0].length : 1;
+    var vacios = function (n) { var a = []; for (var z = 0; z < n; z++) a.push(''); return a; };
+    var salida = [vacios(anchoF).concat(listaC).concat(totC !== 0 ? ['Total'] : [])];
+    listaF.forEach(function (tf) {
+      var fila = clavesF[tf].slice(), todos = [];
+      listaC.forEach(function (tc) {
+        var vals = celdas[tf + '\u0001' + tc];
+        if (vals) { vals.forEach(function (v) { todos.push(v); }); fila.push(agregadoPorNombre(fnP, vals)); } else fila.push('');
+      });
+      if (totC !== 0) fila.push(agregadoPorNombre(fnP, todos));
+      salida.push(fila);
+    });
+    if (totF !== 0) {
+      var filaT = ['Total'].concat(vacios(anchoF - 1)), todo = [];
+      listaC.forEach(function (tc) {
+        var col = [];
+        listaF.forEach(function (tf) { (celdas[tf + '\u0001' + tc] || []).forEach(function (v) { col.push(v); todo.push(v); }); });
+        filaT.push(col.length ? agregadoPorNombre(fnP, col) : '');
+      });
+      if (totC !== 0) filaT.push(agregadoPorNombre(fnP, todo));
+      salida.push(filaT);
+    }
+    return listaF.length ? salida : [['#CALC!']];
+  }
+  // ── RECORTARINTERVALOS(rango; [filas]; [columnas]) — 0 nada, 1 al inicio, 2 al final, 3 ambos (por omisión) ──
+  if (nombre === 'RECORTARINTERVALOS') {
+    if (!args[0] || !isRange(args[0])) return [['#VALOR!']];
+    var mR = matrizDeRangoFin(args[0]);
+    var modoF = args[1] !== undefined && String(args[1]).trim() !== '' ? Math.round(resolveNum(args[1])) : 3;
+    var modoC = args[2] !== undefined && String(args[2]).trim() !== '' ? Math.round(resolveNum(args[2])) : 3;
+    if ([0, 1, 2, 3].indexOf(modoF) === -1 || [0, 1, 2, 3].indexOf(modoC) === -1) return [['#VALOR!']];
+    var vacia = function (v) { return v === '' || v === null || v === undefined; };
+    var filaVacia = function (f) { return f.every(vacia); };
+    var r0 = 0, r1 = mR.length - 1;
+    if (modoF & 1) while (r0 <= r1 && filaVacia(mR[r0])) r0++;
+    if (modoF & 2) while (r1 >= r0 && filaVacia(mR[r1])) r1--;
+    if (r0 > r1) return [['']];
+    mR = mR.slice(r0, r1 + 1);
+    var colVacia = function (c) { return mR.every(function (f) { return vacia(f[c]); }); };
+    var c0 = 0, c1 = mR[0].length - 1;
+    if (modoC & 1) while (c0 <= c1 && colVacia(c0)) c0++;
+    if (modoC & 2) while (c1 >= c0 && colVacia(c1)) c1--;
+    if (c0 > c1) return [['']];
+    return mR.map(function (f) { return f.slice(c0, c1 + 1); });
+  }
+  // ── HISTORIALCOTIZACIONES(acción; inicio; [fin]; [intervalo]; [encabezados]; [propiedades…]) ──
+  if (nombre === 'HISTORIALCOTIZACIONES') return historialCotizaciones(args);
   return [['#NOMBRE?']];
 }
 // Permite ANIDAR FILTRAR/ORDENAR/ÚNICOS/SECUENCIA dentro de otra función,
@@ -8214,7 +8718,7 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
 function valoresDeFuncionArrayAnidada(texto) {
   if (typeof texto !== 'string') return null;
   var t = texto.trim();
-  var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|MINVERSA|MINVERSE)\s*\(/i);
+  var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE)\s*\(/i);
   if (!m) return null;
   var inicio = m[0].length;
   var prof = 1, i = inicio;
@@ -8224,7 +8728,7 @@ function valoresDeFuncionArrayAnidada(texto) {
     i++;
   }
   if (prof !== 0 || i !== t.length) return null; // tiene que ser TODO el argumento, no la función seguida de algo más
-  var mapaNombres = { FILTER: 'FILTRAR', SORT: 'ORDENAR', UNIQUE: 'UNICOS', SEQUENCE: 'SECUENCIA', SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA' };
+  var mapaNombres = { FILTER: 'FILTRAR', SORT: 'ORDENAR', UNIQUE: 'UNICOS', SEQUENCE: 'SECUENCIA', SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA', PIVOTBY: 'PIVOTARPOR', TRIMRANGE: 'RECORTARINTERVALOS', STOCKHISTORY: 'HISTORIALCOTIZACIONES' };
   var nombreFn = mapaNombres[m[1].toUpperCase()] || m[1].toUpperCase();
   var argsTexto = t.slice(inicio, i - 1);
   try {
@@ -9917,6 +10421,8 @@ function renderAllCellsInterno() {
   if (typeof refrescarCamaras === 'function') refrescarCamaras();
   if (typeof refrescarParaleloPronto === 'function') refrescarParaleloPronto();
   if (typeof aplicarFondoHoja === 'function') aplicarFondoHoja();
+  if (typeof comparacionActiva !== 'undefined' && comparacionActiva) pintarResaltadoComparacion();
+  if (typeof pintarTiposDatos === 'function') pintarTiposDatos();
   if (typeof circulosValidacionActivos !== 'undefined' && circulosValidacionActivos) pintarCirculosValidacion();
   Object.keys(notes).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -24806,7 +25312,7 @@ function aplicarOrdenObjetos() {
 }
 function nombreDeObjeto(g) {
   if (g.kind !== 'forma') return '📊 ' + (tituloVisibleGrafico(g) || 'Gráfico');
-  var n = { rect: '▭ Rectángulo', ellipse: '◯ Elipse', arrow: '➜ Flecha', line: '╱ Línea', text: '🅣 Cuadro de texto', imagen: '🖼 Imagen', ecuacion: '∑ Ecuación', camara: '📸 Imagen vinculada' }[g.forma] || '🔷 Forma';
+  var n = { rect: '▭ Rectángulo', ellipse: '◯ Elipse', arrow: '➜ Flecha', line: '╱ Línea', text: '🅣 Cuadro de texto', imagen: '🖼 Imagen', ecuacion: '∑ Ecuación', camara: '📸 Imagen vinculada', smartart: '🔷 SmartArt' }[g.forma] || '🔷 Forma';
   if (g.forma === 'camara') n += ' ' + g.rango;
   else if (g.texto) n += ': ' + String(g.texto).slice(0, 24);
   return n;
@@ -24903,7 +25409,7 @@ function renderizarForma(g, cont) {
       });
     });
     el.addEventListener('pointerup', function () { if (arrastre) { arrastre = null; if (movido) autoSave(); } });
-    el.addEventListener('dblclick', function () { if (g.forma === 'ecuacion') abrirEditorEcuacion(g); else if (g.forma === 'camara') editarCamara(g); else if (g.forma !== 'imagen') editarTextoForma(g); });
+    el.addEventListener('dblclick', function () { if (g.forma === 'smartart') abrirSmartArt(g); else if (g.forma === 'ecuacion') abrirEditorEcuacion(g); else if (g.forma === 'camara') editarCamara(g); else if (g.forma !== 'imagen') editarTextoForma(g); });
     var tirador = el.querySelector('.cresize'), redim = null;
     tirador.addEventListener('pointerdown', function (e) {
       redim = { x0: e.clientX, y0: e.clientY, w0: g.w, h0: g.h, tam0: g.tam || 22 };
@@ -24919,7 +25425,7 @@ function renderizarForma(g, cont) {
       pintarForma(g, el);
     });
     tirador.addEventListener('pointerup', function () { if (redim) { redim = null; autoSave(); } });
-    el.querySelector('.ft-txt').addEventListener('click', function (e) { e.stopPropagation(); if (g.forma === 'ecuacion') abrirEditorEcuacion(g); else if (g.forma === 'camara') editarCamara(g); else editarTextoForma(g); });
+    el.querySelector('.ft-txt').addEventListener('click', function (e) { e.stopPropagation(); if (g.forma === 'smartart') abrirSmartArt(g); else if (g.forma === 'ecuacion') abrirEditorEcuacion(g); else if (g.forma === 'camara') editarCamara(g); else editarTextoForma(g); });
     el.querySelector('.ft-col').addEventListener('click', function (e) {
       e.stopPropagation(); snapshot();
       var i = PALETA_FORMAS.indexOf(g.color); g.color = PALETA_FORMAS[(i + 1) % PALETA_FORMAS.length];
@@ -24978,6 +25484,16 @@ function pintarForma(g, el) {
     el.title = '📸 Imagen vinculada: ' + (g.hoja && g.hoja !== activeSheet ? g.hoja + '!' : '') + g.rango;
     return;
   }
+  if (g.forma === 'smartart') {
+    var contS = el.querySelector('.fsvg'), cvS = contS.querySelector('canvas');
+    if (!cvS) { contS.innerHTML = ''; cvS = document.createElement('canvas'); cvS.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;'; contS.appendChild(cvS); }
+    dibujarSmartArt(cvS, g, Math.min(3, window.devicePixelRatio || 1));
+    ['ft-col', 'ft-rel', 'ft-flip'].forEach(function (cl) { var b = el.querySelector('.' + cl); if (b) b.style.display = 'none'; });
+    el.querySelector('.ft-txt').title = 'Editar el SmartArt (tipo, elementos y colores)';
+    el.querySelector('.ftexto').textContent = '';
+    el.title = '🔷 SmartArt: ' + (TIPOS_SMARTART[g.tipoSA] || {}).nombre;
+    return;
+  }
   if (g.forma === 'imagen') {
     var contImg = el.querySelector('.fsvg'), im = contImg.querySelector('img');
     if (!im) {
@@ -25012,6 +25528,241 @@ document.addEventListener('pointerdown', function (e) {
   if (formaSeleccionadaId && !e.target.closest('.forma-float')) { formaSeleccionadaId = null; marcarFormaSeleccionada(); }
 });
 document.getElementById('btnPanelSeleccion').addEventListener('click', abrirPanelSeleccion);
+// ══════════════════════════════════════════════
+// SMARTART (Insertar ▸ SmartArt de Excel): diagramas armados desde una lista.
+// Cada línea es un elemento; los espacios o guiones al inicio marcan el nivel
+// (sirve para el organigrama). Se guarda como forma:
+// { kind: 'forma', forma: 'smartart', tipoSA, items, color }.
+// Se dibuja en un canvas, así sale igual en pantalla, en el PDF y en el .xlsx.
+// ══════════════════════════════════════════════
+var TIPOS_SMARTART = {
+  lista: { nombre: 'Lista de bloques', icono: '▤', ejemplo: 'Planificar\nEjecutar\nRevisar\nMejorar' },
+  proceso: { nombre: 'Proceso (pasos con flechas)', icono: '➜', ejemplo: 'Factura\nRegistro\nPago\nConciliación' },
+  ciclo: { nombre: 'Ciclo', icono: '⟳', ejemplo: 'Ventas\nCobro\nCompras\nPago\nCierre' },
+  jerarquia: { nombre: 'Jerarquía (organigrama)', icono: '⊤', ejemplo: 'Gerencia General\n  Contabilidad\n    Cuentas por pagar\n    Cuentas por cobrar\n  Ventas\n    Tienda\n    En línea' },
+  piramide: { nombre: 'Pirámide', icono: '△', ejemplo: 'Visión\nEstrategia\nTácticas\nOperación' },
+  radial: { nombre: 'Radial (centro y ramas)', icono: '✺', ejemplo: 'Empresa\n  Clientes\n  Proveedores\n  Bancos\n  Hacienda\n  CCSS' }
+};
+var PALETAS_SMARTART = {
+  '#245f09': ['#245f09', '#2d7a0c', '#3f9a1a', '#5bb42f', '#7cc653', '#9fd67e'],
+  '#1d4ed8': ['#1e3a8a', '#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
+  '#b45309': ['#7c2d12', '#b45309', '#d97706', '#f59e0b', '#fbbf24', '#fcd34d'],
+  '#7c3aed': ['#4c1d95', '#6d28d9', '#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd'],
+  '#0f766e': ['#134e4a', '#0f766e', '#0d9488', '#14b8a6', '#2dd4bf', '#5eead4'],
+  multi: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#7c3aed', '#0891b2']
+};
+function nodosSmartArt(texto) {
+  var nodos = [];
+  String(texto || '').replace(/\r/g, '').split('\n').forEach(function (linea) {
+    if (!linea.trim()) return;
+    var m = /^([\s\-•·*]*)(.*)$/.exec(linea);
+    var pref = m[1].replace(/\t/g, '  ');
+    var nivel = (pref.match(/[\-•·*]/g) || []).length + Math.floor(pref.replace(/[\-•·*]/g, '').length / 2);
+    nodos.push({ texto: m[2].trim(), nivel: nivel });
+  });
+  // normaliza: el primer nivel es 0 y nadie salta más de un nivel
+  var min = nodos.reduce(function (a, n) { return Math.min(a, n.nivel); }, 99);
+  var ant = -1;
+  nodos.forEach(function (n) { n.nivel -= min; if (n.nivel > ant + 1) n.nivel = ant + 1; ant = n.nivel; });
+  return nodos;
+}
+function arbolSmartArt(nodos) {
+  var raiz = { texto: '', hijos: [], nivel: -1 }, pila = [raiz];
+  nodos.forEach(function (n) {
+    var nodo = { texto: n.texto, hijos: [], nivel: n.nivel };
+    while (pila.length > 1 && pila[pila.length - 1].nivel >= n.nivel) pila.pop();
+    pila[pila.length - 1].hijos.push(nodo); pila.push(nodo);
+  });
+  return raiz;
+}
+function colorSmartArt(g, i) { var p = PALETAS_SMARTART[g.color] || PALETAS_SMARTART['#245f09']; return p[i % p.length]; }
+function textoEnCaja(ctx, txt, x, y, w, h, color, tamMax) {
+  var tam = Math.min(tamMax || 16, Math.max(8, h * 0.32));
+  var palabras = String(txt).split(/\s+/), lineas;
+  for (;;) {
+    ctx.font = 'bold ' + tam + 'px Calibri, Carlito, sans-serif';
+    lineas = []; var actual = '';
+    palabras.forEach(function (p) { var prueba = actual ? actual + ' ' + p : p; if (ctx.measureText(prueba).width > w - 10 && actual) { lineas.push(actual); actual = p; } else actual = prueba; });
+    if (actual) lineas.push(actual);
+    var anchoMax = lineas.reduce(function (a, l) { return Math.max(a, ctx.measureText(l).width); }, 0);
+    if ((lineas.length * tam * 1.15 <= h - 6 && anchoMax <= w - 8) || tam <= 8) break;
+    tam -= 1;
+  }
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  var y0 = y + h / 2 - (lineas.length - 1) * tam * 0.575;
+  lineas.forEach(function (l, i) { ctx.fillText(l, x + w / 2, y0 + i * tam * 1.15, w - 6); });
+}
+function cajaRedondeada(ctx, x, y, w, h, r, relleno, borde) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  if (relleno) { ctx.fillStyle = relleno; ctx.fill(); }
+  if (borde) { ctx.strokeStyle = borde; ctx.lineWidth = 1.5; ctx.stroke(); }
+}
+function flechaSA(ctx, x1, y1, x2, y2, color) {
+  var a = Math.atan2(y2 - y1, x2 - x1), L = 9;
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - Math.cos(a) * L * 0.8, y2 - Math.sin(a) * L * 0.8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - L * Math.cos(a - 0.45), y2 - L * Math.sin(a - 0.45)); ctx.lineTo(x2 - L * Math.cos(a + 0.45), y2 - L * Math.sin(a + 0.45)); ctx.closePath(); ctx.fill();
+}
+function dibujarSmartArt(cv, g, escala) {
+  var W = g.w, H = g.h, e = escala || 1, ctx = cv.getContext('2d');
+  cv.width = Math.max(1, Math.round(W * e)); cv.height = Math.max(1, Math.round(H * e));
+  ctx.setTransform(e, 0, 0, e, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  if (g.fondoBlanco) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H); }
+  var nodos = nodosSmartArt(g.items), m = 8;
+  if (!nodos.length) { ctx.fillStyle = '#9ca3af'; ctx.font = '13px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Escribí los elementos del diagrama', W / 2, H / 2); return; }
+  var tipo = g.tipoSA || 'lista', planos = nodos.filter(function (n) { return n.nivel === 0; });
+  if (tipo === 'lista') {
+    var subs = {}; var idx = -1;
+    nodos.forEach(function (n) { if (n.nivel === 0) idx++; else (subs[idx] = subs[idx] || []).push(n.texto); });
+    var n = planos.length, gap = 8, hB = (H - 2 * m - gap * (n - 1)) / n, conSub = Object.keys(subs).length > 0;
+    planos.forEach(function (p, i) {
+      var y = m + i * (hB + gap), col = colorSmartArt(g, i), wT = conSub ? (W - 2 * m) * 0.38 : W - 2 * m;
+      cajaRedondeada(ctx, m, y, wT, hB, 8, col);
+      textoEnCaja(ctx, p.texto, m, y, wT, hB, '#ffffff', 18);
+      if (conSub) {
+        var x2 = m + wT + 6, w2 = W - m - x2;
+        cajaRedondeada(ctx, x2, y, w2, hB, 8, col + '22', col + '66');
+        var s = subs[i] || [];
+        ctx.fillStyle = '#1f2937'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        var tam = Math.max(9, Math.min(14, (hB - 6) / Math.max(1, s.length) * 0.75));
+        ctx.font = tam + 'px Calibri, Carlito, sans-serif';
+        s.forEach(function (t, k) { ctx.fillText('• ' + t, x2 + 8, y + (hB / Math.max(1, s.length)) * (k + 0.5), w2 - 14); });
+      }
+    });
+  } else if (tipo === 'proceso') {
+    var n2 = planos.length, porFila = W / Math.max(1, H) > 1.6 || n2 <= 3 ? n2 : Math.ceil(n2 / 2), filas = Math.ceil(n2 / porFila);
+    var flechaW = 22, wB = (W - 2 * m - flechaW * (porFila - 1)) / porFila, hF = (H - 2 * m - 18 * (filas - 1)) / filas, hB2 = Math.min(hF, wB * 0.75);
+    planos.forEach(function (p, i) {
+      var f = Math.floor(i / porFila), c = i % porFila;
+      if (f % 2 === 1) c = porFila - 1 - c; // en zigzag para seguir el orden
+      var x = m + c * (wB + flechaW), y = m + f * (hF + 18) + (hF - hB2) / 2, col = colorSmartArt(g, i);
+      cajaRedondeada(ctx, x, y, wB, hB2, 10, col);
+      textoEnCaja(ctx, p.texto, x, y, wB, hB2, '#ffffff', 17);
+      if (i < n2 - 1) {
+        var fSig = Math.floor((i + 1) / porFila);
+        if (fSig === f) { var dir = f % 2 === 1 ? -1 : 1; var xa = dir > 0 ? x + wB + 3 : x - 3; flechaSA(ctx, xa, y + hB2 / 2, xa + dir * (flechaW - 6), y + hB2 / 2, '#9ca3af'); }
+        else flechaSA(ctx, x + wB / 2, y + hB2 + 2, x + wB / 2, y + hB2 + 16, '#9ca3af');
+      }
+    });
+  } else if (tipo === 'ciclo') {
+    var n3 = planos.length, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - m - Math.min(W, H) * 0.13;
+    var rN = Math.min(Math.min(W, H) * 0.15, Math.PI * R / Math.max(3, n3) * 0.85);
+    planos.forEach(function (p, i) {
+      var a = -Math.PI / 2 + i * 2 * Math.PI / n3, a2 = -Math.PI / 2 + (i + 1) * 2 * Math.PI / n3;
+      var x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+      // arco con flecha hacia el siguiente
+      var da = (rN / R) * 1.25, ini = a + da, fin = a2 - da;
+      ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx, cy, R, ini, fin); ctx.stroke();
+      flechaSA(ctx, cx + R * Math.cos(fin - 0.02), cy + R * Math.sin(fin - 0.02), cx + R * Math.cos(fin + 0.02), cy + R * Math.sin(fin + 0.02), '#9ca3af');
+      ctx.beginPath(); ctx.arc(x, y, rN, 0, 2 * Math.PI); ctx.fillStyle = colorSmartArt(g, i); ctx.fill();
+      textoEnCaja(ctx, p.texto, x - rN * 0.82, y - rN * 0.7, rN * 1.64, rN * 1.4, '#ffffff', 15);
+    });
+  } else if (tipo === 'piramide') {
+    var n4 = planos.length, hN = (H - 2 * m) / n4, base = W - 2 * m;
+    planos.forEach(function (p, i) {
+      var y = m + i * hN, wArr = base * (i / n4), wAb = base * ((i + 1) / n4);
+      ctx.beginPath(); ctx.moveTo(W / 2 - wArr / 2, y + 1); ctx.lineTo(W / 2 + wArr / 2, y + 1); ctx.lineTo(W / 2 + wAb / 2, y + hN - 1); ctx.lineTo(W / 2 - wAb / 2, y + hN - 1); ctx.closePath();
+      ctx.fillStyle = colorSmartArt(g, i); ctx.fill();
+      var wTxt = Math.max(40, (wArr + wAb) / 2 * 0.8);
+      textoEnCaja(ctx, p.texto, W / 2 - wTxt / 2, y + hN * (i === 0 ? 0.35 : 0.1), wTxt, hN * (i === 0 ? 0.62 : 0.8), '#ffffff', 16);
+    });
+  } else if (tipo === 'radial') {
+    var arbol = arbolSmartArt(nodos), centro = arbol.hijos[0], ramas = centro.hijos.length ? centro.hijos : arbol.hijos.slice(1).map(function (h) { return h; });
+    var cx2 = W / 2, cy2 = H / 2, rC = Math.min(W, H) * 0.17, n5 = Math.max(1, ramas.length);
+    var R2 = Math.min(W, H) / 2 - m - Math.min(W, H) * 0.12, rR = Math.min(Math.min(W, H) * 0.12, Math.PI * R2 / n5 * 0.8);
+    ramas.forEach(function (r, i) {
+      var a = -Math.PI / 2 + i * 2 * Math.PI / n5, x = cx2 + R2 * Math.cos(a), y = cy2 + R2 * Math.sin(a);
+      ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx2, cy2); ctx.lineTo(x, y); ctx.stroke();
+      ctx.beginPath(); ctx.arc(x, y, rR, 0, 2 * Math.PI); ctx.fillStyle = colorSmartArt(g, i + 1); ctx.fill();
+      textoEnCaja(ctx, r.texto, x - rR * 0.82, y - rR * 0.7, rR * 1.64, rR * 1.4, '#ffffff', 14);
+    });
+    ctx.beginPath(); ctx.arc(cx2, cy2, rC, 0, 2 * Math.PI); ctx.fillStyle = colorSmartArt(g, 0); ctx.fill();
+    textoEnCaja(ctx, centro.texto, cx2 - rC * 0.82, cy2 - rC * 0.7, rC * 1.64, rC * 1.4, '#ffffff', 17);
+  } else if (tipo === 'jerarquia') {
+    // Organigrama: cada hoja del árbol ocupa una columna; los padres se centran sobre sus hijos
+    var raiz = arbolSmartArt(nodos), hojasCont = 0, prof = 0;
+    (function medir(n, d) { prof = Math.max(prof, d); if (!n.hijos.length) { n.col = hojasCont++; return; } n.hijos.forEach(function (h) { medir(h, d + 1); }); n.col = (n.hijos[0].col + n.hijos[n.hijos.length - 1].col) / 2; })(raiz, 0);
+    var anchoCol = (W - 2 * m) / Math.max(1, hojasCont), niveles = prof, altoNivel = (H - 2 * m) / Math.max(1, niveles);
+    var wN = Math.min(anchoCol * 0.88, 170), hN2 = Math.min(altoNivel * 0.62, 60);
+    var pos = function (n, d) { return { x: m + anchoCol * (n.col + 0.5), y: m + altoNivel * (d - 1) + (altoNivel - hN2) / 2 }; };
+    (function lineas(n, d) {
+      if (d > 0 && n.hijos.length) {
+        var p = pos(n, d), yMed = p.y + hN2 + (altoNivel - hN2) / 2;
+        ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 1.8; ctx.beginPath();
+        ctx.moveTo(p.x, p.y + hN2); ctx.lineTo(p.x, yMed);
+        var x1 = pos(n.hijos[0], d + 1).x, x2 = pos(n.hijos[n.hijos.length - 1], d + 1).x;
+        ctx.moveTo(x1, yMed); ctx.lineTo(x2, yMed);
+        n.hijos.forEach(function (h) { var q = pos(h, d + 1); ctx.moveTo(q.x, yMed); ctx.lineTo(q.x, q.y); });
+        ctx.stroke();
+      }
+      n.hijos.forEach(function (h) { lineas(h, d + 1); });
+    })(raiz, 0);
+    (function cajas(n, d) {
+      if (d > 0) {
+        var p = pos(n, d), col = colorSmartArt(g, d - 1);
+        cajaRedondeada(ctx, p.x - wN / 2, p.y, wN, hN2, 7, col);
+        textoEnCaja(ctx, n.texto, p.x - wN / 2, p.y, wN, hN2, '#ffffff', 15);
+      }
+      n.hijos.forEach(function (h) { cajas(h, d + 1); });
+    })(raiz, 0);
+  }
+}
+function abrirSmartArt(g) {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+  var editando = !!g, tipo = g ? g.tipoSA : 'proceso', color = g ? g.color : '#245f09';
+  var html = '<div class="saTipos">' + Object.keys(TIPOS_SMARTART).map(function (k) { return '<button type="button" class="saTipo' + (k === tipo ? ' on' : '') + '" data-tipo="' + k + '"><span>' + TIPOS_SMARTART[k].icono + '</span>' + TIPOS_SMARTART[k].nombre + '</button>'; }).join('') + '</div>' +
+    '<label class="mcrF">Elementos (uno por línea; con 2 espacios o un guion al inicio queda un nivel más abajo)</label>' +
+    '<textarea id="saItems" class="mcrI" rows="7" style="font-family:inherit">' + esc(g ? g.items : TIPOS_SMARTART[tipo].ejemplo) + '</textarea>' +
+    '<button type="button" class="egAccion" id="saDesdeSel">📋 Tomar los elementos de las celdas seleccionadas</button>' +
+    '<label class="mcrF">Colores</label><div class="saColores">' + Object.keys(PALETAS_SMARTART).map(function (k) { return '<button type="button" class="saColor' + (k === color ? ' on' : '') + '" data-color="' + k + '" style="background:linear-gradient(90deg,' + PALETAS_SMARTART[k].slice(0, 4).join(',') + ')" title="' + (k === 'multi' ? 'Colorido' : k) + '"></button>'; }).join('') + '</div>' +
+    '<label class="mcrF">Vista previa</label><canvas id="saVista" style="width:100%;border:1px solid #e5e7eb;border-radius:8px;background:#fff"></canvas>';
+  abrirPanel(editando ? '🔷 Editar SmartArt' : '🔷 Insertar SmartArt', html, [{ texto: 'Cancelar' }, { texto: editando ? 'Guardar' : 'Insertar', ok: true, accion: function () {
+    var items = document.getElementById('saItems').value;
+    if (!nodosSmartArt(items).length) { alert('Escribí al menos un elemento.'); return false; }
+    snapshot();
+    if (editando) { g.items = items; g.tipoSA = tipo; g.color = color; }
+    else {
+      var wrap = document.getElementById('gridWrap'), lista = sheetGraficos[activeSheet] || (sheetGraficos[activeSheet] = []), n = lista.length;
+      var tam = { lista: [340, 240], proceso: [480, 130], ciclo: [340, 320], jerarquia: [520, 300], piramide: [340, 260], radial: [360, 340] }[tipo];
+      g = { id: nuevoIdGrafico(), kind: 'forma', forma: 'smartart', tipoSA: tipo, items: items, color: color, x: (wrap ? wrap.scrollLeft : 0) + 40 + n * 12, y: (wrap ? wrap.scrollTop : 0) + 90 + n * 12, w: tam[0], h: tam[1], relleno: '', texto: '', tam: 13, flip: 0 };
+      lista.push(g); formaSeleccionadaId = g.id;
+    }
+    autoSave(); renderizarGraficos();
+    document.getElementById('saveStatus').textContent = '🔷 SmartArt: arrastralo para moverlo, tirá de la esquina para el tamaño y tocá ✎ para editarlo';
+  } }]);
+  var vista = document.getElementById('saVista');
+  function previa() {
+    var gv = { w: 320, h: { lista: 220, proceso: 110, ciclo: 280, jerarquia: 220, piramide: 230, radial: 290 }[tipo], tipoSA: tipo, items: document.getElementById('saItems').value, color: color };
+    vista.style.height = (gv.h * (vista.clientWidth || 320) / 320) + 'px';
+    var anchoReal = vista.clientWidth || 320; gv.h = Math.round(gv.h * anchoReal / 320); gv.w = anchoReal;
+    dibujarSmartArt(vista, gv, Math.min(3, window.devicePixelRatio || 1));
+  }
+  document.querySelectorAll('.saTipo').forEach(function (b) { b.addEventListener('click', function () {
+    var ant = tipo; tipo = b.dataset.tipo;
+    document.querySelectorAll('.saTipo').forEach(function (x) { x.classList.toggle('on', x === b); });
+    var ta = document.getElementById('saItems');
+    if (!editando && ta.value === TIPOS_SMARTART[ant].ejemplo) ta.value = TIPOS_SMARTART[tipo].ejemplo;
+    previa();
+  }); });
+  document.querySelectorAll('.saColor').forEach(function (b) { b.addEventListener('click', function () { color = b.dataset.color; document.querySelectorAll('.saColor').forEach(function (x) { x.classList.toggle('on', x === b); }); previa(); }); });
+  document.getElementById('saItems').addEventListener('input', previa);
+  document.getElementById('saDesdeSel').addEventListener('click', function () {
+    var b = limitesDeSeleccionOCelda();
+    if (!b) return;
+    var lineas = [];
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) {
+      var v = String(computeValue(cellId(r, c)) || '').trim();
+      // cada columna a la derecha es un nivel más abajo (como un esquema)
+      if (v) lineas.push(new Array(c - b.minC + 1).join('  ') + v);
+    }
+    if (!lineas.length) { alert('Las celdas seleccionadas están vacías.'); return; }
+    document.getElementById('saItems').value = lineas.join('\n'); previa();
+  });
+  setTimeout(previa, 30);
+}
+document.getElementById('btnSmartArt').addEventListener('click', function () { abrirSmartArt(); });
 document.getElementById('btnFormas').addEventListener('click', function () {
   document.getElementById('formasOverlay').classList.add('show');
 });
@@ -25022,6 +25773,7 @@ document.querySelectorAll('#formasOverlay .formaBtn').forEach(function (b) {
   b.addEventListener('click', function () {
     document.getElementById('formasOverlay').classList.remove('show');
     if (b.dataset.forma === 'camara') { insertarCamara(); return; }
+    if (b.dataset.forma === 'smartart') { abrirSmartArt(); return; }
     insertarForma(b.dataset.forma);
   });
 });
@@ -27403,7 +28155,7 @@ function guardarConfigPagina(cfg) {
 // y la celda donde termina — así el PDF lo pone en el mismo lugar que en la hoja.
 function anclasGraficosPdf() {
   // Gráficos, ecuaciones e imágenes insertadas (las demás formas todavía no salen en el PDF)
-  var lista = (sheetGraficos[activeSheet] || []).filter(function (g) { return g && !g.oculto && (g.kind !== 'forma' || g.forma === 'ecuacion' || g.forma === 'imagen' || g.forma === 'camara'); });
+  var lista = (sheetGraficos[activeSheet] || []).filter(function (g) { return g && !g.oculto && (g.kind !== 'forma' || g.forma === 'ecuacion' || g.forma === 'imagen' || g.forma === 'camara' || g.forma === 'smartart'); });
   if (!lista.length) return [];
   var m = medidasRealesHoja();
   return lista.map(function (g) {
@@ -27504,6 +28256,8 @@ function imagenFormaPdf(g, comoCanvas) {
     ecuDibujar(out, g.latex || '', g.tam || 22, g.color || '#111827');
   } else if (g.forma === 'camara') {
     dibujarCamara(out, g, 3);
+  } else if (g.forma === 'smartart') {
+    dibujarSmartArt(out, g, 3);
   } else {
     var el = document.querySelector('.forma-float[data-id="' + g.id + '"] img');
     if (!el || !el.complete || !el.naturalWidth) return null;
@@ -28068,6 +28822,7 @@ function bytesDePngUrl(url) {
 function pngDeFormaCanvas(g) {
   if (g.forma === 'imagen') return pngDeImagenCanvas(g);
   if (g.forma === 'camara') { var cvC = document.createElement('canvas'); dibujarCamara(cvC, g, 2); return bytesDePngUrl(cvC.toDataURL('image/png')); }
+  if (g.forma === 'smartart') { var cvS = document.createElement('canvas'); dibujarSmartArt(cvS, g, 2); return bytesDePngUrl(cvS.toDataURL('image/png')); }
   var esc = 2, cv = document.createElement('canvas');
   cv.width = Math.round(g.w * esc); cv.height = Math.round(g.h * esc);
   var c = cv.getContext('2d');
@@ -29637,48 +30392,112 @@ function hashTexto(s) {
 function marcarCeldaSucia(hoja, celda) {
   celdasPendientesSync[hoja + '|' + celda] = true;
 }
-// Avisa a los demás en qué celda estás parado ahora mismo (con un
-// pequeño retraso para no escribir en Firestore en cada tecla).
-function actualizarPresencia(celda) {
+// Avisa a los demás en qué celda estás parado ahora mismo, qué rango tenés
+// seleccionado y si estás escribiendo (con un pequeño retraso para no
+// escribir en Firestore en cada tecla). Un "latido" cada 25 s mantiene la
+// presencia viva aunque no te muevas.
+var editandoPresencia = false, latidoPresencia = null, ultimoPaquetePresencia = '';
+function paquetePresencia(celda) {
+  var b = typeof currentRangeBounds === 'function' ? currentRangeBounds() : null;
+  var rango = b && b.isMulti ? cellId(b.minR, b.minC) + ':' + cellId(b.maxR, b.maxC) : '';
+  return {
+    email: currentUser.email || '',
+    nombre: ((currentUser.displayName || currentUser.email || 'Usuario').split(' ')[0]),
+    celda: celda || ultimaCeldaPresenciaEnviada || document.getElementById('cellRef').textContent || 'A1',
+    rango: rango, editando: !!editandoPresencia, hoja: activeSheet, ts: Date.now()
+  };
+}
+function actualizarPresencia(celda, forzar) {
   if (!currentUser || !currentMatrizId || !firestoreDB) return;
-  if (celda === ultimaCeldaPresenciaEnviada) return;
-  ultimaCeldaPresenciaEnviada = celda;
+  var paq = paquetePresencia(celda);
+  var firma = paq.hoja + '|' + paq.celda + '|' + paq.rango + '|' + paq.editando;
+  if (!forzar && firma === ultimoPaquetePresencia) return;
+  ultimoPaquetePresencia = firma;
+  ultimaCeldaPresenciaEnviada = paq.celda;
   clearTimeout(presenciaDebounceTimer);
   presenciaDebounceTimer = setTimeout(function () {
-    firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').doc(currentUser.uid).set({
-      email: currentUser.email || '',
-      nombre: ((currentUser.displayName || currentUser.email || 'Usuario').split(' ')[0]),
-      celda: celda, hoja: activeSheet, ts: Date.now(),
-    }).catch(function () {});
-  }, 350);
+    paq.ts = Date.now();
+    firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').doc(currentUser.uid).set(paq).catch(function () {});
+  }, forzar ? 0 : 350);
+  if (!latidoPresencia) latidoPresencia = setInterval(function () {
+    if (!currentUser || !currentMatrizId || !firestoreDB) { clearInterval(latidoPresencia); latidoPresencia = null; return; }
+    if (document.visibilityState === 'hidden') return;
+    actualizarPresencia(null, true);
+    renderizarCursoresRemotos();
+  }, 25000);
 }
 function limpiarPresenciaPropia() {
   if (!currentUser || !currentMatrizId || !firestoreDB) return;
+  ultimoPaquetePresencia = '';
   firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').doc(currentUser.uid).delete().catch(function () {});
 }
 var ultimosCursoresRemotos = [];
+var PRESENCIA_VIEJA_MS = 90000; // sin latido por más de 1,5 min: probablemente se desconectó
+function cursoresRemotosVivos() {
+  var ahora = Date.now();
+  return ultimosCursoresRemotos.filter(function (c) { return ahora - (c.ts || 0) <= PRESENCIA_VIEJA_MS; });
+}
 function renderizarCursoresRemotos() {
   document.querySelectorAll('.cursorRemotoTag').forEach(function (e) { e.remove(); });
-  document.querySelectorAll('[class*="cursor-remoto-"]').forEach(function (e) {
-    e.className = e.className.replace(/cursor-remoto-\d/g, '').trim();
+  document.querySelectorAll('[class*="cursor-remoto-"], [class*="rango-remoto-"]').forEach(function (e) {
+    e.className = e.className.replace(/(cursor|rango)-remoto-\d/g, '').replace(/\s+/g, ' ').trim();
   });
-  var ahora = Date.now();
-  ultimosCursoresRemotos.forEach(function (c) {
+  var vivos = cursoresRemotosVivos();
+  vivos.forEach(function (c) {
     if (c.hoja !== activeSheet) return;
-    if (ahora - (c.ts || 0) > 60000) return; // presencia vieja (sin actividad > 1 min): probablemente se desconectó
+    // Rango seleccionado por la otra persona (sombreado suave de su color)
+    if (c.rango && /^[A-Z]+\d+:[A-Z]+\d+$/.test(c.rango)) {
+      var pr = c.rango.split(':'), r1 = filaDe(pr[0]), r2 = filaDe(pr[1]), c1 = colDe(pr[0]), c2 = colDe(pr[1]), n = 0;
+      for (var r = Math.min(r1, r2); r <= Math.max(r1, r2) && n < 600; r++) for (var cc = Math.min(c1, c2); cc <= Math.max(c1, c2) && n < 600; cc++, n++) {
+        var er = document.getElementById('cell_' + cellId(r, cc)); if (er) er.classList.add('rango-remoto-' + c.colorIdx);
+      }
+    }
     var el = document.getElementById('cell_' + c.celda);
     if (!el) return;
     el.classList.add('cursor-remoto-' + c.colorIdx);
     var tag = document.createElement('div');
-    tag.className = 'cursorRemotoTag';
-    tag.textContent = c.nombre;
+    tag.className = 'cursorRemotoTag' + (c.editando ? ' escribiendo' : '');
+    tag.textContent = (c.editando ? '✏️ ' : '') + c.nombre;
     tag.style.background = COLORES_CURSOR[c.colorIdx];
     if (el.parentElement) el.parentElement.appendChild(tag);
   });
+  pintarBarraPresencia(vivos);
+}
+// Chip "👥" en la barra de abajo y puntito en las pestañas donde hay alguien
+function pintarBarraPresencia(vivos) {
+  var chip = document.getElementById('presenciaChip');
+  if (!chip) return;
+  vivos = vivos || cursoresRemotosVivos();
+  chip.style.display = vivos.length ? '' : 'none';
+  chip.innerHTML = vivos.slice(0, 4).map(function (c) {
+    var ini = String(c.nombre || '?').trim().charAt(0).toUpperCase();
+    return '<span class="presAvatar' + (c.editando ? ' escribiendo' : '') + '" style="background:' + COLORES_CURSOR[c.colorIdx] + '" title="' + String(c.nombre).replace(/"/g, '') + '">' + ini + '</span>';
+  }).join('') + (vivos.length > 4 ? '<span class="presMas">+' + (vivos.length - 4) + '</span>' : '');
+  chip.title = vivos.length + ' persona(s) más en este libro';
+  document.querySelectorAll('.tab[data-sheet]').forEach(function (t) {
+    var aqui = vivos.filter(function (c) { return c.hoja === t.getAttribute('data-sheet'); });
+    t.classList.toggle('conOtros', aqui.length > 0);
+    if (aqui.length) t.style.setProperty('--colorOtro', COLORES_CURSOR[aqui[0].colorIdx]); else t.style.removeProperty('--colorOtro');
+  });
+}
+function abrirListaPresencia() {
+  var vivos = cursoresRemotosVivos(), esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var html = vivos.length ? vivos.map(function (c, i) {
+    var hace = Math.max(0, Math.round((Date.now() - (c.ts || 0)) / 1000));
+    return '<div class="lpItem"><span class="presAvatar" style="background:' + COLORES_CURSOR[c.colorIdx] + '">' + esc(String(c.nombre).charAt(0).toUpperCase()) + '</span><span><b>' + esc(c.nombre) + '</b> ' + (c.editando ? '✏️ escribiendo' : '') +
+      '<br><small>' + esc(c.email || '') + ' · ' + esc(c.hoja) + '!' + esc(c.rango || c.celda) + ' · hace ' + (hace < 60 ? hace + ' s' : Math.round(hace / 60) + ' min') + '</small></span><button type="button" data-ir="' + i + '" title="Ir a donde está">➜</button></div>';
+  }).join('') : '<div class="mcrNota">No hay nadie más en este libro ahora.</div>';
+  abrirPanel('👥 Personas en este libro', '<div class="mcrNota">Cada quien tiene su color: su celda se marca con un borde y lo que tiene seleccionado, con un sombreado suave.</div>' + html, [{ texto: 'Cerrar', ok: true }]);
+  document.querySelectorAll('#mcrPanelBody [data-ir]').forEach(function (b) { b.addEventListener('click', function () {
+    var c = vivos[parseInt(b.dataset.ir, 10)];
+    cerrarPanel();
+    irAReferencia((c.hoja !== activeSheet ? "'" + c.hoja + "'!" : '') + (c.rango || c.celda));
+  }); });
 }
 function escucharCursoresRemotos() {
   if (matrizCursoresUnsub) { matrizCursoresUnsub(); matrizCursoresUnsub = null; }
   ultimosCursoresRemotos = [];
+  pintarBarraPresencia([]);
   if (!currentMatrizId || !firestoreDB || !currentUser) return;
   matrizCursoresUnsub = firestoreDB.collection('matrices').doc(currentMatrizId).collection('cursores').onSnapshot(function (snap) {
     var lista = [];
@@ -29686,12 +30505,31 @@ function escucharCursoresRemotos() {
       if (doc.id === currentUser.uid) return;
       var d = doc.data();
       if (!d) return;
-      lista.push({ celda: d.celda, hoja: d.hoja, ts: d.ts, nombre: d.nombre || d.email || 'Usuario', colorIdx: hashTexto(doc.id) % COLORES_CURSOR.length });
+      lista.push({ celda: d.celda, hoja: d.hoja, ts: d.ts, rango: d.rango || '', editando: !!d.editando, email: d.email || '', nombre: d.nombre || d.email || 'Usuario', colorIdx: hashTexto(doc.id) % COLORES_CURSOR.length });
     });
     ultimosCursoresRemotos = lista;
     renderizarCursoresRemotos();
   });
 }
+(function () {
+  // "Escribiendo": se marca al teclear en una celda o en la barra de fórmulas y se apaga al salir
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (!t || !(t.classList && t.classList.contains('cell')) && t.id !== 'formulaInput') return;
+    if (!editandoPresencia) { editandoPresencia = true; actualizarPresencia(null); }
+  }, true);
+  document.addEventListener('blur', function (e) {
+    var t = e.target;
+    if (!t || !(t.classList && t.classList.contains('cell')) && t.id !== 'formulaInput') return;
+    if (editandoPresencia) { editandoPresencia = false; setTimeout(function () { actualizarPresencia(null); }, 50); }
+  }, true);
+  // Selección de rango: se avisa al soltar
+  ['mouseup', 'touchend'].forEach(function (ev) { document.addEventListener(ev, function () { setTimeout(function () { actualizarPresencia(null); }, 60); }, true); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') actualizarPresencia(null, true); });
+  window.addEventListener('pagehide', function () { limpiarPresenciaPropia(); });
+  var chip = document.getElementById('presenciaChip');
+  if (chip) chip.addEventListener('click', abrirListaPresencia);
+})();
 
 function guardarMatrizEnNube() {
   if (!currentUser || !currentMatrizId || applyingRemote) return;
@@ -30813,11 +31651,12 @@ var RB_MAPA = {};
   function m(tab, ids) { ids.split(' ').forEach(function (i) { RB_MAPA[i] = tab; }); }
   m('inicio', 'btnTemas btnRellenarAbajo btnRellenarDerecha btnRellenarArriba btnRellenarIzquierda btnUndo btnRedo btnCut btnCopy btnPaste btnPasteEspecial btnClear btnBuscarReemplazar btnBuscarGlobal btnMultiSel btnBold btnItalic btnUnderline btnStrike btnCurrency btnPercent btnFormat btnFillColor btnFontColor btnMerge btnEstilosCelda btnPincel btnTextoAvanzado btnAltoFila btnCondFormat btnCondAvanzado btnIrA btnIrAEspecial');
   m('insertar', 'btnFilasColumnas btnAddRow btnDelRow btnAddCol btnInsertarTabla btnChart btnEditarGrafico btnFormas btnImagen btnDashboard btnComparativoMensual btnTablaDinamica btnSegmentadores');
-  m('insertar', 'btnTablaFormato btnTablaFila');
-  m('revisar', 'btnAccesibilidad btnInspDoc btnPanelComentarios');
+  m('insertar', 'btnTablaFormato btnTablaFila btnSmartArt');
+  m('revisar', 'btnAccesibilidad btnInspDoc btnPanelComentarios btnCompararLibros');
   m('vista', 'btnDisenoPagina btnSaltoPagina btnFondoHoja btnZoomSel btnZoom100 btnCuadricula btnEncabezados btnEnfoque btnDividir');
   m('archivo', 'btnSello btnVersiones');
   m('datos', 'btnDesdeImagen btnAnalizarDatos btnCombinar btnRelacionar');
+  m('datos', 'btnTiposDatos btnConsultas btnActualizarConsultas btnRelaciones btnEsquemaAuto btnBorrarEsquema');
   m('contabilidad', 'btnCongelarFilas btnCongelarColumnas btnDescongelar btnWhatIf btnValidacionDatos btnFormatoCondicional btnTablaDinamica btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
   m('insertar', 'btnVinculo btnAdminVinculos btnSimbolo btnEcuacion');
@@ -34456,6 +35295,798 @@ function abrirFiltroAvanzado() {
 }
 document.getElementById('btnFiltroAvanzado').addEventListener('click', abrirFiltroAvanzado);
 document.getElementById('btnRelaciones').addEventListener('click', abrirRelaciones);
+// ══════════════════════════════════════════════
+// COMPARAR LIBROS (como "Comparar hojas de cálculo" de Office)
+// Abre otro archivo (respaldo .json —también cifrado—, .xlsx/.xls/.ods o .csv)
+// y lo compara celda por celda con el libro abierto: valores y fórmulas
+// cambiados, celdas nuevas o borradas y hojas que solo están en uno.
+// Las diferencias se pueden resaltar en la hoja o pasar a una hoja nueva.
+// ══════════════════════════════════════════════
+var comparacionActiva = null; // { nombre, difs: { hoja: { id: tipo } }, lista: [...] }
+function leerLibroParaComparar(archivo) {
+  return new Promise(function (ok, fallo) {
+    var nombre = archivo.name || 'archivo', ext = (nombre.split('.').pop() || '').toLowerCase();
+    var lector = new FileReader();
+    if (ext === 'json') {
+      lector.onload = function () {
+        var paq;
+        try { paq = JSON.parse(lector.result); } catch (e) { fallo(new Error('Ese archivo no es un respaldo válido.')); return; }
+        var usar = function (p) {
+          var est = p && p.estado ? p.estado : p;
+          if (!est || !Array.isArray(est.sheets) || !est.sheetData) { fallo(new Error('Ese archivo no parece un respaldo de Matriz Contable CR.')); return; }
+          var hojas = {};
+          est.sheets.forEach(function (h) { hojas[h] = est.sheetData[h] || {}; });
+          ok({ nombre: nombre, orden: est.sheets.slice(), hojas: hojas });
+        };
+        if (paq && paq.cifrado && paq.datos) {
+          if (!cifradoDisponible()) { fallo(new Error('Ese respaldo está cifrado y este navegador no puede abrirlo.')); return; }
+          pedirContrasenaLibro('🔐 Respaldo cifrado', 'Escribí la contraseña del respaldo que querés comparar.').then(function (clave) {
+            return descifrarTextoLibro(paq, clave).then(function (t) { usar(JSON.parse(t)); }, function () { fallo(new Error('La contraseña no es correcta.')); });
+          }).catch(function () { fallo(new Error('cancelado')); });
+          return;
+        }
+        usar(paq);
+      };
+      lector.readAsText(archivo);
+      return;
+    }
+    if (ext === 'csv' || ext === 'txt') {
+      lector.onload = function () {
+        var texto = String(lector.result || ''), sep = (texto.split('\n')[0].match(/;/g) || []).length > (texto.split('\n')[0].match(/,/g) || []).length ? ';' : ',';
+        var d = {};
+        texto.replace(/\r/g, '').split('\n').forEach(function (linea, r) {
+          var celdas = [], cur = '', comillas = false;
+          for (var i = 0; i < linea.length; i++) { var c = linea.charAt(i); if (c === '"') { if (comillas && linea.charAt(i + 1) === '"') { cur += '"'; i++; } else comillas = !comillas; } else if (c === sep && !comillas) { celdas.push(cur); cur = ''; } else cur += c; }
+          celdas.push(cur);
+          celdas.forEach(function (v, c) { if (v !== '') d[cellId(r, c)] = v; });
+        });
+        var h = nombre.replace(/\.[^.]+$/, '').slice(0, 31);
+        var hojas = {}; hojas[h] = d;
+        ok({ nombre: nombre, orden: [h], hojas: hojas, csv: true });
+      };
+      lector.readAsText(archivo);
+      return;
+    }
+    if (!window.XLSX) { fallo(new Error('No se pudo cargar el lector de Excel. Revisá tu conexión a internet.')); return; }
+    lector.onload = function () {
+      try {
+        var wb = XLSX.read(lector.result, { type: 'binary', cellNF: true });
+        var hojas = {};
+        wb.SheetNames.forEach(function (n) {
+          var ws = wb.Sheets[n], d = {};
+          Object.keys(ws || {}).forEach(function (ref) {
+            if (ref.charAt(0) === '!') return;
+            var cel = ws[ref], pos = XLSX.utils.decode_cell(ref), v = null;
+            if (cel.f) v = '=' + formulaDesdeExcel(cel.f);
+            else if (cel.t === 'n') v = (cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z) && cel.w) ? String(cel.w) : String(cel.v);
+            else if (cel.t === 'b') v = cel.v ? 'VERDADERO' : 'FALSO';
+            else if (cel.v !== undefined && cel.v !== null) v = String(cel.v);
+            if (v !== null && v !== '') d[cellId(pos.r, pos.c)] = v;
+          });
+          hojas[n.substring(0, 31)] = d;
+        });
+        ok({ nombre: nombre, orden: wb.SheetNames.map(function (n) { return n.substring(0, 31); }), hojas: hojas });
+      } catch (e) { fallo(new Error('No se pudo leer ese archivo: ' + e.message)); }
+    };
+    lector.readAsBinaryString(archivo);
+  });
+}
+// Normaliza para comparar: "1 000,50" y "1000.5" son el mismo número
+function valorNormalComparar(v) {
+  var t = String(v == null ? '' : v).trim();
+  if (t === '') return '';
+  if (t.charAt(0) === '=') return '=' + t.slice(1).replace(/\s+/g, '').toUpperCase();
+  if (/^[-+]?[\d\s.,]+$/.test(t)) { var n = parseFloat(limpiaNum(t)); if (!isNaN(n)) return 'n:' + Math.round(n * 1e9) / 1e9; }
+  return t;
+}
+function compararLibros(otro, opciones) {
+  opciones = opciones || {};
+  var lista = [], difs = {}, resumen = [];
+  var hojasAqui = sheets.slice(), hojasOtro = otro.orden.slice();
+  // Un CSV trae una sola hoja: se compara contra la hoja abierta
+  var pares = [];
+  if (otro.csv || opciones.hojaUnica) pares.push([activeSheet, hojasOtro[0]]);
+  else {
+    hojasAqui.forEach(function (h) { if (hojasOtro.indexOf(h) !== -1) pares.push([h, h]); });
+    hojasAqui.forEach(function (h) { if (hojasOtro.indexOf(h) === -1) resumen.push({ hoja: h, soloAqui: true }); });
+    hojasOtro.forEach(function (h) { if (hojasAqui.indexOf(h) === -1) resumen.push({ hoja: h, soloOtro: true }); });
+  }
+  pares.forEach(function (par) {
+    var a = sheetData[par[0]] || {}, b = otro.hojas[par[1]] || {}, cont = { hoja: par[0], valor: 0, formula: 0, nueva: 0, borrada: 0 };
+    var ids = {};
+    Object.keys(a).forEach(function (k) { if (/^[A-Z]+\d+$/.test(k)) ids[k] = 1; });
+    Object.keys(b).forEach(function (k) { if (/^[A-Z]+\d+$/.test(k)) ids[k] = 1; });
+    Object.keys(ids).sort(function (x, y) { return filaDe(x) - filaDe(y) || colDe(x) - colDe(y); }).forEach(function (id) {
+      var va = a[id] == null ? '' : String(a[id]), vb = b[id] == null ? '' : String(b[id]);
+      var na = valorNormalComparar(va), nb = valorNormalComparar(vb);
+      if (na === nb) return;
+      var tipo;
+      if (nb === '') tipo = 'nueva';
+      else if (na === '') tipo = 'borrada';
+      else if (va.charAt(0) === '=' || vb.charAt(0) === '=') tipo = 'formula';
+      else tipo = 'valor';
+      cont[tipo]++;
+      (difs[par[0]] = difs[par[0]] || {})[id] = tipo;
+      lista.push({ hoja: par[0], id: id, antes: vb, ahora: va, tipo: tipo, calculado: va.charAt(0) === '=' ? String(computeValueEnHoja(par[0], id)) : '' });
+    });
+    resumen.push(cont);
+  });
+  return { nombre: otro.nombre, lista: lista, difs: difs, resumen: resumen };
+}
+var NOMBRES_DIF_COMPARAR = { valor: 'Valor cambiado', formula: 'Fórmula cambiada', nueva: 'Celda nueva (solo en este libro)', borrada: 'Celda borrada (solo en el otro)' };
+function mostrarResultadoComparacion(res) {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var total = res.lista.length;
+  var html = '<div class="mcrNota">Comparando <b>este libro</b> con <b>' + esc(res.nombre) + '</b>. "Antes" es lo que tiene el otro archivo; "Ahora", lo que tiene este libro.</div>';
+  html += '<div class="cmpResumen">' + res.resumen.map(function (r) {
+    if (r.soloAqui) return '<div class="lpItem"><span>📄 <b>' + esc(r.hoja) + '</b>: solo está en este libro</span></div>';
+    if (r.soloOtro) return '<div class="lpItem"><span>📄 <b>' + esc(r.hoja) + '</b>: solo está en el otro archivo</span></div>';
+    var n = r.valor + r.formula + r.nueva + r.borrada;
+    return '<div class="lpItem"><span><b>' + esc(r.hoja) + '</b>: ' + (n ? n + ' diferencia(s)' : '✔ idénticas') +
+      (n ? '<br><small><span class="cmpTag valor">' + r.valor + ' valores</span> <span class="cmpTag formula">' + r.formula + ' fórmulas</span> <span class="cmpTag nueva">' + r.nueva + ' nuevas</span> <span class="cmpTag borrada">' + r.borrada + ' borradas</span></small>' : '') + '</span></div>';
+  }).join('') + '</div>';
+  if (total) {
+    html += '<div class="pqVista"><table><thead><tr><th>Celda</th><th>Tipo</th><th>Antes</th><th>Ahora</th></tr></thead><tbody>' +
+      res.lista.slice(0, 300).map(function (d, i) {
+        return '<tr class="cmpFila ' + d.tipo + '" data-i="' + i + '"><td><a href="#" data-ir="' + i + '">' + esc((d.hoja !== activeSheet || res.resumen.length > 1 ? d.hoja + '!' : '') + d.id) + '</a></td><td>' + esc(NOMBRES_DIF_COMPARAR[d.tipo]) + '</td><td>' + esc(d.antes) + '</td><td>' + esc(d.ahora) + (d.calculado && d.calculado !== d.ahora ? ' <small>(' + esc(d.calculado) + ')</small>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table></div>' + (total > 300 ? '<div class="mcrNota">Se muestran 300 de ' + total + '. La hoja de diferencias las trae todas.</div>' : '');
+  } else html += '<div class="mcrNota">✔ No hay diferencias en las celdas.</div>';
+  abrirPanel('⚖ Comparar libros', html, [
+    { texto: total ? 'Crear hoja de diferencias' : 'Cerrar', ok: true, accion: function () {
+      if (!total) return;
+      snapshot();
+      var nom = 'Comparación', k = 2; while (sheets.indexOf(nom) !== -1) nom = 'Comparación ' + (k++);
+      crearHojaVaciaConNombre(nom);
+      var d = sheetData[nom], fm = sheetFormats[nom];
+      ['Hoja', 'Celda', 'Tipo', 'Antes (' + res.nombre + ')', 'Ahora (este libro)'].forEach(function (t, c) { d[cellId(0, c)] = t; fm[cellId(0, c)] = { bold: true, bgColor: '#e2efda' }; });
+      var colores = { valor: '#fff2cc', formula: '#dbeafe', nueva: '#dcfce7', borrada: '#fee2e2' };
+      res.lista.forEach(function (x, i) {
+        // Las fórmulas se guardan como texto (con apóstrofo) para que no se calculen aquí
+        var txt = function (v) { return String(v).charAt(0) === '=' ? "'" + v : String(v); };
+        d[cellId(i + 1, 0)] = x.hoja; d[cellId(i + 1, 1)] = x.id; d[cellId(i + 1, 2)] = NOMBRES_DIF_COMPARAR[x.tipo];
+        if (x.antes !== '') d[cellId(i + 1, 3)] = txt(x.antes);
+        if (x.ahora !== '') d[cellId(i + 1, 4)] = txt(x.ahora);
+        fm[cellId(i + 1, 2)] = { bgColor: colores[x.tipo] };
+      });
+      colWidths[nom] = { 0: 110, 1: 70, 2: 220, 3: 200, 4: 200 };
+      sheetFreeze[nom] = { row: 1, col: 0 };
+      activeSheet = nom; renderTabs(); buildTable(); renderAllCells(); autoSave();
+      document.getElementById('saveStatus').textContent = '⚖ ' + total + ' diferencia(s) en la hoja ' + nom;
+    } },
+    { texto: comparacionActiva ? 'Quitar resaltado' : 'Resaltar en el libro', accion: function () {
+      if (comparacionActiva) quitarResaltadoComparacion();
+      else { comparacionActiva = res; renderAllCells(); document.getElementById('saveStatus').textContent = '⚖ Diferencias resaltadas: amarillo valor, azul fórmula, verde nueva (las borradas se marcan con borde rojo)'; actualizarBotonComparar(); }
+    } }
+  ]);
+  document.querySelectorAll('#mcrPanelBody [data-ir]').forEach(function (a) { a.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var d = res.lista[parseInt(a.dataset.ir, 10)];
+    if (!comparacionActiva) { comparacionActiva = res; actualizarBotonComparar(); }
+    cerrarPanel();
+    irAReferencia((d.hoja !== activeSheet ? (/^[A-Za-z_][A-Za-z0-9_]*$/.test(d.hoja) ? d.hoja : "'" + d.hoja + "'") + '!' : '') + d.id);
+    renderAllCells();
+  }); });
+}
+function pintarResaltadoComparacion() {
+  document.querySelectorAll('#sheetTable .cell.cmpDif').forEach(function (el) { el.classList.remove('cmpDif', 'valor', 'formula', 'nueva', 'borrada'); el.removeAttribute('data-cmp'); });
+  if (!comparacionActiva) return;
+  var m = comparacionActiva.difs[activeSheet];
+  if (!m) return;
+  Object.keys(m).forEach(function (id) {
+    var el = document.getElementById('cell_' + id);
+    if (!el) return;
+    el.classList.add('cmpDif', m[id]);
+    var x = comparacionActiva.lista.filter(function (d) { return d.hoja === activeSheet && d.id === id; })[0];
+    if (x) el.setAttribute('data-cmp', 'Antes: ' + (x.antes === '' ? '(vacía)' : x.antes));
+  });
+}
+function quitarResaltadoComparacion() { comparacionActiva = null; renderAllCells(); actualizarBotonComparar(); document.getElementById('saveStatus').textContent = '⚖ Resaltado de comparación quitado'; }
+function actualizarBotonComparar() { var b = document.getElementById('btnCompararLibros'); if (b) b.classList.toggle('active', !!comparacionActiva); }
+function abrirCompararLibros() {
+  var html = '<div class="mcrNota">Escogé el otro archivo: un respaldo de Matriz Contable (.json), un Excel (.xlsx, .xls), un .ods o un .csv. Se compara hoja por hoja (por nombre) con el libro abierto. Un CSV se compara con la hoja en pantalla.</div>' +
+    '<input type="file" id="cmpArchivo" accept=".json,.xlsx,.xls,.xlsm,.ods,.csv,.txt">' +
+    '<label class="egChk" style="display:flex;gap:6px;align-items:center;margin-top:10px"><input type="checkbox" id="cmpUnica"> Comparar solo la hoja abierta con la primera hoja del otro archivo</label>' +
+    (comparacionActiva ? '<button type="button" class="egAccion" id="cmpQuitar" style="margin-top:10px">🧽 Quitar el resaltado de la comparación anterior</button>' : '');
+  abrirPanel('⚖ Comparar libros', html, [{ texto: 'Cancelar' }, { texto: 'Comparar', ok: true, accion: function () {
+    var inp = document.getElementById('cmpArchivo');
+    if (!inp.files || !inp.files[0]) { alert('Escogé un archivo primero.'); return false; }
+    var unica = document.getElementById('cmpUnica').checked;
+    document.getElementById('saveStatus').textContent = '⚖ Comparando…';
+    leerLibroParaComparar(inp.files[0]).then(function (otro) {
+      mostrarResultadoComparacion(compararLibros(otro, { hojaUnica: unica }));
+    }, function (e) { if (e.message !== 'cancelado') alert(e.message); });
+  } }]);
+  var q = document.getElementById('cmpQuitar'); if (q) q.addEventListener('click', function () { quitarResaltadoComparacion(); cerrarPanel(); });
+}
+document.getElementById('btnCompararLibros').addEventListener('click', abrirCompararLibros);
+// ══════════════════════════════════════════════
+// TIPOS DE DATOS VINCULADOS (como "Cotizaciones" y "Geografía" de Excel)
+// Una celda con una cédula o una moneda se "vincula": muestra un ícono y de
+// ella se sacan datos con fórmulas: =B2.Nombre, =B2.Régimen, =C4.Venta, o
+// =CAMPOVALOR(B2;"Estado"). Los datos se traen de las APIs públicas de
+// Hacienda y viajan con el libro (opcionesLibro.datosVinculados), así se
+// ven aunque no haya internet. Con "🔄 Actualizar" se vuelven a consultar.
+// Por hoja: colWidths[hoja].tiposDatos = { B2: 'cedula', C4: 'moneda' }.
+// ══════════════════════════════════════════════
+var TIPOS_DATO_VINC = {
+  cedula: { nombre: 'Cédula (Padrón de Hacienda)', icono: '🏛', campos: ['Nombre', 'Tipo', 'Régimen', 'Estado', 'Moroso', 'Omiso', 'Actividad', 'Código actividad', 'Actividades', 'Administración'] },
+  moneda: { nombre: 'Moneda (tipo de cambio de Hacienda/BCCR)', icono: '💱', campos: ['Moneda', 'Compra', 'Venta', 'Colones', 'Dólares', 'Fecha'] }
+};
+var vincPendientes = {};
+function quitarTildesTD(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ''); }
+function tiposDatosHoja(h) { var m = colWidths[h || activeSheet]; return (m && m.tiposDatos) || {}; }
+function claveVinculo(tipo, valor) {
+  var v = String(valor == null ? '' : valor).trim();
+  if (tipo === 'cedula') return 'cedula:' + v.replace(/[^0-9]/g, '');
+  var u = quitarTildesTD(v);
+  var mon = /^(usd|dolar|dolares|us\$|\$)$/.test(u) ? 'USD' : /^(eur|euro|euros|€)$/.test(u) ? 'EUR' : v.toUpperCase();
+  return 'moneda:' + mon;
+}
+function datosVinculados() { return (opcionesLibro.datosVinculados = opcionesLibro.datosVinculados || {}); }
+function pedirDatoVinculado(clave, alTerminar) {
+  if (vincPendientes[clave]) return;
+  vincPendientes[clave] = true;
+  var p = clave.indexOf(':'), tipo = clave.slice(0, p), id = clave.slice(p + 1), url;
+  if (tipo === 'cedula') {
+    if (id.length < 9 || id.length > 12) { datosVinculados()[clave] = { error: 'Cédula inválida', fecha: Date.now() }; delete vincPendientes[clave]; if (alTerminar) alTerminar(); return; }
+    url = 'https://api.hacienda.go.cr/fe/ae?identificacion=' + id;
+  } else if (id === 'USD') url = 'https://api.hacienda.go.cr/indicadores/tc/dolar';
+  else if (id === 'EUR') url = 'https://api.hacienda.go.cr/indicadores/tc/euro';
+  else { datosVinculados()[clave] = { error: 'Moneda no reconocida (usá USD o EUR)', fecha: Date.now() }; delete vincPendientes[clave]; if (alTerminar) alTerminar(); return; }
+  var listo = function (dato) {
+    delete vincPendientes[clave];
+    datosVinculados()[clave] = dato;
+    if (tipo === 'cedula' && dato.datos) { try { consultasHaciendaCache[id] = dato.datos; } catch (e) {} }
+    try { autoSave(); } catch (e) {}
+    if (typeof renderAllCells === 'function') renderAllCells();
+    if (alTerminar) alTerminar();
+  };
+  var pedido = typeof fetchViaXHR === 'function' ? fetchViaXHR(url, { method: 'GET' }) : fetch(url);
+  pedido.then(function (r) {
+    if (r.status === 404) return { __noEncontrado: true };
+    return r.json();
+  }).then(function (j) {
+    if (!j || j.__noEncontrado || (j.code && j.code >= 400) || (tipo === 'cedula' && !j.nombre)) listo({ error: tipo === 'cedula' ? 'No aparece en el padrón de Hacienda' : 'Sin datos', fecha: Date.now() });
+    else listo({ datos: j, fecha: Date.now() });
+  }).catch(function () {
+    delete vincPendientes[clave];
+    if (!datosVinculados()[clave]) datosVinculados()[clave] = { error: 'Sin conexión', fecha: Date.now(), reintentar: true };
+    if (typeof renderAllCells === 'function') renderAllCells();
+    if (alTerminar) alTerminar();
+  });
+}
+function campoDeDatoVinculado(tipo, dato, campo) {
+  var d = dato.datos || {}, c = quitarTildesTD(campo);
+  if (tipo === 'cedula') {
+    var act = (d.actividades || []).filter(function (a) { return !a.estado || a.estado === 'A'; });
+    var tipos = { '01': 'Física', '02': 'Jurídica', '03': 'DIMEX', '04': 'NITE' };
+    switch (c) {
+      case 'nombre': return d.nombre || '';
+      case 'tipo': case 'tipoidentificacion': return tipos[d.tipoIdentificacion] || d.tipoIdentificacion || '';
+      case 'regimen': return (d.regimen && d.regimen.descripcion) || '';
+      case 'estado': case 'situacion': return (d.situacion && d.situacion.estado) || '';
+      case 'moroso': return (d.situacion && d.situacion.moroso) || '';
+      case 'omiso': return (d.situacion && d.situacion.omiso) || '';
+      case 'actividad': return act[0] ? act[0].descripcion : '';
+      case 'codigoactividad': case 'codigo': return act[0] ? String(act[0].codigo) : '';
+      case 'actividades': return act.map(function (a) { return a.codigo + ' ' + a.descripcion; }).join('; ');
+      case 'administracion': return (d.situacion && d.situacion.administracionTributaria) || '';
+    }
+  } else {
+    switch (c) {
+      case 'moneda': return d.compra ? 'Dólar (USD)' : 'Euro (EUR)';
+      case 'compra': return d.compra ? fmtNum(d.compra.valor) : '#CAMPO!';
+      case 'venta': return d.venta ? fmtNum(d.venta.valor) : '#CAMPO!';
+      case 'colones': return d.colones !== undefined ? fmtNum(d.colones) : (d.venta ? fmtNum(d.venta.valor) : '#CAMPO!');
+      case 'dolares': return d.dolares !== undefined ? fmtNum(d.dolares) : '1';
+      case 'fecha': var f = d.fecha || (d.compra && d.compra.fecha) || ''; return String(f).slice(0, 10).split('-').reverse().join('/');
+    }
+  }
+  return '#CAMPO!';
+}
+// CAMPOVALOR(ref; "campo") — también lo que queda de =B2.Nombre
+function valorCampoVinculado(refTxt, campo) {
+  var t = String(refTxt || '').trim().replace(/\$/g, ''), hoja = hojaFormulaActual || activeSheet;
+  var m = t.match(/^(?:'([^']+)'|([^!]+))!(.+)$/);
+  if (m) { hoja = m[1] || m[2]; t = m[3]; }
+  t = t.toUpperCase();
+  if (!/^[A-Z]{1,3}\d+$/.test(t)) return '#VALOR!';
+  var tipo = tiposDatosHoja(hoja)[t];
+  if (!tipo) return '#CAMPO!';
+  var valor = computeValueEnHoja(hoja, t);
+  if (String(valor).trim() === '') return '';
+  var clave = claveVinculo(tipo, valor), dato = datosVinculados()[clave];
+  if (!dato || (dato.reintentar && !vincPendientes[clave])) { pedirDatoVinculado(clave); if (!dato) return '#OCUPADO!'; }
+  if (dato.error) return dato.reintentar ? '#CONECTAR!' : '#N/A';
+  return campoDeDatoVinculado(tipo, dato, campo);
+}
+// =B2.Nombre → CAMPOVALOR(B2;"Nombre") (fuera de los textos entre comillas)
+function expandirCamposVinculados(expr) {
+  if (typeof expr !== 'string' || expr.indexOf('.') === -1) return expr;
+  return expr.split(/("(?:[^"]|"")*")/).map(function (seg, i) {
+    if (i % 2 === 1) return seg;
+    return seg.replace(/(^|[^A-Za-z0-9_.!$'])((?:(?:'[^']+'|[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_]*)!)?\$?[A-Za-z]{1,3}\$?\d+)\.(\[[^\]]+\]|[A-Za-zÁÉÍÓÚÑáéíóúñ][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_]*)(?![A-Za-z0-9_(])/g, function (m0, pre, ref, campo) {
+      return pre + 'CAMPOVALOR(' + ref + ';"' + campo.replace(/^\[|\]$/g, '') + '")';
+    });
+  }).join('');
+}
+function pintarTiposDatos() {
+  document.querySelectorAll('#sheetTable .cell.tipoDato').forEach(function (el) { el.classList.remove('tipoDato', 'cedula', 'moneda', 'vincError'); el.removeAttribute('data-vinc'); });
+  var td = tiposDatosHoja();
+  Object.keys(td).forEach(function (id) {
+    var el = document.getElementById('cell_' + id);
+    if (!el) return;
+    var valor = computeValue(id);
+    if (String(valor).trim() === '') return;
+    var clave = claveVinculo(td[id], valor), dato = datosVinculados()[clave];
+    el.classList.add('tipoDato', td[id]);
+    if (dato && dato.error) el.classList.add('vincError');
+    el.setAttribute('data-vinc', dato ? (dato.error ? '⚠ ' + dato.error : (td[id] === 'cedula' ? campoDeDatoVinculado('cedula', dato, 'Nombre') : campoDeDatoVinculado('moneda', dato, 'Moneda'))) : 'Consultando…');
+    if (!dato) pedirDatoVinculado(clave);
+  });
+}
+function abrirTarjetaVinculo(id) {
+  var td = tiposDatosHoja(), tipo = td[id], esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  if (!tipo) return false;
+  var valor = computeValue(id), clave = claveVinculo(tipo, valor), dato = datosVinculados()[clave];
+  var html;
+  if (!dato) html = '<div class="mcrNota">⏳ Consultando…</div>';
+  else if (dato.error) html = '<div class="mcrNota" style="color:#b91c1c">⚠ ' + esc(dato.error) + '</div>';
+  else html = '<div class="tdTarjeta">' + TIPOS_DATO_VINC[tipo].campos.map(function (c) {
+    var v = campoDeDatoVinculado(tipo, dato, c);
+    if (v === '' || v === '#CAMPO!') return '';
+    return '<div class="tdFila"><span>' + esc(c) + '</span><b>' + esc(v) + '</b><button type="button" data-campo="' + esc(c) + '" title="Poner este dato en la celda de la derecha">➕</button></div>';
+  }).join('') + '</div><div class="mcrNota">Actualizado: ' + new Date(dato.fecha).toLocaleString('es-CR') + '. Tocá ➕ para poner el dato en la próxima columna libre de la derecha (queda como fórmula, por ejemplo =' + id + '.Nombre).</div>';
+  abrirPanel(TIPOS_DATO_VINC[tipo].icono + ' ' + esc(valor), html, [
+    { texto: '🔄 Actualizar', accion: function () { delete datosVinculados()[clave]; pedirDatoVinculado(clave, function () { abrirTarjetaVinculo(id); }); abrirTarjetaVinculo(id); return false; } },
+    { texto: 'Quitar vínculo', accion: function () { snapshot(); delete colWidths[activeSheet].tiposDatos[id]; autoSave(); renderAllCells(); } },
+    { texto: 'Cerrar', ok: true }
+  ]);
+  document.querySelectorAll('.tdFila [data-campo]').forEach(function (b) { b.addEventListener('click', function () {
+    var r = filaDe(id), c = colDe(id) + 1, d = sheetData[activeSheet] || (sheetData[activeSheet] = {});
+    while (d[cellId(r, c)] !== undefined && d[cellId(r, c)] !== '' && c < MAX_COLUMNAS - 1) c++;
+    snapshot();
+    var campo = b.dataset.campo, ref = /^[A-Za-zÁÉÍÓÚÑáéíóúñ]+$/.test(campo) ? campo : '[' + campo + ']';
+    d[cellId(r, c)] = '=' + id + '.' + ref;
+    // Fila de encabezado: si arriba de la cédula hay un título, se pone el nombre del campo
+    if (r > 0 && d[cellId(r - 1, colDe(id))] && !/^\d/.test(String(d[cellId(r - 1, colDe(id))])) && (d[cellId(r - 1, c)] === undefined || d[cellId(r - 1, c)] === '')) d[cellId(r - 1, c)] = campo;
+    marcarCeldaSucia(activeSheet, cellId(r, c));
+    if (c >= COLS && typeof crecerColumnas === 'function') crecerColumnas(c + 1);
+    buildTable(); renderAllCells(); autoSave();
+    document.getElementById('saveStatus').textContent = '➕ ' + cellId(r, c) + ' = ' + id + '.' + ref;
+  }); });
+  return true;
+}
+function abrirTiposDatos() {
+  var cel = document.getElementById('cellRef').textContent;
+  var b = limitesDeSeleccionOCelda();
+  if (b && b.minR === b.maxR && b.minC === b.maxC && tiposDatosHoja()[cel] && abrirTarjetaVinculo(cel)) return;
+  var rango = b ? cellId(b.minR, b.minC) + (b.maxR > b.minR || b.maxC > b.minC ? ':' + cellId(b.maxR, b.maxC) : '') : cel;
+  var html = '<div class="mcrNota">Convertí celdas en <b>datos vinculados</b>: la celda queda con su ícono y de ella sacás datos con fórmulas como <code>=B2.Nombre</code> o <code>=CAMPOVALOR(B2;"Régimen")</code>. Los datos se guardan con el libro.</div>' +
+    '<label class="mcrF">Celdas (' + rango + ')</label>' +
+    Object.keys(TIPOS_DATO_VINC).map(function (k, i) { return '<label class="tdOpcion"><input type="radio" name="tdTipo" value="' + k + '"' + (i === 0 ? ' checked' : '') + '> ' + TIPOS_DATO_VINC[k].icono + ' ' + TIPOS_DATO_VINC[k].nombre + '<br><small>Campos: ' + TIPOS_DATO_VINC[k].campos.join(', ') + '</small></label>'; }).join('') +
+    '<div class="mcrNota">Moneda: escribí USD o EUR en la celda. Cédula: con o sin guiones.</div>' +
+    (Object.keys(tiposDatosHoja()).length ? '<button type="button" class="egAccion" id="tdActualizar">🔄 Actualizar todos los datos vinculados de esta hoja</button>' : '');
+  abrirPanel('🔗 Tipos de datos vinculados', html, [{ texto: 'Quitar vínculo', accion: function () {
+    if (!b) return;
+    snapshot(); var td = colWidths[activeSheet] && colWidths[activeSheet].tiposDatos; if (!td) return;
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) delete td[cellId(r, c)];
+    autoSave(); renderAllCells();
+  } }, { texto: 'Convertir', ok: true, accion: function () {
+    if (!b) return;
+    var tipo = (document.querySelector('input[name="tdTipo"]:checked') || {}).value || 'cedula';
+    snapshot();
+    var meta = colWidths[activeSheet] || (colWidths[activeSheet] = {}), td = meta.tiposDatos || (meta.tiposDatos = {}), n = 0;
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) {
+      var id = cellId(r, c), v = String(computeValue(id) || '').trim();
+      if (!v) continue;
+      if (tipo === 'cedula' && !/^[\d\s-]{9,15}$/.test(v)) continue;
+      td[id] = tipo; n++;
+    }
+    autoSave(); renderAllCells();
+    document.getElementById('saveStatus').textContent = n ? '🔗 ' + n + ' celda(s) vinculada(s) como ' + TIPOS_DATO_VINC[tipo].nombre.split(' (')[0] + '. Tocá el ícono para ver la tarjeta.' : 'Ninguna celda tenía un valor válido para ese tipo.';
+  } }]);
+  var bu = document.getElementById('tdActualizar');
+  if (bu) bu.addEventListener('click', function () {
+    var td = tiposDatosHoja(), vistas = {};
+    Object.keys(td).forEach(function (id) { var cl = claveVinculo(td[id], computeValue(id)); if (!vistas[cl]) { vistas[cl] = 1; delete datosVinculados()[cl]; pedirDatoVinculado(cl); } });
+    cerrarPanel(); renderAllCells();
+    document.getElementById('saveStatus').textContent = '🔄 Actualizando ' + Object.keys(vistas).length + ' dato(s) vinculado(s)…';
+  });
+}
+document.getElementById('btnTiposDatos').addEventListener('click', abrirTiposDatos);
+// Tocar el ícono de la celda abre la tarjeta (los primeros 22 px de la izquierda)
+document.addEventListener('click', function (e) {
+  var el = e.target && e.target.closest && e.target.closest('#sheetTable .cell.tipoDato');
+  if (!el) return;
+  var r = el.getBoundingClientRect();
+  if (e.clientX - r.left > 22) return;
+  var id = el.dataset.id || el.id.replace('cell_', '');
+  e.preventDefault(); e.stopPropagation();
+  abrirTarjetaVinculo(id);
+}, true);
+// ══════════════════════════════════════════════
+// EDITOR DE CONSULTAS (como Power Query de Excel)
+// Una consulta toma una tabla de origen (un rango con encabezados en la
+// primera fila), le aplica pasos guardados en orden y carga el resultado
+// en una hoja. Con "🔄 Actualizar" se repiten todos los pasos con los datos
+// de hoy. Se guardan con el libro en opcionesLibro.consultas.
+// ══════════════════════════════════════════════
+var PASOS_CONSULTA = {
+  conservar: { nombre: 'Conservar columnas', campos: ['cols'] },
+  quitarCols: { nombre: 'Quitar columnas', campos: ['cols'] },
+  renombrar: { nombre: 'Cambiar nombre de columna', campos: ['col', 'nuevo'] },
+  filtrar: { nombre: 'Filtrar filas', campos: ['col', 'op', 'valor'] },
+  ordenar: { nombre: 'Ordenar', campos: ['col', 'desc'] },
+  quitarDuplicados: { nombre: 'Quitar duplicados', campos: ['cols'] },
+  quitarVacias: { nombre: 'Quitar filas vacías', campos: [] },
+  primeras: { nombre: 'Conservar primeras filas', campos: ['n'] },
+  reemplazar: { nombre: 'Reemplazar valores', campos: ['col', 'buscar', 'por'] },
+  formatoTexto: { nombre: 'Formato de texto', campos: ['col', 'modo'] },
+  tipo: { nombre: 'Cambiar tipo', campos: ['col', 'tipoDato'] },
+  dividir: { nombre: 'Dividir columna', campos: ['col', 'sep'] },
+  agregarCol: { nombre: 'Columna personalizada', campos: ['nuevo', 'formula'] },
+  despivotar: { nombre: 'Anular dinamización (despivotar)', campos: ['cols'] },
+  agrupar: { nombre: 'Agrupar por', campos: ['cols', 'col', 'fn'] },
+  combinar: { nombre: 'Combinar con otra tabla (BUSCARV)', campos: ['col', 'otra', 'colOtra', 'traer'] },
+  anexar: { nombre: 'Anexar otra tabla debajo', campos: ['otra'] }
+};
+function consultasLibro() { return (opcionesLibro.consultas = opcionesLibro.consultas || []); }
+// Lee una tabla "Hoja!A1:D50" (o solo "Hoja", toda la región con datos) como { cols: [...], filas: [[...]] }
+function leerTablaConsulta(origen) {
+  var t = String(origen || '').trim(), hoja = activeSheet, rango = '';
+  var m = t.match(/^(?:'([^']+)'|([^!]+))!(.+)$/);
+  if (m) { hoja = m[1] || m[2]; rango = m[3]; } else if (sheets.indexOf(t) !== -1) hoja = t; else rango = t;
+  if (sheets.indexOf(hoja) === -1) throw new Error('No existe la hoja "' + hoja + '".');
+  var r1, r2, c1, c2;
+  if (rango) {
+    var p = rango.replace(/\$/g, '').toUpperCase().split(':');
+    if (!/^[A-Z]+\d+$/.test(p[0]) || (p[1] && !/^[A-Z]+\d+$/.test(p[1]))) throw new Error('El rango "' + rango + '" no es válido.');
+    r1 = filaDe(p[0]); c1 = colDe(p[0]); r2 = filaDe(p[1] || p[0]); c2 = colDe(p[1] || p[0]);
+  } else {
+    var d = sheetData[hoja] || {}; r1 = 0; c1 = 0; r2 = -1; c2 = -1;
+    Object.keys(d).forEach(function (k) { var mm = /^([A-Z]+)(\d+)$/.exec(k); if (!mm || d[k] === '' || d[k] == null) return; var rr = parseInt(mm[2], 10) - 1, cc = colIndex(mm[1]); if (rr > r2) r2 = rr; if (cc > c2) c2 = cc; });
+    if (r2 < 0) throw new Error('La hoja "' + hoja + '" está vacía.');
+  }
+  var cols = [], filas = [];
+  for (var c = c1; c <= c2; c++) { var n = String(computeValueEnHoja(hoja, cellId(r1, c)) || '').trim(); cols.push(n || ('Columna' + (c - c1 + 1))); }
+  for (var r = r1 + 1; r <= r2; r++) {
+    var f = [];
+    for (var c3 = c1; c3 <= c2; c3++) { var v = computeValueEnHoja(hoja, cellId(r, c3)); f.push(v === undefined || v === null ? '' : v); }
+    filas.push(f);
+  }
+  // nombres de columna únicos
+  var vistos = {};
+  cols = cols.map(function (n) { var b = n, k = 2; while (vistos[n.toLowerCase()]) n = b + ' (' + (k++) + ')'; vistos[n.toLowerCase()] = 1; return n; });
+  return { cols: cols, filas: filas };
+}
+function idxColConsulta(t, nombre) {
+  var i = t.cols.indexOf(nombre);
+  if (i === -1) { var l = String(nombre).toLowerCase(); i = t.cols.map(function (c) { return c.toLowerCase(); }).indexOf(l); }
+  if (i === -1) throw new Error('No existe la columna "' + nombre + '".');
+  return i;
+}
+function numConsulta(v) { var s = String(v == null ? '' : v).trim(); if (s === '' || !/^[-+]?[\d\s.,]+$/.test(s)) return NaN; return parseFloat(limpiaNum(s)); }
+function aplicarPasoConsulta(t, p) {
+  var cols = t.cols.slice(), filas = t.filas.map(function (f) { return f.slice(); });
+  var listaCols = function () { return (p.cols || []).map(function (n) { return idxColConsulta(t, n); }); };
+  switch (p.op) {
+    case 'conservar': case 'quitarCols': {
+      var ix = listaCols();
+      var quedan = cols.map(function (_, i) { return i; }).filter(function (i) { return p.op === 'conservar' ? ix.indexOf(i) !== -1 : ix.indexOf(i) === -1; });
+      if (p.op === 'conservar') quedan = ix;
+      return { cols: quedan.map(function (i) { return cols[i]; }), filas: filas.map(function (f) { return quedan.map(function (i) { return f[i]; }); }) };
+    }
+    case 'renombrar': {
+      var i1 = idxColConsulta(t, p.col);
+      if (!String(p.nuevo || '').trim()) throw new Error('Falta el nombre nuevo.');
+      cols[i1] = String(p.nuevo).trim(); return { cols: cols, filas: filas };
+    }
+    case 'filtrar': {
+      var i2 = idxColConsulta(t, p.col), val = String(p.valor == null ? '' : p.valor);
+      var ok = function (v) {
+        var s = String(v == null ? '' : v), a = numConsulta(s), b = numConsulta(val), num = !isNaN(a) && !isNaN(b);
+        var sl = s.toLowerCase(), vl = val.toLowerCase();
+        switch (p.opFiltro || '=') {
+          case '=': return num ? a === b : sl === vl;
+          case '<>': return num ? a !== b : sl !== vl;
+          case '>': return num ? a > b : sl > vl;
+          case '<': return num ? a < b : sl < vl;
+          case '>=': return num ? a >= b : sl >= vl;
+          case '<=': return num ? a <= b : sl <= vl;
+          case 'contiene': return sl.indexOf(vl) !== -1;
+          case 'nocontiene': return sl.indexOf(vl) === -1;
+          case 'empieza': return sl.indexOf(vl) === 0;
+          case 'vacio': return s.trim() === '';
+          case 'novacio': return s.trim() !== '';
+        }
+        return true;
+      };
+      return { cols: cols, filas: filas.filter(function (f) { return ok(f[i2]); }) };
+    }
+    case 'ordenar': {
+      var i3 = idxColConsulta(t, p.col);
+      filas.sort(function (a, b) { var c = compararValoresOrdenables(a[i3], b[i3]); return p.desc ? -c : c; });
+      return { cols: cols, filas: filas };
+    }
+    case 'quitarDuplicados': {
+      var ix2 = p.cols && p.cols.length ? listaCols() : cols.map(function (_, i) { return i; }), vistos = {};
+      return { cols: cols, filas: filas.filter(function (f) { var k = JSON.stringify(ix2.map(function (i) { return String(f[i]).toLowerCase(); })); if (vistos[k]) return false; vistos[k] = 1; return true; }) };
+    }
+    case 'quitarVacias':
+      return { cols: cols, filas: filas.filter(function (f) { return f.some(function (v) { return String(v == null ? '' : v).trim() !== ''; }); }) };
+    case 'primeras':
+      return { cols: cols, filas: filas.slice(0, Math.max(0, parseInt(p.n, 10) || 0)) };
+    case 'reemplazar': {
+      var i4 = idxColConsulta(t, p.col), bus = String(p.buscar == null ? '' : p.buscar), por = String(p.por == null ? '' : p.por);
+      filas.forEach(function (f) { var s = String(f[i4] == null ? '' : f[i4]); f[i4] = bus === '' ? (s.trim() === '' ? por : s) : s.split(bus).join(por); });
+      return { cols: cols, filas: filas };
+    }
+    case 'formatoTexto': {
+      var i5 = idxColConsulta(t, p.col);
+      filas.forEach(function (f) {
+        var s = String(f[i5] == null ? '' : f[i5]);
+        if (p.modo === 'mayus') s = s.toUpperCase(); else if (p.modo === 'minus') s = s.toLowerCase();
+        else if (p.modo === 'nompropio') s = s.toLowerCase().replace(/(^|\s)(\S)/g, function (m0, a, b) { return a + b.toUpperCase(); });
+        else s = s.replace(/\s+/g, ' ').trim();
+        f[i5] = s;
+      });
+      return { cols: cols, filas: filas };
+    }
+    case 'tipo': {
+      var i6 = idxColConsulta(t, p.col);
+      filas.forEach(function (f) {
+        var s = String(f[i6] == null ? '' : f[i6]).trim();
+        if (p.tipoDato === 'numero') { var n = numConsulta(s.replace(/[₡$€%]/g, '')); f[i6] = isNaN(n) ? (s === '' ? '' : '#ERROR') : String(n); }
+        else if (p.tipoDato === 'entero') { var n2 = numConsulta(s.replace(/[₡$€%]/g, '')); f[i6] = isNaN(n2) ? (s === '' ? '' : '#ERROR') : String(Math.round(n2)); }
+        else if (p.tipoDato === 'fecha') {
+          if (s === '') return;
+          var d = fechaDe(/^\d{5}$/.test(s) ? Number(s) : s);
+          f[i6] = isNaN(d.getTime()) ? '#ERROR' : ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+        } else f[i6] = s;
+      });
+      return { cols: cols, filas: filas };
+    }
+    case 'dividir': {
+      var i7 = idxColConsulta(t, p.col), sep = p.sep === '\\t' ? '\t' : String(p.sep == null || p.sep === '' ? ',' : p.sep);
+      var partes = filas.map(function (f) { return String(f[i7] == null ? '' : f[i7]).split(sep).map(function (x) { return x.trim(); }); });
+      var maxP = partes.reduce(function (m, a) { return Math.max(m, a.length); }, 1);
+      var nuevas = []; for (var k = 0; k < maxP; k++) nuevas.push(cols[i7] + '.' + (k + 1));
+      return {
+        cols: cols.slice(0, i7).concat(nuevas).concat(cols.slice(i7 + 1)),
+        filas: filas.map(function (f, j) { var pz = partes[j]; var ext = []; for (var k2 = 0; k2 < maxP; k2++) ext.push(pz[k2] === undefined ? '' : pz[k2]); return f.slice(0, i7).concat(ext).concat(f.slice(i7 + 1)); })
+      };
+    }
+    case 'agregarCol': {
+      var nombre = String(p.nuevo || '').trim() || 'Personalizada';
+      var formula = String(p.formula || '').trim().replace(/^=/, '');
+      var nuevasF = filas.map(function (f) {
+        // [Columna] se cambia por el valor de esa columna en la fila
+        var expr = formula.replace(/\[([^\]]+)\]/g, function (m0, nom) {
+          var v = f[idxColConsulta(t, nom)], n = numConsulta(v);
+          return !isNaN(n) ? '(' + n + ')' : '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+        });
+        try { var r = computeExpr(expr); return r === undefined ? '' : r; } catch (e) { return '#ERROR'; }
+      });
+      return { cols: cols.concat([nombre]), filas: filas.map(function (f, j) { return f.concat([nuevasF[j]]); }) };
+    }
+    case 'despivotar': {
+      var ix3 = listaCols();
+      if (!ix3.length) throw new Error('Escogé las columnas a despivotar.');
+      var fijas = cols.map(function (_, i) { return i; }).filter(function (i) { return ix3.indexOf(i) === -1; });
+      var out = [];
+      filas.forEach(function (f) { ix3.forEach(function (i) { if (String(f[i] == null ? '' : f[i]).trim() === '') return; out.push(fijas.map(function (j) { return f[j]; }).concat([cols[i], f[i]])); }); });
+      return { cols: fijas.map(function (j) { return cols[j]; }).concat(['Atributo', 'Valor']), filas: out };
+    }
+    case 'agrupar': {
+      var ixG = listaCols(), iv = idxColConsulta(t, p.col), grupos = {}, orden = [];
+      filas.forEach(function (f) { var k = JSON.stringify(ixG.map(function (i) { return f[i]; })); if (!grupos[k]) { grupos[k] = { clave: ixG.map(function (i) { return f[i]; }), vals: [] }; orden.push(k); } grupos[k].vals.push(f[iv]); });
+      var nomFn = { SUMA: 'Suma', PROMEDIO: 'Promedio', CONTAR: 'Cuenta', CONTARA: 'Cuenta', MAX: 'Máx.', MIN: 'Mín.' }[String(p.fn || 'SUMA').toUpperCase()] || p.fn;
+      return { cols: ixG.map(function (i) { return cols[i]; }).concat([nomFn + ' de ' + cols[iv]]), filas: orden.map(function (k) { return grupos[k].clave.concat([agregadoPorNombre(p.fn || 'SUMA', grupos[k].vals)]); }) };
+    }
+    case 'combinar': {
+      var otra = leerTablaConsulta(p.otra), iA = idxColConsulta(t, p.col), iB = idxColConsulta(otra, p.colOtra);
+      var traer = (p.traer && p.traer.length ? p.traer : otra.cols.filter(function (c) { return c !== otra.cols[iB]; })).map(function (n) { return idxColConsulta(otra, n); });
+      var mapa = {};
+      otra.filas.forEach(function (f) { var k = String(f[iB] == null ? '' : f[iB]).trim().toLowerCase(); if (k !== '' && !mapa[k]) mapa[k] = f; });
+      var titulos = traer.map(function (i) { var n = otra.cols[i]; return cols.indexOf(n) === -1 ? n : n + ' (2)'; });
+      return { cols: cols.concat(titulos), filas: filas.map(function (f) { var o = mapa[String(f[iA] == null ? '' : f[iA]).trim().toLowerCase()]; return f.concat(traer.map(function (i) { return o ? o[i] : ''; })); }) };
+    }
+    case 'anexar': {
+      var otra2 = leerTablaConsulta(p.otra), todas = cols.slice();
+      otra2.cols.forEach(function (c) { if (todas.indexOf(c) === -1) todas.push(c); });
+      var ajustar = function (tab) { return tab.filas.map(function (f) { return todas.map(function (c) { var i = tab.cols.indexOf(c); return i === -1 ? '' : f[i]; }); }); };
+      return { cols: todas, filas: ajustar({ cols: cols, filas: filas }).concat(ajustar(otra2)) };
+    }
+  }
+  throw new Error('Paso desconocido: ' + p.op);
+}
+function ejecutarConsulta(q, hasta) {
+  var t = leerTablaConsulta(q.origen);
+  var pasos = q.pasos || [];
+  var n = hasta === undefined ? pasos.length : hasta;
+  for (var i = 0; i < n; i++) {
+    try { t = aplicarPasoConsulta(t, pasos[i]); }
+    catch (e) { e.paso = i; throw e; }
+  }
+  return t;
+}
+function cargarConsultaEnHoja(q) {
+  var t = ejecutarConsulta(q);
+  var h = q.destino;
+  if (sheets.indexOf(h) === -1) crearHojaVaciaConNombre(h);
+  if (sheetProtegida[h]) throw new Error('La hoja "' + h + '" está protegida.');
+  var d = sheetData[h] = {};
+  t.cols.forEach(function (c, j) { d[cellId(0, j)] = c; });
+  t.filas.forEach(function (f, i) { f.forEach(function (v, j) { if (v !== '' && v !== null && v !== undefined) d[cellId(i + 1, j)] = String(v); }); });
+  var fm = sheetFormats[h] = sheetFormats[h] || {};
+  Object.keys(fm).forEach(function (k) { if (/^[A-Z]+1$/.test(k)) delete fm[k]; });
+  t.cols.forEach(function (c, j) { fm[cellId(0, j)] = Object.assign({}, fm[cellId(0, j)] || {}, { bold: true, bgColor: '#e2efda' }); });
+  if (!sheetFreeze[h] || !sheetFreeze[h].row) sheetFreeze[h] = { row: 1, col: 0 };
+  q.ultima = Date.now(); q.filas = t.filas.length;
+  return t;
+}
+function actualizarTodasLasConsultas(silencioso) {
+  var errores = [], hechas = 0;
+  snapshot();
+  consultasLibro().forEach(function (q) { try { cargarConsultaEnHoja(q); hechas++; } catch (e) { errores.push(q.nombre + ': ' + e.message); } });
+  buildTable(); renderAllCells(); autoSave();
+  document.getElementById('saveStatus').textContent = '🔄 ' + hechas + ' consulta(s) actualizada(s)' + (errores.length ? ' · ' + errores.length + ' con error' : '');
+  if (errores.length && !silencioso) alert('No se pudieron actualizar:\n\n' + errores.join('\n'));
+}
+function descripcionPasoConsulta(p) {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var lista = function (a) { return (a || []).map(esc).join(', '); };
+  var opsF = { '=': 'igual a', '<>': 'distinto de', '>': 'mayor que', '<': 'menor que', '>=': 'mayor o igual a', '<=': 'menor o igual a', contiene: 'contiene', nocontiene: 'no contiene', empieza: 'empieza con', vacio: 'está vacía', novacio: 'no está vacía' };
+  switch (p.op) {
+    case 'conservar': return 'Conservar: ' + lista(p.cols);
+    case 'quitarCols': return 'Quitar: ' + lista(p.cols);
+    case 'renombrar': return esc(p.col) + ' → ' + esc(p.nuevo);
+    case 'filtrar': return esc(p.col) + ' ' + (opsF[p.opFiltro] || p.opFiltro) + (/vacio/.test(p.opFiltro) ? '' : ' "' + esc(p.valor) + '"');
+    case 'ordenar': return esc(p.col) + (p.desc ? ' (Z→A)' : ' (A→Z)');
+    case 'quitarDuplicados': return p.cols && p.cols.length ? 'por ' + lista(p.cols) : 'filas completas';
+    case 'primeras': return p.n + ' filas';
+    case 'reemplazar': return esc(p.col) + ': "' + esc(p.buscar) + '" → "' + esc(p.por) + '"';
+    case 'formatoTexto': return esc(p.col) + ': ' + ({ mayus: 'MAYÚSCULAS', minus: 'minúsculas', nompropio: 'Nombre Propio', recortar: 'recortar espacios' }[p.modo] || p.modo);
+    case 'tipo': return esc(p.col) + ' → ' + ({ numero: 'número decimal', entero: 'número entero', fecha: 'fecha', texto: 'texto' }[p.tipoDato] || p.tipoDato);
+    case 'dividir': return esc(p.col) + ' por "' + esc(p.sep) + '"';
+    case 'agregarCol': return esc(p.nuevo) + ' = ' + esc(p.formula);
+    case 'despivotar': return lista(p.cols);
+    case 'agrupar': return 'por ' + lista(p.cols) + ' · ' + esc(p.fn) + ' de ' + esc(p.col);
+    case 'combinar': return esc(p.col) + ' ↔ ' + esc(p.otra) + ' [' + esc(p.colOtra) + ']';
+    case 'anexar': return esc(p.otra);
+  }
+  return '';
+}
+var consultaEditando = null;
+function tablaVistaPreviaConsulta(t) {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var max = 15;
+  return '<div class="pqVista"><table><thead><tr>' + t.cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    t.filas.slice(0, max).map(function (f) { return '<tr>' + f.map(function (v) { return '<td>' + esc(v) + '</td>'; }).join('') + '</tr>'; }).join('') +
+    '</tbody></table></div><div class="mcrNota">' + t.filas.length + ' fila(s) · ' + t.cols.length + ' columna(s)' + (t.filas.length > max ? ' · se muestran las primeras ' + max : '') + '</div>';
+}
+function abrirListaConsultas() {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var qs = consultasLibro();
+  var html = '<div class="mcrNota">Una consulta toma una tabla, le aplica pasos (quitar columnas, filtrar, despivotar, combinar…) y deja el resultado en una hoja. Cuando cambien los datos, tocá <b>🔄 Actualizar todo</b> y se repiten todos los pasos.</div>' +
+    (qs.length ? qs.map(function (q, i) {
+      return '<div class="lpItem"><span><b>' + esc(q.nombre) + '</b><br><small>' + esc(q.origen) + ' → ' + esc(q.destino) + ' · ' + (q.pasos || []).length + ' paso(s)' + (q.filas !== undefined ? ' · ' + q.filas + ' filas' : '') + '</small></span>' +
+        '<button type="button" data-editar="' + i + '" title="Editar">✏️</button><button type="button" data-borrar="' + i + '" title="Borrar">🗑</button></div>';
+    }).join('') : '<div class="mcrNota">Todavía no hay consultas.</div>') +
+    '<button type="button" class="egAccion" id="pqNueva">➕ Nueva consulta desde la selección</button>' +
+    (qs.length ? '<button type="button" class="egAccion" id="pqActualizar">🔄 Actualizar todo</button>' : '');
+  abrirPanel('🧩 Consultas (Power Query)', html, [{ texto: 'Cerrar', ok: true }]);
+  document.getElementById('pqNueva').addEventListener('click', function () {
+    var b = limitesDeSeleccionOCelda(), origen;
+    if (b && (b.maxR > b.minR || b.maxC > b.minC)) origen = cellId(b.minR, b.minC) + ':' + cellId(b.maxR, b.maxC);
+    else if (b) { var rg = regionActualDeDatos(b.minR, b.minC); origen = cellId(rg.minR, rg.minC) + ':' + cellId(rg.maxR, rg.maxC); }
+    var base = 'Consulta', k = 1; while (consultasLibro().some(function (q) { return q.nombre === base + k; }) || sheets.indexOf(base + k) !== -1) k++;
+    consultaEditando = { nombre: base + k, origen: (/[\s']/.test(activeSheet) ? "'" + activeSheet + "'" : activeSheet) + '!' + (origen || 'A1:A1'), destino: base + k, pasos: [], nueva: true };
+    abrirEditorConsulta();
+    return false;
+  });
+  var ba = document.getElementById('pqActualizar'); if (ba) ba.addEventListener('click', function () { actualizarTodasLasConsultas(); abrirListaConsultas(); });
+  document.querySelectorAll('.lpItem [data-editar]').forEach(function (b) { b.addEventListener('click', function () { var q = qs[parseInt(b.dataset.editar, 10)]; consultaEditando = JSON.parse(JSON.stringify(q)); consultaEditando.indice = parseInt(b.dataset.editar, 10); abrirEditorConsulta(); }); });
+  document.querySelectorAll('.lpItem [data-borrar]').forEach(function (b) { b.addEventListener('click', function () {
+    if (!confirm('¿Borrar esta consulta? La hoja con el resultado se queda como está.')) return;
+    consultasLibro().splice(parseInt(b.dataset.borrar, 10), 1); autoSave(); abrirListaConsultas();
+  }); });
+}
+function abrirEditorConsulta() {
+  var q = consultaEditando, esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+  var tActual = null, error = null;
+  try { tActual = ejecutarConsulta(q); } catch (e) { error = e; }
+  var colsDisp = [];
+  try { colsDisp = (tActual || ejecutarConsulta(q, error && error.paso !== undefined ? error.paso : 0)).cols; } catch (e2) { colsDisp = []; }
+  var opsPasos = Object.keys(PASOS_CONSULTA).map(function (k) { return '<option value="' + k + '">' + PASOS_CONSULTA[k].nombre + '</option>'; }).join('');
+  var html = '<div class="egDos"><div><label class="mcrF">Nombre</label><input id="pqNombre" class="mcrI" value="' + esc(q.nombre) + '"></div>' +
+    '<div><label class="mcrF">Cargar en la hoja</label><input id="pqDestino" class="mcrI" value="' + esc(q.destino) + '"></div></div>' +
+    '<label class="mcrF">Origen (tabla con encabezados en la primera fila)</label><input id="pqOrigen" class="mcrI" value="' + esc(q.origen) + '" placeholder="Hoja1!A1:D50 o solo Hoja1">' +
+    '<label class="mcrF">Pasos aplicados</label>' +
+    '<div class="lpItem fijo"><span>1. Origen: ' + esc(q.origen) + '</span></div>' +
+    (q.pasos || []).map(function (p, i) {
+      var conError = error && error.paso === i;
+      return '<div class="lpItem' + (conError ? ' pqErr' : '') + '"><span>' + (i + 2) + '. <b>' + (PASOS_CONSULTA[p.op] ? PASOS_CONSULTA[p.op].nombre : p.op) + '</b><br><small>' + descripcionPasoConsulta(p) + (conError ? '<br>⚠ ' + esc(error.message) : '') + '</small></span>' +
+        (i > 0 ? '<button type="button" data-subir="' + i + '" title="Subir">⬆</button>' : '') + '<button type="button" data-quitar="' + i + '" title="Quitar paso">✕</button></div>';
+    }).join('') +
+    '<div class="pqNuevo"><label class="mcrF">Agregar paso</label><select id="pqOp" class="mcrI"><option value="">— Escogé un paso —</option>' + opsPasos + '</select><div id="pqCampos"></div></div>' +
+    '<label class="mcrF">Vista previa</label>' + (error ? '<div class="mcrNota" style="color:#b91c1c">⚠ ' + esc(error.message) + '</div>' : tablaVistaPreviaConsulta(tActual));
+  abrirPanel('🧩 Editor de consultas', html, [
+    { texto: 'Cargar en hoja', ok: true, accion: function () {
+      leerCamposConsulta();
+      if (!q.destino) { alert('Poné el nombre de la hoja donde se carga.'); return false; }
+      var otra = consultasLibro().filter(function (x, i) { return x.destino === q.destino && i !== q.indice; })[0];
+      if (otra) { alert('La hoja "' + q.destino + '" ya la usa la consulta ' + otra.nombre + '.'); return false; }
+      if (sheets.indexOf(q.destino) !== -1 && q.nueva && Object.keys(sheetData[q.destino] || {}).length && !confirm('La hoja "' + q.destino + '" ya tiene datos y se va a reemplazar. ¿Seguir?')) return false;
+      snapshot();
+      var guardar = { nombre: q.nombre, origen: q.origen, destino: q.destino, pasos: q.pasos };
+      try { cargarConsultaEnHoja(guardar); } catch (e) { alert('No se pudo cargar: ' + e.message); return false; }
+      if (q.indice !== undefined) consultasLibro()[q.indice] = guardar; else consultasLibro().push(guardar);
+      activeSheet = q.destino; buildTable(); renderAllCells(); autoSave();
+      if (typeof renderTabs === 'function') renderTabs();
+      document.getElementById('saveStatus').textContent = '🧩 ' + q.nombre + ': ' + guardar.filas + ' filas cargadas en ' + q.destino;
+      consultaEditando = null;
+    } },
+    { texto: 'Volver', accion: function () { consultaEditando = null; abrirListaConsultas(); return false; } }
+  ]);
+  function leerCamposConsulta() {
+    q.nombre = document.getElementById('pqNombre').value.trim() || q.nombre;
+    q.destino = document.getElementById('pqDestino').value.trim();
+    q.origen = document.getElementById('pqOrigen').value.trim();
+  }
+  document.getElementById('pqOrigen').addEventListener('change', function () { leerCamposConsulta(); abrirEditorConsulta(); });
+  document.querySelectorAll('.lpItem [data-quitar]').forEach(function (b) { b.addEventListener('click', function () { leerCamposConsulta(); q.pasos.splice(parseInt(b.dataset.quitar, 10), 1); abrirEditorConsulta(); }); });
+  document.querySelectorAll('.lpItem [data-subir]').forEach(function (b) { b.addEventListener('click', function () { leerCamposConsulta(); var i = parseInt(b.dataset.subir, 10), x = q.pasos[i]; q.pasos[i] = q.pasos[i - 1]; q.pasos[i - 1] = x; abrirEditorConsulta(); }); });
+  var selCol = function (id) { return '<select id="' + id + '" class="mcrI">' + colsDisp.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('') + '</select>'; };
+  var multiCol = function () { return '<div class="pqCols">' + colsDisp.map(function (c) { return '<label><input type="checkbox" class="pqCol" value="' + esc(c) + '"> ' + esc(c) + '</label>'; }).join('') + '</div>'; };
+  var hojas = function (id) { return '<input id="' + id + '" class="mcrI" list="pqHojasLista" placeholder="Hoja2 o Hoja2!A1:C40"><datalist id="pqHojasLista">' + sheets.map(function (h) { return '<option value="' + esc(h) + '">'; }).join('') + '</datalist>'; };
+  document.getElementById('pqOp').addEventListener('change', function () {
+    var op = this.value, c = document.getElementById('pqCampos'), h = '';
+    if (!op) { c.innerHTML = ''; return; }
+    if (op === 'conservar' || op === 'quitarCols' || op === 'despivotar') h = multiCol();
+    else if (op === 'quitarDuplicados') h = '<div class="mcrNota">Sin marcar nada: compara la fila completa.</div>' + multiCol();
+    else if (op === 'renombrar') h = selCol('pqC1') + '<input id="pqV1" class="mcrI" placeholder="Nombre nuevo">';
+    else if (op === 'filtrar') h = selCol('pqC1') + '<select id="pqOpF" class="mcrI"><option value="=">es igual a</option><option value="<>">no es igual a</option><option value=">">es mayor que</option><option value=">=">es mayor o igual a</option><option value="<">es menor que</option><option value="<=">es menor o igual a</option><option value="contiene">contiene</option><option value="nocontiene">no contiene</option><option value="empieza">empieza con</option><option value="vacio">está vacía</option><option value="novacio">no está vacía</option></select><input id="pqV1" class="mcrI" placeholder="Valor">';
+    else if (op === 'ordenar') h = selCol('pqC1') + '<select id="pqV1" class="mcrI"><option value="">A → Z (menor a mayor)</option><option value="1">Z → A (mayor a menor)</option></select>';
+    else if (op === 'primeras') h = '<input id="pqV1" class="mcrI" type="number" min="1" value="10">';
+    else if (op === 'reemplazar') h = selCol('pqC1') + '<input id="pqV1" class="mcrI" placeholder="Buscar (vacío = celdas vacías)"><input id="pqV2" class="mcrI" placeholder="Reemplazar por">';
+    else if (op === 'formatoTexto') h = selCol('pqC1') + '<select id="pqV1" class="mcrI"><option value="recortar">Recortar espacios</option><option value="mayus">MAYÚSCULAS</option><option value="minus">minúsculas</option><option value="nompropio">Nombre Propio</option></select>';
+    else if (op === 'tipo') h = selCol('pqC1') + '<select id="pqV1" class="mcrI"><option value="numero">Número decimal</option><option value="entero">Número entero</option><option value="fecha">Fecha</option><option value="texto">Texto</option></select>';
+    else if (op === 'dividir') h = selCol('pqC1') + '<input id="pqV1" class="mcrI" value="," placeholder="Separador (, ; - espacio…)">';
+    else if (op === 'agregarCol') h = '<input id="pqV1" class="mcrI" placeholder="Nombre de la columna nueva"><input id="pqV2" class="mcrI" placeholder="Fórmula, ej.: [Precio]*[Cantidad]"><div class="mcrNota">Usá [Columna] para el valor de cada fila. Sirve cualquier función: SI, REDONDEAR, IZQUIERDA…</div>';
+    else if (op === 'agrupar') h = '<div class="mcrNota">Agrupar por:</div>' + multiCol() + '<div class="egDos"><div><label class="mcrF">Operación</label><select id="pqV1" class="mcrI"><option value="SUMA">Suma</option><option value="PROMEDIO">Promedio</option><option value="CONTARA">Contar filas</option><option value="MAX">Máximo</option><option value="MIN">Mínimo</option></select></div><div><label class="mcrF">De la columna</label>' + selCol('pqC1') + '</div></div>';
+    else if (op === 'combinar') h = '<label class="mcrF">Columna clave de esta tabla</label>' + selCol('pqC1') + '<label class="mcrF">Otra tabla</label>' + hojas('pqOtra') + '<input id="pqV1" class="mcrI" placeholder="Columna clave en la otra tabla"><input id="pqV2" class="mcrI" placeholder="Columnas a traer, separadas por coma (vacío = todas)">';
+    else if (op === 'anexar') h = '<label class="mcrF">Tabla que va debajo</label>' + hojas('pqOtra');
+    c.innerHTML = h + '<button type="button" class="egAccion" id="pqAgregar">➕ Agregar este paso</button>';
+    document.getElementById('pqAgregar').addEventListener('click', function () {
+      var val = function (id) { var e = document.getElementById(id); return e ? e.value : ''; };
+      var marcadas = [].slice.call(document.querySelectorAll('.pqCol:checked')).map(function (x) { return x.value; });
+      var p = { op: op };
+      if (op === 'conservar' || op === 'quitarCols' || op === 'despivotar' || op === 'quitarDuplicados') { p.cols = marcadas; if (!marcadas.length && op !== 'quitarDuplicados') { alert('Marcá al menos una columna.'); return; } }
+      else if (op === 'renombrar') { p.col = val('pqC1'); p.nuevo = val('pqV1'); }
+      else if (op === 'filtrar') { p.col = val('pqC1'); p.opFiltro = val('pqOpF'); p.valor = val('pqV1'); }
+      else if (op === 'ordenar') { p.col = val('pqC1'); p.desc = !!val('pqV1'); }
+      else if (op === 'primeras') p.n = parseInt(val('pqV1'), 10) || 10;
+      else if (op === 'reemplazar') { p.col = val('pqC1'); p.buscar = val('pqV1'); p.por = val('pqV2'); }
+      else if (op === 'formatoTexto') { p.col = val('pqC1'); p.modo = val('pqV1'); }
+      else if (op === 'tipo') { p.col = val('pqC1'); p.tipoDato = val('pqV1'); }
+      else if (op === 'dividir') { p.col = val('pqC1'); p.sep = val('pqV1'); }
+      else if (op === 'agregarCol') { p.nuevo = val('pqV1'); p.formula = val('pqV2'); if (!p.formula) { alert('Escribí la fórmula.'); return; } }
+      else if (op === 'agrupar') { p.cols = marcadas; p.fn = val('pqV1'); p.col = val('pqC1'); if (!marcadas.length) { alert('Marcá por cuáles columnas agrupar.'); return; } }
+      else if (op === 'combinar') { p.col = val('pqC1'); p.otra = val('pqOtra'); p.colOtra = val('pqV1') || p.col; p.traer = val('pqV2').split(',').map(function (x) { return x.trim(); }).filter(Boolean); }
+      else if (op === 'anexar') { p.otra = val('pqOtra'); }
+      leerCamposConsulta();
+      q.pasos.push(p);
+      abrirEditorConsulta();
+    });
+  });
+}
+document.getElementById('btnConsultas').addEventListener('click', abrirListaConsultas);
+document.getElementById('btnActualizarConsultas').addEventListener('click', function () {
+  if (!consultasLibro().length) { alert('Este libro no tiene consultas. Creá una con 🧩 Consultas.'); return; }
+  actualizarTodasLasConsultas();
+});
 document.getElementById('btnAutofiltro').addEventListener('click', function () {
   snapshot();
   if (sheetAutoFiltro[activeSheet]) {
