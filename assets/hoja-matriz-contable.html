@@ -420,6 +420,21 @@
   .pqNuevo { border: 1px dashed #b6d7a8; border-radius: 8px; padding: 6px 8px; margin: 8px 0; background: #fbfdf9; }
   .pqNuevo .mcrI { margin-bottom: 6px; }
   .lpItem.pqErr { border-color: #fca5a5; background: #fef2f2; }
+  .hdLista { display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+  .hdItem { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: none; border-bottom: 1px solid #f1f5f9; background: #fff; text-align: left; font-size: 13.5px; }
+  .hdItem:last-child { border-bottom: none; }
+  .hdItem.marcado { background: #fef9c3; }
+  .hdNum { width: 22px; height: 22px; border-radius: 50%; background: #e2efda; color: #245f09; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .hdTxt { flex: 1; }
+  .hdHora { color: #9ca3af; font-size: 11.5px; }
+  .fdBarra { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #f0f9e8; border-radius: 8px; font-size: 13px; color: #245f09; font-weight: 600; margin-bottom: 6px; }
+  .fdCampos { max-height: 46vh; overflow: auto; padding-right: 2px; }
+  .fdCalc { padding: 8px 10px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; color: #475569; font-size: 14px; }
+  .fdNav { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .fdNav button { flex: 1; min-width: 44px; padding: 9px 6px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; font-size: 14px; }
+  .fdNav button:disabled { opacity: .4; }
+  .iwTabla { border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px; margin-top: 8px; }
+  .iwCab { font-size: 13px; margin-bottom: 4px; }
   #sheetTable .cell.tipoDato { padding-left: 24px; }
   #sheetTable .cell.tipoDato::before { position: absolute; left: 3px; top: 50%; transform: translateY(-50%); font-size: 13px; line-height: 1; cursor: pointer; }
   #sheetTable .cell.tipoDato.cedula::before { content: '🏛'; }
@@ -1582,6 +1597,7 @@
         <button id="btnIteracion" title="Cálculo iterativo: permite referencias circulares (como Archivo ▸ Opciones ▸ Fórmulas ▸ Habilitar cálculo iterativo)">🔁 Iteración: No</button>
         <button id="btnAutoSum">∑ Autosuma</button>
         <button id="btnUndo" disabled>↶ Deshacer</button>
+        <button id="btnHistorialDeshacer" title="Ver los últimos cambios y deshacer varios de una vez (o mantené apretado ↶)">🕘 Historial</button>
         <button id="btnRedo" disabled>↷ Rehacer</button>
         <button id="btnCut">✂️ Cortar</button>
         <button id="btnCopy">⧉ Copiar</button>
@@ -1683,6 +1699,7 @@
         <button id="btnInspDoc" title="Revisar el libro antes de compartirlo: comentarios, hojas ocultas, datos personales, vínculos, nombres rotos…">🕵 Inspeccionar documento</button>
         <button id="btnSello" title="Sellá el libro al cerrar el mes: si alguien cambia algo después, se detecta y se muestra qué cambió">🔏 Sellado del libro</button>
         <button id="btnVersiones" title="Historial de versiones guardado en este dispositivo: comparar y restaurar el libro, una hoja o una celda">📜 Historial de versiones</button>
+        <button id="btnRangosPermitidos" title="Zonas que se pueden editar con la hoja protegida, cada una con su contraseña opcional">🔑 Permitir editar rangos</button>
         <button id="btnCompararLibros" title="Comparar este libro con otro archivo (respaldo, Excel o CSV) celda por celda">⚖ Comparar libros</button>
         <button id="btnParalelo" title="Dividir la pantalla y ver otra hoja abajo, con desplazamiento sincrónico (Ver en paralelo)">🪟 Ver en paralelo</button>
         <button id="btnZoomSel" title="Agrandar o achicar la hoja para que el rango seleccionado llene la pantalla">🔍 Zoom a la selección</button>
@@ -1706,6 +1723,8 @@
         <button id="btnEsquemaAuto" title="Agrupar solo las filas de detalle de cada subtotal (=SUMA de las filas de arriba), con botones −/+">📑 Esquema automático</button>
         <button id="btnBorrarEsquema" title="Quitar todos los grupos −/+ de la hoja">✕ Borrar esquema</button>
         <button id="btnRelaciones" title="Unir dos tablas por una columna clave para usarlas juntas en la tabla dinámica (Modelo de datos)">🔗 Relaciones</button>
+        <button id="btnImportarWeb" title="Traer una tabla de una página web pegando el link (Datos ▸ Desde la Web)">🌐 Desde la Web</button>
+        <button id="btnFormularioDatos" title="Formulario: ver, agregar, buscar y borrar registros de una lista uno por uno">📝 Formulario</button>
         <button id="btnTiposDatos" title="Tipos de datos vinculados: una cédula trae nombre, régimen y estado de Hacienda; una moneda, su tipo de cambio (=B2.Nombre)">🔗 Tipos de datos</button>
         <button id="btnConsultas" title="Editor de consultas (como Power Query): pasos guardados para limpiar y transformar una tabla">🧩 Consultas</button>
         <button id="btnActualizarConsultas" title="Repetir los pasos de todas las consultas con los datos de hoy">🔄 Actualizar consultas</button>
@@ -3522,7 +3541,10 @@ var sheetProtegidaHash = { Hoja1: null, Hoja2: null, Hoja3: null };
 // momento en que alguien activa la protección.
 var sheetCeldasDesbloqueadas = { Hoja1: [], Hoja2: [], Hoja3: [] };
 function celdaDesbloqueada(hoja, id) {
-  return (sheetCeldasDesbloqueadas[hoja] || []).indexOf(id) !== -1;
+  if ((sheetCeldasDesbloqueadas[hoja] || []).indexOf(id) !== -1) return true;
+  // Zonas de "Permitir editar rangos": sin contraseña, o ya desbloqueadas en esta sesión
+  var rp = typeof rangoPermitidoDeCelda === 'function' && colWidths[hoja] && colWidths[hoja].rangosPermitidos ? rangoPermitidoDeCelda(hoja, id) : null;
+  return !!(rp && (!rp.clave || rangosDesbloqueadosSesion[hoja + '|' + rp.nombre]));
 }
 // Vistas guardadas: una "foto" con nombre de a qué hoja estabas viendo, con
 // qué autofiltro, qué zoom y qué celda/rango seleccionado — para volver a
@@ -3622,6 +3644,13 @@ var sheetControles = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var sheetValidacionNativa = { Hoja1: {}, Hoja2: {}, Hoja3: {} };
 var zoomLevel = 100;
 var undoStack = [];
+// Hora de cada cambio que se puede deshacer (para el 🕘 Historial de deshacer)
+var horasDeshacer = new Map();
+function marcarHoraDeshacer(json) {
+  horasDeshacer.set(json, Date.now());
+  if (horasDeshacer.size > 80) horasDeshacer.forEach(function (v, k) { if (undoStack.indexOf(k) === -1) horasDeshacer.delete(k); });
+}
+function horaDeEstadoDeshacer(json) { return horasDeshacer.get(json) || 0; }
 var redoStack = [];
 var tabMenuTarget = null;
 var clipboard = null;
@@ -3775,6 +3804,7 @@ function snapshot() {
   // a comparar el estado una vez que termine la acción (ver autoSave()).
   if (grabandoMacro) _macroEstadoAntes = json;
   undoStack.push(json);
+  marcarHoraDeshacer(json);
   if (undoStack.length > 25) undoStack.shift();
   // Un cambio nuevo invalida el "rehacer" pendiente, igual que en Excel/Sheets:
   // si deshacés y después editás algo distinto, ya no se puede "rehacer" lo anterior.
@@ -3822,6 +3852,7 @@ function redo() {
   if (!redoStack.length) return;
   soltarCeldaEnfocadaSinEditar();
   undoStack.push(estadoActualComoJSON());
+  marcarHoraDeshacer(undoStack[undoStack.length - 1]);
   if (undoStack.length > 25) undoStack.shift();
   var next = JSON.parse(redoStack.pop());
   sheets = next.sheets; sheetData = next.sheetData; sheetFormats = next.sheetFormats;
@@ -4226,8 +4257,8 @@ function splitArgs(s) {
     var ch = s[i];
     if (!inStr && (ch === '"' || ch === "'")) { inStr = true; sc = ch; cur += ch; continue; }
     if (inStr && ch === sc) { inStr = false; cur += ch; continue; }
-    if (!inStr && ch === '(') depth++;
-    if (!inStr && ch === ')') depth--;
+    if (!inStr && (ch === '(' || ch === '{')) depth++;
+    if (!inStr && (ch === ')' || ch === '}')) depth--;
     if (!inStr && (ch === ';' || (ch === ',' && !hayPuntoYComa)) && depth === 0) { args.push(cur.trim()); cur = ''; continue; }
     cur += ch;
   }
@@ -4282,7 +4313,7 @@ function rangeNums(a) {
     return out3DN;
   }
   var info = partirRango(a);
-  return getCells(info.from, info.to).map(function (c) { return toNum(computeValueEnHoja(info.hoja, c)); });
+  return getCells(info.from, info.to).map(function (c) { return numFechaONum(computeValueEnHoja(info.hoja, c)); });
 }
 // Solo las celdas con número (como Excel en PROMEDIO, CONTAR, MAX y MIN: las vacías y
 // los textos no cuentan). rangeNums, en cambio, pasa las vacías como 0 (sirve para SUMA).
@@ -4291,7 +4322,7 @@ function rangeNumerosReales(a) {
     if (v === '' || v === null || v === undefined || typeof v === 'boolean') return false;
     var t = String(v).trim();
     return t !== '' && !isNaN(parseFloat(limpiaNum(t)));
-  }).map(toNum);
+  }).map(numFechaONum);
 }
 function rangeVals(a) {
   var info3Dv = parseRef3D(a);
@@ -4327,7 +4358,7 @@ function resolveArg(a) {
   // de afuera trabajaba con ese texto (REDONDEAR(B2/3;2) daba 0, SI(SUMA(...)>50;...)
   // comparaba contra el texto "SUMA(...)"). Ahora se calcula; si no se puede,
   // se devuelve el texto como antes.
-  if (/[A-Za-zÁÉÍÓÚÑáéíóúñ_.]\(/.test(a) || partirPorOperadores(a)) {
+  if (/[A-Za-zÁÉÍÓÚÑáéíóúñ_.]\(/.test(a) || partirPorOperadores(a) || /[\^%{@#]/.test(a.replace(/"[^"]*"/g, ''))) {
     var calculado = computeExpr(a);
     if (calculado !== '#ERROR' && calculado !== '#ERR') return calculado;
   }
@@ -4420,6 +4451,39 @@ function esCodigoDeFecha(codigo) {
   var sinTexto = String(codigo).replace(/"[^"]*"/g, '').replace(/\\./g, '');
   return !/[0#]/.test(sinTexto) && /(y|a{2}|d|m|h|s)/i.test(sinTexto);
 }
+// TEXTO(número; formato) con códigos de Excel en inglés (#,##0.00) o en español (#.##0,00),
+// con %, texto fijo antes/después ("₡"#.##0 o 0,0 "kg") y secciones positivo;negativo;cero.
+function textoConFormatoNumero(n, fmt) {
+  var secciones = [], cur = '', cad = false;
+  for (var i = 0; i < fmt.length; i++) { var ch = fmt.charAt(i); if (ch === '"') cad = !cad; if (ch === ';' && !cad) { secciones.push(cur); cur = ''; continue; } cur += ch; }
+  secciones.push(cur);
+  var f = secciones[0], signo = '';
+  if (n < 0 && secciones.length > 1 && secciones[1] !== '') { f = secciones[1]; n = -n; }
+  else if (n === 0 && secciones.length > 2) f = secciones[2];
+  else if (n < 0) { signo = '-'; n = -n; }
+  var sinCad = f.replace(/"[^"]*"/g, function (m) { return new Array(m.length + 1).join('X'); });
+  var i1 = sinCad.search(/[0#?]/), i2 = Math.max(sinCad.lastIndexOf('0'), sinCad.lastIndexOf('#'), sinCad.lastIndexOf('?'));
+  if (i1 === -1) return f.replace(/"/g, '');
+  var nucleo = f.slice(i1, i2 + 1), antes = f.slice(0, i1).replace(/"/g, '').replace(/\\(.)/g, '$1'), despues = f.slice(i2 + 1).replace(/"/g, '').replace(/\\(.)/g, '$1');
+  // ¿Cuál es el separador decimal? El último de los dos si están ambos; si hay uno solo,
+  // es de miles cuando va seguido de exactamente 3 dígitos y no hay nada más (#,##0 o #.##0).
+  var tienePunto = nucleo.indexOf('.') !== -1, tieneComa = nucleo.indexOf(',') !== -1, dec = '', miles = false;
+  if (tienePunto && tieneComa) { dec = nucleo.lastIndexOf('.') > nucleo.lastIndexOf(',') ? '.' : ','; miles = true; }
+  else if (tienePunto || tieneComa) {
+    var sep = tienePunto ? '.' : ',';
+    var tras = nucleo.slice(nucleo.lastIndexOf(sep) + 1);
+    if (/^[0#?]{3}$/.test(tras) && /#/.test(nucleo.slice(0, nucleo.indexOf(sep))) ) miles = true; else dec = sep;
+  }
+  var decimales = dec ? (nucleo.slice(nucleo.lastIndexOf(dec) + 1).match(/[0#?]/g) || []).length : 0;
+  var decObligatorios = dec ? (nucleo.slice(nucleo.lastIndexOf(dec) + 1).match(/0/g) || []).length : 0;
+  var parteEntera = dec ? nucleo.slice(0, nucleo.lastIndexOf(dec)) : nucleo;
+  var minEnteros = (parteEntera.match(/0/g) || []).length;
+  var pct = (antes + despues).indexOf('%') !== -1;
+  if (pct) n = n * 100;
+  var txt = n.toLocaleString('es-CR', { minimumFractionDigits: decObligatorios, maximumFractionDigits: decimales, useGrouping: miles, minimumIntegerDigits: Math.max(1, Math.min(21, minEnteros || 1)) });
+  if (minEnteros === 0 && /^0[,.]/.test(txt)) txt = txt.slice(1);
+  return antes + signo + txt + despues;
+}
 function resolveNum(a) { return toNum(resolveArgCrudo(a)); }
 function matchCrit(val, crit) {
   crit = String(crit).trim();
@@ -4463,6 +4527,15 @@ function indiceOperadorSuperior(c, op) {
 }
 function evalCond(c) {
   c = (c || '').trim();
+  // Primero con el motor nuevo (entiende fechas, ^, %, y compara como Excel); si no puede, como antes
+  if (usarMotorNuevo(c)) {
+    var rmC = evaluarMotor(prepararExprMotor(c));
+    if (rmC !== null && !esMatrizMotor(rmC) && rmC.k !== 'e') {
+      if (rmC.k === 'b') return rmC.v;
+      if (rmC.k === 'n') return rmC.v !== 0;
+      if (rmC.k === 'z') return false;
+    }
+  }
   var ops = ['>=', '<=', '<>', '!=', '>', '<', '='];
   for (var i = 0; i < ops.length; i++) {
     var idx = indiceOperadorSuperior(c, ops[i]);
@@ -4556,9 +4629,11 @@ function normalizarComaDecimal(expr) {
       out += ch; i++; continue;
     }
     if (ch === ')') { pila.pop(); out += ch; i++; continue; }
+    if (ch === '{') { pila.push('llave'); out += ch; i++; continue; }
+    if (ch === '}') { pila.pop(); out += ch; i++; continue; }
     if (ch === ',' && /\d/.test(expr.charAt(i + 1) || '')) {
       var ctx = pila.length ? pila[pila.length - 1] : 'top';
-      if (ctx !== 'fn') {
+      if (ctx !== 'fn' && ctx !== 'llave') {
         // el número de la izquierda tiene que ser un número suelto, no parte de una referencia (A1) ni de otro número con coma
         var m = /(^|[^A-Za-z0-9_$.,:!])(\d+)$/.exec(out);
         if (m) { out += '.'; i++; continue; }
@@ -4574,6 +4649,7 @@ function computeExpr(expr) {
   expr = quitarDolaresDeRefs(expr);
   expr = sustituirRangosNombrados(expr);
   expr = expandirFuncionesPropias(expr);
+  expr = expandirFilasColumnasCompletas(expr);
   var exprUp = expr.toUpperCase().trim();
   try {
     // Atajo: si la expresión no empieza con "NOMBRE(" y termina en ")", ninguna función puede coincidir
@@ -4636,6 +4712,11 @@ function computeExpr(expr) {
         }
         return String(computeExpr(sustituirNombres(letArgs[letArgs.length - 1].trim())));
       }
+    }
+    // ── Cuentas con el motor nuevo (precedencia de Excel, fechas, ^, %, matrices) ──
+    if (usarMotorNuevo(expr)) {
+      var resMotor = evaluarMotor(expr);
+      if (resMotor !== null) return textoResultadoMotor(resMotor);
     }
     // ── Texto literal ("hola") y concatenación con & (A1&" "&B1) ──
     var eTrim = expr.trim();
@@ -4709,24 +4790,28 @@ function computeExpr(expr) {
       return cnt5 ? fmtNum(t2 / cnt5) : '#DIV/0!';
     }
     if ((inner = matchFn('MAX|MAXIMO')) !== null) {
-      args = splitArgs(inner); var nums = [];
+      args = splitArgs(inner); var nums = [], todasFechasMx = true;
       args.forEach(function (a) {
         var arrAnidado3 = valoresDeFuncionArrayAnidada(a);
-        if (arrAnidado3) arrAnidado3.forEach(function (v) { nums.push(toNum(v)); });
-        else if (isRange(a)) rangeNumerosReales(a).forEach(function (n) { nums.push(n); });
-        else nums.push(resolveNum(a));
+        if (arrAnidado3) arrAnidado3.forEach(function (v) { if (String(v).trim() !== '' && v !== 'VERDADERO' && !isNaN(parseFloat(limpiaNum(v)))) { nums.push(numFechaONum(v)); if (!esTextoFecha(v)) todasFechasMx = false; } });
+        else if (isRange(a)) { rangeVals(a).forEach(function (v) { if (esTextoFecha(v)) return; var t = String(v == null ? '' : v).trim(); if (t !== '' && typeof v !== 'boolean' && !isNaN(parseFloat(limpiaNum(t)))) todasFechasMx = false; }); rangeNumerosReales(a).forEach(function (n) { nums.push(n); }); }
+        else { var vMx = resolveArg(a); if (!esTextoFecha(String(vMx))) todasFechasMx = false; nums.push(numFechaONum(vMx)); }
       });
-      return nums.length ? fmtNum(Math.max.apply(null, nums)) : '0';
+      if (!nums.length) return '0';
+      var rMx = Math.max.apply(null, nums);
+      return todasFechasMx ? textoDeSerialFecha(rMx) : fmtNum(rMx);
     }
     if ((inner = matchFn('MIN|MINIMO')) !== null) {
-      args = splitArgs(inner); var nums2 = [];
+      args = splitArgs(inner); var nums2 = [], todasFechasMn = true;
       args.forEach(function (a) {
         var arrAnidado4 = valoresDeFuncionArrayAnidada(a);
-        if (arrAnidado4) arrAnidado4.forEach(function (v) { nums2.push(toNum(v)); });
-        else if (isRange(a)) rangeNumerosReales(a).forEach(function (n) { nums2.push(n); });
-        else nums2.push(resolveNum(a));
+        if (arrAnidado4) arrAnidado4.forEach(function (v) { if (String(v).trim() !== '' && v !== 'VERDADERO' && !isNaN(parseFloat(limpiaNum(v)))) { nums2.push(numFechaONum(v)); if (!esTextoFecha(v)) todasFechasMn = false; } });
+        else if (isRange(a)) { rangeVals(a).forEach(function (v) { if (esTextoFecha(v)) return; var t = String(v == null ? '' : v).trim(); if (t !== '' && typeof v !== 'boolean' && !isNaN(parseFloat(limpiaNum(t)))) todasFechasMn = false; }); rangeNumerosReales(a).forEach(function (n) { nums2.push(n); }); }
+        else { var vMn = resolveArg(a); if (!esTextoFecha(String(vMn))) todasFechasMn = false; nums2.push(numFechaONum(vMn)); }
       });
-      return nums2.length ? fmtNum(Math.min.apply(null, nums2)) : '0';
+      if (!nums2.length) return '0';
+      var rMn = Math.min.apply(null, nums2);
+      return todasFechasMn ? textoDeSerialFecha(rMn) : fmtNum(rMn);
     }
     if ((inner = matchFn('CONTAR|COUNT')) !== null) {
       args = splitArgs(inner); var cnt = 0;
@@ -4912,14 +4997,8 @@ function computeExpr(expr) {
         var dtT = fechaDe(resolveArg(args[0]));
         return isNaN(dtT.getTime()) ? '#VALOR!' : formatearFechaConCodigo(dtT, fmt4);
       }
-      var nT = resolveNum(args[0]);
-      if (/[0#]/.test(fmt4) && !/[dmyhsDMYHS]/.test(fmt4.replace(/"[^"]*"/g, ''))) {
-        // Formatos de número: 0, 0.00, #,##0, #,##0.00, 0.0%, etc.
-        var decT = (fmt4.match(/\.([0#]+)/) || [0, ''])[1].length;
-        var esPct = fmt4.indexOf('%') >= 0;
-        var textoNum = (esPct ? nT * 100 : nT).toLocaleString('es-CR', { minimumFractionDigits: decT, maximumFractionDigits: decT, useGrouping: fmt4.indexOf(',') >= 0 });
-        return textoNum + (esPct ? '%' : '');
-      }
+      var nT = numFechaONum(resolveArgCrudo(args[0]));
+      if (/[0#]/.test(fmt4) && !/[dmyhsDMYHS]/.test(fmt4.replace(/"[^"]*"/g, ''))) return textoConFormatoNumero(nT, fmt4);
       return String(nT);
     }
     if ((inner = matchFn('ABS')) !== null) { return fmtNum(Math.abs(resolveNum(splitArgs(inner)[0]))); }
@@ -4938,14 +5017,14 @@ function computeExpr(expr) {
     if ((inner = matchFn('LN')) !== null) { return fmtNum(Math.log(resolveNum(splitArgs(inner)[0]))); }
     if ((inner = matchFn('LOG10')) !== null) { return fmtNum(Math.log10(resolveNum(splitArgs(inner)[0]))); }
     if ((inner = matchFn('EXP')) !== null) { return fmtNum(Math.exp(resolveNum(splitArgs(inner)[0]))); }
-    if (exprUp === 'HOY()' || exprUp === 'TODAY()') return new Date().toLocaleDateString('es-CR');
+    if (exprUp === 'HOY()' || exprUp === 'TODAY()') return textoDeFecha(new Date());
     if (exprUp === 'AHORA()' || exprUp === 'NOW()') return new Date().toLocaleString('es-CR');
     if ((inner = matchFn('DIA(?!S)|DAY')) !== null) { var dd = fechaDe(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dd.getTime()) ? '#VALOR!' : String(dd.getDate()); }
     if ((inner = matchFn('MES|MONTH')) !== null) { var dm = fechaDe(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dm.getTime()) ? '#VALOR!' : String(dm.getMonth() + 1); }
     if ((inner = matchFn('AÑO|YEAR')) !== null) { var dy = fechaDe(String(resolveArg(splitArgs(inner)[0]))); return isNaN(dy.getTime()) ? '#VALOR!' : String(dy.getFullYear()); }
     if ((inner = matchFn('DIAS|DAYS')) !== null) { args = splitArgs(inner); var d1D = fechaDe(String(resolveArg(args[0]))); var d2D = fechaDe(String(resolveArg(args[1]))); return String(Math.round((d1D - d2D) / 86400000)); }
     if ((inner = matchFn('DIASEM|WEEKDAY')) !== null) { var dw = fechaDe(String(resolveArg(splitArgs(inner)[0]))); return String(dw.getDay() + 1); }
-    if ((inner = matchFn('FIN\\.MES|EOMONTH')) !== null) { args = splitArgs(inner); var dE = fechaDe(String(resolveArg(args[0]))); var mE = dE.getMonth() + 1 + parseInt(resolveNum(args[1])); return new Date(dE.getFullYear(), mE, 0).toLocaleDateString('es-CR'); }
+    if ((inner = matchFn('FIN\\.MES|EOMONTH')) !== null) { args = splitArgs(inner); var dE = fechaDe(String(resolveArg(args[0]))); var mE = dE.getMonth() + 1 + parseInt(resolveNum(args[1])); return isNaN(dE.getTime()) ? '#VALOR!' : textoDeFecha(new Date(dE.getFullYear(), mE, 0)); }
     if ((inner = matchFn('SIFECHA|DATEDIF')) !== null) {
       args = splitArgs(inner);
       var d1 = fechaDe(String(resolveArg(args[0]))), d2 = fechaDe(String(resolveArg(args[1])));
@@ -7991,6 +8070,447 @@ function pronosticoEts(valores, tiempos, objetivo) {
   }
   return mejor.nivel + h * mejor.tend;
 }
+// ══════════════════════════════════════════════
+// MOTOR DE EXPRESIONES (como Excel 365)
+// Evalúa cuentas completas con la precedencia de Excel:
+//   comparación (= <> < > <= >=)  <  &  <  + -  <  * /  <  ^  <  %  <  signo (-)
+// Entiende fechas como números de serie (31/01/2024 + 30 = 01/03/2024,
+// fecha - fecha = días), el operador ^ (potencia), el % (50% = 0,5),
+// constantes de matriz {1;2;3} y {1\2\3}, rangos dentro de cuentas
+// (A1:A3*2 se "derrama"), referencias a un derrame (C1#), la intersección
+// implícita (@A1:A10) y SI / SI.ERROR elemento por elemento.
+// Si una expresión no la entiende, devuelve null y el motor viejo sigue igual.
+// ══════════════════════════════════════════════
+var RX_TEXTO_FECHA = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4}|\d{2})(?:[ T]+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[ap]\.?\s?m\.?)?)?$|^\d{4}-\d{1,2}-\d{1,2}(?:[ T]+\d{1,2}:\d{2}(?::\d{2})?)?$/i;
+function serialDeFechaTexto(t) {
+  var s = String(t == null ? '' : t).trim();
+  if (!RX_TEXTO_FECHA.test(s)) return NaN;
+  var d = fechaDe(s);
+  if (isNaN(d.getTime())) return NaN;
+  var base = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(1899, 11, 30);
+  return base / 86400000 + (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400;
+}
+function esTextoFecha(v) { return typeof v === 'string' && !isNaN(serialDeFechaTexto(v)); }
+// Número de un valor de celda, entendiendo fechas como número de serie
+function numFechaONum(v) { if (typeof v === 'string') { var s = serialDeFechaTexto(v); if (!isNaN(s)) return s; } return toNum(v); }
+function dosDig(n) { return (n < 10 ? '0' : '') + n; }
+function textoDeFecha(dt) { return dosDig(dt.getDate()) + '/' + dosDig(dt.getMonth() + 1) + '/' + dt.getFullYear(); }
+function textoDeSerialFecha(serial) {
+  var dias = Math.floor(serial + 1e-9), frac = serial - dias;
+  var dt = new Date(1899, 11, 30 + dias);
+  var txt = textoDeFecha(dt);
+  if (frac > 1e-7) {
+    var seg = Math.round(frac * 86400), h = Math.floor(seg / 3600), mi = Math.floor((seg % 3600) / 60);
+    txt += ' ' + dosDig(h) + ':' + dosDig(mi);
+  }
+  return txt;
+}
+// ── Valores del motor ──
+function MN(v, fecha, texto) { return { k: 'n', v: v, f: !!fecha, t: texto }; }
+function MS(v) { return { k: 's', v: String(v) }; }
+function MB(v) { return { k: 'b', v: !!v }; }
+function ME(v) { return { k: 'e', v: v }; }
+var M_VACIO = { k: 'z' };
+var RX_ERROR_EXCEL = /^#(N\/A|DIV\/0!|VALOR!|VALUE!|REF!|NOMBRE\?|NAME\?|NUM!|NULO!|NULL!|ERROR!?|ERR|CAMPO!|OCUPADO!|CONECTAR!|DERRAME!|CALC!|REF_CIRCULAR!|SIN_DATOS!|CONSULTAR!)$/;
+function valorMotorDeTexto(s, textoOriginal) {
+  if (s === true || s === false) return MB(s);
+  if (typeof s === 'number') return isFinite(s) ? MN(s) : ME('#DIV/0!');
+  if (s === null || s === undefined) return M_VACIO;
+  var t = String(s), tt = t.trim();
+  if (tt === '') return M_VACIO;
+  if (tt.charAt(0) === '#' && RX_ERROR_EXCEL.test(tt)) return ME(tt);
+  var up = tt.toUpperCase();
+  if (up === 'VERDADERO' || up === 'TRUE') return MB(true);
+  if (up === 'FALSO' || up === 'FALSE') return MB(false);
+  var sf = serialDeFechaTexto(tt);
+  if (!isNaN(sf)) return MN(sf, true, textoOriginal !== undefined ? textoOriginal : t);
+  if (/^[-+−]?\s*[₡$€]?\s*[-+]?[\d\s  .,]*\d[\d\s  .,]*(e[-+]?\d+)?\s*%?$/i.test(tt)) {
+    var pct = /%$/.test(tt), neg = /^[-−]/.test(tt);
+    var limpio = tt.replace(/[₡$€%−\s]/g, '').replace(/^[-+]/, '');
+    var n = /e[-+]?\d+$/i.test(limpio) ? parseFloat(limpio) : parseFloat(limpiaNum(limpio));
+    if (!isNaN(n)) { if (neg) n = -n; if (pct) n /= 100; return MN(n, false, textoOriginal !== undefined ? textoOriginal : t); }
+  }
+  return MS(t);
+}
+// Valor → número para una cuenta (los textos que no son número cuentan como 0, como hacía la app)
+function numMotor(x) {
+  if (x.k === 'n') return x.v;
+  if (x.k === 'b') return x.v ? 1 : 0;
+  if (x.k === 'z') return 0;
+  if (x.k === 'e') throw x;
+  var n = parseFloat(limpiaNum(x.v));
+  return isNaN(n) ? 0 : n;
+}
+function textoMotor(x) {
+  if (x.k === 's') return x.v;
+  if (x.k === 'z') return '';
+  if (x.k === 'b') return x.v ? 'VERDADERO' : 'FALSO';
+  if (x.k === 'e') throw x;
+  if (x.t !== undefined) return x.t;
+  if (x.f) return textoDeSerialFecha(x.v);
+  var antes = modoNumeroCrudo; modoNumeroCrudo = false;
+  try { return fmtNum(x.v); } finally { modoNumeroCrudo = antes; }
+}
+// Resultado final de la celda
+function salidaMotor(x) {
+  if (x.k === 'n') {
+    if (!isFinite(x.v)) return '#DIV/0!';
+    if (x.f) return textoDeSerialFecha(x.v);
+    return fmtNum(Math.abs(x.v) < 1e-15 ? 0 : (Math.round(x.v * 1e12) / 1e12 === Math.round(x.v * 1e12) / 1e12 ? +x.v.toPrecision(15) : x.v));
+  }
+  if (x.k === 'b') return x.v ? 'VERDADERO' : 'FALSO';
+  if (x.k === 'z') return '0';
+  return x.v;
+}
+function esMatrizMotor(x) { return x && x.k === 'a'; }
+function matrizMotor(filas) { return { k: 'a', filas: filas }; }
+// Aplica una operación elemento por elemento (con "difusión" de escalares, filas y columnas, como Excel)
+function aplicarMotor(a, b, fn) {
+  if (!esMatrizMotor(a) && !esMatrizMotor(b)) return fn(a, b);
+  var A = esMatrizMotor(a) ? a.filas : [[a]], B = esMatrizMotor(b) ? b.filas : [[b]];
+  var nf = Math.max(A.length, B.length), nc = Math.max(A[0].length, B[0].length), out = [];
+  for (var r = 0; r < nf; r++) {
+    var fila = [];
+    for (var c = 0; c < nc; c++) {
+      var ra = A.length === 1 ? 0 : r, ca = A[0].length === 1 ? 0 : c, rb = B.length === 1 ? 0 : r, cb = B[0].length === 1 ? 0 : c;
+      if (ra >= A.length || ca >= A[0].length || rb >= B.length || cb >= B[0].length) { fila.push(ME('#N/A')); continue; }
+      fila.push(fn(A[ra][ca], B[rb][cb]));
+    }
+    out.push(fila);
+  }
+  return matrizMotor(out);
+}
+function mapaMotor(a, fn) { return esMatrizMotor(a) ? matrizMotor(a.filas.map(function (f) { return f.map(fn); })) : fn(a); }
+function opAritMotor(op) {
+  return function (x, y) {
+    if (x.k === 'e') return x;
+    if (y.k === 'e') return y;
+    // Un texto que no es número en una cuenta: Excel da #VALOR!; la app siempre lo tomó como 0 y así se queda
+    var a = numMotor(x), b = numMotor(y), r;
+    if (op === '+') r = a + b; else if (op === '-') r = a - b; else if (op === '*') r = a * b;
+    else if (op === '/') { if (b === 0) return ME('#DIV/0!'); r = a / b; }
+    else if (op === '^') { r = Math.pow(a, b); if (isNaN(r)) return ME('#NUM!'); }
+    if (!isFinite(r)) return ME('#NUM!');
+    // Fecha ± número sigue siendo fecha; fecha − fecha son días
+    var fecha = (op === '+' && (x.f || y.f) && !(x.f && y.f)) || (op === '-' && x.f && !y.f);
+    return MN(r, fecha);
+  };
+}
+function compararMotor(op) {
+  return function (x, y) {
+    if (x.k === 'e') return x;
+    if (y.k === 'e') return y;
+    var c;
+    var esNum = function (v) { return v.k === 'n' || v.k === 'z'; };
+    if (x.k === 'b' || y.k === 'b') {
+      if (x.k === 'b' && y.k === 'b') c = (x.v ? 1 : 0) - (y.v ? 1 : 0);
+      else if (x.k === 'z' || y.k === 'z') { var bx = x.k === 'b' ? (x.v ? 1 : 0) : 0, by = y.k === 'b' ? (y.v ? 1 : 0) : 0; c = bx - by; }
+      else c = x.k === 'b' ? 1 : -1; // en Excel los lógicos van después de números y textos
+    } else if (esNum(x) && esNum(y)) { var a = x.k === 'z' ? 0 : x.v, b = y.k === 'z' ? 0 : y.v; c = Math.abs(a - b) < 1e-12 * Math.max(1, Math.abs(a), Math.abs(b)) ? 0 : (a < b ? -1 : 1); }
+    else if (x.k === 's' && y.k === 's' || x.k === 'z' || y.k === 'z') {
+      var ta = x.k === 'z' ? '' : textoMotor(x).toLowerCase(), tb = y.k === 'z' ? '' : textoMotor(y).toLowerCase();
+      c = ta === tb ? 0 : (ta < tb ? -1 : 1);
+    } else {
+      // número contra texto: si el texto se lee como número (lo trae una celda así), se comparan como números
+      var nx = x.k === 'n' ? x.v : parseFloat(limpiaNum(x.v)), ny = y.k === 'n' ? y.v : parseFloat(limpiaNum(y.v));
+      var txtNum = function (v) { return v.k === 's' && /^[-+]?[\d\s.,]+$/.test(v.v.trim()); };
+      if ((x.k === 'n' && txtNum(y)) || (y.k === 'n' && txtNum(x))) c = nx === ny ? 0 : (nx < ny ? -1 : 1);
+      else c = x.k === 'n' ? -1 : 1; // en Excel los números van antes que los textos
+    }
+    switch (op) { case '=': return MB(c === 0); case '<>': return MB(c !== 0); case '<': return MB(c < 0); case '>': return MB(c > 0); case '<=': return MB(c <= 0); case '>=': return MB(c >= 0); }
+    return ME('#VALOR!');
+  };
+}
+function concatMotor(x, y) { if (x.k === 'e') return x; if (y.k === 'e') return y; return MS(textoMotor(x) + textoMotor(y)); }
+// Celda/rango → valores del motor
+function valorDeCeldaMotor(hoja, id) {
+  var antes = modoNumeroCrudo; modoNumeroCrudo = true;
+  var v;
+  try { v = computeValueEnHoja(hoja, id); } finally { modoNumeroCrudo = antes; }
+  var raw = (sheetData[hoja] || {})[id];
+  var esConstante = typeof raw === 'string' && raw.charAt(0) !== '=';
+  return valorMotorDeTexto(v, esConstante ? raw : undefined);
+}
+function matrizDeRangoMotor(hoja, desde, hasta) {
+  var r1 = filaDe(desde), r2 = filaDe(hasta), c1 = colDe(desde), c2 = colDe(hasta);
+  if (r1 > r2) { var t = r1; r1 = r2; r2 = t; }
+  if (c1 > c2) { var u = c1; c1 = c2; c2 = u; }
+  if ((r2 - r1 + 1) * (c2 - c1 + 1) > 200000) throw ME('#NUM!');
+  var out = [];
+  for (var r = r1; r <= r2; r++) { var f = []; for (var c = c1; c <= c2; c++) f.push(valorDeCeldaMotor(hoja, cellId(r, c))); out.push(f); }
+  return out;
+}
+function hojaDeReferencia(prefijo) {
+  if (!prefijo) return hojaFormulaActual || activeSheet;
+  var h = prefijo.slice(0, -1);
+  if (h.charAt(0) === "'") h = h.slice(1, -1).replace(/''/g, "'");
+  return h;
+}
+function celdaFormulaEnCurso() {
+  var top = pilaEvaluacionFormulas.length ? String(pilaEvaluacionFormulas[pilaEvaluacionFormulas.length - 1]) : '';
+  var p = top.lastIndexOf('!');
+  return p === -1 ? null : { hoja: top.slice(0, p), id: top.slice(p + 1) };
+}
+// Valores derramados por la fórmula de una celda (C1#)
+function derrameDeCelda(hoja, id) {
+  var raw = (sheetData[hoja] || {})[id];
+  if (typeof raw !== 'string' || raw.charAt(0) !== '=') return null;
+  var ev = evaluarFormulaArrayEnCelda(hoja, id, quitarDolaresDeRefs(raw));
+  if (!ev) return null;
+  if (ev.bloqueado) return ME('#DERRAME!');
+  return matrizMotor(ev.resultado.map(function (f) { return f.map(function (v) { return valorMotorDeTexto(v); }); }));
+}
+var FUNCIONES_ELEMENTO_MOTOR = { SI: 1, IF: 1, 'SI.ERROR': 1, IFERROR: 1 };
+var RX_FUNCIONES_MATRIZ_MOTOR = /^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE)$/i;
+function evaluarMotor(texto) {
+  var s = String(texto || ''), pos = 0, n = s.length;
+  function esp() { while (pos < n && /\s/.test(s.charAt(pos))) pos++; }
+  function mira(t) { esp(); return s.substr(pos, t.length) === t; }
+  function toma(t) { if (mira(t)) { pos += t.length; return true; } return false; }
+  function falla() { throw { noEntiende: true }; }
+  function comparacion() {
+    var a = concat();
+    for (;;) {
+      var op = null;
+      if (mira('<>')) op = '<>'; else if (mira('<=')) op = '<='; else if (mira('>=')) op = '>='; else if (mira('=')) op = '='; else if (mira('<')) op = '<'; else if (mira('>')) op = '>';
+      if (!op) return a;
+      pos += op.length;
+      a = aplicarMotor(a, concat(), compararMotor(op));
+    }
+  }
+  function concat() { var a = aditivo(); while (toma('&')) a = aplicarMotor(a, aditivo(), concatMotor); return a; }
+  function aditivo() {
+    var a = mult();
+    for (;;) {
+      if (toma('+')) a = aplicarMotor(a, mult(), opAritMotor('+'));
+      else if (toma('-')) a = aplicarMotor(a, mult(), opAritMotor('-'));
+      else return a;
+    }
+  }
+  function mult() {
+    var a = pot();
+    for (;;) {
+      if (toma('*')) a = aplicarMotor(a, pot(), opAritMotor('*'));
+      else if (toma('/')) a = aplicarMotor(a, pot(), opAritMotor('/'));
+      else return a;
+    }
+  }
+  function pot() { var a = porc(); while (toma('^')) a = aplicarMotor(a, porc(), opAritMotor('^')); return a; }
+  function porc() {
+    var a = unario();
+    while (toma('%')) a = mapaMotor(a, function (x) { if (x.k === 'e') return x; return MN(numMotor(x) / 100); });
+    return a;
+  }
+  function unario() {
+    if (toma('-') || toma('−')) { var a = unario(); return mapaMotor(a, function (x) { if (x.k === 'e') return x; return MN(-numMotor(x)); }); }
+    if (toma('+')) return unario();
+    if (toma('@')) {
+      var v = primario();
+      if (!esMatrizMotor(v)) return v;
+      // Intersección implícita: el valor de la misma fila (o columna) que la fórmula
+      var yo = celdaFormulaEnCurso(), F = v.filas;
+      if (F[0].length === 1 && yo && v.r1 !== undefined) { var k = filaDe(yo.id) - v.r1; return k >= 0 && k < F.length ? F[k][0] : ME('#VALOR!'); }
+      if (F.length === 1 && yo && v.c1 !== undefined) { var k2 = colDe(yo.id) - v.c1; return k2 >= 0 && k2 < F[0].length ? F[0][k2] : ME('#VALOR!'); }
+      return F[0][0];
+    }
+    return primario();
+  }
+  function constanteMatriz() {
+    // {1;2;3}: filas separadas por ";" — {1\2\3} (Excel en español) o {1,2,3} (en inglés): columnas
+    var cierra = -1;
+    for (var k = pos, cad = false; k < n; k++) { var c = s.charAt(k); if (c === '"') cad = !cad; else if (!cad && c === '}') { cierra = k; break; } }
+    if (cierra === -1) falla();
+    var cuerpo = s.slice(pos, cierra); pos = cierra + 1;
+    var conBarra = cuerpo.indexOf('\\') !== -1;
+    var filas = [[]], cur = '', cad2 = false;
+    function cerrarElemento() {
+      var x = cur.trim(), v;
+      cur = '';
+      if (/^".*"$/.test(x)) v = MS(x.slice(1, -1).replace(/""/g, '"'));
+      else if (/^(VERDADERO|TRUE)$/i.test(x)) v = MB(true);
+      else if (/^(FALSO|FALSE)$/i.test(x)) v = MB(false);
+      else if (/^#/.test(x)) v = ME(x.toUpperCase());
+      else {
+        var xn = conBarra ? x.replace(',', '.') : x;
+        if (!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(xn)) falla();
+        v = MN(parseFloat(xn));
+      }
+      filas[filas.length - 1].push(v);
+    }
+    for (var i = 0; i < cuerpo.length; i++) {
+      var ch = cuerpo.charAt(i);
+      if (ch === '"') { cad2 = !cad2; cur += ch; continue; }
+      if (!cad2 && ch === ';') { cerrarElemento(); filas.push([]); continue; }
+      if (!cad2 && (conBarra ? ch === '\\' : ch === ',')) { cerrarElemento(); continue; }
+      cur += ch;
+    }
+    cerrarElemento();
+    var ancho = filas[0].length;
+    if (filas.some(function (f) { return f.length !== ancho; })) throw ME('#VALOR!');
+    return filas.length === 1 && ancho === 1 ? filas[0][0] : matrizMotor(filas);
+  }
+  function llamada(nombre, inicio) {
+    // texto completo de la llamada NOMBRE(...)
+    var p = 0, k = pos, cad = false;
+    for (; k < n; k++) { var c = s.charAt(k); if (c === '"') cad = !cad; if (cad) continue; if (c === '(') p++; else if (c === ')') { p--; if (p === 0) break; } }
+    if (p !== 0) falla();
+    var txt = s.slice(inicio, k + 1), interior = s.slice(pos + 1, k);
+    pos = k + 1;
+    var up = nombre.toUpperCase();
+    if (RX_FUNCIONES_MATRIZ_MOTOR.test(up)) {
+      var info = formulaArrayInfo('=' + txt);
+      if (info) {
+        var res = calcularFormulaArray(hojaFormulaActual || activeSheet, info.nombre, info.argsTexto);
+        if (!res || !res.length || !res[0] || !res[0].length) return ME('#CALC!');
+        var mat = matrizMotor(res.map(function (f) { return f.map(function (v) { return valorMotorDeTexto(v); }); }));
+        return res.length === 1 && res[0].length === 1 ? mat.filas[0][0] : mat;
+      }
+    }
+    if (FUNCIONES_ELEMENTO_MOTOR[up] && esExprMatricial(interior)) {
+      var args = splitArgs(interior).map(function (a) { return evaluarMotor(a); });
+      if (args.some(function (a) { return a === null; })) falla();
+      if (up === 'SI' || up === 'IF') {
+        var siF = args[2] !== undefined ? args[2] : MB(false), siV = args[1] !== undefined ? args[1] : MB(true);
+        var tmp = aplicarMotor(args[0], siV, function (c, v) { return { c: c, v: v }; });
+        return aplicarMotor(tmp, siF, function (cv, f) { var c = cv.c; if (c.k === 'e') return c; return (c.k === 'b' ? c.v : numMotor(c) !== 0) ? cv.v : f; });
+      }
+      return aplicarMotor(args[0], args[1] !== undefined ? args[1] : MS(''), function (v, alt) { return v.k === 'e' ? alt : v; });
+    }
+    var antes = modoNumeroCrudo; modoNumeroCrudo = true;
+    var r;
+    try { r = computeExpr(txt); } finally { modoNumeroCrudo = antes; }
+    return valorMotorDeTexto(r);
+  }
+  function primario() {
+    esp();
+    var ch = s.charAt(pos);
+    if (ch === '(') { pos++; var v = comparacion(); if (!toma(')')) falla(); return v; }
+    if (ch === '{') { pos++; return constanteMatriz(); }
+    if (ch === '"') {
+      var k = pos + 1, txt = '';
+      while (k < n) { if (s.charAt(k) === '"') { if (s.charAt(k + 1) === '"') { txt += '"'; k += 2; continue; } break; } txt += s.charAt(k); k++; }
+      if (k >= n) falla();
+      pos = k + 1; return MS(txt);
+    }
+    var resto = s.slice(pos);
+    var mErr = /^#(N\/A|DIV\/0!|VALOR!|VALUE!|REF!|NOMBRE\?|NAME\?|NUM!|NULO!|NULL!)/i.exec(resto);
+    if (mErr) { pos += mErr[0].length; return ME(mErr[0].toUpperCase()); }
+    var mNum = /^(\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?/.exec(resto);
+    if (mNum && !/^\d+:\d+/.test(resto)) { pos += mNum[0].length; return MN(parseFloat(mNum[0])); }
+    // Referencia: [Hoja!]A1[:B5][#]
+    var mRef = /^((?:'(?:[^']|'')+'|[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*)!)?([A-Za-z]{1,3}\d+)(?::([A-Za-z]{1,3}\d+))?(#)?(?![A-Za-z0-9_(.])/.exec(resto);
+    if (mRef) {
+      pos += mRef[0].length;
+      var hoja = hojaDeReferencia(mRef[1]);
+      if (sheets.indexOf(hoja) === -1) return ME('#REF!');
+      var a1 = mRef[2].toUpperCase();
+      if (mRef[4]) { var d = derrameDeCelda(hoja, a1); return d || valorDeCeldaMotor(hoja, a1); }
+      if (!mRef[3]) return valorDeCeldaMotor(hoja, a1);
+      var b1 = mRef[3].toUpperCase();
+      var filas = matrizDeRangoMotor(hoja, a1, b1);
+      var m = matrizMotor(filas); m.r1 = Math.min(filaDe(a1), filaDe(b1)); m.c1 = Math.min(colDe(a1), colDe(b1));
+      return filas.length === 1 && filas[0].length === 1 ? filas[0][0] : m;
+    }
+    var mBool = /^(VERDADERO|FALSO|TRUE|FALSE)(?![A-Za-z0-9_.(])/i.exec(resto);
+    if (mBool) { pos += mBool[0].length; return MB(/^(VERDADERO|TRUE)$/i.test(mBool[1])); }
+    var mFn = /^([A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*)\s*\(/.exec(resto);
+    if (mFn) { var ini = pos; pos += mFn[0].length - 1; return llamada(mFn[1], ini); }
+    falla();
+  }
+  try {
+    var res = comparacion();
+    esp();
+    if (pos !== n) return null;
+    return res;
+  } catch (e) {
+    if (e && e.noEntiende) return null;
+    if (e && e.k === 'e') return e;
+    return null;
+  }
+}
+// ¿La expresión produce una matriz? (rango dentro de una cuenta, {constante}, C1# o una función de matriz
+// fuera de cualquier otra función que no sea SI / SI.ERROR)
+function esExprMatricial(texto) {
+  var s = String(texto || ''), pila = [], cad = false, i, ch;
+  var opRx = /[+\-*\/^&=<>%]/;
+  for (i = 0; i < s.length; i++) {
+    ch = s.charAt(i);
+    if (ch === '"') { cad = !cad; continue; }
+    if (cad) continue;
+    var libre = pila.every(function (x) { return x === 'p' || FUNCIONES_ELEMENTO_MOTOR[x]; });
+    if (ch === '(') {
+      var mN = /([A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*)\s*$/.exec(s.slice(0, i));
+      var nom = mN && !/[A-Za-z0-9_.!$']/.test(s.charAt(i - mN[0].length - 1) || '') ? mN[1].toUpperCase() : null;
+      if (nom && libre && RX_FUNCIONES_MATRIZ_MOTOR.test(nom) && pila.length) return true;
+      pila.push(nom || 'p');
+      continue;
+    }
+    if (ch === ')') { pila.pop(); continue; }
+    if (!libre) continue;
+    if (ch === '{') return true;
+    if (ch === '#' && /[A-Za-z]{1,3}\d+$/.test(s.slice(0, i))) return true;
+    if (/[A-Za-z]/.test(ch) && !/[A-Za-z0-9_.!$'"]/.test(s.charAt(i - 1) || '')) {
+      var mR = /^((?:[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*)!)?[A-Za-z]{1,3}\d+:[A-Za-z]{1,3}\d+(?![A-Za-z0-9_(])/.exec(s.slice(i));
+      if (mR) {
+        var antes = s.slice(0, i).replace(/[\s(]+$/, ''), despues = s.slice(i + mR[0].length).replace(/^[\s)]+/, '');
+        var cAntes = antes.charAt(antes.length - 1), cDesp = despues.charAt(0);
+        var enSi = pila.length && FUNCIONES_ELEMENTO_MOTOR[pila[pila.length - 1]];
+        if ((cAntes && opRx.test(cAntes)) || (cDesp && opRx.test(cDesp)) || (enSi && pila.length)) return true;
+        i += mR[0].length - 1;
+      }
+    }
+  }
+  return false;
+}
+// A:A, B:D, 3:5 (columnas o filas completas) → el rango con datos de esa hoja
+function expandirFilasColumnasCompletas(expr) {
+  if (typeof expr !== 'string' || expr.indexOf(':') === -1) return expr;
+  return expr.split(/("(?:[^"]|"")*")/).map(function (seg, i) {
+    if (i % 2 === 1) return seg;
+    return seg.replace(/(^|[^A-Za-z0-9_.$'!:])((?:'(?:[^']|'')+'|[A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-z0-9ÁÉÍÓÚÑáéíóúñ_.]*)!)?(?:\$?([A-Za-z]{1,3}):\$?([A-Za-z]{1,3})|\$?(\d+):\$?(\d+))(?![A-Za-z0-9_:(])/g, function (m0, pre, pref, c1, c2, f1, f2) {
+      var hoja = hojaDeReferencia(pref || '');
+      var lim = limitesUsadosHoja(hoja);
+      if (c1) return pre + (pref || '') + c1.toUpperCase() + '1:' + c2.toUpperCase() + Math.max(1, lim.filas);
+      return pre + (pref || '') + 'A' + f1 + ':' + colLetter(Math.max(0, lim.cols - 1)) + f2;
+    });
+  }).join('');
+}
+var cacheLimitesHoja = {};
+function limitesUsadosHoja(hoja) {
+  var d = sheetData[hoja] || {}, claves = Object.keys(d);
+  var memo = cacheLimitesHoja[hoja];
+  if (memo && memo.n === claves.length && cacheCalculo !== null) return memo;
+  var maxF = 0, maxC = 0;
+  claves.forEach(function (k) { var m = /^([A-Z]+)(\d+)$/.exec(k); if (!m || d[k] === '' || d[k] == null) return; var f = parseInt(m[2], 10), c = colIndex(m[1]) + 1; if (f > maxF) maxF = f; if (c > maxC) maxC = c; });
+  return (cacheLimitesHoja[hoja] = { n: claves.length, filas: maxF, cols: maxC });
+}
+// ¿Conviene pasarle esta expresión al motor nuevo? Si tiene operadores fuera de comillas/paréntesis
+// de función, constantes de matriz, derrames o intersección implícita.
+function usarMotorNuevo(expr) {
+  var s = String(expr || ''), prof = 0, cad = false;
+  for (var i = 0; i < s.length; i++) {
+    var ch = s.charAt(i);
+    if (ch === '"') { cad = !cad; continue; }
+    if (cad) continue;
+    if (ch === '(') prof++;
+    else if (ch === ')') prof--;
+    else if (prof === 0 && (ch === '{' || ch === '@')) return true;
+    else if (prof === 0 && ch === '#' && /[A-Za-z]{1,3}\d+$/.test(s.slice(0, i))) return true;
+    else if (prof === 0 && /[+\-*\/^&=<>%−]/.test(ch)) return true;
+  }
+  return false;
+}
+// Convierte un resultado (escalar o matriz) al texto que devuelve computeExpr
+function textoResultadoMotor(r) {
+  if (esMatrizMotor(r)) {
+    var F = r.filas;
+    if (F.length === 1 && F[0].length === 1) return salidaMotor(F[0][0]);
+    var plano = [];
+    F.forEach(function (f) { f.forEach(function (x) { plano.push(salidaMotor(x)); }); });
+    return plano.join('; ');
+  }
+  return salidaMotor(r);
+}
 var NOMBRES_ARRAY_NUEVOS = { SORTBY: 'ORDENARPOR', WRAPROWS: 'AJUSTARFILAS', WRAPCOLS: 'AJUSTARCOLS', GROUPBY: 'AGRUPARPOR', MINVERSE: 'MINVERSA', PIVOTBY: 'PIVOTARPOR', TRIMRANGE: 'RECORTARINTERVALOS', STOCKHISTORY: 'HISTORIALCOTIZACIONES' };
 function numeroDeValorFin(v) {
   if (typeof v === 'number') return v;
@@ -8431,7 +8951,12 @@ function historialCotizaciones(args) {
 function formulaArrayInfo(crudo) {
   if (typeof crudo !== 'string' || crudo.charAt(0) !== '=') return null;
   var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENARPOR|ORDENAR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE)\s*\(/i);
-  if (!m) return null;
+  if (!m) {
+    // Cuenta que da una matriz (=A1:A9*2, ={1;2;3}, =SI(A1:A9>0;"sí";"no")): se derrama como en Excel 365
+    var cuerpoM = crudo.slice(1);
+    if (esExprMatricial(cuerpoM)) return { nombre: 'EXPR', argsTexto: cuerpoM };
+    return null;
+  }
   var nombre = m[1].toUpperCase();
   if (NOMBRES_ARRAY_NUEVOS[nombre]) nombre = NOMBRES_ARRAY_NUEVOS[nombre];
   var inicio = m[0].length;
@@ -8447,7 +8972,21 @@ function formulaArrayInfo(crudo) {
   if (resto !== '') return null; // hay algo más después del paréntesis de cierre: no es una fórmula de array pura
   return { nombre: nombre, argsTexto: argsTexto };
 }
+function prepararExprMotor(expr) {
+  expr = normalizarComaDecimal(expr);
+  expr = expandirCamposVinculados(expr);
+  expr = quitarDolaresDeRefs(expr);
+  expr = sustituirRangosNombrados(expr);
+  expr = expandirFuncionesPropias(expr);
+  return expandirFilasColumnasCompletas(expr);
+}
 function calcularFormulaArray(hoja, nombre, argsTexto) {
+  if (nombre === 'EXPR') {
+    var rE = evaluarMotor(prepararExprMotor(argsTexto));
+    if (rE === null) return [[String(computeExpr(argsTexto))]];
+    if (!esMatrizMotor(rE)) return [[salidaMotor(rE)]];
+    return rE.filas.map(function (f) { return f.map(salidaMotor); });
+  }
   var args = splitArgs(argsTexto);
   if (nombre === 'SECUENCIA') {
     var filasS = Math.max(1, Math.round(resolveNum(args[0] || '1')));
@@ -8719,7 +9258,20 @@ function valoresDeFuncionArrayAnidada(texto) {
   if (typeof texto !== 'string') return null;
   var t = texto.trim();
   var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE)\s*\(/i);
-  if (!m) return null;
+  if (!m) {
+    // Cuenta con matrices dentro de SUMA/MAX/PROMEDIO…: =SUMA((A1:A9>1)*B1:B9), =MAX(SI(A1:A9="x";B1:B9)), =SUMA({1;2;3}), =SUMA(C1#)
+    if (!esExprMatricial(t)) return null;
+    var rM = evaluarMotor(prepararExprMotor(t));
+    if (rM === null) return null;
+    var planoM = [];
+    (esMatrizMotor(rM) ? rM.filas : [[rM]]).forEach(function (f) { f.forEach(function (x) {
+      if (x.k === 'n') planoM.push(String(x.v));
+      else if (x.k === 'b') planoM.push(x.v ? 'VERDADERO' : '');
+      else if (x.k === 'z') planoM.push('');
+      else planoM.push(x.v);
+    }); });
+    return planoM;
+  }
   var inicio = m[0].length;
   var prof = 1, i = inicio;
   while (i < t.length && prof > 0) {
@@ -14147,7 +14699,7 @@ function esCeldaFecha(id) {
 var calFecha = { id: null, anio: 0, mes: 0, sel: null, vista: 'dias' };
 var MESES_CORTOS_CAL = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 function abrirCalendarioFecha(id) {
-  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id)) { alert('🔒 Esta hoja está protegida.'); return; }
+  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id) && !intentarDesbloquearRango(activeSheet, id)) { alert('🔒 Esta hoja está protegida.'); return; }
   var ov = document.getElementById('calFechaOv');
   if (!ov) {
     ov = document.createElement('div'); ov.id = 'calFechaOv';
@@ -15249,7 +15801,7 @@ function textoDictadoACelda(t) {
 }
 function escribirDictadoEnCelda(texto) {
   var id = document.getElementById('cellRef').textContent; if (!/^[A-Z]+\d+$/.test(id)) return;
-  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id)) { alert('🔒 Esta hoja está protegida.'); pararDictado(); return; }
+  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id) && !intentarDesbloquearRango(activeSheet, id)) { alert('🔒 Esta hoja está protegida.'); pararDictado(); return; }
   var ae = document.activeElement; if (ae && ae.classList && ae.classList.contains('cell')) { ae.dataset.editado = '0'; ae.blur(); }
   snapshot();
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
@@ -15420,7 +15972,7 @@ document.getElementById('btnSimbolo').addEventListener('click', function () {
 function insertarSimbolo(sim) {
   var c = simbCursor || { id: document.getElementById('cellRef').textContent };
   var id = c.id; if (!/^[A-Z]+\d+$/.test(id || '')) { alert('Primero tocá la celda donde va el símbolo.'); return; }
-  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id)) { alert('🔒 Esta hoja está protegida.'); return; }
+  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id) && !intentarDesbloquearRango(activeSheet, id)) { alert('🔒 Esta hoja está protegida.'); return; }
   var base = c.texto !== null && c.texto !== undefined && c.editado ? c.texto : String(getRaw(id) || '');
   var off = c.off !== null && c.off !== undefined && c.editado ? Math.min(c.off, base.length) : base.length;
   var nuevo = base.slice(0, off) + sim + base.slice(off);
@@ -15880,7 +16432,7 @@ function alternarOcultarFormulas() {
 }
 function commitCell(el) {
   var id = el.dataset.id;
-  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id)) {
+  if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id) && !intentarDesbloquearRango(activeSheet, id)) {
     el.textContent = formulaOculta(id) ? String(computeValue(id)) : ((sheetData[activeSheet] && sheetData[activeSheet][id]) || '');
     el.classList.remove('selected');
     alert('🔒 Esta hoja está protegida. Tocá "🔒 Proteger Hoja" para desbloquearla antes de editar (o marcá esta celda como "Permitir editar" desde una hoja sin proteger).');
@@ -15899,7 +16451,8 @@ function commitCell(el) {
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
   if (val !== anterior) marcarCeldaSucia(activeSheet, id);
-  if (val !== '') { var tCrecio = expandirTablasConCelda(activeSheet, id); if (tCrecio) document.getElementById('saveStatus').textContent = '📋 La tabla ' + tCrecio + ' creció una fila'; }
+  if (val !== '') { var tCrecio = expandirTablasConCelda(activeSheet, id); if (tCrecio) { llenarColumnasCalculadasFila(rangosNombrados[tCrecio], filaDe(id)); document.getElementById('saveStatus').textContent = '📋 La tabla ' + tCrecio + ' creció una fila'; } }
+  if (val !== anterior) { var nCalc = columnaCalculadaTrasEditar(activeSheet, id, val, anterior); if (nCalc) { document.getElementById('saveStatus').textContent = '📋 Columna calculada: la fórmula se copió a ' + nCalc + ' fila(s) de la tabla (↶ para deshacer)'; setTimeout(function () { renderAllCells(); }, 0); } }
   registrarCambioAuditoria(id, anterior, val);
   checkValidationOnCommit(id, val);
   // Una imagen nueva en una fila de alto normal: la fila crece para que se vea (después se puede ajustar).
@@ -17072,6 +17625,8 @@ function aplicarMovimientoEstructura(hoja, mapa) {
   }
 }
 function ejecutarEstructura(accion, desde, cantidad, banda) {
+  // Una celda enfocada (sin edición) guardaría encima su texto viejo al redibujar
+  soltarCeldaEnfocadaSinEditar();
   if (sheetProtegida[activeSheet]) { alert('🔒 Esta hoja está protegida. Desbloqueala (🔒 Proteger Hoja) antes de cambiar su estructura.'); return false; }
   var eje = /fila|abajo|arriba/.test(accion) ? 'f' : 'c';
   var ins = /^ins/.test(accion), n = ins ? cantidad : -cantidad;
@@ -17417,7 +17972,7 @@ function abrirInsertarVinculo(idDestinoCelda) {
     else if (t === 'correo') { var m = document.getElementById('vcMail').value.trim(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)) { alert('Ese correo no se ve válido.'); return false; } dest = 'mailto:' + m; }
     else { var h = document.getElementById('vcHoja').value, rf = document.getElementById('vcRef').value.trim().toUpperCase() || 'A1'; dest = '#' + (/[^A-Za-z0-9_]/.test(h) ? "'" + h + "'" : h) + '!' + rf; }
     var txt = document.getElementById('vcTexto').value.trim() || (t === 'libro' ? 'Ir a ' + dest.slice(1) : dest.replace(/^mailto:/, ''));
-    if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id)) { alert('🔒 Esta celda está protegida.'); return false; }
+    if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, id) && !intentarDesbloquearRango(activeSheet, id)) { alert('🔒 Esta celda está protegida.'); return false; }
     snapshot(); if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
     sheetData[activeSheet][id] = construirVinculo(dest, txt); buildTable(); autoSave();
     document.getElementById('saveStatus').textContent = '🔗 Vínculo creado en ' + id;
@@ -17517,6 +18072,7 @@ document.getElementById('btnTablaFila').addEventListener('click', function () {
     if (!ejecutarEstructura('ins_fila', filaNueva, 1)) return;
   } else { snapshot(); }
   t.def.to = mt[1] + (filaNueva + 1);
+  llenarColumnasCalculadasFila(t.def, filaNueva);
   var reg = { minR: t.r1, maxR: t.def.to ? parseInt(/(\d+)$/.exec(t.def.to)[1], 10) - 1 + (t.def.totales ? 1 : 0) : t.r2, minC: t.c1, maxC: t.c2 };
   if (t.def.estilo !== undefined) aplicarTemaARegion(activeSheet, reg, TEMAS_HOJA[t.def.estilo], {});
   buildTable(); autoSave();
@@ -31649,14 +32205,14 @@ var RB_TABS = [
 var RB_MAPA = {};
 (function () {
   function m(tab, ids) { ids.split(' ').forEach(function (i) { RB_MAPA[i] = tab; }); }
-  m('inicio', 'btnTemas btnRellenarAbajo btnRellenarDerecha btnRellenarArriba btnRellenarIzquierda btnUndo btnRedo btnCut btnCopy btnPaste btnPasteEspecial btnClear btnBuscarReemplazar btnBuscarGlobal btnMultiSel btnBold btnItalic btnUnderline btnStrike btnCurrency btnPercent btnFormat btnFillColor btnFontColor btnMerge btnEstilosCelda btnPincel btnTextoAvanzado btnAltoFila btnCondFormat btnCondAvanzado btnIrA btnIrAEspecial');
+  m('inicio', 'btnTemas btnRellenarAbajo btnRellenarDerecha btnRellenarArriba btnRellenarIzquierda btnUndo btnHistorialDeshacer btnRedo btnCut btnCopy btnPaste btnPasteEspecial btnClear btnBuscarReemplazar btnBuscarGlobal btnMultiSel btnBold btnItalic btnUnderline btnStrike btnCurrency btnPercent btnFormat btnFillColor btnFontColor btnMerge btnEstilosCelda btnPincel btnTextoAvanzado btnAltoFila btnCondFormat btnCondAvanzado btnIrA btnIrAEspecial');
   m('insertar', 'btnFilasColumnas btnAddRow btnDelRow btnAddCol btnInsertarTabla btnChart btnEditarGrafico btnFormas btnImagen btnDashboard btnComparativoMensual btnTablaDinamica btnSegmentadores');
   m('insertar', 'btnTablaFormato btnTablaFila btnSmartArt');
-  m('revisar', 'btnAccesibilidad btnInspDoc btnPanelComentarios btnCompararLibros');
+  m('revisar', 'btnAccesibilidad btnInspDoc btnPanelComentarios btnCompararLibros btnRangosPermitidos');
   m('vista', 'btnDisenoPagina btnSaltoPagina btnFondoHoja btnZoomSel btnZoom100 btnCuadricula btnEncabezados btnEnfoque btnDividir');
   m('archivo', 'btnSello btnVersiones');
   m('datos', 'btnDesdeImagen btnAnalizarDatos btnCombinar btnRelacionar');
-  m('datos', 'btnTiposDatos btnConsultas btnActualizarConsultas btnRelaciones btnEsquemaAuto btnBorrarEsquema');
+  m('datos', 'btnImportarWeb btnFormularioDatos btnTiposDatos btnConsultas btnActualizarConsultas btnRelaciones btnEsquemaAuto btnBorrarEsquema');
   m('contabilidad', 'btnCongelarFilas btnCongelarColumnas btnDescongelar btnWhatIf btnValidacionDatos btnFormatoCondicional btnTablaDinamica btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
   m('insertar', 'btnVinculo btnAdminVinculos btnSimbolo btnEcuacion');
@@ -33645,7 +34201,7 @@ function renderHistorialCelda() {
       var bt = document.createElement('button'); bt.textContent = '↩ Restaurar el valor anterior';
       bt.style.cssText = 'margin-top:5px;padding:6px 9px;border-radius:6px;border:1px solid #cce9ae;background:#f4fbec;font-size:12px;';
       bt.addEventListener('click', function () {
-        if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, e.c)) { alert('🔒 Esta hoja está protegida.'); return; }
+        if (sheetProtegida[activeSheet] && !celdaDesbloqueada(activeSheet, e.c) && !intentarDesbloquearRango(activeSheet, e.c)) { alert('🔒 Esta hoja está protegida.'); return; }
         snapshot();
         if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
         if (e.a === '') delete sheetData[activeSheet][e.c]; else sheetData[activeSheet][e.c] = e.a;
@@ -33831,7 +34387,7 @@ function ccAceptar(h, id) {
 function ccRechazar(h, id, sinGuardar) {
   var c = ccDatos(h);
   if (!c || !c.cambios || !c.cambios[id]) return false;
-  if (sheetProtegida[h] && !celdaDesbloqueada(h, id)) {
+  if (sheetProtegida[h] && !celdaDesbloqueada(h, id) && !intentarDesbloquearRango(h, id)) {
     if (!sinGuardar) alert('🔒 La hoja "' + h + '" está protegida: no se puede rechazar el cambio de ' + id + '.');
     return false;
   }
@@ -35499,6 +36055,394 @@ function abrirCompararLibros() {
   var q = document.getElementById('cmpQuitar'); if (q) q.addEventListener('click', function () { quitarResaltadoComparacion(); cerrarPanel(); });
 }
 document.getElementById('btnCompararLibros').addEventListener('click', abrirCompararLibros);
+// ══════════════════════════════════════════════
+// 7) HISTORIAL DE DESHACER (la lista desplegable de ↶ en Excel)
+// Muestra los últimos cambios (lo que se puede deshacer) con una
+// descripción y la hora; tocar uno deshace hasta ese punto.
+// Se abre con 🕘 Historial o manteniendo apretado ↶.
+// ══════════════════════════════════════════════
+
+function describirCambioEstados(antesJson, despuesJson) {
+  var A, B;
+  try { A = JSON.parse(antesJson); B = JSON.parse(despuesJson); } catch (e) { return 'Cambio'; }
+  var ha = A.sheets || [], hb = B.sheets || [];
+  var nuevas = hb.filter(function (h) { return ha.indexOf(h) === -1; }), borradas = ha.filter(function (h) { return hb.indexOf(h) === -1; });
+  if (nuevas.length && borradas.length === nuevas.length) return 'Cambió el nombre de la hoja ' + borradas[0] + ' a ' + nuevas[0];
+  if (nuevas.length) return 'Agregó la hoja ' + nuevas.join(', ');
+  if (borradas.length) return 'Eliminó la hoja ' + borradas.join(', ');
+  if (ha.join('|') !== hb.join('|')) return 'Movió las hojas';
+  var celdas = [], hojaC = '';
+  hb.forEach(function (h) {
+    var da = (A.sheetData || {})[h] || {}, db = (B.sheetData || {})[h] || {}, ks = {};
+    Object.keys(da).forEach(function (k) { ks[k] = 1; }); Object.keys(db).forEach(function (k) { ks[k] = 1; });
+    Object.keys(ks).forEach(function (k) { if ((da[k] || '') !== (db[k] || '')) { celdas.push({ h: h, id: k, a: da[k] || '', b: db[k] || '' }); hojaC = h; } });
+  });
+  var corto = function (t) { t = String(t); return t.length > 22 ? t.slice(0, 21) + '…' : t; };
+  if (celdas.length === 1) {
+    var c = celdas[0], pre = c.h !== B.activeSheet ? c.h + '!' : '';
+    if (!c.b) return 'Borró ' + pre + c.id + ' ("' + corto(c.a) + '")';
+    if (!c.a) return 'Escribió "' + corto(c.b) + '" en ' + pre + c.id;
+    return 'Cambió ' + pre + c.id + ': "' + corto(c.a) + '" → "' + corto(c.b) + '"';
+  }
+  if (celdas.length > 1) {
+    var vacias = celdas.filter(function (c) { return !c.b; }).length;
+    var ids = celdas.map(function (c) { return c.id; }).sort(function (x, y) { return filaDe(x) - filaDe(y) || colDe(x) - colDe(y); });
+    var rango = ids[0] + ':' + ids[ids.length - 1];
+    if (vacias === celdas.length) return 'Borró ' + celdas.length + ' celdas (' + rango + ')';
+    return 'Cambió ' + celdas.length + ' celdas en ' + (hojaC !== B.activeSheet ? hojaC + '!' : '') + rango;
+  }
+  if (JSON.stringify(A.sheetFormats) !== JSON.stringify(B.sheetFormats)) return 'Cambió el formato de celdas';
+  if (JSON.stringify(A.colWidths) !== JSON.stringify(B.colWidths)) return 'Cambió anchos, vista u opciones de la hoja';
+  if (JSON.stringify(A.sheetCondFormats) !== JSON.stringify(B.sheetCondFormats)) return 'Cambió el formato condicional';
+  if (JSON.stringify(A.sheetNotes) !== JSON.stringify(B.sheetNotes)) return 'Cambió notas o comentarios';
+  if (JSON.stringify(A.sheetGraficos) !== JSON.stringify(B.sheetGraficos)) return 'Cambió gráficos, formas o imágenes';
+  if (JSON.stringify(A.rangosNombrados) !== JSON.stringify(B.rangosNombrados)) return 'Cambió nombres o tablas';
+  return 'Otro cambio (filtros, protección, opciones…)';
+}
+function abrirHistorialDeshacer() {
+  var n = undoStack.length, esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  if (!n) { abrirPanel('🕘 Historial de deshacer', '<div class="mcrNota">No hay cambios para deshacer.</div>', [{ texto: 'Cerrar', ok: true }]); return; }
+  var actual = estadoActualComoJSON(), filas = [];
+  for (var i = n - 1, k = 1; i >= 0; i--, k++) {
+    var despues = i === n - 1 ? actual : undoStack[i + 1];
+    var t = horaDeEstadoDeshacer(undoStack[i]), hora = t ? new Date(t).toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' }) : '';
+    filas.push('<button type="button" class="hdItem" data-pasos="' + k + '"><span class="hdNum">' + k + '</span><span class="hdTxt">' + esc(describirCambioEstados(undoStack[i], despues)) + '</span><span class="hdHora">' + hora + '</span></button>');
+  }
+  abrirPanel('🕘 Historial de deshacer', '<div class="mcrNota">Lo más reciente va primero. Tocá un cambio para deshacer hasta ahí (ese y todos los de arriba). Después podés rehacer con ↷.</div><div class="hdLista">' + filas.join('') + '</div>', [{ texto: 'Cerrar', ok: true }]);
+  document.querySelectorAll('.hdItem').forEach(function (b) {
+    b.addEventListener('mouseenter', function () { var p = parseInt(b.dataset.pasos, 10); document.querySelectorAll('.hdItem').forEach(function (x) { x.classList.toggle('marcado', parseInt(x.dataset.pasos, 10) <= p); }); });
+    b.addEventListener('click', function () {
+      var p = parseInt(b.dataset.pasos, 10);
+      cerrarPanel();
+      for (var j = 0; j < p; j++) undo();
+      document.getElementById('saveStatus').textContent = '↶ Se deshicieron ' + p + ' cambio(s)';
+    });
+  });
+}
+(function () {
+  // Mantener apretado ↶ (o tocar 🕘) abre la lista
+  ['btnUndo', 'tbUndo', 'qUndo'].forEach(function (id) {
+    var b = document.getElementById(id); if (!b) return;
+    var t = null, largo = false;
+    b.addEventListener('pointerdown', function () { largo = false; t = setTimeout(function () { largo = true; abrirHistorialDeshacer(); }, 550); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { b.addEventListener(ev, function () { clearTimeout(t); }); });
+    b.addEventListener('click', function (e) { if (largo) { e.stopImmediatePropagation(); e.preventDefault(); largo = false; } }, true);
+    b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  });
+  var bh = document.getElementById('btnHistorialDeshacer');
+  if (bh) bh.addEventListener('click', abrirHistorialDeshacer);
+})();
+
+// ══════════════════════════════════════════════
+// 8) COLUMNAS CALCULADAS EN TABLAS
+// Al escribir una fórmula en una columna de una tabla (Dar formato como tabla)
+// que está vacía, o que ya era calculada, se copia sola a todas las filas
+// (ajustando las referencias). Cuando la tabla crece, la fila nueva también
+// la recibe. Se recuerda en la definición de la tabla: def.calc = { col: true }.
+// ══════════════════════════════════════════════
+function columnaCalculadaTrasEditar(hoja, id, val, anterior) {
+  if (hoja !== activeSheet) return 0;
+  var m = /^([A-Z]+)(\d+)$/.exec(id); if (!m) return 0;
+  var r = parseInt(m[2], 10) - 1, c = colIndex(m[1]);
+  var t = tablaEnCelda(r, c);
+  if (!t) return 0;
+  var finDatos = parseInt(/(\d+)$/.exec(t.def.to)[1], 10) - 1;
+  if (r <= t.r1 || r > finDatos) return 0;
+  var d = sheetData[hoja] || {}, calc = t.def.calc || {};
+  var esFormula = typeof val === 'string' && val.charAt(0) === '=';
+  if (!esFormula) {
+    // Si se escribe un valor a mano en una columna calculada, deja de serlo (como en Excel, queda "excepción")
+    return 0;
+  }
+  var otras = [];
+  for (var rr = t.r1 + 1; rr <= finDatos; rr++) if (rr !== r) otras.push(rr);
+  var todasVacias = otras.every(function (rr) { var v = d[cellId(rr, c)]; return v === undefined || v === ''; });
+  // Columna calculada que se edita: las otras celdas tienen la fórmula anterior (ajustada a su fila)
+  var eraCalculada = calc[c] && typeof anterior === 'string' && anterior.charAt(0) === '=' && otras.every(function (rr) {
+    var v = d[cellId(rr, c)];
+    return v === ajustarFormulaRelativa(anterior, rr - r, 0);
+  });
+  if (!todasVacias && !eraCalculada) return 0;
+  otras.forEach(function (rr) { d[cellId(rr, c)] = ajustarFormulaRelativa(val, rr - r, 0); marcarCeldaSucia(hoja, cellId(rr, c)); });
+  (t.def.calc = calc)[c] = true;
+  return otras.length;
+}
+// La tabla creció: la fila nueva recibe las fórmulas de sus columnas calculadas
+function llenarColumnasCalculadasFila(def, filaNueva0) {
+  if (!def || !def.calc) return;
+  var hoja = def.hoja, d = sheetData[hoja] || (sheetData[hoja] = {});
+  Object.keys(def.calc).forEach(function (cs) {
+    var c = parseInt(cs, 10), arriba = d[cellId(filaNueva0 - 1, c)], aqui = d[cellId(filaNueva0, c)];
+    if (typeof arriba === 'string' && arriba.charAt(0) === '=' && (aqui === undefined || aqui === '')) d[cellId(filaNueva0, c)] = ajustarFormulaRelativa(arriba, 1, 0);
+  });
+}
+
+// ══════════════════════════════════════════════
+// 9) PERMITIR EDITAR RANGOS (Revisar ▸ Permitir editar rangos)
+// Con la hoja protegida, ciertas zonas se pueden editar: sin contraseña, o
+// con una contraseña propia de cada zona (se pide una vez por sesión).
+// colWidths[hoja].rangosPermitidos = [{ nombre, rango, clave (huella) }]
+// ══════════════════════════════════════════════
+var rangosDesbloqueadosSesion = {};
+function huellaClaveRango(txt) {
+  // Huella de la contraseña (no se guarda la contraseña en el archivo)
+  var h1 = 0xdeadbeef, h2 = 0x41c6ce57, s = 'mcr-rango|' + txt;
+  for (var i = 0; i < s.length; i++) { var ch = s.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+}
+function rangosPermitidosHoja(h) { var m = colWidths[h || activeSheet]; return (m && m.rangosPermitidos) || []; }
+function rangoPermitidoDeCelda(hoja, id) {
+  var m = /^([A-Z]+)(\d+)$/.exec(id); if (!m) return null;
+  var r = parseInt(m[2], 10) - 1, c = colIndex(m[1]);
+  var lista = rangosPermitidosHoja(hoja);
+  for (var i = 0; i < lista.length; i++) {
+    var p = lista[i].rango.split(':'), b = boundsFromIds(p[0], p[1] || p[0]);
+    if (b && r >= b.minR && r <= b.maxR && c >= b.minC && c <= b.maxC) return lista[i];
+  }
+  return null;
+}
+// Devuelve true si la celda está en un rango permitido (y, si tiene contraseña, ya se escribió bien)
+function intentarDesbloquearRango(hoja, id) {
+  var rp = rangoPermitidoDeCelda(hoja, id);
+  if (!rp) return false;
+  if (!rp.clave) return true;
+  var llave = hoja + '|' + rp.nombre;
+  if (rangosDesbloqueadosSesion[llave]) return true;
+  var t = prompt('🔑 La zona "' + rp.nombre + '" (' + rp.rango + ') tiene contraseña.\nEscribila para poder editarla:');
+  if (t === null) return false;
+  if (huellaClaveRango(t) === rp.clave) { rangosDesbloqueadosSesion[llave] = true; document.getElementById('saveStatus').textContent = '🔓 Zona "' + rp.nombre + '" desbloqueada mientras esté abierta la app'; return true; }
+  alert('Contraseña incorrecta.');
+  return false;
+}
+function abrirRangosPermitidos() {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  var lista = rangosPermitidosHoja(), b = limitesDeSeleccionOCelda();
+  var sug = b ? cellId(b.minR, b.minC) + (b.maxR > b.minR || b.maxC > b.minC ? ':' + cellId(b.maxR, b.maxC) : '') : '';
+  var html = '<div class="mcrNota">Cuando protejás esta hoja (🔒 Proteger Hoja), estas zonas se van a poder seguir editando: libremente, o solo con su propia contraseña. Sirve para que cada quien edite solo su parte.</div>' +
+    (lista.length ? lista.map(function (x, i) { return '<div class="lpItem"><span><b>' + esc(x.nombre) + '</b><br><small>' + esc(x.rango) + (x.clave ? ' · 🔑 con contraseña' : ' · sin contraseña') + '</small></span><button type="button" data-borrar="' + i + '" title="Quitar">🗑</button></div>'; }).join('') : '<div class="mcrNota">Todavía no hay zonas.</div>') +
+    (sheetProtegida[activeSheet] ? '<div class="mcrNota" style="color:#b45309">La hoja está protegida: desprotegela para agregar o quitar zonas.</div>' :
+      '<label class="mcrF">Nueva zona</label><div class="egDos"><div><input id="rpNombre" class="mcrI" placeholder="Nombre (ej.: Ventas)" value="Zona' + (lista.length + 1) + '"></div><div><input id="rpRango" class="mcrI" placeholder="A2:D20" value="' + esc(sug) + '"></div></div>' +
+      '<input id="rpClave" class="mcrI" type="password" placeholder="Contraseña (opcional)" autocomplete="new-password" style="margin-top:6px">' +
+      '<button type="button" class="egAccion" id="rpAgregar">➕ Agregar zona</button>');
+  abrirPanel('🔑 Permitir editar rangos', html, [{ texto: 'Cerrar', ok: true }]);
+  document.querySelectorAll('#mcrPanelBody [data-borrar]').forEach(function (bt) { bt.addEventListener('click', function () {
+    if (sheetProtegida[activeSheet]) { alert('Desprotegé la hoja primero.'); return; }
+    snapshot(); lista.splice(parseInt(bt.dataset.borrar, 10), 1); autoSave(); abrirRangosPermitidos();
+  }); });
+  var ba = document.getElementById('rpAgregar');
+  if (ba) ba.addEventListener('click', function () {
+    var nom = document.getElementById('rpNombre').value.trim(), rg = document.getElementById('rpRango').value.trim().toUpperCase().replace(/\$/g, ''), cl = document.getElementById('rpClave').value;
+    if (!nom) { alert('Poné un nombre.'); return; }
+    if (!/^[A-Z]{1,3}\d+(:[A-Z]{1,3}\d+)?$/.test(rg)) { alert('El rango no es válido (ej.: A2:D20).'); return; }
+    if (lista.some(function (x) { return x.nombre.toLowerCase() === nom.toLowerCase(); })) { alert('Ya hay una zona con ese nombre.'); return; }
+    snapshot();
+    var meta = colWidths[activeSheet] || (colWidths[activeSheet] = {});
+    (meta.rangosPermitidos = meta.rangosPermitidos || []).push({ nombre: nom, rango: rg, clave: cl ? huellaClaveRango(cl) : '' });
+    autoSave(); abrirRangosPermitidos();
+    document.getElementById('saveStatus').textContent = '🔑 Zona "' + nom + '" (' + rg + ') se podrá editar con la hoja protegida';
+  });
+}
+
+// ══════════════════════════════════════════════
+// 10) FORMULARIO DE DATOS (Excel ▸ Formulario)
+// Una ficha por registro de la tabla o lista donde está el cursor (la primera
+// fila son los títulos). Anterior / Siguiente, Nuevo, Eliminar, y Criterios
+// para buscar. Las columnas con fórmula se muestran pero no se editan.
+// ══════════════════════════════════════════════
+var estadoFormulario = null;
+function listaParaFormulario() {
+  var b = limitesDeSeleccionOCelda(); if (!b) return null;
+  var t = tablaEnCelda(b.minR, b.minC);
+  if (t) return { r1: t.r1, r2: parseInt(/(\d+)$/.exec(t.def.to)[1], 10) - 1, c1: t.c1, c2: t.c2, tabla: t };
+  var rg = (b.maxR > b.minR || b.maxC > b.minC) ? b : regionActualDeDatos(b.minR, b.minC);
+  if (!rg || rg.maxC < rg.minC) return null;
+  return { r1: rg.minR, r2: rg.maxR, c1: rg.minC, c2: rg.maxC };
+}
+function abrirFormularioDatos(indice, criterios) {
+  var L = estadoFormulario && estadoFormulario.L;
+  if (indice === undefined) {
+    L = listaParaFormulario();
+    if (!L || L.r2 <= L.r1 && !String(computeValue(cellId(L.r1, L.c1)) || '').trim()) { alert('Tocá una celda de tu lista (con títulos en la primera fila).'); return; }
+    if (L.c2 - L.c1 > 31) { alert('El formulario admite hasta 32 columnas.'); return; }
+    var act = limitesDeSeleccionOCelda();
+    indice = act && act.minR > L.r1 && act.minR <= L.r2 ? act.minR - L.r1 - 1 : 0;
+  }
+  var nReg = L.r2 - L.r1, esNuevo = indice >= nReg, esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  estadoFormulario = { L: L, indice: indice, criterios: criterios || null };
+  var d = sheetData[activeSheet] || {}, fila = L.r1 + 1 + indice;
+  var campos = '';
+  for (var c = L.c1; c <= L.c2; c++) {
+    var titulo = String(computeValue(cellId(L.r1, c)) || colLetter(c)), raw = esNuevo ? '' : (d[cellId(fila, c)] || '');
+    var esFormula = !esNuevo && typeof raw === 'string' && raw.charAt(0) === '=';
+    var valor = criterios ? (criterios[c] || '') : (esFormula ? String(computeValue(cellId(fila, c))) : raw);
+    var conFormulaArriba = esNuevo && typeof d[cellId(L.r2, c)] === 'string' && d[cellId(L.r2, c)].charAt(0) === '=';
+    campos += '<label class="mcrF">' + esc(titulo) + '</label>' + ((esFormula || conFormulaArriba) && !criterios
+      ? '<div class="fdCalc">' + (conFormulaArriba ? '(se calcula solo)' : esc(valor)) + '</div>'
+      : '<input class="mcrI fdCampo" data-col="' + c + '" value="' + esc(valor) + '"' + (criterios ? ' placeholder="ej.: >1000, Ana*, =0"' : '') + '>');
+  }
+  var cabecera = criterios ? '🔍 Criterios: escribí lo que buscás en uno o más campos y tocá “Buscar siguiente”.' : (esNuevo ? '➕ Registro nuevo' : 'Registro ' + (indice + 1) + ' de ' + nReg);
+  var html = '<div class="fdBarra"><span>' + cabecera + '</span></div><div class="fdCampos">' + campos + '</div>' +
+    '<div class="fdNav">' + (criterios ? '<button type="button" id="fdBuscarAnt">◀ Buscar anterior</button><button type="button" id="fdBuscarSig">Buscar siguiente ▶</button><button type="button" id="fdSalirCrit">✕ Salir</button>'
+      : '<button type="button" id="fdAnt"' + (indice <= 0 ? ' disabled' : '') + '>◀</button><button type="button" id="fdSig"' + (esNuevo ? ' disabled' : '') + '>▶</button><button type="button" id="fdNuevo">➕ Nuevo</button>' + (esNuevo ? '' : '<button type="button" id="fdBorrar">🗑</button>') + '<button type="button" id="fdCrit">🔍</button>') + '</div>';
+  abrirPanel('📝 Formulario', html, [{ texto: 'Cerrar', accion: function () { if (!criterios) guardarFormulario(); estadoFormulario = null; } }, { texto: esNuevo ? 'Agregar' : 'Guardar', ok: true, accion: function () {
+    if (criterios) return false;
+    var r = guardarFormulario();
+    if (r === false) return false;
+    if (esNuevo) { abrirFormularioDatos(estadoFormulario.L.r2 - estadoFormulario.L.r1); return false; }
+  } }]);
+  function leerCampos() { var o = {}; document.querySelectorAll('.fdCampo').forEach(function (i) { o[i.dataset.col] = i.value; }); return o; }
+  function guardarFormulario() {
+    if (!estadoFormulario || criterios) return;
+    var vals = leerCampos(), Lx = estadoFormulario.L, filaG = Lx.r1 + 1 + estadoFormulario.indice, cambios = false;
+    var hay = Object.keys(vals).some(function (k) { return String(vals[k]).trim() !== ''; });
+    if (esNuevo && !hay) return;
+    Object.keys(vals).forEach(function (k) { var id = cellId(filaG, parseInt(k, 10)); if ((d[id] || '') !== vals[k]) cambios = true; });
+    if (!cambios) return;
+    if (sheetProtegida[activeSheet] && Object.keys(vals).some(function (k) { var id = cellId(filaG, parseInt(k, 10)); return !celdaDesbloqueada(activeSheet, id) && !intentarDesbloquearRango(activeSheet, id); })) { alert('🔒 Esta hoja está protegida.'); return false; }
+    snapshot();
+    var dd = sheetData[activeSheet] || (sheetData[activeSheet] = {});
+    Object.keys(vals).forEach(function (k) { var id = cellId(filaG, parseInt(k, 10)); if (vals[k] === '') delete dd[id]; else dd[id] = vals[k]; marcarCeldaSucia(activeSheet, id); });
+    if (esNuevo) {
+      if (Lx.tabla && !Lx.tabla.def.totales) { Lx.tabla.def.to = colLetter(Lx.c2) + (filaG + 1); llenarColumnasCalculadasFila(Lx.tabla.def, filaG); }
+      else if (Lx.tabla && Lx.tabla.def.totales) { /* con fila de totales: se usa "Agregar fila" de la tabla */ }
+      // copia las fórmulas de la fila de arriba en las columnas calculadas
+      for (var c2 = Lx.c1; c2 <= Lx.c2; c2++) { var arr = dd[cellId(filaG - 1, c2)]; if (typeof arr === 'string' && arr.charAt(0) === '=' && !dd[cellId(filaG, c2)]) dd[cellId(filaG, c2)] = ajustarFormulaRelativa(arr, 1, 0); }
+      Lx.r2 = filaG;
+    }
+    buildTable(); renderAllCells(); autoSave();
+    document.getElementById('saveStatus').textContent = esNuevo ? '📝 Registro agregado en la fila ' + (filaG + 1) : '📝 Registro ' + (estadoFormulario.indice + 1) + ' guardado';
+  }
+  function ir(i) { if (guardarFormulario() === false) return; abrirFormularioDatos(i); }
+  function buscar(dir) {
+    var crit = leerCampos(), Lx = estadoFormulario.L, n = Lx.r2 - Lx.r1;
+    var activos = Object.keys(crit).filter(function (k) { return String(crit[k]).trim() !== ''; });
+    if (!activos.length) { alert('Escribí al menos un criterio.'); return; }
+    var desde = estadoFormulario.desde !== undefined ? estadoFormulario.desde : (dir > 0 ? -1 : n);
+    for (var i = desde + dir; i >= 0 && i < n; i += dir) {
+      var ok = activos.every(function (k) {
+        var v = String(computeValue(cellId(Lx.r1 + 1 + i, parseInt(k, 10))) || ''), cr = String(crit[k]).trim();
+        if (/^(>=|<=|<>|>|<|=)/.test(cr)) return matchCrit(v, cr);
+        if (/[*?]/.test(cr)) return matchCrit(v, cr);
+        return v.toLowerCase().indexOf(cr.toLowerCase()) === 0;
+      });
+      if (ok) { abrirFormularioDatos(i); seleccionarRangoPorCodigo(Lx.r1 + 1 + i, Lx.c1, Lx.r1 + 1 + i, Lx.c2); estadoFormulario.ultimosCriterios = crit; return; }
+    }
+    alert('No hay más registros que cumplan esos criterios.');
+  }
+  var g = function (id) { return document.getElementById(id); };
+  if (g('fdAnt')) g('fdAnt').addEventListener('click', function () { ir(indice - 1); });
+  if (g('fdSig')) g('fdSig').addEventListener('click', function () { ir(indice + 1); });
+  if (g('fdNuevo')) g('fdNuevo').addEventListener('click', function () { ir(L.r2 - L.r1); });
+  if (g('fdCrit')) g('fdCrit').addEventListener('click', function () { if (guardarFormulario() === false) return; abrirFormularioDatos(indice, {}); estadoFormulario.desde = indice; });
+  if (g('fdSalirCrit')) g('fdSalirCrit').addEventListener('click', function () { abrirFormularioDatos(Math.min(indice, L.r2 - L.r1 - 1)); });
+  if (g('fdBuscarSig')) g('fdBuscarSig').addEventListener('click', function () { buscar(1); });
+  if (g('fdBuscarAnt')) g('fdBuscarAnt').addEventListener('click', function () { buscar(-1); });
+  if (g('fdBorrar')) g('fdBorrar').addEventListener('click', function () {
+    if (!confirm('¿Eliminar este registro? Se borra la fila ' + (fila + 1) + ' completa.')) return;
+    if (!ejecutarEstructura('del_fila', fila, 1)) return;
+    L.r2--;
+    if (L.tabla) { var mt = /^([A-Z]+)(\d+)$/.exec(L.tabla.def.to); if (mt && parseInt(mt[2], 10) - 1 >= fila) { /* la estructura ya movió la tabla */ } }
+    renderAllCells();
+    document.getElementById('saveStatus').textContent = '🗑 Registro eliminado';
+    if (L.r2 <= L.r1) { cerrarPanel(); estadoFormulario = null; return; }
+    abrirFormularioDatos(Math.min(indice, L.r2 - L.r1 - 1));
+  });
+  var primero = document.querySelector('.fdCampo'); if (primero && (esNuevo || criterios)) setTimeout(function () { try { primero.focus(); } catch (e) {} }, 60);
+}
+
+// ══════════════════════════════════════════════
+// 11) IMPORTAR TABLA DESDE UNA PÁGINA WEB (Datos ▸ Desde la Web)
+// Se pega el link, se leen las tablas <table> de la página (por el mismo
+// proxy que usa SERVICIOWEB) y se escoge cuál traer: a la celda activa
+// o a una hoja nueva. También se puede pegar el HTML a mano.
+// ══════════════════════════════════════════════
+function tablasDeHtml(html) {
+  var doc = new DOMParser().parseFromString(String(html || ''), 'text/html'), out = [];
+  [].slice.call(doc.querySelectorAll('table')).forEach(function (tb, idx) {
+    if (tb.querySelector('table')) return; // solo las tablas "hoja" (sin tablas adentro)
+    var filas = [], ocupadas = {};
+    [].slice.call(tb.rows).forEach(function (tr, r) {
+      var fila = filas[r] = filas[r] || [], c = 0;
+      [].slice.call(tr.cells).forEach(function (td) {
+        while (ocupadas[r + ',' + c]) c++;
+        var txt = (td.innerText !== undefined ? td.textContent : td.textContent).replace(/\s+/g, ' ').trim();
+        var cs = Math.min(20, parseInt(td.getAttribute('colspan') || '1', 10) || 1), rs = Math.min(50, parseInt(td.getAttribute('rowspan') || '1', 10) || 1);
+        for (var i = 0; i < rs; i++) for (var j = 0; j < cs; j++) {
+          ocupadas[(r + i) + ',' + (c + j)] = true;
+          (filas[r + i] = filas[r + i] || [])[c + j] = (i === 0 && j === 0) ? txt : '';
+        }
+        c += cs;
+      });
+    });
+    filas = filas.filter(function (f) { return f && f.some(function (v) { return v; }); });
+    var ancho = filas.reduce(function (m, f) { return Math.max(m, f.length); }, 0);
+    if (filas.length < 2 || ancho < 1) return;
+    filas = filas.map(function (f) { var g = []; for (var k = 0; k < ancho; k++) g.push(f[k] === undefined ? '' : f[k]); return g; });
+    var cap = tb.caption ? tb.caption.textContent.trim() : '';
+    out.push({ n: idx + 1, titulo: cap || filas[0].filter(Boolean).slice(0, 3).join(' · '), filas: filas });
+  });
+  return out;
+}
+function abrirImportarWeb() {
+  var html = '<div class="mcrNota">Pegá el link de una página que tenga una tabla (tipo de cambio, tasas, precios, posiciones…) y escogé cuál traer.</div>' +
+    '<input id="iwUrl" class="mcrI" type="url" placeholder="https://…" autocomplete="off">' +
+    '<button type="button" class="egAccion" id="iwLeer">🌐 Buscar tablas</button>' +
+    '<details style="margin-top:8px"><summary style="font-size:13px">O pegá el código HTML de la tabla</summary><textarea id="iwHtml" class="mcrI" rows="4" placeholder="<table>…</table>"></textarea><button type="button" class="egAccion" id="iwLeerHtml">Leer HTML</button></details>' +
+    '<div id="iwResultado"></div>';
+  abrirPanel('🌐 Tabla desde la Web', html, [{ texto: 'Cerrar', ok: true }]);
+  var pintar = function (tablas, origen) {
+    var cont = document.getElementById('iwResultado'), esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+    if (!tablas.length) { cont.innerHTML = '<div class="mcrNota" style="color:#b91c1c">No encontré tablas en esa página. Algunas páginas arman las tablas con JavaScript y no se pueden leer así.</div>'; return; }
+    cont.innerHTML = '<div class="mcrNota">Encontré ' + tablas.length + ' tabla(s):</div>' + tablas.map(function (t, i) {
+      return '<div class="iwTabla"><div class="iwCab"><b>Tabla ' + t.n + '</b> · ' + t.filas.length + ' filas × ' + t.filas[0].length + ' col.<br><small>' + esc(t.titulo) + '</small></div>' +
+        '<div class="pqVista" style="max-height:140px"><table><tbody>' + t.filas.slice(0, 5).map(function (f) { return '<tr>' + f.slice(0, 6).map(function (v) { return '<td>' + esc(v) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>' +
+        '<div class="egDos"><button type="button" class="egAccion" data-aqui="' + i + '">⬇ En la celda activa</button><button type="button" class="egAccion" data-hoja="' + i + '">📄 En hoja nueva</button></div></div>';
+    }).join('');
+    var poner = function (t, enHojaNueva) {
+      var hoja = activeSheet, r0 = 0, c0 = 0;
+      if (enHojaNueva) { hoja = 'Web'; var k = 2; while (sheets.indexOf(hoja) !== -1) hoja = 'Web' + (k++); }
+      else { var b = limitesDeSeleccionOCelda(); if (b) { r0 = b.minR; c0 = b.minC; } if (sheetProtegida[hoja]) { alert('🔒 Esta hoja está protegida.'); return; } }
+      var d0 = sheetData[hoja] || {};
+      if (!enHojaNueva) {
+        var ocupadas = 0; t.filas.forEach(function (f, r) { f.forEach(function (v, c) { if (d0[cellId(r0 + r, c0 + c)]) ocupadas++; }); });
+        if (ocupadas && !confirm('Hay ' + ocupadas + ' celda(s) con datos donde va la tabla. ¿Reemplazarlas?')) return;
+      }
+      snapshot();
+      if (enHojaNueva) crearHojaVaciaConNombre(hoja);
+      var d = sheetData[hoja] || (sheetData[hoja] = {}), fm = sheetFormats[hoja] || (sheetFormats[hoja] = {});
+      t.filas.forEach(function (f, r) { f.forEach(function (v, c) { var id = cellId(r0 + r, c0 + c); if (v === '') delete d[id]; else d[id] = /^[=+@]/.test(v) ? "'" + v : v; }); });
+      t.filas[0].forEach(function (v, c) { var id = cellId(r0, c0 + c); fm[id] = Object.assign({}, fm[id] || {}, { bold: true }); });
+      if (r0 + t.filas.length > ROWS && typeof crecerFilas === 'function') crecerFilas(r0 + t.filas.length + 5);
+      if (enHojaNueva) { activeSheet = hoja; if (origen) (colWidths[hoja] = colWidths[hoja] || {}).origenWeb = origen; renderTabs(); }
+      cerrarPanel(); buildTable(); renderAllCells(); autoSave();
+      document.getElementById('saveStatus').textContent = '🌐 Tabla de ' + t.filas.length + ' filas importada' + (enHojaNueva ? ' en la hoja ' + hoja : '');
+    };
+    cont.querySelectorAll('[data-aqui]').forEach(function (b) { b.addEventListener('click', function () { poner(tablas[parseInt(b.dataset.aqui, 10)], false); }); });
+    cont.querySelectorAll('[data-hoja]').forEach(function (b) { b.addEventListener('click', function () { poner(tablas[parseInt(b.dataset.hoja, 10)], true); }); });
+  };
+  document.getElementById('iwLeer').addEventListener('click', function () {
+    var url = document.getElementById('iwUrl').value.trim();
+    if (!/^https?:\/\//i.test(url)) { alert('Pegá un link que empiece con http:// o https://'); return; }
+    var cont = document.getElementById('iwResultado');
+    cont.innerHTML = '<div class="mcrNota">⏳ Leyendo la página…</div>';
+    var listo = function (texto) { pintar(tablasDeHtml(texto), url); };
+    var porProxy = function () {
+      var p = typeof fetchViaXHR === 'function' && window.ReactNativeWebView ? fetchViaXHR(WEBPROXY_URL + '?url=' + encodeURIComponent(url), { method: 'GET' }).then(function (r) { return r.json().then(function (j) { return j && j.error !== undefined && Object.keys(j).length === 1 ? j.error : JSON.stringify(j); }); })
+        : fetch(WEBPROXY_URL + '?url=' + encodeURIComponent(url)).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); });
+      return p.then(listo);
+    };
+    // Primero directo (si la página lo permite); si no, por el proxy
+    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }).then(listo).catch(function () {
+      porProxy().catch(function () { cont.innerHTML = '<div class="mcrNota" style="color:#b91c1c">No se pudo leer esa página (sin internet, o la página no deja que la lean). Podés abrirla, copiar la tabla y pegarla en la hoja.</div>'; });
+    });
+  });
+  document.getElementById('iwLeerHtml').addEventListener('click', function () { pintar(tablasDeHtml(document.getElementById('iwHtml').value), ''); });
+}
+document.getElementById('btnFormularioDatos').addEventListener('click', function () { estadoFormulario = null; abrirFormularioDatos(); });
+document.getElementById('btnImportarWeb').addEventListener('click', abrirImportarWeb);
+document.getElementById('btnRangosPermitidos').addEventListener('click', abrirRangosPermitidos);
 // ══════════════════════════════════════════════
 // TIPOS DE DATOS VINCULADOS (como "Cotizaciones" y "Geografía" de Excel)
 // Una celda con una cédula o una moneda se "vincula": muestra un ícono y de
