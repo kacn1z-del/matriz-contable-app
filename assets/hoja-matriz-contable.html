@@ -1170,55 +1170,6 @@
     #toolbar .rbGrid button:hover { background: #e1e1e1 !important; border-color: #c8c8c8; }
     #toolbar .rbGrid button:active { background: #d2e0d6 !important; color: #0b5c2e !important; border-color: #107c41; }
   }
-  /* ── Cinta "Lima": degradado verde lima → blanco, pestaña activa tipo píldora y
-     botones con efecto vidrio. Solo en pantalla grande (computadora / Windows). ── */
-  @media (min-width: 1000px) {
-    #ribbonTrigger { background: linear-gradient(100deg, #14532d 0%, #1f7a44 55%, #3f8f1c 100%); }
-    #ribbonModal, #ribbonModal.rbMin {
-      background: linear-gradient(180deg, #a6e33a 0%, #c5f075 22%, #e2f7c3 52%, #f2f8ee 80%, #eef2f6 100%);
-      border-bottom: 1px solid rgba(20, 83, 45, .16);
-      box-shadow: 0 8px 20px -14px rgba(20, 83, 45, .55);
-    }
-    #toolbar, #toolbar:not(.rbBuscando), #ribbonModal.rbMin #toolbar, #rbTabs { background: transparent; }
-    #rbTabs { gap: 4px; padding-left: 6px; }
-    .rbTab {
-      color: #1c3a12; border-bottom: none; border-radius: 999px; margin-top: 3px;
-      padding: 5px 14px; transition: background .15s, box-shadow .15s, color .15s;
-    }
-    .rbTab:hover { background: rgba(255, 255, 255, .45); }
-    .rbTab.on {
-      background: rgba(255, 255, 255, .88); color: #14532d; border-bottom: none;
-      box-shadow: 0 1px 2px rgba(20, 83, 45, .18), 0 4px 12px -4px rgba(20, 83, 45, .35);
-    }
-    .rbTab .icoP { color: #2f6d13; }
-    #rbBuscar {
-      background: rgba(255, 255, 255, .72); border: 1px solid rgba(20, 83, 45, .18); border-radius: 999px;
-      padding-left: 14px; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    }
-    #rbBuscar:focus { background: #fff; border-color: #1f7a44; box-shadow: 0 0 0 3px rgba(132, 204, 22, .35); outline: none; }
-    #toolbar .rbSec, #toolbar:not(.rbBuscando) .rbSec { border-right: 1px solid rgba(20, 83, 45, .14); }
-    #toolbar .rbSecTit { color: #3f6212; font-weight: 600; letter-spacing: .2px; }
-    #toolbar .rbGrid button { color: #1f2d16; border-radius: 7px; transition: background .12s, box-shadow .12s; }
-    #toolbar .rbGrid button .icoP { color: #2f6d13; }
-    #toolbar .rbGrid button:hover {
-      background: rgba(255, 255, 255, .7) !important; border-color: rgba(255, 255, 255, .95);
-      box-shadow: 0 1px 3px rgba(20, 83, 45, .18);
-    }
-    #toolbar .rbGrid button:active { background: #fff !important; color: #14532d !important; border-color: #84cc16; }
-    /* Modo oscuro: el mismo efecto, en verde bosque */
-    body.dark #ribbonModal, body.dark #ribbonModal.rbMin {
-      background: linear-gradient(180deg, #2f5a12 0%, #233f15 30%, #1b2a1d 65%, #181c20 100%);
-      border-bottom-color: rgba(163, 230, 53, .15);
-    }
-    body.dark .rbTab { color: #d9f99d; }
-    body.dark .rbTab:hover { background: rgba(255, 255, 255, .08); }
-    body.dark .rbTab.on { background: rgba(163, 230, 53, .18); color: #ecfccb; box-shadow: none; }
-    body.dark #toolbar .rbGrid button { color: #e5e7eb; }
-    body.dark #toolbar .rbGrid button .icoP, body.dark .rbTab .icoP { color: #a3e635; }
-    body.dark #toolbar .rbGrid button:hover { background: rgba(255, 255, 255, .08) !important; border-color: rgba(255, 255, 255, .12); box-shadow: none; }
-    body.dark #toolbar .rbSecTit { color: #a3e635; }
-    body.dark #rbBuscar { background: rgba(0, 0, 0, .25); color: #e5e7eb; border-color: rgba(163, 230, 53, .2); }
-  }
   /* Galería e Inicio en pantalla grande (tablet, computadora, Windows): ocupan toda la ventana,
      con el contenido centrado y más tarjetas por fila */
   @media (min-width: 700px) {
@@ -32542,15 +32493,6 @@ function xlsxBase64ConImagenes(wb, hojas) {
       for (var qc = 0; qc < candC.length; qc++) { var ixc = xmlHoja.indexOf(candC[qc]); if (ixc !== -1) { corteC = ixc; break; } }
       if (corteC !== -1) { xmlHoja = xmlHoja.slice(0, corteC) + h.cond + xmlHoja.slice(corteC); escribir(rutaHoja, xmlHoja); }
     }
-    if (h.pane) {
-      xmlHoja = xmlHoja.replace(/<sheetView([^>]*?)\/>/, '<sheetView$1>' + h.pane + '</sheetView>');
-      escribir(rutaHoja, xmlHoja);
-    }
-    if (h.dv && xmlHoja.indexOf('<dataValidations') === -1) {
-      var candV = ['<hyperlinks', '<printOptions', '<pageMargins', '<pageSetup', '<headerFooter', '<rowBreaks', '<colBreaks', '<customProperties', '<cellWatches', '<ignoredErrors', '<smartTags', '<drawing', '<legacyDrawing', '<tableParts', '<extLst', '</worksheet>'], corteV = -1;
-      for (var qv = 0; qv < candV.length; qv++) { var ixv = xmlHoja.indexOf(candV[qv]); if (ixv !== -1) { corteV = ixv; break; } }
-      if (corteV !== -1) { xmlHoja = xmlHoja.slice(0, corteV) + h.dv + xmlHoja.slice(corteV); escribir(rutaHoja, xmlHoja); }
-    }
     if (!h.imagenes || !h.imagenes.length) return;
     h.imagenes.forEach(function (im, j) {
       var X = Math.round(im.x * 9525), Y = Math.round(im.y * 9525), CX = Math.round(im.w * 9525), CY = Math.round(im.h * 9525);
@@ -32645,9 +32587,7 @@ function exportarExcelInterno() {
           ws[refExcel] = celdaF;
         } else {
           var numCrudo = /^-?\d+(\.\d+)?$/.test(crudo.trim()) ? parseFloat(crudo) : null;
-          var serialF = numCrudo === null ? serialExcelDeTexto(crudo) : null;
-          if (serialF !== null) ws[refExcel] = { t: 'n', v: serialF, z: /:/.test(crudo) ? 'dd/mm/yyyy hh:mm' : 'dd/mm/yyyy' };
-          else ws[refExcel] = numCrudo !== null ? { t: 'n', v: numCrudo } : { t: 's', v: crudo };
+          ws[refExcel] = numCrudo !== null ? { t: 'n', v: numCrudo } : { t: 's', v: crudo };
         }
         var zExcel = formatoNumeroExcel(fmtCelda);
         if (zExcel && ws[refExcel].t === 'n') ws[refExcel].z = zExcel;
@@ -32669,8 +32609,6 @@ function exportarExcelInterno() {
       if (hpxv > 0) { filasExcel[rhx] = { hpx: hpxv }; hayAltos = true; } else filasExcel[rhx] = {};
     }
     if (hayAltos) ws['!rows'] = filasExcel;
-    var afX = sheetAutoFiltro[sheetName];
-    if (afX && afX.colFin >= afX.colIni) ws['!autofilter'] = { ref: cellId(afX.fila, afX.colIni) + ':' + cellId(Math.max(afX.fila, maxRow), afX.colFin) };
     var combinadas = sheetMerges[sheetName] || [];
     if (combinadas.length) {
       ws['!merges'] = combinadas.map(function (m) {
@@ -32695,10 +32633,8 @@ function exportarExcelInterno() {
     ordenExport.forEach(function (nombreH) {
       var cx = reglasCondicionalesExcel(nombreH);
       if (cx) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].cond = cx; nCond += (cx.match(/<conditionalFormatting/g) || []).length; }
-      var pX = paneExcel(nombreH), dvX = validacionesListaExcel(nombreH);
-      if (pX || dvX) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].pane = pX; porHoja[nombreH].dv = dvX; }
     });
-    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '', pane: porHoja[nh].pane || '', dv: porHoja[nh].dv || '' }; }).filter(function (h) { return h.indice > 0; });
+    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '' }; }).filter(function (h) { return h.indice > 0; });
     if (imgHojas.length && XLSX.CFB) {
       wbout = xlsxBase64ConImagenes(wb, imgHojas);
       imgHojas.forEach(function (h) { h.imagenes.forEach(function (im) { if (im.chartXml) nNativos++; else conImagenes++; }); });
@@ -32747,187 +32683,6 @@ function formulaDesdeExcel(f) {
   return out;
 }
 // Formato de número de Excel (z) → formato de la hoja. null si es "General".
-
-// ══════════════════════════════════════════════
-// EXCEL · fidelidad (1): lo que la librería no lee ni escribe
-// Al importar: paneles inmovilizados, autofiltro y listas desplegables.
-// Al exportar: fechas como fechas de verdad, paneles, autofiltro y listas.
-// ══════════════════════════════════════════════
-// Excel 97-2003 (.xls): la librería no trae estilos, así que se leen directo del
-// archivo (registros FONT, XF y PALETTE del formato BIFF8): negrita, cursiva,
-// subrayado, color de letra, relleno y alineación.
-var PALETA_XLS = ['000000','FFFFFF','FF0000','00FF00','0000FF','FFFF00','FF00FF','00FFFF','800000','008000','000080','808000','800080','008080','C0C0C0','808080','9999FF','993366','FFFFCC','CCFFFF','660066','FF8080','0066CC','CCCCFF','000080','FF00FF','FFFF00','00FFFF','800080','800000','008080','0000FF','00CCFF','CCFFFF','CCFFCC','FFFF99','99CCFF','FF99CC','CC99FF','FFCC99','3366FF','33CCCC','99CC00','FFCC00','FF9900','FF6600','666699','969696','003366','339966','003300','333300','993300','993366','333399','333333'];
-function leerEstilosXls(binario) {
-  if (!window.XLSX || !XLSX.CFB) return {};
-  var cfb;
-  try { cfb = XLSX.CFB.read(binario, { type: 'binary' }); } catch (e) { return {}; }
-  var flujo = XLSX.CFB.find(cfb, 'Workbook') || XLSX.CFB.find(cfb, 'Book');
-  if (!flujo || !flujo.content) return {};
-  var b = flujo.content instanceof Uint8Array ? flujo.content : new Uint8Array(flujo.content);
-  var u16 = function (o) { return b[o] | (b[o + 1] << 8); };
-  var u32 = function (o) { return (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16)) + b[o + 3] * 16777216; };
-  var fuentes = [], xfs = [], paleta = PALETA_XLS.slice(), hojas = [], hojaActual = -1, enGlobales = true, out = {};
-  var colorDe = function (icv) { return icv >= 8 && icv - 8 < paleta.length ? '#' + paleta[icv - 8].toLowerCase() : (icv < 8 ? '#' + PALETA_XLS[icv].toLowerCase() : null); };
-  var estiloXf = function (i) {
-    var x = xfs[i]; if (!x) return null;
-    if (x.cache !== undefined) return x.cache;
-    var f = fuentes[x.fnt >= 4 ? x.fnt - 1 : x.fnt] || {}, st = {};
-    if (f.bold) st.bold = true;
-    if (f.italic) st.italic = true;
-    if (f.underline) st.underline = true;
-    if (f.color && f.color !== 0x7FFF && f.color !== 8 && f.color !== 64) { var cf = colorDe(f.color); if (cf && cf !== '#000000') st.fontColor = cf; }
-    if (x.patron === 1 && x.fondo !== 64 && x.fondo !== 65) { var cb = colorDe(x.fondo); if (cb && cb !== '#ffffff') st.bgColor = cb; }
-    if (x.horiz === 1) st.align = 'left'; else if (x.horiz === 2) st.align = 'center'; else if (x.horiz === 3) st.align = 'right';
-    if (x.wrap) st.wrap = true;
-    x.cache = Object.keys(st).length ? st : null;
-    return x.cache;
-  };
-  var marcar = function (fila, col, ixf) {
-    if (hojaActual < 0 || !hojas[hojaActual]) return;
-    var st = estiloXf(ixf); if (!st) return;
-    var m = out[hojas[hojaActual].nombre] || (out[hojas[hojaActual].nombre] = {});
-    m[XLSX.utils.encode_cell({ r: fila, c: col })] = JSON.parse(JSON.stringify(st));
-  };
-  var pos = 0, nCeldas = 0, prof = 0;
-  while (pos + 4 <= b.length && nCeldas < 200000) {
-    var tipo = u16(pos), largo = u16(pos + 2), d = pos + 4;
-    if (d + largo > b.length) break;
-    if (tipo === 0x0809) { // BOF (los gráficos dentro de una hoja traen su propio BOF/EOF)
-      prof++;
-      if (!enGlobales && prof === 1) hojaActual++;
-    } else if (tipo === 0x000A) { // EOF
-      prof = Math.max(0, prof - 1);
-      if (prof === 0) enGlobales = false;
-    } else if (prof !== 1) {
-      // dentro de un gráfico incrustado: nada que leer
-    } else if (enGlobales) {
-      if (tipo === 0x0031) fuentes.push({ italic: !!(u16(d + 2) & 2), color: u16(d + 4), bold: u16(d + 6) >= 700, underline: b[d + 10] > 0 });
-      else if (tipo === 0x00E0) { var al = b[d + 6]; xfs.push({ fnt: u16(d), horiz: al & 7, wrap: !!(al & 8), patron: (u32(d + 14) >>> 26) & 63, fondo: u16(d + 18) & 127 }); }
-      else if (tipo === 0x0092) { var n = u16(d); for (var k = 0; k < n && k < 56; k++) { var o = d + 2 + k * 4; paleta[k] = [b[o], b[o + 1], b[o + 2]].map(function (v) { return (v < 16 ? '0' : '') + v.toString(16); }).join('').toUpperCase(); } }
-      else if (tipo === 0x0085) { var cch = b[d + 6], uni = b[d + 7] & 1, nombre = ''; for (var q = 0; q < cch; q++) nombre += String.fromCharCode(uni ? u16(d + 8 + q * 2) : b[d + 8 + q]); hojas.push({ nombre: nombre, pos: u32(d), tipo: b[d + 5] }); hojas.sort(function (x, y) { return x.pos - y.pos; }); }
-    } else if (tipo === 0x00FD || tipo === 0x0203 || tipo === 0x027E || tipo === 0x0204 || tipo === 0x0205 || tipo === 0x0006 || tipo === 0x0201) {
-      marcar(u16(d), u16(d + 2), u16(d + 4)); nCeldas++;
-    } else if (tipo === 0x00BD) { // MULRK
-      var f1 = u16(d), c1 = u16(d + 2), nk = (largo - 6) / 6;
-      for (var j = 0; j < nk; j++) marcar(f1, c1 + j, u16(d + 4 + j * 6));
-      nCeldas += nk;
-    } else if (tipo === 0x00BE) { // MULBLANK
-      var f2 = u16(d), c2 = u16(d + 2), nb = (largo - 6) / 2;
-      for (var j2 = 0; j2 < nb; j2++) marcar(f2, c2 + j2, u16(d + 4 + j2 * 2));
-      nCeldas += nb;
-    }
-    pos = d + largo;
-  }
-  return out;
-}
-// Hoja para un Excel importado: si ya hay una hoja con ese nombre y está vacía
-// (como la Hoja1 de un libro nuevo) se usa esa; si tiene datos, queda "Hoja1 (2)".
-function crearHojaParaImportar(nombre) {
-  nombre = String(nombre || 'Hoja').replace(/[\\\/?*\[\]:]/g, ' ').trim().slice(0, 31) || 'Hoja';
-  var i = sheets.indexOf(nombre);
-  if (i !== -1) {
-    var vacia = !Object.keys(sheetData[nombre] || {}).length && !Object.keys(sheetFormats[nombre] || {}).length && !(sheetGraficos[nombre] || []).length;
-    if (vacia) { sheetMerges[nombre] = []; colWidths[nombre] = colWidths[nombre] || {}; return nombre; }
-    var k = 2, base = nombre.slice(0, 26);
-    while (sheets.indexOf(base + ' (' + k + ')') !== -1) k++;
-    nombre = base + ' (' + k + ')';
-  }
-  return crearHojaDestino(nombre);
-}
-function leerExtrasXlsx(binario) {
-  if (!window.XLSX || !XLSX.CFB) return {};
-  var cfb;
-  try { cfb = XLSX.CFB.read(binario, { type: 'binary' }); } catch (e) { return {}; }
-  function archivo(ruta) {
-    for (var i = 0; i < cfb.FullPaths.length; i++) {
-      var fp = cfb.FullPaths[i];
-      if (fp.slice(-ruta.length) === ruta && (fp.length === ruta.length || /[\/]$/.test(fp.slice(0, fp.length - ruta.length)))) {
-        var c = cfb.FileIndex[i].content;
-        if (!c) return '';
-        return new TextDecoder('utf-8').decode(c instanceof Uint8Array ? c : new Uint8Array(c));
-      }
-    }
-    return '';
-  }
-  function desescapar(t) { return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&'); }
-  function attr(tag, nombre) { var m = tag.match(new RegExp('(?:^|\\s)' + nombre + '="([^"]*)"')); return m ? m[1] : null; }
-  var wbXml = archivo('xl/workbook.xml'), rels = archivo('xl/_rels/workbook.xml.rels');
-  if (!wbXml) return {};
-  var destinos = {};
-  (rels.match(/<Relationship\s[^>]*\/?>/g) || []).forEach(function (r) { destinos[attr(r, 'Id')] = attr(r, 'Target'); });
-  var out = {};
-  (wbXml.match(/<sheet\s[^>]*\/?>/g) || []).forEach(function (t) {
-    var nombre = desescapar(attr(t, 'name') || ''), dest = destinos[attr(t, 'r:id')];
-    if (!nombre || !dest) return;
-    var xml = archivo('xl/' + dest.replace(/^\/?(xl\/)?/, ''));
-    if (!xml) return;
-    var ex = {};
-    // <pane xSplit="1" ySplit="1" state="frozen"/>
-    var pane = (xml.match(/<pane\s[^>]*\/?>/) || [])[0];
-    if (pane && /state="frozen(Split)?"/.test(pane)) ex.freeze = { row: parseInt(attr(pane, 'ySplit') || '0', 10) || 0, col: parseInt(attr(pane, 'xSplit') || '0', 10) || 0 };
-    // <dataValidation type="list" sqref="E2:E50"><formula1>"Sí,No"</formula1>
-    var listas = [];
-    (xml.match(/<dataValidation\s[^>]*>[\s\S]*?<\/dataValidation>/g) || []).forEach(function (dv) {
-      var cab = dv.match(/<dataValidation\s[^>]*>/)[0];
-      if (attr(cab, 'type') !== 'list') return;
-      var f1 = (dv.match(/<formula1>([\s\S]*?)<\/formula1>/) || [])[1];
-      var sq = attr(cab, 'sqref');
-      if (!f1 || !sq) return;
-      f1 = desescapar(f1).trim();
-      var ops = /^".*"$/.test(f1) ? f1.slice(1, -1).split(',').map(function (x) { return x.trim(); }).filter(Boolean) : ['=' + f1.replace(/\$/g, '')];
-      if (!ops.length) return;
-      sq.split(/\s+/).forEach(function (rg) { if (rg) listas.push({ rango: rg.replace(/\$/g, '').toUpperCase(), ops: ops }); });
-    });
-    if (listas.length) ex.listas = listas;
-    out[nombre] = ex;
-  });
-  return out;
-}
-function aplicarExtrasXlsx(hoja, wsX, ex) {
-  if (ex.freeze && (ex.freeze.row || ex.freeze.col)) sheetFreeze[hoja] = { row: Math.min(ex.freeze.row, 50), col: Math.min(ex.freeze.col, 20) };
-  var af = wsX && wsX['!autofilter'];
-  if (af && af.ref) {
-    try {
-      var rg = XLSX.utils.decode_range(String(af.ref).replace(/\$/g, ''));
-      sheetAutoFiltro[hoja] = { fila: rg.s.r, colIni: rg.s.c, colFin: rg.e.c, filtros: {} };
-    } catch (e) {}
-  }
-  (ex.listas || []).forEach(function (L) {
-    sheetValidations[hoja] = sheetValidations[hoja] || {};
-    var rango = /:/.test(L.rango) ? L.rango : L.rango + ':' + L.rango;
-    sheetValidations[hoja][rango] = L.ops;
-  });
-}
-// Fecha escrita en la hoja (dd/mm/aaaa) → número de serie de Excel, o null
-function serialExcelDeTexto(t) {
-  if (typeof t !== 'string' || !/^\d{1,2}\/\d{1,2}\/\d{4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?$/.test(t.trim())) return null;
-  var s = serialDeFechaTexto(t.trim());
-  return isFinite(s) && s > 0 ? s : null;
-}
-// Lista desplegable → <dataValidation> de Excel
-function validacionesListaExcel(hoja) {
-  var vals = sheetValidations[hoja] || {}, xml = '', n = 0;
-  Object.keys(vals).forEach(function (rango) {
-    var l = vals[rango]; if (!Array.isArray(l) || !l.length) return;
-    var sq = String(rango).replace(/^([A-Z]+\d+):\1$/, '$1'), f1;
-    if (l.length === 1 && /^=/.test(String(l[0]).trim())) f1 = String(l[0]).trim().slice(1);
-    else {
-      var txt = l.map(function (x) { return String(x).replace(/,/g, ' '); }).join(',');
-      if (txt.length > 250) return; // Excel no acepta listas escritas tan largas
-      f1 = '"' + txt + '"';
-    }
-    n++;
-    xml += '<dataValidation type="list" allowBlank="1" showInputMessage="1" showErrorMessage="1" sqref="' + escXml(sq) + '"><formula1>' + escXml(f1) + '</formula1></dataValidation>';
-  });
-  return n ? '<dataValidations count="' + n + '">' + xml + '</dataValidations>' : '';
-}
-// Paneles inmovilizados → <pane> dentro de <sheetView>
-function paneExcel(hoja) {
-  var fz = sheetFreeze[hoja] || {}, r = fz.row || 0, c = fz.col || 0;
-  if (!r && !c) return '';
-  var activo = r && c ? 'bottomRight' : (r ? 'bottomLeft' : 'topRight');
-  return '<pane' + (c ? ' xSplit="' + c + '"' : '') + (r ? ' ySplit="' + r + '"' : '') + ' topLeftCell="' + cellId(r, c) + '" activePane="' + activo + '" state="frozen"/>';
-}
 function formatoDesdeExcelZ(z) {
   if (!z || z === 'General') return null;
   var primera = String(z).split(';')[0];
@@ -32935,11 +32690,9 @@ function formatoDesdeExcelZ(z) {
   var dec = m ? m[1].length : 0;
   if (primera.indexOf('%') !== -1) return { type: 'percent', decimals: dec, thousands: false };
   var miles = primera.indexOf('#,##0') !== -1;
-  // Excel marca la moneda como [$€-C0A], [$USD-409] o [$₡-140A]; [$-409] solo es el idioma
-  var simbolo = (primera.match(/\[\$([^\]-]+)(?:-[0-9A-Fa-f]+)?\]/) || [])[1] || '';
-  if (/₡|CRC/.test(primera) || /₡|CRC/.test(simbolo)) return { type: 'currency', decimals: dec, thousands: miles };
-  if (/€|EUR/.test(simbolo) || (!simbolo && /€/.test(primera))) return { type: 'currency_eur', decimals: dec, thousands: miles };
-  if (/\$|USD/.test(simbolo) || (/\$/.test(primera.replace(/\[\$[^\]]*\]/g, '')))) return { type: 'currency_usd', decimals: dec, thousands: miles };
+  if (/₡|CRC/.test(primera)) return { type: 'currency', decimals: dec, thousands: miles };
+  if (/\$/.test(primera) && !/\[\$-/.test(primera)) return { type: 'currency_usd', decimals: dec, thousands: miles };
+  if (/€/.test(primera)) return { type: 'currency_eur', decimals: dec, thousands: miles };
   if (miles || /^0\.0+$/.test(primera)) return { type: 'number', decimals: dec, thousands: miles };
   return null;
 }
@@ -33108,15 +32861,12 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
       var MAX_FILAS = MAX_FILAS_HOJA, MAX_COLS = MAX_COLUMNAS;
       var estilosXlsx = {};
       try { estilosXlsx = leerEstilosXlsx(ev.target.result); } catch (eEst) { estilosXlsx = {}; }
-      if (!Object.keys(estilosXlsx || {}).length) { try { estilosXlsx = leerEstilosXls(ev.target.result); } catch (eXls) { estilosXlsx = {}; } }
-      var extrasXlsx = {};
-      try { extrasXlsx = leerExtrasXlsx(ev.target.result); } catch (eExt) { extrasXlsx = {}; }
       snapshot();
       var renombradas = {}, creadas = [], recortadas = 0, hojasVacias = 0, ocultasImport = [];
       wb.SheetNames.forEach(function (wsName) {
         var wsX = wb.Sheets[wsName];
         if (!wsX || !wsX['!ref']) { hojasVacias++; return; }
-        var nombreFinal = crearHojaParaImportar(wsName.substring(0, 31));
+        var nombreFinal = crearHojaDestino(wsName.substring(0, 31));
         if (nombreFinal !== wsName) renombradas[wsName] = nombreFinal;
         creadas.push({ nombre: nombreFinal, ws: wsX, orig: wsName });
         try { var idxWb = wb.SheetNames.indexOf(wsName), infoWb = wb.Workbook && wb.Workbook.Sheets && wb.Workbook.Sheets[idxWb]; if (infoWb && infoWb.Hidden) ocultasImport.push(nombreFinal); } catch (eOc) {}
@@ -33139,9 +32889,7 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
             });
             valor = '=' + fx;
           } else if (cel.t === 'n') {
-            var esFechaZ = cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z);
-            if (esFechaZ && typeof cel.v === 'number' && isFinite(cel.v) && cel.v >= 1 && /[dy]/i.test(String(cel.z).replace(/"[^"]*"|\[[^\]]*\]/g, ''))) valor = textoDeSerialFecha(cel.v);
-            else valor = (esFechaZ && cel.w) ? String(cel.w) : String(typeof cel.v === 'number' && isFinite(cel.v) ? Number(cel.v.toPrecision(15)) : cel.v);
+            valor = (cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z) && cel.w) ? String(cel.w) : String(typeof cel.v === 'number' && isFinite(cel.v) ? Number(cel.v.toPrecision(15)) : cel.v);
           } else if (cel.t === 'b') {
             valor = cel.v ? 'VERDADERO' : 'FALSO';
           } else if (cel.t === 'e') {
@@ -33185,7 +32933,6 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
           var px = col.wpx || (col.wch ? col.wch * 7 : 0);
           if (px > 0) colWidths[it.nombre][ci] = Math.round(px);
         });
-        aplicarExtrasXlsx(it.nombre, wsX, extrasXlsx[it.orig] || {});
       });
       if (!creadas.length) { alert('El archivo no tiene datos para importar.'); document.getElementById('excelFileInput').value = ''; return; }
       if (maxFilaUsada + 1 > ROWS) ROWS = maxFilaUsada + 1;
