@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  Image, ActivityIndicator, Alert, ScrollView, Switch,
+  Image, ActivityIndicator, Alert, ScrollView, Switch, Modal, Linking,
+  KeyboardAvoidingView, Platform,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as ImagePicker from 'expo-image-picker'
@@ -9,6 +10,7 @@ import { updateProfile, signOut } from 'firebase/auth'
 import { auth } from '../services/firebase'
 import { useLang } from '../context/LangContext'
 import { useResponsive } from '../hooks/useResponsive'
+import { eliminarMiCuenta } from '../services/eliminarCuenta'
 import {
   dispositivoSoportaBloqueo, obtenerPreferenciaBloqueo, guardarPreferenciaBloqueo, pedirAutenticacion,
 } from '../services/bloqueoBiometrico'
@@ -18,6 +20,9 @@ import {
 // "Unsigned" en Cloudinary → Settings → Upload → Upload presets).
 const CLOUDINARY_CLOUD_NAME = 'kyhdlu4q'
 const CLOUDINARY_UPLOAD_PRESET = 'matriz_avatares'
+
+// Página pública con la política de privacidad (la piden Apple y Google)
+const URL_PRIVACIDAD = 'https://kacn1z-del.github.io/matriz-contable-app/privacidad.html'
 
 export default function ProfileScreen({ navigation }) {
   const { t } = useLang()
@@ -34,6 +39,13 @@ export default function ProfileScreen({ navigation }) {
   const [soportaBloqueo, setSoportaBloqueo] = useState(true) // optimista mientras se revisa, para no mostrar un parpadeo
   const [bloqueoActivo, setBloqueoActivoLocal] = useState(false)
   const [cambiandoBloqueo, setCambiandoBloqueo] = useState(false)
+
+  // ─── Eliminar cuenta ─────────────────────────────────────
+  const [modalEliminar, setModalEliminar] = useState(false)
+  const [contrasenaEliminar, setContrasenaEliminar] = useState('')
+  const [confirmacionEliminar, setConfirmacionEliminar] = useState('')
+  const [eliminando, setEliminando] = useState(false)
+  const [pasoEliminar, setPasoEliminar] = useState('')
 
   useEffect(() => {
     let vigente = true
@@ -138,6 +150,55 @@ export default function ProfileScreen({ navigation }) {
     ])
   }
 
+  function pedirEliminarCuenta() {
+    Alert.alert(
+      '¿Eliminar tu cuenta?',
+      'Se borran para siempre tu cuenta, tus matrices de la nube, formularios, publicaciones, plantillas, contactos y el certificado de Hacienda. Esto no se puede deshacer.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Continuar',
+          style: 'destructive',
+          onPress: () => {
+            setContrasenaEliminar('')
+            setConfirmacionEliminar('')
+            setPasoEliminar('')
+            setModalEliminar(true)
+          },
+        },
+      ]
+    )
+  }
+
+  async function confirmarEliminarCuenta() {
+    if (confirmacionEliminar.trim().toUpperCase() !== 'ELIMINAR') {
+      Alert.alert('Falta confirmar', 'Escribí ELIMINAR para confirmar.')
+      return
+    }
+    if (!contrasenaEliminar) {
+      Alert.alert('Falta la contraseña', 'Escribí tu contraseña para confirmar que sos vos.')
+      return
+    }
+    setEliminando(true)
+    try {
+      await eliminarMiCuenta(contrasenaEliminar, setPasoEliminar)
+      setModalEliminar(false)
+      // Al borrarse el usuario, la app vuelve sola a la pantalla de ingreso
+      Alert.alert('Cuenta eliminada', 'Tu cuenta y tus datos se borraron. Gracias por usar Matriz Contable CR.')
+    } catch (error) {
+      Alert.alert('No se pudo eliminar', (error && error.message) || String(error))
+    } finally {
+      setEliminando(false)
+      setPasoEliminar('')
+    }
+  }
+
+  function abrirPrivacidad() {
+    Linking.openURL(URL_PRIVACIDAD).catch(() => {
+      Alert.alert('No se pudo abrir', URL_PRIVACIDAD)
+    })
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#e6f0e6' }} edges={['left', 'right', 'bottom']}>
       <View style={[styles.toolbar, { paddingTop: insets.top + 10 }]}>
@@ -216,8 +277,82 @@ export default function ProfileScreen({ navigation }) {
           <TouchableOpacity style={styles.botonSecundario} onPress={cerrarSesion}>
             <Text style={styles.botonSecundarioTexto}>Cerrar sesión</Text>
           </TouchableOpacity>
+
+          <View style={styles.zonaCuenta}>
+            <TouchableOpacity onPress={abrirPrivacidad} style={styles.enlaceFila}>
+              <Text style={styles.enlaceTexto}>🔐 Política de privacidad</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={pedirEliminarCuenta} style={styles.enlaceFila}>
+              <Text style={styles.eliminarTexto}>🗑 Eliminar mi cuenta</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
+
+      <Modal
+        visible={modalEliminar}
+        transparent
+        animationType="fade"
+        onRequestClose={() => { if (!eliminando) setModalEliminar(false) }}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.modalFondo}
+        >
+          <View style={styles.modalCaja}>
+            <Text style={styles.modalTitulo}>🗑 Eliminar mi cuenta</Text>
+            <Text style={styles.modalTexto}>
+              Se borra todo lo que está a nombre de {usuario?.email}. Las matrices que otras personas te compartieron no se borran: solo salís de ellas.
+            </Text>
+
+            <Text style={styles.label}>Tu contraseña</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor="#9db98a"
+              secureTextEntry
+              autoCapitalize="none"
+              value={contrasenaEliminar}
+              onChangeText={setContrasenaEliminar}
+              editable={!eliminando}
+            />
+
+            <Text style={styles.label}>Escribí ELIMINAR para confirmar</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="ELIMINAR"
+              placeholderTextColor="#d9a5a0"
+              autoCapitalize="characters"
+              autoCorrect={false}
+              value={confirmacionEliminar}
+              onChangeText={setConfirmacionEliminar}
+              editable={!eliminando}
+            />
+
+            {eliminando ? (
+              <View style={styles.modalCargando}>
+                <ActivityIndicator color="#c0392b" />
+                <Text style={styles.modalPaso}>{pasoEliminar || 'Eliminando…'}</Text>
+              </View>
+            ) : (
+              <View style={styles.modalBotones}>
+                <TouchableOpacity style={styles.modalCancelar} onPress={() => setModalEliminar(false)}>
+                  <Text style={styles.modalCancelarTexto}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.modalEliminar,
+                    confirmacionEliminar.trim().toUpperCase() !== 'ELIMINAR' && styles.botonDisabled,
+                  ]}
+                  onPress={confirmarEliminarCuenta}
+                >
+                  <Text style={styles.modalEliminarTexto}>Eliminar para siempre</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -279,4 +414,34 @@ const styles = StyleSheet.create({
     paddingVertical: 12, alignItems: 'center', marginTop: 12,
   },
   botonSecundarioTexto: { color: '#c0392b', fontWeight: '600', fontSize: 13 },
+  zonaCuenta: {
+    width: '100%', marginTop: 22, paddingTop: 10,
+    borderTopWidth: 1, borderTopColor: '#e3f0d4',
+  },
+  enlaceFila: { paddingVertical: 10, alignItems: 'center' },
+  enlaceTexto: { color: '#2d7a0c', fontWeight: '600', fontSize: 13 },
+  eliminarTexto: { color: '#c0392b', fontWeight: '600', fontSize: 13 },
+  modalFondo: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.45)',
+    alignItems: 'center', justifyContent: 'center', padding: 20,
+  },
+  modalCaja: {
+    width: '100%', maxWidth: 420, backgroundColor: '#fff',
+    borderRadius: 16, padding: 20,
+  },
+  modalTitulo: { fontSize: 17, fontWeight: '800', color: '#c0392b', marginBottom: 8 },
+  modalTexto: { fontSize: 13, color: '#4b5563', lineHeight: 19 },
+  modalCargando: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 20 },
+  modalPaso: { fontSize: 13, color: '#6b7280', flex: 1 },
+  modalBotones: { flexDirection: 'row', gap: 10, marginTop: 20 },
+  modalCancelar: {
+    flex: 1, borderWidth: 1.5, borderColor: '#cce9ae', borderRadius: 10,
+    paddingVertical: 12, alignItems: 'center',
+  },
+  modalCancelarTexto: { color: '#3d6020', fontWeight: '600', fontSize: 14 },
+  modalEliminar: {
+    flex: 1.4, backgroundColor: '#c0392b', borderRadius: 10,
+    paddingVertical: 12, alignItems: 'center',
+  },
+  modalEliminarTexto: { color: '#fff', fontWeight: '700', fontSize: 14 },
 })
