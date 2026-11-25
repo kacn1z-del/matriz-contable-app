@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Matriz Contable CR",
-    "slug": "matriz-contable-cr-app-",
+    "slug": "matriz-contable-app",
     "version": "39.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,8 @@
         ],
         "NSCameraUsageDescription": "Se necesita acceso a la cámara para capturar facturas con OCR",
         "NSPhotoLibraryUsageDescription": "Se necesita acceso a la galería para importar imágenes de facturas",
-        "NSLocationWhenInUseUsageDescription": "Se necesita ubicación para consultas de CCSS Morosos"
+        "NSLocationWhenInUseUsageDescription": "Se necesita ubicación para consultas de CCSS Morosos",
+        "NSMicrophoneUsageDescription": "Se necesita el micrófono para grabar notas de voz en las celdas"
       }
     },
     "android": {
@@ -39,6 +40,8 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.INTERNET"
       ]
     },
@@ -63,13 +66,13 @@
         }
       ]
     ],
-    "owner": "guiscerdas",
+    "owner": "keny2410s-organization",
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "extra": {
       "eas": {
-        "projectId": "40c054b3-9c47-4a8f-91e1-39d142dbd6bf"
+        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
       },
       "apiBaseUrl": "https://api.matrizcontable.cr",
       "exchangeRatesAPI": "https://openexchangerates.org/api",
