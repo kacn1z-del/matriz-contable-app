@@ -1726,6 +1726,45 @@ body.modoLectura #editBar, body.modoLectura .cresize, body.modoLectura .ftools {
 .eiMas.on { background: #2d7a0c !important; color: #fff !important; }
 
 
+
+/* GOOGLE SHEETS (3) · lugar, reacciones, vista agrupada, publicar, actividad, sugerencias de fórmula */
+.cell .chipLugar { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 1px 9px 1px 4px; border-radius: 999px; background: #fef2f2; color: #991b1b; font-size: 12px; font-weight: 600; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; vertical-align: middle; border: 1px solid #fecaca; }
+.cell .chipLugar b { font-size: 11px; }
+.noteReacciones { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px; }
+.noteReacciones button { border: 1px solid #e5e7eb; background: #fff; border-radius: 999px; padding: 2px 8px; font-size: 13px; }
+.noteReacciones .nrChip.mia { background: #eff6ff; border-color: #93c5fd; }
+.noteReacciones .nrMas { color: #6b7280; font-size: 12px; }
+.noteReacciones .nrPaleta { display: none; gap: 2px; }
+.noteReacciones.abierta .nrPaleta { display: inline-flex; }
+.noteReacciones .nrPaleta button { border: 0; background: #f3f4f6; font-size: 16px; padding: 2px 6px; }
+.vaBarra { display: flex; align-items: center; gap: 8px; }
+.vaBarra label { white-space: nowrap; font-weight: 600; font-size: 13px; }
+.vaAcciones { display: flex; gap: 6px; margin: 8px 0; }
+.vaAcciones button { border: 0; background: #f3f4f6; border-radius: 8px; padding: 6px 10px; font-size: 12px; }
+.vaGrupo { border: 1px solid #e5e7eb; border-radius: 12px; margin: 6px 0; overflow: hidden; }
+.vaCab { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 9px 10px; background: #f8fafc; cursor: pointer; }
+.vaCab b { flex: 1; }
+.vaCab em { font-style: normal; background: #e0e7ff; color: #3730a3; border-radius: 999px; padding: 0 8px; font-size: 12px; font-weight: 700; }
+.vaSub { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; font-weight: 700; color: #245f09; }
+.vaSub small { color: #6b7280; font-weight: 500; }
+.vaFilas { display: none; }
+.vaGrupo.abierto .vaFilas { display: block; }
+.vaFila { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 7px 10px; border-top: 1px solid #f1f5f9; font-size: 13px; cursor: pointer; }
+.vaFila small { display: block; color: #9ca3af; font-size: 10px; }
+.actFila { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+.actFila .tpAvatar { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; color: #fff; flex: 0 0 auto; }
+.actFila > div:nth-child(2) { flex: 1; min-width: 0; }
+.actTiempos { display: flex; flex-direction: column; align-items: flex-end; font-size: 12px; color: #4b5563; white-space: nowrap; }
+#sugFormula { position: fixed; z-index: 9560; display: none; align-items: center; gap: 4px; background: #fff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.2); padding: 4px 5px; font: 12px -apple-system, system-ui, sans-serif; color: #1f2937; }
+#sugFormula.ver { display: flex; }
+#sugFormula span { padding: 0 4px; color: #6b7280; white-space: nowrap; }
+#sugFormula button { border: 0; background: #ecfdf5; color: #166534; border-radius: 8px; padding: 6px 8px; font-weight: 700; font-size: 12px; white-space: nowrap; }
+#sugFormula .sfX { background: #f3f4f6; color: #6b7280; }
+#formPublico.pagPublicada .fpCaja { max-width: 1100px; }
+#formPublico .pubScroll { overflow: auto; -webkit-overflow-scrolling: touch; border: 1px solid #e5e7eb; border-radius: 10px; }
+#formPublico .pubTabla { border-collapse: collapse; font-size: 14px; min-width: 100%; }
+#formPublico .pubTabla td { border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; padding: 7px 10px; white-space: nowrap; }
+#formPublico .pubTabla tr:first-child td { font-weight: 700; background: #f8fafc; }
 /* GOOGLE SHEETS (2) · menú @, chips de enlace, cronograma, tareas, versiones, avisos y formulario público */
 #sugPersona .spAcciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 0 2px 6px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px; }
 #sugPersona .spAcc { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 0; background: #f8fafc; border-radius: 10px; padding: 7px 2px; font-size: 11.5px; color: #1f2937; }
@@ -2085,6 +2124,8 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
         <button id="btnEstadColumna" title="Resumen de la columna actual: datos, vacías, únicos, los más repetidos, suma, promedio y distribución (como en Google Sheets)">📊 Estadísticas de columna</button>
         <button id="btnCronograma" title="Ver las filas de una tabla como barras en una línea de tiempo (inicio → fin), agrupadas por persona o categoría">🗓 Vista de cronograma</button>
         <button id="btnFormularioPublico" title="Un link para que otras personas llenen un formulario sin cuenta; cada respuesta entra como fila nueva (como Google Forms)">📝 Formulario público</button>
+        <button id="btnVistaAgrupada" title="Juntar las filas de una tabla en grupos por una columna (Estado, Cliente…), con cantidad y subtotales; no cambia los datos">🗂 Vista agrupada</button>
+        <button id="btnPublicarWeb" title="Un link de solo lectura de esta hoja o rango que se actualiza solo (como Publicar en la web de Google Sheets)">🌐 Publicar en la web</button>
         <button id="btnLimpiezaDatos" title="Encuentra espacios de más, números guardados como texto, fechas mezcladas, mayúsculas disparejas y filas repetidas, y los arregla con un toque">✨ Sugerencias de limpieza</button>
         <button id="btnTextoEnColumnas" title="Divide el texto de una columna en varias (por coma, espacio, etc.)">✂ Texto en columnas</button>
         <button id="btnAutofiltro">🔽 Autofiltro</button>
@@ -2165,6 +2206,7 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
         <button id="btnLeerEnter" title="Leer en voz alta cada dato al terminar de escribirlo, para comprobarlo sin mirar">🔊 Leer al escribir</button>
         <button id="btnAutocorreccion" title="Corrige al escribir: (c) → ©, -> → →, qeu → que, DOs MAyúsculas… con tu propia lista">✍ Autocorrección</button>
         <button id="btnHistorialCelda">🕓 Historial</button>
+        <button id="btnActividad" title="Quién abrió y quién editó esta matriz compartida, y cuándo">📈 Panel de actividad</button>
         <button id="btnAvisosCambios" title="Recibir una notificación en el teléfono cuando otra persona cambie esta matriz">🔔 Avisos de cambios</button>
         <button id="btnCtrlCambios" title="Marca cada celda que se cambie para aceptar o rechazar los cambios después (como Control de cambios de Excel)">📝 Control de cambios</button>
         <button id="btnAuditoria">🕐 Auditoría</button>
@@ -2570,6 +2612,8 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
     <button id="cmInspector">🖌 Inspector de formato</button>
     <button id="cmEstadCol">📊 Estadísticas de columna</button>
     <button id="cmLimpieza">✨ Sugerencias de limpieza</button>
+    <button id="cmVistaAgrupada">🗂 Vista agrupada</button>
+    <button id="cmLinkCelda">🔗 Link a esta celda</button>
     <button id="cmCombinar">⛶ Combinar/separar celdas</button>
     <button id="cmNota">📝 Nota</button>
     <button id="cmVoz">🎙 Nota de voz</button>
@@ -2663,6 +2707,7 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
       </optgroup>
       <optgroup label="Combinados">
         <option value="mixed">Mixto (columnas + línea)</option>
+        <option value="scorecard">Tarjeta de resultados (número clave)</option>
         <option value="combo">Combinado (columnas + línea, eje secundario)</option>
       </optgroup>
       <optgroup label="Dispersión y burbuja">
@@ -6932,6 +6977,63 @@ if((inner=matchFn('REGEXEXTRACCION|REGEXEXTRACT'))!==null){
         return m1?m1[0]:'#N/A';
       }catch(e2){return '#VALOR!';}
     }
+if((inner=matchFn('GOOGLEFINANCE'))!==null){
+      // Solo monedas: "CURRENCY:USDCRC" usa el tipo de cambio del BCCR (venta)
+      var aGF=splitArgs(inner), simGF=String(resolveArg(aGF[0]||'')).toUpperCase().replace(/\s+/g,'');
+      var mGF=/^CURRENCY:([A-Z]{3})([A-Z]{3})$/.exec(simGF);
+      if(!mGF) return '#N/A';
+      if(mGF[1]===mGF[2]) return '1';
+      if(!ultimoTipoCambio) return '#SIN_DATOS!';
+      var tcGF=Number(ultimoTipoCambio.venta)||Number(ultimoTipoCambio.compra);
+      if(mGF[1]==='USD'&&mGF[2]==='CRC') return fmtNum(tcGF);
+      if(mGF[1]==='CRC'&&mGF[2]==='USD') return fmtNum(Math.round(1/tcGF*1e8)/1e8);
+      return '#N/A';
+    }
+if((inner=matchFn('COUNTUNIQUE|CONTAR.UNICOS'))!==null){
+      var vistosCU={}; valoresDeArgsSheets(splitArgs(inner)).forEach(function(v){vistosCU[v]=1;});
+      return String(Object.keys(vistosCU).length);
+    }
+if((inner=matchFn('ISBETWEEN'))!==null){
+      var aIB=splitArgs(inner), vIB=resolveNum(aIB[0]), loIB=resolveNum(aIB[1]), hiIB=resolveNum(aIB[2]);
+      var incLo=aIB[3]===undefined||String(aIB[3]).trim()===''||/^(verdadero|true|1)$/i.test(String(resolveArg(aIB[3])));
+      var incHi=aIB[4]===undefined||String(aIB[4]).trim()===''||/^(verdadero|true|1)$/i.test(String(resolveArg(aIB[4])));
+      if(isNaN(vIB)||isNaN(loIB)||isNaN(hiIB)) return '#VALOR!';
+      return ((incLo?vIB>=loIB:vIB>loIB)&&(incHi?vIB<=hiIB:vIB<hiIB))?'VERDADERO':'FALSO';
+    }
+if((inner=matchFn('JOIN'))!==null){
+      var aJ=splitArgs(inner); return valoresDeArgsSheets(aJ.slice(1)).join(String(resolveArg(aJ[0]||'')));
+    }
+if((inner=matchFn('EPOCHTODATE'))!==null){
+      var aE=splitArgs(inner), tsE=resolveNum(aE[0]), uE=aE[1]!==undefined&&String(aE[1]).trim()!==''?Math.round(resolveNum(aE[1])):1;
+      if(isNaN(tsE)) return '#VALOR!';
+      var dE=new Date(uE===2?tsE:uE===3?tsE/1000:tsE*1000);
+      var hE=dE.getUTCHours(), mE=dE.getUTCMinutes(), sE=dE.getUTCSeconds();
+      var fE=textoDeFecha(new Date(dE.getUTCFullYear(),dE.getUTCMonth(),dE.getUTCDate()));
+      return (hE||mE||sE)?fE+' '+String(hE).padStart(2,'0')+':'+String(mE).padStart(2,'0')+':'+String(sE).padStart(2,'0'):fE;
+    }
+if((inner=matchFn('TO_DATE'))!==null){
+      var aTD=splitArgs(inner), xTD=aTD.length===2&&/^-?\d+$/.test(String(aTD[0]).trim())&&/^\d+$/.test(String(aTD[1]).trim())?String(aTD[0]).trim()+'.'+String(aTD[1]).trim():aTD[0]; var nTD=resolveNum(xTD); if(isNaN(nTD)) return String(resolveArg(xTD));
+      return textoDeFecha(fechaLocalDeSerial(nTD));
+    }
+if((inner=matchFn('TO_PERCENT'))!==null){
+      var aTP=splitArgs(inner), xTP=aTP.length===2&&/^-?\d+$/.test(String(aTP[0]).trim())&&/^\d+$/.test(String(aTP[1]).trim())?String(aTP[0]).trim()+'.'+String(aTP[1]).trim():aTP[0]; var nTP=resolveNum(xTP); if(isNaN(nTP)) return String(resolveArg(xTP));
+      return fmtNum(Math.round(nTP*100*1e8)/1e8)+'%';
+    }
+if((inner=matchFn('TO_DOLLARS'))!==null){
+      var aTU=splitArgs(inner), xTU=aTU.length===2&&/^-?\d+$/.test(String(aTU[0]).trim())&&/^\d+$/.test(String(aTU[1]).trim())?String(aTU[0]).trim()+'.'+String(aTU[1]).trim():aTU[0]; var nTU=resolveNum(xTU); if(isNaN(nTU)) return String(resolveArg(xTU));
+      return (nTU<0?'-':'')+'$'+fmtNum(Math.round(Math.abs(nTU)*100)/100);
+    }
+if((inner=matchFn('TO_TEXT'))!==null){
+      return String(resolveArg(splitArgs(inner)[0]));
+    }
+if((inner=matchFn('MARGINOFERROR'))!==null){
+      var aM=splitArgs(inner), numsM=valoresDeArgsSheets([aM[0]]).map(function(v){return numeroDeValorFin(v);}).filter(function(x){return !isNaN(x);});
+      var confM=resolveNum(aM[1]);
+      if(numsM.length<2||isNaN(confM)||confM<=0||confM>=1) return '#VALOR!';
+      var promM=numsM.reduce(function(a,b){return a+b;},0)/numsM.length;
+      var sdM=Math.sqrt(numsM.reduce(function(a,b){return a+(b-promM)*(b-promM);},0)/(numsM.length-1));
+      return fmtNum(Math.round(inversaNormalSheets(1-(1-confM)/2)*sdM/Math.sqrt(numsM.length)*1e10)/1e10);
+    }
 if((inner=matchFn('ESCORREO|ISEMAIL'))!==null){
       return /^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(String(resolveArg(splitArgs(inner)[0])).trim())?'VERDADERO':'FALSO';
     }
@@ -7102,7 +7204,7 @@ if ((inner = matchFn('VALOR\\.A\\.TEXTO|VALUETOTEXT')) !== null) {
     }
 // Versión anidada de las funciones de matriz nuevas (=SUMA(ORDENARPOR(...)) etc.):
 // devuelve los valores separados por "; ", igual que ORDENAR o UNICOS.
-if ((inner = matchFn('ORDENARPOR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML')) !== null) {
+if ((inner = matchFn('ORDENARPOR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML|IMPORTFEED|FLATTEN|ARRAY_CONSTRAIN')) !== null) {
       var nomArr = NOMBRES_ARRAY_NUEVOS[exprUp.slice(0, exprUp.indexOf('(')).trim()] || exprUp.slice(0, exprUp.indexOf('(')).trim();
       var filasArr = calcularFormulaArray(hojaFormulaActual || activeSheet, nomArr, inner);
       var planoArr = [];
@@ -7114,7 +7216,7 @@ if ((inner = matchFn('CAMPOVALOR|FIELDVALUE')) !== null) {
       args = splitArgs(inner);
       return valorCampoVinculado(args[0], String(resolveArg(args[1] || '')));
     }
-if ((inner = matchFn('TRADUCIR|TRANSLATE')) !== null) {
+if ((inner = matchFn('TRADUCIR|TRANSLATE|GOOGLETRANSLATE')) !== null) {
       // TRADUCIR(texto; [idioma_origen]; [idioma_destino]) — necesita internet
       args = splitArgs(inner);
       var txtTr = resolveArg(args[0] || '');
@@ -8693,7 +8795,7 @@ function derrameDeCelda(hoja, id) {
   return matrizMotor(ev.resultado.map(function (f) { return f.map(function (v) { return valorMotorDeTexto(v); }); }));
 }
 var FUNCIONES_ELEMENTO_MOTOR = { SI: 1, IF: 1, 'SI.ERROR': 1, IFERROR: 1 };
-var RX_FUNCIONES_MATRIZ_MOTOR = /^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML)$/i;
+var RX_FUNCIONES_MATRIZ_MOTOR = /^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML|IMPORTFEED|FLATTEN|ARRAY_CONSTRAIN)$/i;
 function evaluarMotor(texto) {
   var s = String(texto || ''), pos = 0, n = s.length;
   function esp() { while (pos < n && /\s/.test(s.charAt(pos))) pos++; }
@@ -9791,6 +9893,86 @@ function importWebComoMatriz(tipo, args) {
 }
 
 // ══════════════════════════════════════════════
+// GOOGLE SHEETS (tercera tanda) · funciones que se derraman
+//   =FLATTEN(rango; …)               todo en una sola columna
+//   =ARRAY_CONSTRAIN(rango; filas; columnas)
+//   =IMPORTFEED(url; [consulta]; [encabezados]; [cantidad])   noticias RSS/Atom
+// ══════════════════════════════════════════════
+function flattenComoMatriz(args) {
+  var out = [];
+  args.forEach(function (a) {
+    var t = String(a).trim(); if (!t) return;
+    if (isRange(t)) matrizDeRangoFin(t).forEach(function (f) { f.forEach(function (v) { if (String(v) !== '') out.push([v]); }); });
+    else out.push([String(resolveArg(t))]);
+  });
+  return out.length ? out : [['']];
+}
+function arrayConstrainComoMatriz(args) {
+  if (!args[0] || !isRange(String(args[0]).trim())) return [['#VALOR!']];
+  var M = matrizDeRangoFin(String(args[0]).trim());
+  var nf = Math.max(1, Math.round(resolveNum(args[1] || '1'))), nc = Math.max(1, Math.round(resolveNum(args[2] || '1')));
+  return M.slice(0, nf).map(function (f) { return f.slice(0, nc); });
+}
+function importFeedComoMatriz(args) {
+  var url = urlDeImport(args[0]);
+  if (!url) return [['#VALOR! (falta un link https://)']];
+  var ent = pedirTextoWeb(url);
+  if (ent.estado === 'cargando') return [['Cargando…']];
+  if (ent.estado === 'error') return [['#N/A No se pudo leer el feed (' + ent.error + ')']];
+  var consulta = args[1] !== undefined && String(args[1]).trim() !== '' ? String(resolveArg(args[1])).toLowerCase().trim() : 'items';
+  var conEnc = args[2] !== undefined && String(args[2]).trim() !== '' ? /^(verdadero|true|1)$/i.test(String(resolveArg(args[2]))) : false;
+  var n = args[3] !== undefined && String(args[3]).trim() !== '' ? Math.max(1, Math.round(resolveNum(args[3]))) : 20;
+  var clave = 'FEED|' + consulta + '|' + conEnc + '|' + n;
+  if (ent.cache && ent.cache[clave]) return ent.cache[clave];
+  var res;
+  try {
+    var doc = new DOMParser().parseFromString(ent.texto, 'application/xml');
+    var txt = function (el, sel) { var x = el && el.getElementsByTagName(sel)[0]; return x ? String(x.textContent || '').replace(/\s+/g, ' ').trim() : ''; };
+    var link = function (el) { var l = el.getElementsByTagName('link')[0]; if (!l) return ''; return l.getAttribute('href') || String(l.textContent || '').trim(); };
+    var limpiarHtml = function (h) { var d = document.createElement('div'); d.innerHTML = h; return (d.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300); };
+    var canal = doc.getElementsByTagName('channel')[0] || doc.getElementsByTagName('feed')[0];
+    var items = [].slice.call(doc.getElementsByTagName('item')); if (!items.length) items = [].slice.call(doc.getElementsByTagName('entry'));
+    var fecha = function (el) { var t = txt(el, 'pubDate') || txt(el, 'published') || txt(el, 'updated') || txt(el, 'dc:date'); var d = t ? new Date(t) : null; return d && !isNaN(d) ? textoDeFecha(d) + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') : t; };
+    var campos = { title: ['Título', function (it) { return txt(it, 'title'); }], url: ['Link', link], created: ['Fecha', fecha], summary: ['Resumen', function (it) { return limpiarHtml(txt(it, 'description') || txt(it, 'summary') || txt(it, 'content')); }], author: ['Autor', function (it) { return txt(it, 'author') || txt(it, 'dc:creator'); }] };
+    if (/^feed/.test(consulta)) {
+      var q = consulta.split(/\s+/)[1];
+      var vals = { title: txt(canal, 'title'), description: txt(canal, 'description') || txt(canal, 'subtitle'), url: link(canal) };
+      res = q ? [[vals[q] !== undefined ? vals[q] : '#N/A']] : [[vals.title], [vals.description], [vals.url]];
+    } else {
+      var q2 = consulta.split(/\s+/)[1], cols = q2 && campos[q2] ? [q2] : ['title', 'url', 'created', 'summary'];
+      res = items.slice(0, n).map(function (it) { return cols.map(function (c) { return campos[c][1](it); }); });
+      if (conEnc) res.unshift(cols.map(function (c) { return campos[c][0]; }));
+      if (!res.length) res = [['#N/A El feed no tiene noticias']];
+    }
+  } catch (e) { res = [['#VALOR! ' + String((e && e.message) || e).slice(0, 80)]]; }
+  res = rellenarRectangulo(res);
+  ent.cache = ent.cache || {}; ent.cache[clave] = res;
+  return res;
+}
+// Inversa de la normal estándar (para MARGINOFERROR)
+function inversaNormalSheets(p) {
+  var a = [-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924];
+  var b = [-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857];
+  var c = [-0.00778489400243029, -0.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878];
+  var d = [0.00778469570904146, 0.32246712907004, 2.445134137143, 3.75440866190742];
+  var q, r;
+  if (p < 0.02425) { q = Math.sqrt(-2 * Math.log(p)); return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  if (p > 1 - 0.02425) { q = Math.sqrt(-2 * Math.log(1 - p)); return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  q = p - 0.5; r = q * q;
+  return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+}
+// Todos los valores (no vacíos) de una lista de argumentos, rangos incluidos
+function valoresDeArgsSheets(args) {
+  var out = [];
+  args.forEach(function (a) {
+    var t = String(a).trim(); if (t === '') return;
+    if (isRange(t)) vectorDeArgFin(t).forEach(function (v) { if (String(v) !== '') out.push(String(v)); });
+    else out.push(String(resolveArg(t)));
+  });
+  return out;
+}
+
+// ══════════════════════════════════════════════
 // GOOGLE SHEETS (3) · =SORTN(rango; [n]; [modo_empates]; [columna; ascendente]…)
 // Las primeras n filas después de ordenar.
 // modo 0: n filas · 1: n filas y las que empatan con la última · 2: n filas sin repetidas · 3: n valores distintos con todas sus repeticiones
@@ -9957,7 +10139,7 @@ function formulaArrayInfo(crudo) {
       return formulaArrayInfo('=' + cuerpoAF) || (esExprMatricial(cuerpoAF) ? { nombre: 'EXPR', argsTexto: cuerpoAF } : null);
     }
   }
-  var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENARPOR|ORDENAR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML)\s*\(/i);
+  var m = crudo.match(/^=\s*(FILTRAR|UNICOS|SECUENCIA|ORDENARPOR|ORDENAR|SORTBY|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML|IMPORTFEED|FLATTEN|ARRAY_CONSTRAIN)\s*\(/i);
   if (!m) {
     // Cuenta que da una matriz (=A1:A9*2, ={1;2;3}, =SI(A1:A9>0;"sí";"no")): se derrama como en Excel 365
     var cuerpoM = crudo.slice(1);
@@ -10256,6 +10438,9 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
   if (nombre === 'SORTN') return sortnComoMatriz(args);
   if (nombre === 'IMPORTARRANGO') return importarRangoComoMatriz(args);
   if (nombre === 'IMPORTHTML' || nombre === 'IMPORTDATA' || nombre === 'IMPORTXML') return importWebComoMatriz(nombre, args);
+  if (nombre === 'IMPORTFEED') return importFeedComoMatriz(args);
+  if (nombre === 'FLATTEN') return flattenComoMatriz(args);
+  if (nombre === 'ARRAY_CONSTRAIN') return arrayConstrainComoMatriz(args);
   return [['#NOMBRE?']];
 }
 // Permite ANIDAR FILTRAR/ORDENAR/ÚNICOS/SECUENCIA dentro de otra función,
@@ -10268,7 +10453,7 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
 function valoresDeFuncionArrayAnidada(texto) {
   if (typeof texto !== 'string') return null;
   var t = texto.trim();
-  var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML)\s*\(/i);
+  var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML|IMPORTFEED|FLATTEN|ARRAY_CONSTRAIN)\s*\(/i);
   if (!m) {
     // Cuenta con matrices dentro de SUMA/MAX/PROMEDIO…: =SUMA((A1:A9>1)*B1:B9), =MAX(SI(A1:A9="x";B1:B9)), =SUMA({1;2;3}), =SUMA(C1#)
     if (!esExprMatricial(t)) return null;
@@ -11994,6 +12179,7 @@ function renderAllCellsInterno() {
   if (typeof pintarChipsLista === 'function') pintarChipsLista();
   if (typeof pintarChipsPersona === 'function') pintarChipsPersona();
   if (typeof pintarChipsEnlace === 'function') pintarChipsEnlace();
+  if (typeof pintarChipsLugar === 'function') pintarChipsLugar();
   if (typeof avisarErrorConsulta === 'function') avisarErrorConsulta();
   if (typeof renderizarTablasLibres === 'function') renderizarTablasLibres();
   if (typeof modoLectura !== 'undefined' && modoLectura) aplicarModoLectura();
@@ -20959,7 +21145,7 @@ document.getElementById('btnSegmentacion').addEventListener('click', function ()
   var win = document.getElementById('segWin'), head = document.getElementById('segHead'), arr = null;
   document.getElementById('segMulti').addEventListener('click', function () { segMultiple = !segMultiple; this.classList.toggle('on', segMultiple); });
   document.getElementById('segMin').addEventListener('click', function () { var b = document.getElementById('segBody'); b.style.display = b.style.display === 'none' ? '' : 'none'; this.textContent = b.style.display === 'none' ? '▸' : '▾'; });
-  head.addEventListener('pointerdown', function (e) { if (e.target.tagName === 'BUTTON') return; var rc = win.getBoundingClientRect(); arr = { dx: e.clientX - rc.left, dy: e.clientY - rc.top }; head.setPointerCapture(e.pointerId); });
+  head.addEventListener('pointerdown', function (e) { if ((e.target.closest && e.target.closest('button'))) return; var rc = win.getBoundingClientRect(); arr = { dx: e.clientX - rc.left, dy: e.clientY - rc.top }; head.setPointerCapture(e.pointerId); });
   head.addEventListener('pointermove', function (e) { if (!arr) return; win.style.left = Math.max(0, Math.min(window.innerWidth - 60, e.clientX - arr.dx)) + 'px'; win.style.top = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - arr.dy)) + 'px'; win.style.bottom = 'auto'; });
   head.addEventListener('pointerup', function () { arr = null; });
 })();
@@ -21000,7 +21186,7 @@ function actualizarInspeccion() {
     }
     autoSave(); actualizarInspeccion();
   });
-  head.addEventListener('pointerdown', function (e) { if (e.target.tagName === 'BUTTON') return; var rc = win.getBoundingClientRect(); arr = { dx: e.clientX - rc.left, dy: e.clientY - rc.top }; head.setPointerCapture(e.pointerId); e.preventDefault(); });
+  head.addEventListener('pointerdown', function (e) { if ((e.target.closest && e.target.closest('button'))) return; var rc = win.getBoundingClientRect(); arr = { dx: e.clientX - rc.left, dy: e.clientY - rc.top }; head.setPointerCapture(e.pointerId); e.preventDefault(); });
   head.addEventListener('pointermove', function (e) { if (!arr) return; win.style.left = Math.max(0, Math.min(window.innerWidth - 60, e.clientX - arr.dx)) + 'px'; win.style.top = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - arr.dy)) + 'px'; win.style.right = 'auto'; });
   head.addEventListener('pointerup', function () { arr = null; });
   try { if (localStorage.getItem('kcn_insp_abierta') === '1') win.classList.add('show'); } catch (e) {}
@@ -27041,10 +27227,10 @@ document.getElementById('btnChart').addEventListener('click', function () {
 document.getElementById('chartCancel').addEventListener('click', function () { document.getElementById('chartOverlay').classList.remove('show'); });
 document.getElementById('chartRecBtn').addEventListener('click', mostrarRecomendados);
 document.getElementById('chartType').addEventListener('change', function () {
-  var ph = { scatter: 'Rango del eje Y (el de arriba es el eje X)', bubble: 'Rango del tamaño de las burbujas (opcional)',
+  var ph = { scorecard: 'Rango para comparar (opcional, ej. el mes anterior)', scatter: 'Rango del eje Y (el de arriba es el eje X)', bubble: 'Rango del tamaño de las burbujas (opcional)',
     treemap: 'Rango de grupos / categoría padre (opcional), ej: A2:A10', sunburst: 'Rango de grupos / categoría padre (opcional), ej: A2:A10',
     velas: '(no se usa en cotizaciones)' };
-  var ph1 = { scatter: 'Rango del eje X, ej: B2:B6', bubble: 'Rango del eje Y, ej: B2:B6',
+  var ph1 = { scorecard: 'Rango a sumar (el número grande), ej: C2:C31', scatter: 'Rango del eje X, ej: B2:B6', bubble: 'Rango del eje Y, ej: B2:B6',
     treemap: 'Rango de valores, ej: C2:C10', sunburst: 'Rango de valores, ej: C2:C10',
     velas: 'Apertura, Máx, Mín, Cierre (4 columnas), ej: B2:E20' };
   var ph3 = { treemap: 'Rango de nombres (cada rectángulo), ej: B2:B10', sunburst: 'Rango de nombres (anillo de afuera), ej: B2:B10', velas: 'Rango de fechas, ej: A2:A20' };
@@ -27058,6 +27244,9 @@ document.getElementById('chartInsert').addEventListener('click', function () {
   var range2 = document.getElementById('chartRange2').value;
   var labelsRange = document.getElementById('chartLabels').value;
   var title = document.getElementById('chartTitle').value || 'Gráfico';
+  // La tarjeta de resultados acepta una sola celda (C10) además de un rango
+  var unaCelda = function (r) { var t = String(r || '').trim(); return /^(?:[^!]+!)?\$?[A-Za-z]+\$?\d+$/.test(t) ? t + ':' + t.replace(/^.*!/, '') : t; };
+  if (type === 'scorecard') { range = unaCelda(range); range2 = unaCelda(range2); }
   if (!isRange(range)) { alert('Rango de datos inválido, ej: B2:B6'); return; }
   var values = rangeNums(range);
   var values2 = isRange(range2) && ['treemap', 'sunburst', 'velas'].indexOf(type) === -1 ? rangeNums(range2) : null;
@@ -27968,6 +28157,7 @@ function dibujarUnGrafico(g, el) {
     return;
   }
   cvs._hits = [];
+  if (g.tipo === 'scorecard') { dibujarTarjetaResultados(cvs, W, H, g, d); return; }
   var opD = opcionesDibujoGrafico(g, d);
   if (inter) {
     // Escala fija para todas las series: así se nota cuándo sube o baja
@@ -28000,7 +28190,7 @@ function renderizarGraficos() {
       var head = el.querySelector('.chead');
       var arrastre = null;
       head.addEventListener('pointerdown', function (e) {
-        if (e.target.tagName === 'BUTTON') return;
+        if ((e.target.closest && e.target.closest('button'))) return;
         if (objetoBloqueado(g)) return;
         arrastre = { dx: e.clientX - el.offsetLeft, dy: e.clientY - el.offsetTop };
         head.setPointerCapture(e.pointerId); e.preventDefault();
@@ -34765,7 +34955,8 @@ var RB_MAPA = {};
   m('archivo', 'btnSello btnVersiones');
   m('datos', 'btnDesdeImagen btnAnalizarDatos btnCombinar btnRelacionar');
   m('datos', 'btnEstadColumna btnLimpiezaDatos btnCronograma btnFormularioPublico');
-  m('revisar', 'btnAvisosCambios');
+  m('revisar', 'btnAvisosCambios btnActividad');
+  m('datos', 'btnVistaAgrupada btnPublicarWeb');
   m('datos', 'btnImportarWeb btnFormularioDatos btnTiposDatos btnConsultas btnActualizarConsultas btnRelaciones btnEsquemaAuto btnBorrarEsquema');
   m('contabilidad', 'btnCongelarFilas btnCongelarColumnas btnDescongelar btnWhatIf btnValidacionDatos btnFormatoCondicional btnTablaDinamica btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
@@ -36732,7 +36923,7 @@ function prepararCeldaTablaLibre(td, t) {
 function prepararArrastreTablaLibre(el, t) {
   var head = el.querySelector('.tlHead'), arr = null;
   head.addEventListener('pointerdown', function (e) {
-    if (e.target.tagName === 'BUTTON') return;
+    if ((e.target.closest && e.target.closest('button'))) return;
     if (t.bloqueado || modoLectura) return;
     arr = { dx: e.clientX - el.offsetLeft, dy: e.clientY - el.offsetTop, movio: false };
     head.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
@@ -38965,6 +39156,445 @@ function mostrarFormularioPublico(idForm) {
 (function () {
   var m = /[?&]formulario=([A-Za-z0-9_-]+)/.exec(location.search || '');
   if (m) { if (document.readyState === 'complete') mostrarFormularioPublico(m[1]); else window.addEventListener('load', function () { mostrarFormularioPublico(m[1]); }); }
+})();
+
+Object.assign(I18N_EN, {"🌐 Publicar en la web":"🌐 Publish to the web","🗂 Vista agrupada":"🗂 Grouped view","📈 Panel de actividad":"📈 Activity dashboard","🔗 Link a esta celda":"🔗 Link to this cell","Agrupar por":"Group by","▾ Abrir todos":"▾ Expand all","▸ Cerrar todos":"▸ Collapse all","Tarjeta de resultados (número clave)":"Scorecard (key number)","Lugar":"Place","🚗 Waze":"🚗 Waze","🗺 Google Maps":"🗺 Google Maps"});
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (tercera tanda) · nombres para el motor y la biblioteca fx
+// ══════════════════════════════════════════════
+['GOOGLEFINANCE', 'IMPORTFEED', 'GOOGLETRANSLATE', 'COUNTUNIQUE', 'CONTAR.UNICOS', 'ISBETWEEN', 'FLATTEN', 'ARRAY_CONSTRAIN', 'JOIN', 'EPOCHTODATE', 'TO_DATE', 'TO_PERCENT', 'TO_DOLLARS', 'TO_TEXT', 'MARGINOFERROR'].forEach(function (n) { if (FN_MOTOR_NOMBRES.indexOf(n) === -1) FN_MOTOR_NOMBRES.push(n); });
+(function () {
+  var ag = function (cat, n, d, s, x) { if (fnData[cat] && !fnData[cat].some(function (f) { return f.n === n; })) fnData[cat].push({ n: n, e: n, d: d, s: s, x: x }); };
+  ag('Web', 'GOOGLEFINANCE', 'Tipo de cambio como en Google Sheets (usa el del BCCR): "CURRENCY:USDCRC" o "CURRENCY:CRCUSD".', 'GOOGLEFINANCE("CURRENCY:USDCRC")', '=GOOGLEFINANCE("CURRENCY:USDCRC")');
+  ag('Web', 'IMPORTFEED', 'Trae noticias de un feed RSS o Atom. Consulta: "items", "items title", "items url", "items summary", "items created", "feed title".', 'IMPORTFEED(url; [consulta]; [encabezados]; [cantidad])', '=IMPORTFEED("https://www.crhoy.com/feed/"; "items"; VERDADERO; 10)');
+  ag('Texto', 'GOOGLETRANSLATE', 'Traduce un texto (igual que TRADUCIR).', 'GOOGLETRANSLATE(texto; [origen]; [destino])', '=GOOGLETRANSLATE(A2; "es"; "en")');
+  ag('Estadísticas', 'COUNTUNIQUE', 'Cuenta cuántos valores distintos hay.', 'COUNTUNIQUE(valor1; [valor2]; …)', '=COUNTUNIQUE(B2:B100)');
+  ag('Lógicas', 'ISBETWEEN', 'VERDADERO si el valor está entre el mínimo y el máximo (incluidos, salvo que se diga lo contrario).', 'ISBETWEEN(valor; mínimo; máximo; [incluir_mín]; [incluir_máx])', '=ISBETWEEN(C2; 1000; 5000)');
+  ag('Búsqueda y Referencia', 'FLATTEN', 'Pone todos los valores de uno o varios rangos en una sola columna.', 'FLATTEN(rango1; [rango2]; …)', '=FLATTEN(A2:C5)');
+  ag('Búsqueda y Referencia', 'ARRAY_CONSTRAIN', 'Recorta un resultado a cierta cantidad de filas y columnas.', 'ARRAY_CONSTRAIN(rango; filas; columnas)', '=ARRAY_CONSTRAIN(A2:F100; 10; 3)');
+  ag('Texto', 'JOIN', 'Une valores con un separador.', 'JOIN(separador; valor1; [valor2]; …)', '=JOIN(", "; A2:A10)');
+  ag('Fecha y Hora', 'EPOCHTODATE', 'Convierte una marca de tiempo Unix en fecha (unidad: 1 segundos, 2 milisegundos, 3 microsegundos).', 'EPOCHTODATE(marca; [unidad])', '=EPOCHTODATE(1764000000)');
+  ag('Fecha y Hora', 'TO_DATE', 'Muestra un número de serie como fecha.', 'TO_DATE(número)', '=TO_DATE(46000)');
+  ag('Texto', 'TO_PERCENT', 'Muestra un número como porcentaje.', 'TO_PERCENT(número)', '=TO_PERCENT(0.13)');
+  ag('Texto', 'TO_DOLLARS', 'Muestra un número como dólares.', 'TO_DOLLARS(número)', '=TO_DOLLARS(1250.5)');
+  ag('Texto', 'TO_TEXT', 'Convierte un valor en texto.', 'TO_TEXT(valor)', '=TO_TEXT(A2)');
+  ag('Estadísticas', 'MARGINOFERROR', 'Margen de error de una muestra para un nivel de confianza (ej. 0,95).', 'MARGINOFERROR(rango; confianza)', '=MARGINOFERROR(B2:B50; 0,95)');
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (17) · Publicar en la web
+// Un link de solo lectura de una hoja o un rango. Se guarda en Firestore
+// (publicaciones/{id}) con los valores ya calculados, y se vuelve a publicar
+// solo cuando la matriz cambia (si está abierta). La página pública es esta
+// misma hoja con ?publicado=ID.
+// ══════════════════════════════════════════════
+var PUB_MAX_CELDAS = 6000;
+function linkPublicacion(id) { return FORM_URL_BASE + '?publicado=' + encodeURIComponent(id); }
+function publicacionesDelLibro() { var out = []; sheets.forEach(function (h) { ((colWidths[h] || {}).publicaciones || []).forEach(function (p) { out.push(Object.assign({ hoja: h }, p)); }); }); return out; }
+function zonaDePublicacion(hoja, rango) {
+  if (rango) { var p = rango.toUpperCase().split(':'); return { r1: filaDe(p[0]), c1: colDe(p[0]), r2: filaDe(p[1] || p[0]), c2: colDe(p[1] || p[0]) }; }
+  var d = sheetData[hoja] || {}, z = null;
+  Object.keys(d).forEach(function (id) { if (String(d[id]) === '') return; var r = filaDe(id), c = colDe(id); if (!z) z = { r1: 0, c1: 0, r2: r, c2: c }; else { z.r2 = Math.max(z.r2, r); z.c2 = Math.max(z.c2, c); } });
+  return z || { r1: 0, c1: 0, r2: 0, c2: 0 };
+}
+function datosParaPublicar(hoja, rango) {
+  var z = zonaDePublicacion(hoja, rango);
+  if ((z.r2 - z.r1 + 1) * (z.c2 - z.c1 + 1) > PUB_MAX_CELDAS) throw new Error('Es muy grande para publicar (más de ' + PUB_MAX_CELDAS + ' celdas). Elegí un rango más chico.');
+  var ant = activeSheet, antH = hojaFormulaActual, filas = [], estilos = {};
+  try {
+    activeSheet = hoja; hojaFormulaActual = hoja;
+    for (var r = z.r1; r <= z.r2; r++) {
+      var f = [];
+      for (var c = z.c1; c <= z.c2; c++) {
+        var id = cellId(r, c), v = String(computeValue(id));
+        f.push(v);
+        var fm = (sheetFormats[hoja] || {})[id];
+        if (fm) {
+          var e = {};
+          if (fm.bold) e.b = 1; if (fm.italic) e.i = 1; if (fm.bg) e.bg = fm.bg; if (fm.color) e.c = fm.color; if (fm.align) e.a = fm.align;
+          if (Object.keys(e).length) estilos[(r - z.r1) + ',' + (c - z.c1)] = e;
+        }
+      }
+      filas.push(f);
+    }
+  } finally { activeSheet = ant; hojaFormulaActual = antH; }
+  while (filas.length > 1 && filas[filas.length - 1].every(function (x) { return x === ''; })) filas.pop();
+  return { filas: filas, estilos: estilos, desde: cellId(z.r1, z.c1) };
+}
+function publicarAhora(pub) {
+  var d = datosParaPublicar(pub.hoja, pub.rango || '');
+  return firestoreDB.collection('publicaciones').doc(pub.id).set({ ownerId: currentUser.uid, titulo: pub.titulo, hoja: pub.hoja, rango: pub.rango || '', filas: JSON.stringify(d.filas), estilos: JSON.stringify(d.estilos), desde: d.desde, actualizado: Date.now(), activo: true });
+}
+var republicarTimer = null;
+function programarRepublicar() {
+  if (!currentUser || !firestoreDB) return;
+  var pubs = publicacionesDelLibro(); if (!pubs.length) return;
+  clearTimeout(republicarTimer);
+  republicarTimer = setTimeout(function () { pubs.forEach(function (p) { try { publicarAhora(p).catch(function () {}); } catch (e) {} }); }, 20000);
+}
+(function () { var orig = autoSave; autoSave = function () { var r = orig.apply(this, arguments); try { if (!applyingRemote) programarRepublicar(); } catch (e) {} return r; }; })();
+function abrirPublicarWeb() {
+  if (!currentUser || !firestoreDB) { aviso('Iniciá sesión para publicar en la web'); return; }
+  var pubs = publicacionesDelLibro();
+  var b = typeof currentRangeBounds === 'function' ? currentRangeBounds() : null;
+  var rangoSel = b && b.isMulti ? cellId(b.minR, b.minC) + ':' + cellId(b.maxR, b.maxC) : '';
+  var html = '<div class="mcrNota">Un link de <b>solo lectura</b> para cualquier persona (no necesita cuenta). Cuando cambiás la matriz, la página se actualiza sola en unos segundos.</div>' +
+    '<label class="mcrF">Qué publicar</label><select id="pwQue" class="mcrI"><option value="hoja">Toda la hoja "' + escHtml(activeSheet) + '"</option>' + (rangoSel ? '<option value="rango" selected>Solo el rango ' + rangoSel + '</option>' : '') + '</select>' +
+    '<label class="mcrF">Título de la página</label><input id="pwTit" class="mcrI" value="' + escHtml(activeSheet) + '">' +
+    (pubs.length ? '<div class="mcrNota" style="margin-top:12px">Ya publicadas en este libro:</div>' + pubs.map(function (p) {
+      return '<div class="fpItem"><div><b>' + escHtml(p.titulo) + '</b><br><small>' + escHtml(p.hoja) + (p.rango ? '!' + p.rango : ' (toda la hoja)') + '</small></div><div class="fpBotones"><button type="button" data-a="wa" data-id="' + p.id + '">💬 WhatsApp</button><button type="button" data-a="copiar" data-id="' + p.id + '">⧉ Link</button><button type="button" data-a="ver" data-id="' + p.id + '">👁 Ver</button><button type="button" data-a="quitar" data-id="' + p.id + '">🛑 Dejar de publicar</button></div></div>';
+    }).join('') : '');
+  abrirPanel('🌐 Publicar en la web', html, [{ texto: 'Cerrar' }, { texto: '🌐 Publicar', ok: true, accion: function () {
+    var porRango = document.getElementById('pwQue').value === 'rango';
+    var pub = { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8), titulo: document.getElementById('pwTit').value.trim() || activeSheet, rango: porRango ? rangoSel : '' };
+    var cw = colWidths[activeSheet] = colWidths[activeSheet] || {};
+    try { datosParaPublicar(activeSheet, pub.rango); } catch (e) { aviso('⚠ ' + e.message); return false; }
+    publicarAhora(Object.assign({ hoja: activeSheet }, pub)).then(function () {
+      (cw.publicaciones = cw.publicaciones || []).push(pub); autoSave();
+      var link = linkPublicacion(pub.id);
+      abrirPanel('✅ Publicado', '<div class="mcrNota">Cualquier persona con este link ve <b>' + escHtml(pub.titulo) + '</b> (solo para mirar).</div><div class="fpLink">' + escHtml(link) + '</div>',
+        [{ texto: '⧉ Copiar', accion: function () { copiarTextoPro(link, '⧉ Link copiado'); return false; } }, { texto: '💬 WhatsApp', ok: true, accion: function () { abrirEnlaceExterno('https://wa.me/?text=' + encodeURIComponent(pub.titulo + '\n' + link)); } }]);
+    }, function (e) { aviso(/permission/i.test((e && e.message) || '') ? 'Falta el permiso de Firebase para "publicaciones" (revisá las reglas)' : 'No se pudo publicar: ' + ((e && e.message) || e)); });
+  } }]);
+  document.querySelectorAll('#mcrPanelBody .fpBotones button').forEach(function (bt) {
+    bt.onclick = function () {
+      var p = pubs.filter(function (x) { return x.id === bt.dataset.id; })[0], link = linkPublicacion(p.id);
+      if (bt.dataset.a === 'wa') abrirEnlaceExterno('https://wa.me/?text=' + encodeURIComponent(p.titulo + '\n' + link));
+      else if (bt.dataset.a === 'copiar') copiarTextoPro(link, '⧉ Link copiado');
+      else if (bt.dataset.a === 'ver') abrirEnlaceExterno(link);
+      else confirmarPro('¿Dejar de publicar "' + p.titulo + '"? El link deja de mostrar los datos.').then(function (ok) {
+        if (!ok) return;
+        firestoreDB.collection('publicaciones').doc(p.id).delete().catch(function () {});
+        var lista = (colWidths[p.hoja] || {}).publicaciones || [];
+        colWidths[p.hoja].publicaciones = lista.filter(function (x) { return x.id !== p.id; }); autoSave(); cerrarPanel(); abrirPublicarWeb();
+      });
+    };
+  });
+}
+function copiarTextoPro(t, msj) { var ok = function () { aviso(msj || '⧉ Copiado'); }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { preguntarPro('Copiá:', t); }); else preguntarPro('Copiá:', t); }
+function mostrarPaginaPublicada(idPub) {
+  var ov = document.createElement('div'); ov.id = 'formPublico'; ov.className = 'pagPublicada'; ov.setAttribute('data-no-i18n', '');
+  ov.innerHTML = '<div class="fpCaja"><div class="fpCargando">Cargando…</div></div>';
+  document.body.appendChild(ov); document.documentElement.classList.add('modoFormulario');
+  var caja = ov.querySelector('.fpCaja');
+  var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var pintar = function (d) {
+    if (!d || !d.activo) { caja.innerHTML = '<div class="fpError">Esta página ya no está publicada.</div>'; return; }
+    var filas = [], estilos = {}; try { filas = JSON.parse(d.filas || '[]'); estilos = JSON.parse(d.estilos || '{}'); } catch (e) {}
+    var cuando = new Date(d.actualizado || Date.now());
+    caja.innerHTML = '<h1>' + esc(d.titulo) + '</h1><p class="fpDesc">Actualizado ' + textoDeFecha(cuando) + ' ' + String(cuando.getHours()).padStart(2, '0') + ':' + String(cuando.getMinutes()).padStart(2, '0') + '</p>' +
+      '<div class="pubScroll"><table class="pubTabla">' + filas.map(function (f, r) {
+        return '<tr>' + f.map(function (v, c) {
+          var e = estilos[r + ',' + c] || {}, st = '';
+          if (e.b) st += 'font-weight:700;'; if (e.i) st += 'font-style:italic;'; if (e.bg) st += 'background:' + e.bg + ';'; if (e.c) st += 'color:' + e.c + ';';
+          var esNum = /^[-+(]?[₡$]?\s?[\d\s.,]+%?\)?$/.test(String(v).trim()) && /\d/.test(v);
+          st += 'text-align:' + (e.a || (esNum ? 'right' : 'left')) + ';';
+          return '<td style="' + st + '">' + esc(v) + '</td>';
+        }).join('') + '</tr>';
+      }).join('') + '</table></div><div class="fpPie">Publicado con Matriz Contable CR</div>';
+  };
+  setTimeout(function () {
+    if (!firestoreDB) { try { initFirebaseOnce(); } catch (e) {} }
+    if (!firestoreDB) { caja.innerHTML = '<div class="fpError">No se pudo conectar. Revisá tu internet.</div>'; return; }
+    var ref = firestoreDB.collection('publicaciones').doc(idPub);
+    if (ref.onSnapshot) ref.onSnapshot(function (doc) { pintar(doc.exists ? doc.data() : null); }, function () { caja.innerHTML = '<div class="fpError">No se pudo abrir la página.</div>'; });
+    else ref.get().then(function (doc) { pintar(doc.exists ? doc.data() : null); });
+  }, 300);
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (18) · Link a una celda o un rango
+// Copia un link que abre esta matriz de la nube justo en Hoja!B5:D20.
+// ══════════════════════════════════════════════
+function copiarLinkACelda() {
+  var b = typeof currentRangeBounds === 'function' ? currentRangeBounds() : null;
+  var ref = b && b.isMulti ? cellId(b.minR, b.minC) + ':' + cellId(b.maxR, b.maxC) : document.getElementById('cellRef').textContent;
+  var completa = (/^[A-Za-z0-9_]+$/.test(activeSheet) ? activeSheet : "'" + activeSheet.replace(/'/g, "''") + "'") + '!' + ref;
+  if (!currentMatrizId) { aviso('Para tener un link, guardá esta matriz en la nube (📁 Mis Matrices)'); return; }
+  var link = FORM_URL_BASE + '?matriz=' + encodeURIComponent(currentMatrizId) + '&celda=' + encodeURIComponent(completa);
+  abrirPanel('🔗 Link a ' + completa, '<div class="mcrNota">Abre <b>' + escHtml(currentMatrizName || 'esta matriz') + '</b> justo en ' + escHtml(completa) + '. Funciona para vos y para las personas con quienes la compartiste.</div><div class="fpLink">' + escHtml(link) + '</div>',
+    [{ texto: '💬 WhatsApp', accion: function () { abrirEnlaceExterno('https://wa.me/?text=' + encodeURIComponent(completa + '\n' + link)); return false; } }, { texto: '⧉ Copiar', ok: true, accion: function () { copiarTextoPro(link, '🔗 Link copiado'); } }]);
+}
+var linkCeldaPendiente = null;
+function abrirLinkACeldaPendiente() {
+  var p = linkCeldaPendiente; if (!p || !currentUser || !firestoreDB) return;
+  linkCeldaPendiente = null;
+  var irCuandoCargue = function () {
+    var vueltas = 0, t = setInterval(function () {
+      if (currentMatrizId === p.matriz || ++vueltas > 40) { clearInterval(t); if (currentMatrizId === p.matriz && p.celda) setTimeout(function () { irAReferencia(p.celda); }, 300); }
+    }, 250);
+  };
+  if (currentMatrizId === p.matriz) { irCuandoCargue(); return; }
+  firestoreDB.collection('matrices').doc(p.matriz).get().then(function (doc) {
+    if (!doc.exists) { aviso('Esa matriz ya no existe'); return; }
+    abrirMatriz(p.matriz, (doc.data() || {}).name || 'Matriz'); irCuandoCargue();
+  }, function () { aviso('No tenés permiso para abrir esa matriz'); });
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (19) · Chip de lugar
+// Una celda que empieza con 📍 es un lugar: se muestra como chip y al
+// tocarlo se abre en Waze o Google Maps. Se inserta con @ → 📍 Lugar.
+// ══════════════════════════════════════════════
+var RE_CHIP_LUGAR = /^📍\s*(.+)$/;
+function pintarChipsLugar() {
+  var d = sheetData[activeSheet] || {};
+  Object.keys(d).forEach(function (id) {
+    var raw = d[id]; if (typeof raw !== 'string') return;
+    var m = RE_CHIP_LUGAR.exec(raw.trim()); if (!m) return;
+    var el = document.getElementById('cell_' + id);
+    if (!el || document.activeElement === el) return;
+    el.innerHTML = '<span class="chipLugar" contenteditable="false" data-id="' + id + '"><b>📍</b>' + escHtml(m[1]) + '</span>';
+  });
+}
+function abrirTarjetaLugar(id) {
+  var m = RE_CHIP_LUGAR.exec(String(getRaw(id) || '').trim()); if (!m) return;
+  var lugar = m[1].trim(), q = encodeURIComponent(lugar + (/costa rica/i.test(lugar) ? '' : ', Costa Rica'));
+  var coords = /^(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)$/.exec(lugar);
+  var waze = coords ? 'https://waze.com/ul?ll=' + coords[1] + ',' + coords[2] + '&navigate=yes' : 'https://waze.com/ul?q=' + q + '&navigate=yes';
+  var gmaps = 'https://www.google.com/maps/search/?api=1&query=' + (coords ? coords[1] + ',' + coords[2] : q);
+  var c = document.getElementById('tarjetaPersona');
+  if (!c) { c = document.createElement('div'); c.id = 'tarjetaPersona'; c.setAttribute('data-no-i18n', ''); document.body.appendChild(c); }
+  c.innerHTML = '<div class="tpCab"><b class="tpAvatar" style="background:#dc2626">📍</b><div style="min-width:0"><div class="tpNom">' + escHtml(lugar) + '</div><div class="tpDato">Lugar</div></div><button type="button" class="vcX">✕</button></div>' +
+    '<div class="vcBotones"><a class="tpBtn" href="' + waze + '" target="_blank" rel="noopener">🚗 Waze</a><a class="tpBtn" href="' + gmaps + '" target="_blank" rel="noopener">🗺 Google Maps</a><button type="button" class="tpBtn" data-a="copiar">⧉ Copiar</button><button type="button" class="tpBtn" data-a="editar">✏️ Cambiar</button></div>';
+  c.classList.add('ver');
+  c.querySelector('.vcX').onclick = function () { c.classList.remove('ver'); };
+  c.querySelectorAll('a.tpBtn').forEach(function (a) { a.onclick = function (e) { e.preventDefault(); c.classList.remove('ver'); abrirEnlaceExterno(a.href); }; });
+  c.querySelector('[data-a="copiar"]').onclick = function () { copiarTextoPro(lugar, '⧉ Dirección copiada'); };
+  c.querySelector('[data-a="editar"]').onclick = function () {
+    c.classList.remove('ver');
+    preguntarPro('Lugar o dirección (también sirve "9.93, -84.08"):', lugar).then(function (v) { if (v === null) return; v = String(v).trim(); ponerValorEnCelda(id, v ? '📍 ' + v : ''); });
+  };
+}
+(function () {
+  ['pointerdown', 'mousedown'].forEach(function (t) { document.addEventListener(t, function (e) { if (e.target && e.target.closest && e.target.closest('.chipLugar')) e.preventDefault(); }, true); });
+  document.addEventListener('click', function (e) {
+    var ch = e.target && e.target.closest && e.target.closest('.chipLugar'); if (!ch) return;
+    e.preventDefault(); e.stopPropagation(); abrirTarjetaLugar(ch.dataset.id);
+  }, true);
+  if (typeof ACCIONES_ARROBA !== 'undefined') ACCIONES_ARROBA.push({ k: 'lugar', icono: '📍', nombre: 'Lugar', pista: 'lugar direccion mapa waze ubicacion', hacer: function (el) {
+    var id = el.dataset.id; ponerEnCeldaArroba(el, '');
+    preguntarPro('Lugar o dirección (ej. "Mall San Pedro" o "9.93, -84.08"):', '').then(function (v) { if (v === null || !String(v).trim()) return; ponerValorEnCelda(id, '📍 ' + String(v).trim()); });
+  } });
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (20) · Reacciones en comentarios (👍 ❤️ ✅ 😂 🎉 👀)
+// ══════════════════════════════════════════════
+var EMOJIS_REACCION = ['👍', '❤️', '✅', '😂', '🎉', '👀'];
+(function () {
+  var renderPrevio = renderHiloDeNotas;
+  renderHiloDeNotas = function () {
+    renderPrevio.apply(this, arguments);
+    var id = document.getElementById('noteCellRef').textContent, hilo = hiloDeNotas(activeSheet, id), yo = autorActual();
+    document.querySelectorAll('#noteHilo .noteItem').forEach(function (it) {
+      var i = parseInt(it.getAttribute('data-idx'), 10), c = hilo[i]; if (!c) return;
+      var R = c.reacciones || {}, barra = document.createElement('div'); barra.className = 'noteReacciones';
+      var hechas = EMOJIS_REACCION.filter(function (e) { return (R[e] || []).length; });
+      barra.innerHTML = hechas.map(function (e) { var q = R[e]; return '<button type="button" class="nrChip' + (q.indexOf(yo) !== -1 ? ' mia' : '') + '" data-e="' + e + '" title="' + escHtml(q.join(', ')) + '">' + e + ' ' + q.length + '</button>'; }).join('') +
+        '<button type="button" class="nrMas" title="Reaccionar">☺+</button><span class="nrPaleta">' + EMOJIS_REACCION.map(function (e) { return '<button type="button" data-e="' + e + '">' + e + '</button>'; }).join('') + '</span>';
+      barra.querySelector('.nrMas').onclick = function () { barra.classList.toggle('abierta'); };
+      barra.querySelectorAll('[data-e]').forEach(function (b) {
+        b.onclick = function () {
+          var e = b.dataset.e, lista = (c.reacciones = c.reacciones || {})[e] = (c.reacciones[e] || []);
+          var k = lista.indexOf(yo); if (k === -1) lista.push(yo); else lista.splice(k, 1);
+          if (!lista.length) delete c.reacciones[e];
+          sheetNotes[activeSheet][id] = hilo; autoSave(); renderHiloDeNotas();
+        };
+      });
+      it.appendChild(barra);
+    });
+  };
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (21) · Vista agrupada de tabla
+// Elegís una columna (Estado, Cliente…) y las filas se juntan en grupos que
+// se abren y cierran, con la cantidad y los subtotales de las columnas con
+// números. Es solo una vista: los datos no cambian.
+// ══════════════════════════════════════════════
+var vistaAgrupadaEstado = { col: null, abiertos: {} };
+function abrirVistaAgrupada(colElegida) {
+  var T = tablaParaCronograma();
+  if (!T || T.z.r2 <= T.z.r1) { aviso('Tocá una celda de una tabla con títulos en la primera fila'); return; }
+  var z = T.z, cols = T.titulos;
+  var esNumCol = cols.map(function (x) { var n = 0, num = 0; for (var r = z.r1 + 1; r <= z.r2; r++) { var v = String(computeValue(cellId(r, x.c))).trim(); if (!v) continue; n++; if (typeof tiparValorConsulta(v) === 'number') num++; } return n > 0 && num >= n * 0.8; });
+  if (colElegida === undefined) {
+    var sug = cols.filter(function (x, i) { return !esNumCol[i]; })[1] || cols.filter(function (x, i) { return !esNumCol[i]; })[0] || cols[0];
+    colElegida = vistaAgrupadaEstado.col !== null && cols.some(function (x) { return x.c === vistaAgrupadaEstado.col; }) ? vistaAgrupadaEstado.col : sug.c;
+  }
+  vistaAgrupadaEstado.col = colElegida;
+  var grupos = [], porClave = {};
+  for (var r = z.r1 + 1; r <= z.r2; r++) {
+    var fila = cols.map(function (x) { return String(computeValue(cellId(r, x.c))); });
+    if (fila.every(function (v) { return v.trim() === ''; })) continue;
+    var k = String(computeValue(cellId(r, colElegida))).trim() || '(vacío)';
+    if (!porClave[k]) { porClave[k] = { nombre: k, filas: [] }; grupos.push(porClave[k]); }
+    porClave[k].filas.push({ r: r, vals: fila });
+  }
+  grupos.sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es', { numeric: true }); });
+  var f2 = function (x) { return fmtNum(Math.round(x * 100) / 100); };
+  var html = '<div class="vaBarra"><label>Agrupar por</label><select id="vaCol" class="mcrI">' + cols.map(function (x) { return '<option value="' + x.c + '"' + (x.c === colElegida ? ' selected' : '') + '>' + escHtml(x.t) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="vaAcciones"><button type="button" data-a="abrir">▾ Abrir todos</button><button type="button" data-a="cerrar">▸ Cerrar todos</button></div>' +
+    grupos.map(function (g, gi) {
+      var abierto = !!vistaAgrupadaEstado.abiertos[g.nombre];
+      var subt = cols.map(function (x, i) { if (!esNumCol[i] || x.c === colElegida) return ''; var s = g.filas.reduce(function (a, f) { var t = tiparValorConsulta(f.vals[i]); return a + (typeof t === 'number' ? t : 0); }, 0); return '<span><small>' + escHtml(x.t) + '</small> ' + f2(s) + '</span>'; }).filter(Boolean).join('');
+      return '<div class="vaGrupo' + (abierto ? ' abierto' : '') + '" data-g="' + gi + '"><div class="vaCab"><b>' + (abierto ? '▾' : '▸') + ' ' + escHtml(g.nombre) + '</b><em>' + g.filas.length + '</em><div class="vaSub">' + subt + '</div></div>' +
+        '<div class="vaFilas">' + g.filas.map(function (f) {
+          return '<div class="vaFila" data-r="' + f.r + '">' + f.vals.map(function (v, i) { return cols[i].c === colElegida || v === '' ? '' : '<span><small>' + escHtml(cols[i].t) + '</small>' + escHtml(v) + '</span>'; }).join('') + '</div>';
+        }).join('') + '</div></div>';
+    }).join('');
+  abrirPanel('🗂 Vista agrupada · ' + grupos.length + ' grupos', html, [{ texto: 'Cerrar', ok: true }]);
+  document.getElementById('vaCol').onchange = function () { vistaAgrupadaEstado.abiertos = {}; abrirVistaAgrupada(parseInt(this.value, 10)); };
+  document.querySelectorAll('.vaAcciones button').forEach(function (b) { b.onclick = function () { grupos.forEach(function (g) { vistaAgrupadaEstado.abiertos[g.nombre] = b.dataset.a === 'abrir'; }); abrirVistaAgrupada(colElegida); }; });
+  document.querySelectorAll('.vaCab').forEach(function (cab) {
+    cab.onclick = function () { var g = grupos[parseInt(cab.parentNode.dataset.g, 10)]; vistaAgrupadaEstado.abiertos[g.nombre] = !vistaAgrupadaEstado.abiertos[g.nombre]; var sc = document.getElementById('mcrPanelBody').scrollTop; abrirVistaAgrupada(colElegida); document.getElementById('mcrPanelBody').scrollTop = sc; };
+  });
+  document.querySelectorAll('.vaFila').forEach(function (f) { f.onclick = function () { cerrarPanel(); irAReferencia(cellId(parseInt(f.dataset.r, 10), z.c1)); }; });
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (22) · Tarjeta de resultados (scorecard)
+// Un número grande (la suma del rango) y, si se da un segundo rango, la
+// comparación con flecha y porcentaje en verde o rojo.
+// ══════════════════════════════════════════════
+function sumaValoresGrafico(v) {
+  var s = 0;
+  (function rec(x) { if (Array.isArray(x)) x.forEach(rec); else { var n = typeof x === 'number' ? x : numeroDeValorFin(x); if (!isNaN(n)) s += n; } })(v);
+  return s;
+}
+function dibujarTarjetaResultados(cvs, W, H, g, d) {
+  var dpr = window.devicePixelRatio || 1;
+  cvs.width = W * dpr; cvs.height = H * dpr; cvs.style.width = W + 'px'; cvs.style.height = H + 'px';
+  var c = cvs.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = '#fff'; c.fillRect(0, 0, W, H);
+  // Se suma directo del rango (también sirve una sola celda, como C10 o Hoja2!B5)
+  var sumarRef = function (ref) {
+    ref = String(ref || '').trim(); if (!ref) return null;
+    if (ref.indexOf(':') === -1) ref = ref + ':' + ref.replace(/^.*!/, '');
+    try { return isRange(ref) ? sumaValoresGrafico(vectorDeArgFin(ref)) : null; } catch (e) { return null; }
+  };
+  var total = g.fuente && g.fuente.rango ? sumarRef(g.fuente.rango) : null; if (total === null) total = sumaValoresGrafico(d.values);
+  var comp = g.fuente && g.fuente.rango2 ? sumarRef(g.fuente.rango2) : (d.values2 && d.values2.length ? sumaValoresGrafico(d.values2) : null);
+  var moneda = g.fuente && g.fuente.rango ? (function () { var f = (sheetFormats[activeSheet] || {})[String(g.fuente.rango).split(':')[0].replace(/^.*!/, '')] || {}, nf = f.numFormat || {}; return f.currency || nf.type === 'currency' || nf.type === 'accounting' ? '₡' : nf.type === 'currency_usd' ? '$' : ''; })() : '';
+  var texto = moneda + fmtNum(Math.round(total * 100) / 100);
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillStyle = '#6b7280'; c.font = '600 ' + Math.max(11, Math.min(15, H * 0.09)) + 'px -apple-system, system-ui, sans-serif';
+  c.fillText(tituloVisibleGrafico(g), W / 2, H * 0.2);
+  var tam = Math.min(H * 0.34, W / Math.max(4, texto.length * 0.62));
+  c.fillStyle = '#111827'; c.font = '800 ' + tam + 'px -apple-system, system-ui, sans-serif';
+  c.fillText(texto, W / 2, H * (comp !== null ? 0.5 : 0.56));
+  if (comp !== null) {
+    var dif = total - comp, pct = comp !== 0 ? dif / Math.abs(comp) * 100 : null, sube = dif >= 0;
+    var etiqueta = (sube ? '▲ ' : '▼ ') + (pct === null ? fmtNum(Math.round(Math.abs(dif) * 100) / 100) : fmtNum(Math.round(Math.abs(pct) * 10) / 10) + ' %');
+    c.font = '700 ' + Math.max(12, tam * 0.36) + 'px -apple-system, system-ui, sans-serif';
+    var w = c.measureText(etiqueta).width + 20, x = W / 2 - w / 2, y = H * 0.75, h = Math.max(20, tam * 0.5);
+    c.fillStyle = sube ? '#dcfce7' : '#fee2e2';
+    if (c.roundRect) { c.beginPath(); c.roundRect(x, y - h / 2, w, h, h / 2); c.fill(); } else c.fillRect(x, y - h / 2, w, h);
+    c.fillStyle = sube ? '#15803d' : '#b91c1c'; c.fillText(etiqueta, W / 2, y);
+    c.fillStyle = '#9ca3af'; c.font = '500 ' + Math.max(10, tam * 0.24) + 'px -apple-system, system-ui, sans-serif';
+    c.fillText('vs ' + moneda + fmtNum(Math.round(comp * 100) / 100), W / 2, Math.min(H - 8, y + h * 0.95));
+  }
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (23) · Panel de actividad
+// En una matriz compartida: quién la abrió y quién la editó, y cuándo.
+// Cada persona anota lo suyo en matrices/{id}/actividad/{uid}.
+// ══════════════════════════════════════════════
+var actividadUltimaVista = null, actividadUltimaEdicion = 0;
+function anotarActividad(campo) {
+  if (!currentUser || !firestoreDB || !currentMatrizId) return;
+  var dato = { uid: currentUser.uid, email: currentUser.email, nombre: currentUser.displayName || String(currentUser.email).split('@')[0] };
+  dato[campo] = Date.now();
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('actividad').doc(currentUser.uid).set(dato, { merge: true }).catch(function () {});
+}
+setInterval(function () { if (currentUser && currentMatrizId && currentMatrizId !== actividadUltimaVista) { actividadUltimaVista = currentMatrizId; anotarActividad('visto'); } }, 5000);
+(function () {
+  var orig = guardarMatrizEnNube;
+  guardarMatrizEnNube = function () { var r = orig.apply(this, arguments); try { if (!applyingRemote && Date.now() - actividadUltimaEdicion > 60000) { actividadUltimaEdicion = Date.now(); anotarActividad('editado'); } } catch (e) {} return r; };
+})();
+function haceCuanto(ts) {
+  if (!ts) return '—';
+  var s = Math.round((Date.now() - ts) / 1000);
+  if (s < 60) return 'hace un momento'; if (s < 3600) return 'hace ' + Math.round(s / 60) + ' min'; if (s < 86400) return 'hace ' + Math.round(s / 3600) + ' h';
+  var d = new Date(ts); return textoDeFecha(d) + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+function abrirPanelActividad() {
+  if (!currentUser || !currentMatrizId) { aviso('El panel de actividad es para matrices de la nube (📁 Mis Matrices)'); return; }
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('actividad').get().then(function (snap) {
+    var lista = []; snap.forEach(function (d) { lista.push(d.data()); });
+    lista.sort(function (a, b) { return Math.max(b.visto || 0, b.editado || 0) - Math.max(a.visto || 0, a.editado || 0); });
+    var sinVer = (personasDelLibro || []).filter(function (em) { return !lista.some(function (x) { return String(x.email).toLowerCase() === String(em).toLowerCase(); }); });
+    var html = '<div class="mcrNota">Quién abrió y quién editó <b>' + escHtml(currentMatrizName || 'esta matriz') + '</b>.</div>' +
+      lista.map(function (x) {
+        return '<div class="actFila"><b class="tpAvatar" style="background:' + colorDePersona(x.nombre || x.email) + '">' + escHtml(String(x.nombre || x.email).charAt(0).toUpperCase()) + '</b><div><div><b>' + escHtml(x.nombre || x.email) + '</b>' + (x.uid === currentUser.uid ? ' <small>(vos)</small>' : '') + '</div><small>' + escHtml(x.email || '') + '</small></div><div class="actTiempos"><span>👁 ' + haceCuanto(x.visto) + '</span><span>✏️ ' + haceCuanto(x.editado) + '</span></div></div>';
+      }).join('') +
+      (sinVer.length ? '<div class="mcrNota" style="margin-top:10px">Todavía no la han abierto: ' + sinVer.map(escHtml).join(', ') + '</div>' : '');
+    abrirPanel('📈 Panel de actividad', html, [{ texto: 'Cerrar', ok: true }]);
+  }).catch(function (e) { aviso(/permission/i.test((e && e.message) || '') ? 'Falta el permiso de Firebase para "actividad" (revisá las reglas)' : 'No se pudo abrir: ' + ((e && e.message) || e)); });
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (24) · Sugerencias de fórmula
+// Al tocar una celda vacía justo debajo de una columna de números (o a la
+// derecha de una fila de números), se sugiere SUMA, PROMEDIO o CONTAR del
+// rango; un toque la escribe.
+// ══════════════════════════════════════════════
+function rangoNumericoVecino(id) {
+  var r = filaDe(id), c = colDe(id), esNum = function (rr, cc) { var t = tiparValorConsulta(String(computeValue(cellId(rr, cc)))); return typeof t === 'number'; };
+  var desde = r - 1; while (desde >= 0 && esNum(desde, c)) desde--;
+  if (r - 1 - desde >= 2) return cellId(desde + 1, c) + ':' + cellId(r - 1, c);
+  var izq = c - 1; while (izq >= 0 && esNum(r, izq)) izq--;
+  if (c - 1 - izq >= 2) return cellId(r, izq + 1) + ':' + cellId(r, c - 1);
+  return null;
+}
+(function () {
+  var caja = null;
+  var cerrar = function () { if (caja) caja.classList.remove('ver'); };
+  document.addEventListener('focusin', function (e) {
+    var el = e.target; if (!el || !el.classList || !el.classList.contains('cell')) return;
+    cerrar();
+    if (String(getRaw(el.dataset.id) || '') !== '' || (typeof modoLectura !== 'undefined' && modoLectura)) return;
+    var rango = rangoNumericoVecino(el.dataset.id); if (!rango) return;
+    if (!caja) {
+      caja = document.createElement('div'); caja.id = 'sugFormula'; caja.setAttribute('data-no-i18n', ''); document.body.appendChild(caja);
+      ['pointerdown', 'mousedown', 'touchstart'].forEach(function (t) { caja.addEventListener(t, function (ev) { ev.preventDefault(); }, { passive: false }); });
+    }
+    var ops = [['SUMA', 'Σ Suma'], ['PROMEDIO', 'Promedio'], ['CONTAR', 'Contar'], ['MAX', 'Máx']];
+    caja.innerHTML = '<span>✨ ' + rango + '</span>' + ops.map(function (o) { return '<button type="button" data-f="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '<button type="button" data-f="x" class="sfX">✕</button>';
+    var r = el.getBoundingClientRect();
+    caja.style.left = Math.max(6, Math.min(window.innerWidth - 300, r.left)) + 'px';
+    caja.style.top = Math.max(6, r.top - 40) + 'px';
+    caja.classList.add('ver');
+    var usar = function (b) {
+      var f = b.dataset.f; cerrar(); if (f === 'x') return;
+      if (document.activeElement !== el) el.focus();
+      el.textContent = '=' + f + '(' + rango + ')'; snapshot(); commitCell(el); el.blur(); renderAllCells();
+    };
+    caja.querySelectorAll('button').forEach(function (b) {
+      var hecho = 0;
+      b.addEventListener('pointerup', function (ev) { if (ev.pointerType === 'mouse') return; hecho = Date.now(); usar(b); });
+      b.addEventListener('click', function () { if (Date.now() - hecho < 800) return; usar(b); });
+    });
+  });
+  document.addEventListener('input', function (e) { if (e.target && e.target.classList && e.target.classList.contains('cell')) cerrar(); });
+  document.addEventListener('focusout', function (e) { if (e.target && e.target.classList && e.target.classList.contains('cell')) setTimeout(function () { if (!document.activeElement || !document.activeElement.classList || !document.activeElement.classList.contains('cell')) cerrar(); }, 150); });
+})();
+
+// Botones y página pública (?publicado=ID) / link a celda (?matriz=ID&celda=…)
+(function () {
+  var on = function (id, fn) { var b = document.getElementById(id); if (b) b.addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); fn(); }); };
+  on('btnPublicarWeb', abrirPublicarWeb); on('btnVistaAgrupada', function () { abrirVistaAgrupada(); }); on('btnActividad', abrirPanelActividad);
+  on('cmLinkCelda', copiarLinkACelda); on('cmVistaAgrupada', function () { abrirVistaAgrupada(); });
+  var mp = /[?&]publicado=([A-Za-z0-9_-]+)/.exec(location.search || '');
+  if (mp) { if (document.readyState === 'complete') mostrarPaginaPublicada(mp[1]); else window.addEventListener('load', function () { mostrarPaginaPublicada(mp[1]); }); }
+  var mm = /[?&]matriz=([A-Za-z0-9_-]+)/.exec(location.search || ''), mc = /[?&]celda=([^&]+)/.exec(location.search || '');
+  if (mm) {
+    linkCeldaPendiente = { matriz: mm[1], celda: mc ? decodeURIComponent(mc[1]) : '' };
+    var t = setInterval(function () { if (!linkCeldaPendiente) { clearInterval(t); return; } if (currentUser && firestoreDB) { clearInterval(t); abrirLinkACeldaPendiente(); } }, 700);
+    setTimeout(function () { if (linkCeldaPendiente && !currentUser) aviso('🔗 Iniciá sesión (👤) para abrir la matriz del link'); }, 4000);
+  }
 })();
 
 // ══════════════════════════════════════════════
