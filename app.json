@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Matriz Contable CR",
-    "slug": "matriz-contable-app",
+    "slug": "matriz-contable-cr-app-",
     "version": "39.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -66,13 +66,13 @@
         }
       ]
     ],
-    "owner": "keny2410s-organization",
+    "owner": "guiscerdas",
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "extra": {
       "eas": {
-        "projectId": "1094fa14-06b9-4b7e-a826-48b82e04f309"
+        "projectId": "40c054b3-9c47-4a8f-91e1-39d142dbd6bf"
       },
       "apiBaseUrl": "https://api.matrizcontable.cr",
       "exchangeRatesAPI": "https://openexchangerates.org/api",
