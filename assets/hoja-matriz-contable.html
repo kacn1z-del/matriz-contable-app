@@ -1603,6 +1603,103 @@
 .tabla-libre tr.tlBanda td { background: var(--tlBanda); }
 .tabla-libre tr.tlTot td { background: var(--tlTot); font-weight: 800; }
 .tlEstilos { display: flex; gap: 8px; margin: 4px 0 8px; } .tlEstilos button { width: 34px; height: 26px; border-radius: 6px; border: 1px solid #cbd5e1; } .tlEstilos button.on { box-shadow: 0 0 0 2px #2d7a0c; }
+/* ── PRO · íconos de línea ── */
+.icoP { width: 1.15em; height: 1.15em; vertical-align: -0.2em; margin-right: .35em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.icoP.icoSolo { margin-right: 0; }
+.emoOculto { font-size: 0 !important; display: inline-block; width: 0; height: 0; overflow: hidden; }
+.emoMono { filter: grayscale(1) contrast(.9); opacity: .8; }
+body.iconosEmoji .icoP { display: none; }
+body.iconosEmoji .emoOculto { font-size: inherit !important; width: auto; height: auto; display: inline; }
+body.iconosEmoji .emoMono { filter: none; opacity: 1; }
+/* ── PRO · inspector ── */
+#inspectorPro { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9600; background: var(--insFondo, #fff); color: inherit; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,.18); max-height: 56vh; display: flex; flex-direction: column; transform: translateY(105%); transition: transform .28s cubic-bezier(.2,.9,.3,1); padding-bottom: env(safe-area-inset-bottom, 0px); }
+#inspectorPro.abierto { transform: translateY(0); }
+#inspectorPro .insAsa { width: 40px; height: 5px; border-radius: 3px; background: #cbd5e1; margin: 8px auto 4px; touch-action: none; padding: 6px 0; background-clip: content-box; cursor: grab; }
+#inspectorPro .insCab { display: flex; align-items: center; gap: 8px; padding: 0 12px 8px; }
+#inspectorPro .insTabs { flex: 1; display: flex; background: #eef0f3; border-radius: 9px; padding: 2px; }
+#inspectorPro .insTabs button { flex: 1; border: 0; background: none; padding: 6px 4px; border-radius: 7px; font-size: 13px; font-weight: 600; color: #4b5563; }
+#inspectorPro .insTabs button.on { background: #fff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+#inspectorPro .insCerrar { border: 0; background: #eef0f3; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+#inspectorPro .insCerrar .icoP { margin: 0; }
+#inspectorPro .insCuerpo { overflow-y: auto; padding: 0 14px 14px; }
+#inspectorPro .insSel { font-size: 11px; color: #6b7280; font-weight: 700; margin-bottom: 4px; }
+#inspectorPro .insTit { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #6b7280; font-weight: 700; margin: 12px 0 6px; }
+#inspectorPro .insFila { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+#inspectorPro .insChips .insBtn { flex: 0 0 auto; }
+#inspectorPro .insBtn { border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: 6px 11px; font-size: 13px; min-width: 36px; color: #111827; }
+#inspectorPro .insBtn.on { background: #2d7a0c; border-color: #2d7a0c; color: #fff; }
+#inspectorPro .insEstilos .insBtn { width: 48px; font-size: 16px; }
+#inspectorPro .insEtq { font-size: 13px; color: #374151; margin-right: 4px; }
+#inspectorPro .insValor { min-width: 44px; text-align: center; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; }
+#inspectorPro .insColores { display: flex; flex-wrap: wrap; gap: 7px; }
+#inspectorPro .insColor { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); padding: 0; position: relative; overflow: hidden; }
+#inspectorPro .insColor.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2d7a0c; }
+#inspectorPro .insColor.ninguno { background: linear-gradient(135deg, #fff 45%, #dc2626 45%, #dc2626 55%, #fff 55%); }
+#inspectorPro .insColor.otro { background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red); display: inline-block; }
+#inspectorPro .insColor.otro input { opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; }
+#inspectorPro .insTemas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+#inspectorPro .insTema { border: 1px solid #e5e7eb; border-radius: 9px; background: #fff; padding: 4px; display: grid; grid-template-rows: 8px 6px 6px 6px auto; gap: 1px; text-align: left; }
+#inspectorPro .insTema i { display: block; border-radius: 2px; border: 1px solid rgba(0,0,0,.05); }
+#inspectorPro .insTema span { font-size: 10.5px; margin-top: 3px; color: #374151; }
+body.conInspector #gridWrap { padding-bottom: 50vh; }
+body.modo-oscuro #inspectorPro, body.dark #inspectorPro { --insFondo: #1f2937; }
+/* ── PRO · teclado ── */
+#tecladoMCR { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9550; background: #d1d5db; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); display: none; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+#tecladoMCR.abierto { display: block; }
+#tecladoMCR button { border: 0; border-radius: 7px; background: #fff; color: #111827; font-size: 20px; height: 44px; box-shadow: 0 1px 0 rgba(0,0,0,.3); font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif; display: flex; align-items: center; justify-content: center; padding: 0; }
+#tecladoMCR button:active { background: #e5e7eb; }
+#tecladoMCR .tkModos { display: flex; gap: 5px; margin-bottom: 6px; align-items: center; }
+#tecladoMCR .tkModos button { height: 32px; font-size: 14px; font-weight: 600; padding: 0 12px; background: #eceef1; box-shadow: none; }
+#tecladoMCR .tkModos button.on { background: #2d7a0c; color: #fff; }
+#tecladoMCR .tkModos .tkEsp { flex: 1; }
+#tecladoMCR .tkIco { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#tecladoMCR .tkTop { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 5px; }
+#tecladoMCR .tkTop button { height: 36px; font-size: 17px; background: #f3f4f6; }
+#tecladoMCR .tkTop .tkIgual { background: #2d7a0c; color: #fff; font-weight: 700; }
+#tecladoMCR .tkGrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+#tecladoMCR .tkNum { font-size: 24px; }
+#tecladoMCR .tkOp { background: #aeb4bd; color: #111827; }
+#tecladoMCR .tkEnter { background: #2d7a0c !important; color: #fff !important; grid-row: span 2; height: auto !important; font-size: 24px; }
+#tecladoMCR .tkCero { grid-column: span 1; }
+#tecladoMCR .tkFx { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-height: 150px; overflow-y: auto; margin-bottom: 6px; }
+#tecladoMCR .tkFx button { font-size: 13px; height: 38px; font-weight: 600; }
+#tecladoMCR .tkFila { display: grid; grid-template-columns: repeat(6, 1fr) 1fr 1.4fr; gap: 5px; }
+#tecladoMCR .tkFila .tkEnter { grid-row: auto; height: 44px !important; }
+body.tecladoMCR #editBar { bottom: var(--altoTeclado, 260px) !important; }
+body.tecladoMCR #gridWrap { padding-bottom: calc(var(--altoTeclado, 260px) + 60px); }
+body.modo-oscuro #tecladoMCR, body.dark #tecladoMCR { background: #111827; }
+body.modo-oscuro #tecladoMCR button, body.dark #tecladoMCR button { background: #374151; color: #f9fafb; }
+body.modo-oscuro #tecladoMCR .tkOp, body.dark #tecladoMCR .tkOp { background: #4b5563; }
+/* ── PRO · fórmulas con colores ── */
+.refCaja { position: absolute; border: 2px solid; border-radius: 3px; pointer-events: none; z-index: 25; box-sizing: border-box; }
+#fxColores { display: none; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; padding: 3px 10px 5px; white-space: nowrap; overflow-x: auto; color: #374151; background: #fafafa; border-bottom: 1px solid #e5e7eb; }
+#fxColores.ver { display: block; }
+#fxColores b { font-weight: 700; border-radius: 3px; padding: 0 2px; }
+/* ── PRO · zoom ── */
+#zoomBurbuja { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%) scale(.9); background: rgba(17,24,39,.82); color: #fff; font-weight: 700; font-size: 18px; padding: 8px 16px; border-radius: 20px; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 9900; }
+#zoomBurbuja.ver { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+/* ── PRO · avisos y diálogos ── */
+#toastPro { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: rgba(28,32,40,.94); color: #fff; padding: 11px 16px; border-radius: 14px; font-size: 14px; max-width: min(92vw, 460px); display: flex; gap: 9px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s; z-index: 9950; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+#toastPro.ver { opacity: 1; transform: translate(-50%, 0); }
+#toastPro .toastIco { width: 20px; height: 20px; flex: none; fill: none; stroke: #86efac; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#dlgPro { position: fixed; inset: 0; z-index: 9960; display: none; }
+#dlgPro.ver { display: block; }
+#dlgPro .dlgFondo { position: absolute; inset: 0; background: rgba(0,0,0,.32); animation: dlgFade .2s; }
+#dlgPro .dlgHoja { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(88vw, 380px); max-height: 78vh; overflow-y: auto; background: #fff; border-radius: 16px; padding: 20px 18px 14px; box-shadow: 0 16px 48px rgba(0,0,0,.3); animation: dlgPop .22s cubic-bezier(.2,.9,.3,1.2); text-align: center; color: #111827; }
+#dlgPro .dlgIcoW { display: flex; justify-content: center; margin-bottom: 8px; }
+#dlgPro .dlgIco { width: 34px; height: 34px; fill: none; stroke: #2d7a0c; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; background: #ecf6e6; border-radius: 50%; padding: 8px; box-sizing: content-box; }
+#dlgPro .dlgTit { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+#dlgPro .dlgMsg { font-size: 14px; line-height: 1.45; color: #374151; text-align: left; }
+#dlgPro .dlgEntrada { width: 100%; box-sizing: border-box; margin-top: 12px; padding: 10px 12px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 10px; }
+#dlgPro .dlgBotones { display: flex; gap: 8px; margin-top: 16px; }
+#dlgPro .dlgBotones button { flex: 1; border: 0; border-radius: 11px; padding: 11px; font-size: 15px; font-weight: 600; }
+#dlgPro .dlgNo { background: #eef0f3; color: #111827; }
+#dlgPro .dlgSi { background: #2d7a0c; color: #fff; }
+#dlgPro .dlgSi.peligro { background: #dc2626; }
+@keyframes dlgPop { from { transform: translate(-50%, -46%) scale(.94); opacity: 0; } }
+@keyframes dlgFade { from { opacity: 0; } }
+body.modo-oscuro #dlgPro .dlgHoja, body.dark #dlgPro .dlgHoja { background: #1f2937; color: #f9fafb; }
+body.modo-oscuro #dlgPro .dlgMsg, body.dark #dlgPro .dlgMsg { color: #d1d5db; }
 </style>
 </head>
 <body>
@@ -1697,6 +1794,7 @@
         <button id="btnBold">N</button>
         <button id="btnItalic">I</button>
         <button id="btnUnderline" title="Subrayado (Ctrl+U)">U̲</button>
+        <button id="btnInspector" title="Inspector de formato: celda, texto, tabla y organizar (como en Numbers)">🖌 Formato</button>
         <button id="btnStrike" title="Tachado">S̶</button>
         <button id="btnCurrency">₡</button>
         <button id="btnPercent">%</button>
@@ -1782,6 +1880,8 @@
         <button id="btnZoomSel" title="Agrandar o achicar la hoja para que el rango seleccionado llene la pantalla">🔍 Zoom a la selección</button>
         <button id="btnZoom100" title="Volver al zoom normal (100%)">🔍 Zoom 100%</button>
         <button id="btnCuadricula" title="Mostrar u ocultar las líneas de la cuadrícula de esta hoja (los bordes que pusiste se mantienen)">▦ Cuadrícula</button>
+        <button id="btnIconosClasicos" title="Cambiar entre íconos de línea y los emojis de antes">🎨 Íconos clásicos</button>
+        <button id="btnTecladoPro" title="Usar el teclado de la matriz o el del teléfono">⌨ Teclado de la matriz</button>
         <button id="btnEncabezados" title="Mostrar u ocultar las letras de columna y los números de fila de esta hoja">🔠 Encabezados</button>
         <button id="btnEnfoque" title="Resaltar la fila y la columna de la celda seleccionada, para no perderse en tablas grandes">🎯 Enfoque</button>
         <button id="btnDividir" title="Ver dos partes de la misma hoja a la vez, cada una con su propio desplazamiento">⊟ Dividir pantalla</button>
@@ -2141,6 +2241,7 @@
       <button data-eb="colorLetra" title="Color de letra"><span style="border-bottom:3px solid #d13438;line-height:1;">A</span></button>
       <button data-eb="bordes" title="Bordes">▦</button>
       <button data-eb="alinear" title="Alinear: izquierda, centro, derecha, automático">≡</button>
+      <button id="ebInspector" type="button" title="Inspector de formato">🖌</button>
       <span class="ebSep"></span>
       <button data-eb="autosuma" title="Autosuma">∑</button>
       <button data-eb="moneda" title="Formato de moneda">₡</button>
@@ -2232,6 +2333,7 @@
     <button id="raCurrency">₡ Moneda</button>
     <button id="raPercent">% Porcentaje</button>
     <button id="raFormat">🔢 Formato</button>
+    <button id="raInspector">🖌 Inspector</button>
     <button id="raMerge">⛶ Combinar</button>
     <button id="raOrdenar">⇅ Ordenar</button>
     <button id="raQuitarDuplicados">🧹 Quitar duplicados</button>
@@ -2273,6 +2375,7 @@
     <button id="cmPegadoEspecial">📋▾ Pegado especial</button>
     <div class="cmSep"></div>
     <button id="cmFormatoNum">🔢 Formato de número</button>
+    <button id="cmInspector">🖌 Inspector de formato</button>
     <button id="cmCombinar">⛶ Combinar/separar celdas</button>
     <button id="cmNota">📝 Nota</button>
     <button id="cmVoz">🎙 Nota de voz</button>
@@ -11472,7 +11575,8 @@ document.getElementById('btnDuplicate').addEventListener('click', function () {
 document.getElementById('btnDeleteSheet').addEventListener('click', function () {
   if (libroProtegido()) { avisoLibroProtegido(); return; }
   if (sheets.length <= 1) { alert('Debe quedar al menos una hoja.'); return; }
-  if (!confirm('¿Eliminar la hoja "' + tabMenuTarget + '"?')) return;
+  confirmarPro('¿Eliminar la hoja "' + tabMenuTarget + '"?').then((__ok) => {
+    if (!__ok) return;
   snapshot();
   var idx = sheets.indexOf(tabMenuTarget);
   sheets.splice(idx, 1);
@@ -11492,6 +11596,8 @@ document.getElementById('btnDeleteSheet').addEventListener('click', function () 
   if (activeSheet === tabMenuTarget) activeSheet = sheets[0];
   document.getElementById('tabMenuOverlay').classList.remove('show');
   buildTable(); autoSave();
+
+  }); return;
 });
 
 // ══════════════════════════════════════════════
@@ -12464,7 +12570,7 @@ function cargarRegistroHaciendaEnFormulario(registro) {
 // mandarla de nuevo a Hacienda.
 function reenviarCorreoDesdeHistorial(registro) {
   if (!registro) return;
-  var correo = prompt('¿A qué correo reenviamos esta factura?', registro.receptorEmail || '');
+  preguntarPro('¿A qué correo reenviamos esta factura?', registro.receptorEmail || '').then((correo) => {
   if (!correo) return;
 
   // Llenamos los campos mínimos que necesita construirFacturaPdf() para
@@ -12509,6 +12615,8 @@ function reenviarCorreoDesdeHistorial(registro) {
   if (document.getElementById('fe-num')) document.getElementById('fe-num').value = valoresPrevios.num;
   if (document.getElementById('fe-fecha')) document.getElementById('fe-fecha').value = valoresPrevios.fecha;
   tbody.innerHTML = filasPrevias;
+
+  }); return;
 }
 
 // ══════════════════════════════════════════════
@@ -13850,9 +13958,12 @@ document.getElementById('siboCloseBtn').addEventListener('click', function () {
   document.getElementById('siboOverlay').classList.remove('show');
 });
 document.getElementById('siboClearBtn').addEventListener('click', function () {
-  if (!confirm('¿Limpiar el historial del chat con Sibö?')) return;
+  confirmarPro('¿Limpiar el historial del chat con Sibö?').then((__ok) => {
+    if (!__ok) return;
   siboGuardarHistorial([]);
   siboRenderHistorial();
+
+  }); return;
 });
 document.getElementById('siboSendBtn').addEventListener('click', function () {
   var inp = document.getElementById('siboInput');
@@ -14370,12 +14481,15 @@ function abrirRelaciones() {
     document.getElementById('saveStatus').textContent = '🔗 Relación creada: ' + r.hojaA + ' → ' + r.hojaB;
   });
   document.querySelectorAll('.lpItem [data-borrar]').forEach(function (b) { b.addEventListener('click', function () {
-    if (!confirm('¿Borrar esta relación? Las tablas dinámicas que usen sus campos van a perderlos.')) return;
+    confirmarPro('¿Borrar esta relación? Las tablas dinámicas que usen sus campos van a perderlos.').then((__ok) => {
+    if (!__ok) return;
     // Se deja el hueco (null) para no mover los números de los campos de las demás relaciones
     var l = (opcionesLibro.relaciones || []).slice(); l[parseInt(b.dataset.borrar, 10)] = null;
     while (l.length && !l[l.length - 1]) l.pop();
     opcionesLibro.relaciones = l; indicesRelacionPivote = {}; autoSave(); abrirRelaciones();
-  }); });
+  
+  }); return;
+}); });
 }
 var pivoteAvPendiente = null;
 var NOMBRES_FN_PIVOTE = { suma: 'Suma', promedio: 'Promedio', contar: 'Cuenta', max: 'Máx.', min: 'Mín.' };
@@ -15517,9 +15631,12 @@ function abrirListasPersonalizadas() {
     guardar(items);
   });
   document.querySelectorAll('.lpItem [data-borrar]').forEach(function (b) { b.addEventListener('click', function () {
-    if (!confirm('¿Borrar esta lista?')) return;
+    confirmarPro('¿Borrar esta lista?').then((__ok) => {
+    if (!__ok) return;
     snapshot(); opcionesLibro.listas.splice(parseInt(b.dataset.borrar, 10), 1); autoSave(); abrirListasPersonalizadas();
-  }); });
+  
+  }); return;
+}); });
 }
 // Qué poner en una celda nueva cuando el origen es UNA sola celda
 // (sin patrón numérico detectable a partir de solo 1 valor). "distancia"
@@ -16623,7 +16740,8 @@ function eliminarColumnaActual() {
   if (!m) return;
   if (COLS <= 1) { alert('No se puede eliminar la única columna de la hoja.'); return; }
   var targetCol = colIndex(m[1]);
-  if (!confirm('¿Eliminar la columna ' + m[1] + '?')) return;
+  confirmarPro('¿Eliminar la columna ' + m[1] + '?').then((__ok) => {
+    if (!__ok) return;
   snapshot();
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
   var topeEC = filaTopeContenido();
@@ -16637,6 +16755,8 @@ function eliminarColumnaActual() {
   for (var r2 = 0; r2 <= topeEC; r2++) { delete d[cellId(r2, COLS - 1)]; delete f[cellId(r2, COLS - 1)]; }
   ccDespuesDeEstructura = ['col', targetCol, -1]; ccAplicarEstructuraPendiente();
   buildTable(); autoSave();
+
+  }); return;
 }
 document.getElementById('cmCortar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnCut', 'raCut'); });
 document.getElementById('cmCopiar').addEventListener('click', function () { ocultarMenuContextual(); accionSegunSeleccion('btnCopy', 'raCopy'); });
@@ -16674,17 +16794,23 @@ document.getElementById('cmBorrar').addEventListener('click', function () { ocul
       clearRangeHighlight();
       limpiarMultiSeleccion();
       document.getElementById('rangeActionsBar').classList.remove('show');
-      if (!gestureFired) {
-        gestureFired = true;
+      // Ahora el deshacer es un TOQUE corto con 2 dedos: si los dedos se mueven (pellizcar para zoom), no se deshace
+      if (!gestureFired) { gestureFired = { t: Date.now(), z: zoomLevel, x: e.touches[0].clientX + e.touches[1].clientX, y: e.touches[0].clientY + e.touches[1].clientY, mov: false }; }
+    }
+  }, { passive: true });
+  gridWrap.addEventListener('touchmove', function (e) {
+    if (gestureFired && e.touches.length >= 2 && (Math.abs(e.touches[0].clientX + e.touches[1].clientX - gestureFired.x) + Math.abs(e.touches[0].clientY + e.touches[1].clientY - gestureFired.y) > 30)) gestureFired.mov = true;
+  }, { passive: true });
+  gridWrap.addEventListener('touchend', function (e) {
+    if (e.touches.length === 0) {
+      var g = gestureFired; gestureFired = false;
+      if (g && g !== true && !g.mov && g.z === zoomLevel && Date.now() - g.t < 350) {
         undo();
         var hint = document.getElementById('undoGestureHint');
         hint.classList.add('show');
         setTimeout(function () { hint.classList.remove('show'); }, 1200);
       }
     }
-  }, { passive: true });
-  gridWrap.addEventListener('touchend', function (e) {
-    if (e.touches.length === 0) { gestureFired = false; }
   }, { passive: true });
 })();
 function registrarCambioAuditoria(celda, valorAnterior, valorNuevo) {
@@ -18154,14 +18280,23 @@ function abrirInspeccionDocumento() {
   abrirPanel('🕵 Inspeccionar documento', '<div class="mcrNota">Revisá esto antes de compartir el libro. Los botones limpian de una vez (se puede deshacer).</div>' + html, [{ texto: 'Cerrar', ok: true }]);
   var recargar = function () { cerrarPanel(); setTimeout(abrirInspeccionDocumento, 50); };
   var enlace = function (id, fn) { var b = document.getElementById(id); if (b) b.addEventListener('click', fn); };
-  enlace('idCom', function () { if (!confirm('¿Eliminar TODOS los comentarios del libro?')) return; snapshot(); sheets.forEach(function (h) { sheetNotes[h] = {}; }); renderAllCells(); autoSave(); recargar(); });
+  enlace('idCom', function () { confirmarPro('¿Eliminar TODOS los comentarios del libro?').then((__ok) => {
+    if (!__ok) return; snapshot(); sheets.forEach(function (h) { sheetNotes[h] = {}; }); renderAllCells(); autoSave(); recargar(); 
+  }); return;
+});
   enlace('idHojas', function () { snapshot(); r.hojasOcultas.forEach(function (h) { delete colWidths[h].oculta; }); buildTable(); renderTabs(); autoSave(); recargar(); });
   enlace('idFC', function () { snapshot(); sheets.forEach(function (h) { sheetHiddenRows[h] = []; sheetHiddenCols[h] = []; }); buildTable(); autoSave(); recargar(); });
   enlace('idPers', function () { var p = r.personales[0]; cerrarPanel(); irAReferencia((p.h !== activeSheet ? p.h + '!' : '') + p.id); document.getElementById('saveStatus').textContent = '🪪 ' + nPers + ' posible(s) dato(s) personal(es) — revisá cada celda'; });
-  enlace('idAdj', function () { if (!confirm('¿Quitar todos los recibos y fotos adjuntos?')) return; snapshot(); sheets.forEach(function (h) { sheetAttachments[h] = {}; }); renderAllCells(); autoSave(); recargar(); });
+  enlace('idAdj', function () { confirmarPro('¿Quitar todos los recibos y fotos adjuntos?').then((__ok) => {
+    if (!__ok) return; snapshot(); sheets.forEach(function (h) { sheetAttachments[h] = {}; }); renderAllCells(); autoSave(); recargar(); 
+  }); return;
+});
   enlace('idVin', function () { snapshot(); r.vinculosWeb.forEach(function (x) { var dv = datosVinculo(sheetData[x.h][x.id]); if (dv) sheetData[x.h][x.id] = dv.texto || dv.destino; }); buildTable(); autoSave(); recargar(); });
   enlace('idNomR', function () { snapshot(); r.nombresRotos.forEach(function (k) { delete rangosNombrados[k]; }); autoSave(); recargar(); });
-  enlace('idNomU', function () { if (!confirm('¿Borrar los nombres que ninguna fórmula usa?')) return; snapshot(); r.nombresSinUso.forEach(function (k) { delete rangosNombrados[k]; }); autoSave(); recargar(); });
+  enlace('idNomU', function () { confirmarPro('¿Borrar los nombres que ninguna fórmula usa?').then((__ok) => {
+    if (!__ok) return; snapshot(); r.nombresSinUso.forEach(function (k) { delete rangosNombrados[k]; }); autoSave(); recargar(); 
+  }); return;
+});
   enlace('idErr', function () { var p = r.errores[0]; cerrarPanel(); irAReferencia((p.h !== activeSheet ? p.h + '!' : '') + p.id); });
   document.querySelectorAll('.idBtn').forEach(function () {});
 }
@@ -19033,10 +19168,13 @@ function abrirSello() {
         '<button id="slVolver" style="margin-top:6px;padding:6px 10px;border-radius:7px;border:1px solid #cbd5e1;">↩ Volver a lo sellado</button>';
       cont.querySelectorAll('tr[data-r]').forEach(function (tr) { tr.addEventListener('click', function () { cerrarPanel(); irAReferencia(tr.getAttribute('data-r')); }); });
       document.getElementById('slVolver').addEventListener('click', function () {
-        if (!confirm('Se restauran los valores sellados en todas las hojas. Lo que cambió después se pierde (podés deshacer).')) return;
+        confirmarPro('Se restauran los valores sellados en todas las hojas. Lo que cambió después se pierde (podés deshacer).').then((__ok) => {
+    if (!__ok) return;
         snapshot(); sheetData = JSON.parse(JSON.stringify(cop.sheetData)); (cop.sheets || []).forEach(function (h) { if (sheets.indexOf(h) < 0) sheets.push(h); });
         buildTable(); autoSave(); cerrarPanel(); document.getElementById('saveStatus').textContent = '↩ Restaurado al sellado';
-      });
+      
+  }); return;
+});
     });
   }
 }
@@ -19068,9 +19206,11 @@ function restaurarHojaDesdeEstado(obj, hoja) {
 function abrirVersiones() {
   abrirPanel('📜 Historial de versiones', '<div class="mcrNota">Se guarda solo (cada ~30 min si hubo cambios) y también cuando vos querés. Queda en este dispositivo, sin internet ni sesión.</div><button id="vrGuardar" style="width:100%;padding:10px;border-radius:8px;border:1px solid #cbd5e1;background:#eef6e3;font-weight:700;margin:6px 0;">💾 Guardar versión ahora</button><div id="vrLista"><div style="padding:10px;color:#888;">Cargando…</div></div>', [{ texto: 'Cerrar', ok: true }]);
   document.getElementById('vrGuardar').addEventListener('click', function () {
-    var nota = prompt('Nota para esta versión (opcional, ej. "Antes de cierre de mes"):', ''); if (nota === null) return;
+    preguntarPro('Nota para esta versión (opcional, ej. "Antes de cierre de mes"):', '').then((nota) => { if (nota === null) return;
     guardarVersionLocal(nota, true).then(function () { document.getElementById('saveStatus').textContent = '💾 Versión guardada'; cerrarPanel(); abrirVersiones(); }).catch(function () { alert('No se pudo guardar la versión en este dispositivo.'); });
-  });
+  
+  }); return;
+});
   vdbListar().then(function (lista) {
     var cont = document.getElementById('vrLista'); if (!cont) return;
     if (!lista.length) { cont.innerHTML = '<div style="padding:10px;color:#888;">Todavía no hay versiones. Tocá “Guardar versión ahora”.</div>'; return; }
@@ -19086,10 +19226,16 @@ function abrirVersiones() {
       var v = lista[parseInt(fila.getAttribute('data-i'), 10)];
       fila.querySelector('.vrCmp').addEventListener('click', function () { cerrarPanel(); compararVersion(v); });
       fila.querySelector('.vrRest').addEventListener('click', function () {
-        if (!confirm('¿Restaurar TODO el libro a la versión del ' + new Date(v.fecha).toLocaleString('es-CR') + '? Se puede deshacer con ↶.')) return;
+        confirmarPro('¿Restaurar TODO el libro a la versión del ' + new Date(v.fecha).toLocaleString('es-CR') + '? Se puede deshacer con ↶.').then((__ok) => {
+    if (!__ok) return;
         snapshot(); cargarEstadoDesdeObjeto(JSON.parse(v.estado)); autoSave(); cerrarPanel(); document.getElementById('saveStatus').textContent = '↩ Versión restaurada';
-      });
-      fila.querySelector('.vrDel').addEventListener('click', function () { if (!confirm('¿Borrar esta versión?')) return; vdbTx('readwrite', function (st) { st.delete(v.id); }).then(function () { cerrarPanel(); abrirVersiones(); }); });
+      
+  }); return;
+});
+      fila.querySelector('.vrDel').addEventListener('click', function () { confirmarPro('¿Borrar esta versión?').then((__ok) => {
+    if (!__ok) return; vdbTx('readwrite', function (st) { st.delete(v.id); }).then(function () { cerrarPanel(); abrirVersiones(); }); 
+  }); return;
+});
     });
   }).catch(function () { var c = document.getElementById('vrLista'); if (c) c.innerHTML = '<div style="padding:10px;color:#b91c1c;">Este dispositivo no permite guardar versiones locales.</div>'; });
 }
@@ -19121,9 +19267,12 @@ function compararVersion(v) {
   });
   document.querySelectorAll('.cvRecHoja').forEach(function (b) {
     b.addEventListener('click', function () {
-      var h = b.getAttribute('data-h'); if (!confirm('¿Restaurar la hoja "' + h + '" tal como estaba en esa versión? Se puede deshacer con ↶.')) return;
+      var h = b.getAttribute('data-h'); confirmarPro('¿Restaurar la hoja "' + h + '" tal como estaba en esa versión? Se puede deshacer con ↶.').then((__ok) => {
+    if (!__ok) return;
       snapshot(); restaurarHojaDesdeEstado(obj, h); autoSave(); cerrarPanel(); document.getElementById('saveStatus').textContent = '↩ Hoja "' + h + '" restaurada';
-    });
+    
+  }); return;
+});
   });
 }
 document.getElementById('btnVersiones').addEventListener('click', abrirVersiones);
@@ -19168,7 +19317,10 @@ function abrirMisFunciones() {
     var k = fila.getAttribute('data-k'), d = F[k];
     fila.querySelectorAll('button').forEach(function (b) { b.style.cssText += ';padding:5px 10px;border-radius:7px;border:1px solid #cbd5e1;background:#f8fafc;font-size:12px;'; });
     fila.querySelector('.mfEd').addEventListener('click', function () { document.getElementById('mfNombre').value = k; document.getElementById('mfParams').value = d.params.join('; '); document.getElementById('mfCuerpo').value = d.cuerpo; });
-    fila.querySelector('.mfDel').addEventListener('click', function () { if (!confirm('¿Borrar la función ' + k + '? Las fórmulas que la usen darán error.')) return; snapshot(); delete colWidths.__funciones[k]; buildTable(); autoSave(); cerrarPanel(); abrirMisFunciones(); });
+    fila.querySelector('.mfDel').addEventListener('click', function () { confirmarPro('¿Borrar la función ' + k + '? Las fórmulas que la usen darán error.').then((__ok) => {
+    if (!__ok) return; snapshot(); delete colWidths.__funciones[k]; buildTable(); autoSave(); cerrarPanel(); abrirMisFunciones(); 
+  }); return;
+});
   });
 }
 document.getElementById('btnMisFunciones').addEventListener('click', abrirMisFunciones);
@@ -19222,7 +19374,7 @@ function abrirAdminNombres() {
       var k = fila.getAttribute('data-k'), r = rangosNombrados[k];
       fila.querySelector('.anIr').addEventListener('click', function () { cerrarPanel(); irAReferencia(textoRangoNombre(r)); });
       fila.querySelector('.anRen').addEventListener('click', function () {
-        var nuevo = prompt('Nuevo nombre para "' + k + '":', k); if (nuevo === null) return; nuevo = nuevo.trim();
+        preguntarPro('Nuevo nombre para "' + k + '":', k).then((nuevo) => { if (nuevo === null) return; nuevo = nuevo.trim();
         var nk = nuevo.toUpperCase(); if (nk === k) return;
         if (!nombreRangoEsValido(nuevo)) { alert('Ese nombre no sirve: sin espacios ni símbolos, que no parezca una celda ni una función.'); return; }
         if (rangosNombrados[nk]) { alert('Ya existe un nombre igual.'); return; }
@@ -19230,27 +19382,36 @@ function abrirAdminNombres() {
         sheets.forEach(function (h) { var d = sheetData[h] || {}; Object.keys(d).forEach(function (id) { var v = d[id]; if (typeof v === 'string' && v.charAt(0) === '=' && formulaUsaNombre(v, k)) d[id] = renombrarEnFormula(v, k, nuevo); }); });
         rangosNombrados[nk] = rangosNombrados[k]; delete rangosNombrados[k];
         buildTable(); autoSave(); pintar();
-      });
+      
+  }); return;
+});
       fila.querySelector('.anRng').addEventListener('click', function () {
-        var t = prompt('Nuevo rango para "' + k + '" (ej. Hoja1!A1:C20 o A1:C20):', textoRangoNombre(r)); if (t === null) return;
+        preguntarPro('Nuevo rango para "' + k + '" (ej. Hoja1!A1:C20 o A1:C20):', textoRangoNombre(r)).then((t) => { if (t === null) return;
         var m = /^\s*(?:(?:'([^']+)'|([^!'\s]+))!)?\$?([A-Za-z]{1,3})\$?(\d+)(?::\$?([A-Za-z]{1,3})\$?(\d+))?\s*$/.exec(t);
         if (!m) { alert('No entendí el rango. Usá el formato Hoja1!A1:C20.'); return; }
         var h = m[1] || m[2] || r.hoja || activeSheet; if (sheets.indexOf(h) === -1) { alert('La hoja "' + h + '" no existe.'); return; }
         snapshot();
         r.hoja = h; r.from = (m[3] + m[4]).toUpperCase(); r.to = m[5] ? (m[5] + m[6]).toUpperCase() : r.from;
         buildTable(); autoSave(); pintar();
-      });
+      
+  }); return;
+});
       fila.querySelector('.anUsos').addEventListener('click', function () {
         var u = usosDeNombre(k);
         if (!u.length) { alert('"' + k + '" no se usa en ninguna fórmula.'); return; }
-        var pick = prompt('"' + k + '" se usa en ' + u.length + ' celda(s):\n' + u.slice(0, 15).map(function (x, i) { return (i + 1) + '. ' + x.h + '!' + x.id; }).join('\n') + (u.length > 15 ? '\n…' : '') + '\n\nEscribí el número para ir a esa celda:', '1');
+        preguntarPro('"' + k + '" se usa en ' + u.length + ' celda(s):\n' + u.slice(0, 15).map(function (x, i) { return (i + 1) + '. ' + x.h + '!' + x.id; }).join('\n') + (u.length > 15 ? '\n…' : '') + '\n\nEscribí el número para ir a esa celda:', '1').then((pick) => {
         var i = parseInt(pick, 10) - 1; if (u[i]) { cerrarPanel(); irAReferencia((u[i].h !== activeSheet ? u[i].h + '!' : '') + u[i].id); }
-      });
+      
+  }); return;
+});
       fila.querySelector('.anDel').addEventListener('click', function () {
         var n = usosDeNombre(k).length;
-        if (!confirm('¿Borrar el nombre "' + k + '"?' + (n ? '\nSe usa en ' + n + ' fórmula(s); darán error.' : ''))) return;
+        confirmarPro('¿Borrar el nombre "' + k + '"?' + (n ? '\nSe usa en ' + n + ' fórmula(s); darán error.' : '')).then((__ok) => {
+    if (!__ok) return;
         snapshot(); delete rangosNombrados[k]; buildTable(); autoSave(); pintar();
-      });
+      
+  }); return;
+});
     });
   }
   abrirPanel('🏷 Administrador de nombres', html, [{ texto: 'Cerrar', ok: true }]);
@@ -19509,13 +19670,16 @@ function abrirInspeccionarLibro() {
   abrirPanel('🔍 Inspeccionar libro', html, [{ texto: 'Cerrar', ok: true }]);
   document.querySelectorAll('.inspAcc').forEach(function (b) { b.addEventListener('click', function () {
     var r = res[parseInt(b.dataset.i, 10)];
-    if (!confirm('¿' + r.accion + '? (' + r.titulo.toLowerCase() + ')' + (r.sinDeshacer ? '\n\nEsto no se puede deshacer.' : ''))) return;
+    confirmarPro('¿' + r.accion + '? (' + r.titulo.toLowerCase() + ')' + (r.sinDeshacer ? '\n\nEsto no se puede deshacer.' : '')).then((__ok) => {
+    if (!__ok) return;
     snapshot();
     try { r.hacer(); } catch (e) { alert('No se pudo completar: ' + e.message); }
     autoSave(); buildTable(); renderAllCells(); renderizarGraficos();
     document.getElementById('saveStatus').textContent = '🔍 ' + r.titulo + ': listo';
     abrirInspeccionarLibro();
-  }); });
+  
+  }); return;
+}); });
   document.querySelectorAll('.inspIr [data-ir]').forEach(function (b) { b.addEventListener('click', function () {
     var p = b.dataset.ir.split(':'), x = res[parseInt(p[0], 10)].ir[parseInt(p[1], 10)];
     document.getElementById('mcrPanelOv').classList.remove('show');
@@ -21237,13 +21401,16 @@ document.getElementById('btnDelRow').addEventListener('click', function () {
   var id = document.getElementById('cellRef').textContent;
   var m = id.match(/([A-Za-z]+)(\d+)/);
   var targetRow = parseInt(m[2]) - 1;
-  if (!confirm('¿Eliminar la fila ' + (targetRow + 1) + '?')) return;
+  confirmarPro('¿Eliminar la fila ' + (targetRow + 1) + '?').then((__ok) => {
+    if (!__ok) return;
   snapshot();
   var d = sheetData[activeSheet], f = sheetFormats[activeSheet];
   desplazarFilasPorClave([d, f], targetRow, -1);
   desplazarAltosFila(targetRow, -1);
   ccDespuesDeEstructura = ['fila', targetRow, -1]; ccAplicarEstructuraPendiente();
   buildTable(); autoSave();
+
+  }); return;
 });
 
 document.getElementById('btnInsertarTabla').addEventListener('click', function () {
@@ -25229,7 +25396,8 @@ document.getElementById('raPercent').addEventListener('click', function () {
 document.getElementById('raClear').addEventListener('click', function () {
   var ids = rangeCellIds();
   if (hojaBloqueadaParaIds(ids)) { avisoHojaProtegida(); return; }
-  if (!confirm('¿Borrar el contenido de ' + ids.length + ' celdas?')) return;
+  confirmarPro('¿Borrar el contenido de ' + ids.length + ' celdas?').then((__ok) => {
+    if (!__ok) return;
   snapshot();
   ids.forEach(function (id) {
     delete sheetData[activeSheet][id];
@@ -25238,6 +25406,8 @@ document.getElementById('raClear').addEventListener('click', function () {
     if (sheetControles[activeSheet]) delete sheetControles[activeSheet][id];
   });
   buildTable(); autoSave();
+
+  }); return;
 });
 document.getElementById('raCut').addEventListener('click', function () {
   if (hojaBloqueadaParaIds(rangeCellIds())) { avisoHojaProtegida(); return; }
@@ -26069,14 +26239,18 @@ function plantillaGraficoPredeterminada() {
   return plantillasGrafico().find(function (p) { return p.nombre === nom; }) || null;
 }
 function guardarComoPlantillaGrafico(g) {
-  var nombre = prompt('Nombre de la plantilla de gráfico:', (g.titulo && !/^=/.test(g.titulo) ? g.titulo : 'Mi gráfico'));
+  preguntarPro('Nombre de la plantilla de gráfico:', (g.titulo && !/^=/.test(g.titulo) ? g.titulo : 'Mi gráfico')).then((nombre) => {
   if (!nombre || !nombre.trim()) return;
   nombre = nombre.trim();
-  var conTipo = confirm('¿Incluir el tipo de gráfico (' + ((document.querySelector('#chartType option[value="' + g.tipo + '"]') || {}).textContent || g.tipo) + ') y el tamaño?\n\nAceptar = sí · Cancelar = solo colores, estilo y elementos');
+  confirmarPro('¿Incluir el tipo de gráfico (' + ((document.querySelector('#chartType option[value="' + g.tipo + '"]') || {}).textContent || g.tipo) + ') y el tamaño?\n\nAceptar = sí · Cancelar = solo colores, estilo y elementos').then((conTipo) => {
   var l = plantillasGrafico().filter(function (p) { return p.nombre !== nombre; });
   l.push({ nombre: nombre, fmt: formatoDeGrafico(g, conTipo), fecha: Date.now() });
   guardarPlantillasGrafico(l);
   document.getElementById('saveStatus').textContent = '✓ Plantilla de gráfico "' + nombre + '" guardada';
+
+  }); return;
+
+  }); return;
 }
 function abrirPlantillasGrafico(g, el) {
   var l = plantillasGrafico(), pred = (plantillaGraficoPredeterminada() || {}).nombre;
@@ -26344,13 +26518,16 @@ function abrirEditarGrafico(g, el, pestanaInicial) {
   });
   document.getElementById('egPng').addEventListener('click', function () { pngDeGrafico(g); });
   document.getElementById('egRestablecer').addEventListener('click', function () {
-    if (!confirm('¿Quitar colores, estilo, títulos de ejes, tendencia y demás formato de este gráfico? Los datos no cambian.')) return;
+    confirmarPro('¿Quitar colores, estilo, títulos de ejes, tendencia y demás formato de este gráfico? Los datos no cambian.').then((__ok) => {
+    if (!__ok) return;
     snapshot();
     ['leyenda', 'etiquetas', 'cuadricula', 'tituloX', 'tituloY', 'tituloY2', 'tablaDatos', 'errores', 'errorValor', 'ejeFormato', 'ejeMin', 'ejeMax', 'ejeMin2', 'ejeMax2', 'ejeLog',
       'estilo', 'paleta', 'marcadores', 'grosor', 'tendTipo', 'tendencia', 'tendOrden', 'tendPeriodo', 'tendAdelante', 'tendSerie', 'tendEcuacion', 'tendR2', 'seriesCfg',
       'tituloTam', 'tituloColor', 'variarColores', 'coloresPunto', 'rotarEtiquetas', 'ejeFechas', 'ordenInverso', 'ocultarSeries', 'ocultarCats', 'mapaNivel', 'etiquetasRango', 'etiquetasSerie'].forEach(function (k) { delete g[k]; });
     cerrarPanel(); dibujarUnGrafico(g, el); autoSave();
-  });
+  
+  }); return;
+});
 }
 
 // ── Mover el gráfico a una hoja propia (como "Mover gráfico → Hoja nueva" de Excel) ──
@@ -27127,7 +27304,7 @@ function dibujarCamara(cv, g, escala) {
 function insertarCamara() {
   var lim = limitesDeSeleccionOCelda();
   var sug = lim && (lim.maxR > lim.minR || lim.maxC > lim.minC) ? cellId(lim.minR, lim.minC) + ':' + cellId(lim.maxR, lim.maxC) : 'A1:D10';
-  var r = prompt('Rango que querés fotografiar (ej: A1:D10 o Resumen!A1:F12).\nLa imagen se actualiza sola cuando cambian esas celdas.', sug);
+  preguntarPro('Rango que querés fotografiar (ej: A1:D10 o Resumen!A1:F12).\nLa imagen se actualiza sola cuando cambian esas celdas.', sug).then((r) => {
   if (!r) return;
   r = r.trim().replace(/\$/g, '');
   var hoja = activeSheet, m = /^(?:'([^']+)'|([^!]+))!(.+)$/.exec(r);
@@ -27148,6 +27325,8 @@ function insertarCamara() {
   formaSeleccionadaId = g.id;
   autoSave(); renderizarGraficos();
   document.getElementById('saveStatus').textContent = '📸 Imagen vinculada de ' + (hoja !== activeSheet ? hoja + '!' : '') + r;
+
+  }); return;
 }
 function editarCamara(g) {
   var actual = (g.hoja && g.hoja !== activeSheet ? (/^[A-Za-z_][A-Za-z0-9_]*$/.test(g.hoja) ? g.hoja : "'" + g.hoja + "'") + '!' : '') + g.rango;
@@ -27411,12 +27590,14 @@ function marcarFormaSeleccionada() {
   document.querySelectorAll('.forma-float').forEach(function (e) { e.classList.toggle('sel', e.dataset.id === formaSeleccionadaId); });
 }
 function editarTextoForma(g) {
-  var nuevo = prompt('Texto de la forma (dejalo vacío para quitarlo):', g.texto || '');
+  preguntarPro('Texto de la forma (dejalo vacío para quitarlo):', g.texto || '').then((nuevo) => {
   if (nuevo === null) return;
   snapshot(); g.texto = nuevo;
   var el = document.querySelector('.forma-float[data-id="' + g.id + '"]');
   if (el) pintarForma(g, el);
   autoSave();
+
+  }); return;
 }
 document.addEventListener('pointerdown', function (e) {
   if (formaSeleccionadaId && !e.target.closest('.forma-float')) { formaSeleccionadaId = null; marcarFormaSeleccionada(); }
@@ -32228,8 +32409,11 @@ function abrirMatriz(id, name) {
   });
 }
 function eliminarMatriz(id) {
-  if (!confirm('¿Eliminar esta matriz de la nube? Esta acción no se puede deshacer.')) return;
+  confirmarPro('¿Eliminar esta matriz de la nube? Esta acción no se puede deshacer.').then((__ok) => {
+    if (!__ok) return;
   firestoreDB.collection('matrices').doc(id).delete().then(cargarListaMatrices);
+
+  }); return;
 }
 var shareTargetId = null;
 function abrirCompartir(id) {
@@ -33809,13 +33993,16 @@ function renderBackupList() {
         var mensaje = '¿Restaurar este backup?';
         if (diffVsActual.cambios.length) mensaje += ' Vas a reemplazar ' + diffVsActual.cambios.length + ' celda' + (diffVsActual.cambios.length === 1 ? '' : 's') + ' respecto a lo que tenés ahora.';
         mensaje += ' (podés deshacer con ↶ después)';
-        if (!confirm(mensaje)) return;
+        confirmarPro(mensaje).then((__ok) => {
+    if (!__ok) return;
         snapshot();
         cargarEstadoDesdeObjeto(dataObj);
         autoSave();
         document.getElementById('backupOverlay').classList.remove('show');
         document.getElementById('saveStatus').textContent = '✓ Backup restaurado';
-      });
+      
+  }); return;
+});
     });
   }).catch(function () {
     wrap.innerHTML = '<div style="padding:10px;">No se pudieron cargar los backups.</div>';
@@ -33882,11 +34069,14 @@ function abrirCifrarLibro() {
   } }]);
   var q = document.getElementById('cifQuitar');
   if (q) q.addEventListener('click', function () {
-    if (!confirm('¿Quitar el cifrado? Los respaldos que guardés desde ahora se van a poder abrir sin contraseña.')) return;
+    confirmarPro('¿Quitar el cifrado? Los respaldos que guardés desde ahora se van a poder abrir sin contraseña.').then((__ok) => {
+    if (!__ok) return;
     opcionesLibro.cifrarArchivos = false; claveCifradoLibro = null; autoSave(); actualizarBotonCifrado();
     document.getElementById('mcrPanelOv').classList.remove('show');
     document.getElementById('saveStatus').textContent = '🔓 Cifrado quitado';
-  });
+  
+  }); return;
+});
 }
 // ── Respaldo en archivo (.json) ───────────────────────────────────────
 document.getElementById('backupArchivoGuardarBtn').addEventListener('click', function () {
@@ -33989,12 +34179,15 @@ function renderRangosList() {
   wrap.innerHTML = html;
   wrap.querySelectorAll('.rangoEliminarBtn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      if (!confirm('¿Eliminar el rango "' + btn.dataset.clave + '"? Las fórmulas que lo usen van a dar error hasta que lo corrijas.')) return;
+      confirmarPro('¿Eliminar el rango "' + btn.dataset.clave + '"? Las fórmulas que lo usen van a dar error hasta que lo corrijas.').then((__ok) => {
+    if (!__ok) return;
       snapshot();
       delete rangosNombrados[btn.dataset.clave];
       autoSave();
       renderRangosList();
-    });
+    
+  }); return;
+});
   });
 }
 document.getElementById('btnRangos').addEventListener('click', function () {
@@ -34013,13 +34206,15 @@ document.getElementById('raNombrar').addEventListener('click', function () {
   var bounds = currentRangeBounds();
   if (!bounds) { alert('Seleccioná primero un rango en la hoja (arrastrando celdas).'); return; }
   var rangoStr = cellId(bounds.minR, bounds.minC) + (bounds.isMulti ? (':' + cellId(bounds.maxR, bounds.maxC)) : '');
-  var nombre = prompt('Nombre para el rango ' + rangoStr + ' (sin espacios, ej: Ventas_Enero):', '');
+  preguntarPro('Nombre para el rango ' + rangoStr + ' (sin espacios, ej: Ventas_Enero):', '').then((nombre) => {
   if (nombre === null) return;
   var comoTabla = bounds.isMulti && confirm('¿Usarlo como TABLA?\n\nAceptar = la primera fila son los encabezados y podés escribir fórmulas como ' + nombre.trim() + '[Columna].\nCancelar = rango normal.');
   if (crearRangoNombrado(nombre, bounds, comoTabla)) {
     document.getElementById('rangeActionsBar').classList.remove('show');
     document.getElementById('saveStatus').textContent = '✓ Rango "' + nombre.trim() + '" creado';
   }
+
+  }); return;
 });
 
 // ── Macros (grabadora de acciones, estilo Excel) ──
@@ -34128,7 +34323,7 @@ function renderMacrosList() {
   });
   wrap.querySelectorAll('.macroRenombrarBtn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var nuevo = prompt('Nuevo nombre para la macro:', btn.dataset.nombre);
+      preguntarPro('Nuevo nombre para la macro:', btn.dataset.nombre).then((nuevo) => {
       if (nuevo === null) return;
       nuevo = nuevo.trim();
       if (!nuevo) { alert('Ponele un nombre.'); return; }
@@ -34137,15 +34332,20 @@ function renderMacrosList() {
       if (nuevo !== btn.dataset.nombre) delete macros[btn.dataset.nombre];
       autoSave();
       renderMacrosList();
-    });
+    
+  }); return;
+});
   });
   wrap.querySelectorAll('.macroEliminarBtn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      if (!confirm('¿Eliminar la macro "' + btn.dataset.nombre + '"?')) return;
+      confirmarPro('¿Eliminar la macro "' + btn.dataset.nombre + '"?').then((__ok) => {
+    if (!__ok) return;
       delete macros[btn.dataset.nombre];
       autoSave();
       renderMacrosList();
-    });
+    
+  }); return;
+});
   });
 }
 document.getElementById('btnMacros').addEventListener('click', function () {
@@ -34156,11 +34356,13 @@ document.getElementById('macrosClose').addEventListener('click', function () {
   document.getElementById('macrosOverlay').classList.remove('show');
 });
 document.getElementById('macrosGrabarBtn').addEventListener('click', function () {
-  var nombre = prompt('Nombre para la nueva macro (ej: Cierre_Mensual):', '');
+  preguntarPro('Nombre para la nueva macro (ej: Cierre_Mensual):', '').then((nombre) => {
   if (nombre === null) return;
   nombre = nombre.trim();
   if (!nombre) { alert('Ponele un nombre a la macro.'); return; }
   iniciarGrabacionMacro(nombre);
+
+  }); return;
 });
 document.getElementById('macroGrabandoDetenerBtn').addEventListener('click', detenerGrabacionMacro);
 
@@ -34187,7 +34389,7 @@ function crearSparkline(bounds) {
   }
   var rangoTexto = cellId(bounds.minR, bounds.minC) + ':' + cellId(bounds.maxR, bounds.maxC);
   var destinoSugerido = cellId(bounds.minR, bounds.maxC + 1);
-  var destino = prompt('¿En qué celda poner el sparkline de ' + rangoTexto + '?', destinoSugerido);
+  preguntarPro('¿En qué celda poner el sparkline de ' + rangoTexto + '?', destinoSugerido).then((destino) => {
   if (destino === null) return;
   destino = destino.trim().toUpperCase();
   if (!/^[A-Z]+\d+$/.test(destino)) { alert('Esa celda no es válida.'); return; }
@@ -34198,6 +34400,8 @@ function crearSparkline(bounds) {
   document.getElementById('rangeActionsBar').classList.remove('show');
   buildTable(); autoSave();
   document.getElementById('saveStatus').textContent = '✓ Sparkline creado en ' + destino;
+
+  }); return;
 }
 function sparklineSVG(valores, tipo) {
   var W = 70, H = 20;
@@ -34244,7 +34448,7 @@ function crearSegmentador(bounds) {
     return;
   }
   var nombreSugerido = String(computeValue(cellId(Math.max(0, bounds.minR - 1), bounds.minC)) || '').trim() || 'Segmentador';
-  var nombre = prompt('Nombre para este segmentador:', nombreSugerido);
+  preguntarPro('Nombre para este segmentador:', nombreSugerido).then((nombre) => {
   if (nombre === null) return;
   nombre = nombre.trim() || nombreSugerido;
   snapshot();
@@ -34256,6 +34460,8 @@ function crearSegmentador(bounds) {
   document.getElementById('rangeActionsBar').classList.remove('show');
   buildTable(); autoSave();
   document.getElementById('saveStatus').textContent = '✓ Segmentador "' + nombre + '" creado';
+
+  }); return;
 }
 function valoresDistintosDeSegmentador(sl) {
   var vistos = {}, out = [];
@@ -34293,12 +34499,15 @@ function renderSegmentadoresList() {
   });
   wrap.querySelectorAll('.slicerDelBtn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      if (!confirm('¿Eliminar este segmentador? Las filas que estaba filtrando van a volver a mostrarse.')) return;
+      confirmarPro('¿Eliminar este segmentador? Las filas que estaba filtrando van a volver a mostrarse.').then((__ok) => {
+    if (!__ok) return;
       snapshot();
       sheetSlicers[activeSheet] = (sheetSlicers[activeSheet] || []).filter(function (s) { return s.id !== btn.dataset.id; });
       buildTable(); autoSave();
       renderSegmentadoresList();
-    });
+    
+  }); return;
+});
   });
 }
 document.getElementById('btnSegmentadores').addEventListener('click', function () {
@@ -34342,7 +34551,7 @@ document.getElementById('raCheckbox').addEventListener('click', function () {
 document.getElementById('raRadio').addEventListener('click', function () {
   var bounds = currentRangeBounds();
   if (!bounds) { alert('Seleccioná primero las celdas (arrastrando) donde van los botones de radio.'); return; }
-  var grupo = prompt('Nombre del grupo (las celdas de este rango van a ser mutuamente excluyentes entre sí). Dejalo vacío para quitar el control de radio:', 'Grupo1');
+  preguntarPro('Nombre del grupo (las celdas de este rango van a ser mutuamente excluyentes entre sí). Dejalo vacío para quitar el control de radio:', 'Grupo1').then((grupo) => {
   if (grupo === null) return;
   grupo = grupo.trim();
   snapshot();
@@ -34355,6 +34564,8 @@ document.getElementById('raRadio').addEventListener('click', function () {
   }
   document.getElementById('rangeActionsBar').classList.remove('show');
   buildTable(); autoSave();
+
+  }); return;
 });
 
 // ── Control de número (▲▼) y barra deslizante, ligados a la celda (Programador ▸ Insertar de Excel) ──
@@ -34800,7 +35011,8 @@ function abrirListaFormulas() {
     var nuevo = document.getElementById('lfReemplazo').value;
     var afectadas = visibles.filter(function (x) { return x.f.toLowerCase().indexOf(q.toLowerCase()) !== -1; });
     if (!afectadas.length) { alert('El texto no aparece dentro de las fórmulas que se ven (puede estar solo en el resultado).'); return; }
-    if (!confirm('¿Reemplazar "' + q + '" por "' + nuevo + '" en ' + afectadas.length + ' fórmula(s)?')) return;
+    confirmarPro('¿Reemplazar "' + q + '" por "' + nuevo + '" en ' + afectadas.length + ' fórmula(s)?').then((__ok) => {
+    if (!__ok) return;
     snapshot();
     var re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
     afectadas.forEach(function (x) { sheetData[x.h][x.id] = x.f.replace(re, nuevo); marcarCeldaSucia(x.h, x.id); });
@@ -34809,7 +35021,9 @@ function abrirListaFormulas() {
     document.getElementById('lfBuscar').value = nuevo;
     pintar();
     document.getElementById('saveStatus').textContent = '⇄ ' + afectadas.length + ' fórmula(s) cambiadas';
-  });
+  
+  }); return;
+});
   pintar();
 }
 
@@ -35420,6 +35634,688 @@ document.getElementById('btnFirmar').addEventListener('click', function () { abr
 document.getElementById('btnNotaVoz').addEventListener('click', function () { abrirNotaVoz(); });
 document.getElementById('cmVoz').addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); abrirNotaVoz(); });
 document.getElementById('btnTablaLibre').addEventListener('click', crearTablaLibre);
+// ══════════════════════════════════════════════
+// PRO · 1) Íconos de línea (estilo Numbers / SF Symbols)
+// Cambia el emoji del inicio de botones, menús y títulos por un ícono de
+// línea de un solo color (sigue el color del texto: claro y oscuro).
+// El emoji queda escondido dentro del botón, así el texto, las
+// traducciones y el resto del código siguen igual. Hay opción para volver
+// a los emojis (Vista ▸ Íconos clásicos).
+// Formato de cada ícono: trazos "M…" (path), "c:cx,cy,r" (círculo), "r:x,y,w,h,radio" (rectángulo).
+// ══════════════════════════════════════════════
+var ICONOS_PRO = (function () {
+  var I = {
+    barras: ['M4 20h16', 'M7 16v-5', 'M12 16V7', 'M17 16v-8'],
+    sube: ['M4 4v16h16', 'M7 14l4-4 3 3 5-6', 'M15 7h4v4'],
+    baja: ['M4 4v16h16', 'M7 9l4 4 3-3 5 6', 'M15 16h4v-4'],
+    portapapeles: ['r:6,4,12,17,2', 'M9 4V3h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z', 'M9 11h6', 'M9 15h4'],
+    basura: ['M4 7h16', 'M10 11v6', 'M14 11v6', 'M6 7l1 13h10l1-13', 'M9 7V4h6v3'],
+    mas: ['M12 5v14', 'M5 12h14'], menos: ['M5 12h14'], equis: ['M6 6l12 12', 'M18 6L6 18'],
+    paleta: ['M12 3a9 9 0 1 0 0 18c1.2 0 1.6-.8 1.6-1.6 0-.9-.7-1.4-.7-2.2 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.9 17 3 12 3z', 'c:7.5,11.5,1', 'c:10,7.5,1', 'c:14.5,7.5,1'],
+    lupa: ['c:11,11,7', 'M20 20l-4-4'], check: ['M5 12.5l4.5 4.5L19 7'],
+    candado: ['r:5,11,14,10,2', 'M8 11V8a4 4 0 0 1 8 0v3'], abierto: ['r:5,11,14,10,2', 'M8 11V8a4 4 0 0 1 7.6-1.8'],
+    compartir: ['M12 15V3', 'M7 8l5-5 5 5', 'M5 13v7h14v-7'], recibir: ['M12 3v12', 'M7 10l5 5 5-5', 'M5 13v7h14v-7'],
+    bajar: ['M12 4v12', 'M6.5 11l5.5 5.5 5.5-5.5', 'M5 20h14'], subir: ['M12 20V8', 'M6.5 13L12 7.5l5.5 5.5', 'M5 4h14'],
+    documento: ['M6 3h8l4 4v14H6z', 'M14 3v4h4'], documentoL: ['M6 3h8l4 4v14H6z', 'M14 3v4h4', 'M9 12h6', 'M9 16h6'],
+    enlace: ['M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1', 'M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'],
+    recargar: ['M20 11a8 8 0 0 0-14.6-4.4L4 8', 'M4 3.5V8h4.5', 'M4 13a8 8 0 0 0 14.6 4.4L20 16', 'M20 20.5V16h-4.5'],
+    banco: ['M3 9l9-5 9 5', 'M5 9v9', 'M10 9v9', 'M14 9v9', 'M19 9v9', 'M3 20h18'],
+    carpeta: ['M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z'],
+    numeral: ['M5 9h14', 'M5 15h14', 'M10 4L8 20', 'M16 4l-2 16'],
+    imagen: ['r:3,5,18,14,2', 'c:8.5,10,1.5', 'M3 17l5-5 4 4 3-3 6 6'],
+    deshacer: ['M9 14L4 9l5-5', 'M4 9h11a5 5 0 0 1 0 10h-3'], rehacer: ['M15 14l5-5-5-5', 'M20 9H9a5 5 0 0 0 0 10h3'],
+    alerta: ['M12 4l9 16H3z', 'M12 10v4', 'M12 17h.01'],
+    dinero: ['r:3,6,18,12,2', 'c:12,12,2.6', 'M6.5 10v4', 'M17.5 10v4'],
+    guardar: ['M5 4h11l3 3v13H5z', 'M8 4v5h7V4', 'M8 20v-6h8v6'],
+    ojo: ['M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z', 'c:12,12,3'],
+    ojoNo: ['M3 3l18 18', 'M10.6 6.1A10 10 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.8', 'M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4.4-1', 'M10 10a3 3 0 0 0 4 4'],
+    play: ['M7 4.5v15l12-7.5z'], pausa: ['M8 5v14', 'M16 5v14'],
+    copiar: ['r:8,8,12,12,2', 'M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3'],
+    diana: ['c:12,12,9', 'c:12,12,5', 'c:12,12,1'],
+    escoba: ['M15 3l-4.5 8', 'M9 11h7l1 3H8z', 'M8 14l-1 7', 'M12 14v7', 'M16.5 14l1.5 7'],
+    lapiz: ['M4 20h4L19 9l-4-4L4 16z', 'M14 6l4 4'],
+    estrella: ['M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z'],
+    recibo: ['M6 3h12v18l-3-2-3 2-3-2-3 2z', 'M9 8h6', 'M9 12h6', 'M9 16h3'],
+    tabla: ['r:4,4,16,16,2', 'M4 10h16', 'M4 15h16', 'M10 4v16'],
+    menu: ['M4 6h16', 'M4 12h16', 'M4 18h16'],
+    nube: ['M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 8.6 4.5 4.5 0 0 1 17.5 18z'],
+    personas: ['c:9,8,3.5', 'M2.5 20a6.5 6.5 0 0 1 13 0', 'M16 4.6a3.5 3.5 0 0 1 0 6.8', 'M21.5 20a6.5 6.5 0 0 0-3.5-5.8'],
+    persona: ['c:12,8,4', 'M5 21a7 7 0 0 1 14 0'],
+    calculadora: ['r:5,3,14,18,2', 'r:8,6,8,4,1', 'M9 14h.01', 'M12 14h.01', 'M15 14h.01', 'M9 17.5h.01', 'M12 17.5h.01', 'M15 17.5h.01'],
+    tijera: ['c:6,6,3', 'c:6,18,3', 'M8.5 7.5L20 18', 'M8.5 16.5L20 6'],
+    expandir: ['M4 9V4h5', 'M20 9V4h-5', 'M4 15v5h5', 'M20 15v5h-5'],
+    letra: ['M4 7V5h16v2', 'M12 5v14', 'M9 19h6'],
+    ordenar: ['M7 4v16', 'M3.5 7.5L7 4l3.5 3.5', 'M17 20V4', 'M13.5 16.5L17 20l3.5-3.5'],
+    mensaje: ['M4 5h16v11H9l-5 4z'], radio: ['c:12,12,9', 'c:12,12,3.5'],
+    escuadra: ['M4 20V4l16 16z', 'M4 14h3', 'M4 10h2'],
+    formas: ['r:3,3,8,8,1.5', 'c:17,17,4', 'M17 3l4.5 7.5h-9z'],
+    camara: ['M4 8h3.5L9 5.5h6L16.5 8H20v12H4z', 'c:12,14,3.5'],
+    movil: ['r:7,2,10,20,2.5', 'M11 18h2'],
+    izq: ['M15 5l-7 7 7 7'], der: ['M9 5l7 7-7 7'], arribaC: ['M6 15l6-6 6 6'], abajoC: ['M6 9l6 6 6-6'],
+    pin: ['M12 21s7-6.4 7-12a7 7 0 0 0-14 0c0 5.6 7 12 7 12z', 'c:12,9,2.5'],
+    puntos: ['c:5,12,1.2', 'c:12,12,1.2', 'c:19,12,1.2'],
+    impresora: ['M7 9V3h10v6', 'r:3,9,18,8,2', 'M7 14h10v7H7z'],
+    repetir: ['M17 2.5l3.5 3.5-3.5 3.5', 'M3.5 11V9a3 3 0 0 1 3-3h14', 'M7 21.5L3.5 18 7 14.5', 'M20.5 13v2a3 3 0 0 1-3 3h-14'],
+    sigma: ['M18 5H6l6.5 7L6 19h12'],
+    reloj: ['c:12,12,9', 'M12 7v5l3 2'],
+    pincel: ['M18.5 3.5l2 2-8.5 8.5-2-2z', 'M10 12c-3 0-5 2-5 4.8 0 1.4-1 2.4-2 2.7 3.2 1.2 7 .2 8.3-2.7.5-1.2.4-2.6-1.3-4.8z'],
+    circulo: ['c:12,12,9'],
+    micro: ['r:9,3,6,11,3', 'M5.5 11a6.5 6.5 0 0 0 13 0', 'M12 17.5V21'],
+    luna: ['M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z'],
+    firma: ['M3 17c3-1 4-6 6-6s0 6 2 6 3-4 5-4 2 3 5 3', 'M3 21h18'],
+    balanza: ['M12 3v18', 'M7 21h10', 'M5 7h14', 'M5 7l-3 7a3 3 0 0 0 6 0z', 'M19 7l-3 7a3 3 0 0 0 6 0z'],
+    calendario: ['r:3,5,18,16,2', 'M3 10h18', 'M8 3v4', 'M16 3v4'],
+    carpetas: ['M3 8h5l2 2h11v9H3z', 'M6 5h5l2 2'],
+    globo: ['c:12,12,9', 'M3 12h18', 'M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z'],
+    rompecabezas: ['M5 8h3a2 2 0 1 1 4 0h3v3a2 2 0 1 1 0 4v3h-3a2 2 0 1 0-4 0H5v-3a2 2 0 1 0 0-4z'],
+    etiqueta: ['M3 12V4h8l10 10-8 8z', 'c:7.5,8.5,1.5'],
+    chincheta: ['M9 3h6l-1 6 4 4H6l4-4z', 'M12 13v8'],
+    deslizadores: ['M4 6h9', 'M17 6h3', 'M4 12h3', 'M11 12h9', 'M4 18h11', 'M19 18h1', 'c:15,6,2', 'c:9,12,2', 'c:17,18,2'],
+    sonido: ['M4 9h4l5-4v14l-5-4H4z', 'M16.5 9a4 4 0 0 1 0 6', 'M19 6a8 8 0 0 1 0 12'],
+    cambio: ['M7 4L3 8l4 4', 'M3 8h14', 'M17 12l4 4-4 4', 'M21 16H7'],
+    correo: ['r:3,5,18,14,2', 'M3 7l9 6 9-6'],
+    grabar: ['c:12,12,7'],
+    flechasH: ['M3 12h18', 'M7 8l-4 4 4 4', 'M17 8l4 4-4 4'],
+    casa: ['M3 11l9-7 9 7', 'M5 10v10h14V10', 'M10 20v-6h4v6'],
+    ayuda: ['c:12,12,9', 'M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.9-1.1 1.7', 'M12 17h.01'],
+    teclado: ['r:2,6,20,12,2', 'M6 10h.01', 'M10 10h.01', 'M14 10h.01', 'M18 10h.01', 'M7 14h10'],
+    brujula: ['c:12,12,9', 'M15.5 8.5l-2 5-5 2 2-5z'],
+    copo: ['M12 2v20', 'M3.5 7l17 10', 'M20.5 7l-17 10'],
+    llave: ['c:7.5,15.5,4', 'M10.5 12.5L20 3', 'M16 7l3 3', 'M14 9l2 2'],
+    libro: ['M4 5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2z', 'M4 19V5', 'M20 18v3H6'],
+    gota: ['M12 3s7 7.4 7 12a7 7 0 0 1-14 0c0-4.6 7-12 7-12z'],
+    arena: ['M6 3h12', 'M6 21h12', 'M7.5 3c0 5.5 9 5.5 9 9s-9 3.5-9 9', 'M16.5 3c0 5.5-9 5.5-9 9s9 3.5 9 9'],
+    caja: ['M3 7.5l9-4.5 9 4.5v9L12 21l-9-4.5z', 'M3 7.5l9 4.5 9-4.5', 'M12 12v9'],
+    edificio: ['M4 21V8l8-5 8 5v13', 'M9 21v-6h6v6', 'M9 10h.01', 'M15 10h.01'],
+    carrito: ['M3 4h2.5l2.7 11.5h10.6L21 8H6.3', 'c:9.5,19.5,1.5', 'c:17.5,19.5,1.5'],
+    foco: ['M9 18h6', 'M10 21h4', 'M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z'],
+    rayo: ['M13 2L4.5 14H11l-1 8 8.5-12H12z'],
+    ventana: ['r:3,4,18,16,2', 'M3 9h18', 'M12 9v11'],
+    regla: ['M3 17L17 3l4 4L7 21z', 'M7 13l2 2', 'M10 10l2 2', 'M13 7l2 2'],
+    arco: ['M3 18a9 9 0 0 1 18 0', 'M7 18a5 5 0 0 1 10 0'],
+    filtro: ['M4 5h16l-6 7.5V18l-4 2v-7.5z'],
+    ladrillos: ['r:3,5,18,14,1.5', 'M3 10h18', 'M3 15h18', 'M9 5v5', 'M15 10v5', 'M9 15v4'],
+    matraz: ['M9 3h6', 'M10 3v6L4.2 18.6A1.6 1.6 0 0 0 5.6 21h12.8a1.6 1.6 0 0 0 1.4-2.4L14 9V3'],
+    chispa: ['M12 3l1.8 6.2L20 11l-6.2 1.8L12 19l-1.8-6.2L4 11l6.2-1.8z'],
+    bandera: ['M5 21V4', 'M5 4h13l-3 4 3 4H5'],
+    maletin: ['r:3,7,18,13,2', 'M9 7V5h6v2', 'M3 12h18'],
+    casilla: ['r:4,4,16,16,3', 'M8 12l3 3 5-6'],
+    rectangulo: ['r:3,7,18,10,1.5'], linea: ['M5 19L19 5'], cuadroTexto: ['r:4,4,16,16,2', 'M8 9h8', 'M12 9v8'],
+    externo: ['M14 4h6v6', 'M20 4l-9 9', 'M18 14v6H4V6h6'],
+    contraste: ['c:12,12,9', 'M12 3v18'],
+    ampliar: ['M14 4h6v6', 'M10 20H4v-6', 'M20 4l-7 7', 'M4 20l7-7'],
+    enviar: ['M4 12l16-8-6 16-3-6z', 'M11 14l9-10'],
+    cohete: ['M5 15c-1 1-1.5 4-1.5 4.5S6 19 7 18', 'M9 15l-3-3c1-4 4-8 11-9-1 7-5 10-9 11z', 'c:15,9,1.5'],
+    asiento: ['M4 4h16v16H4z', 'M4 9h16', 'M12 9v11'],
+    sello: ['M8 21h8', 'M7 17h10v4H7z', 'M9 17v-3a3 3 0 1 1 6 0v3'],
+    salud: ['M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z']
+  };
+  var E = {
+    '📊': 'barras', '📈': 'sube', '📉': 'baja', '📋': 'portapapeles', '🗑': 'basura', '➕': 'mas', '＋': 'mas', '➖': 'menos',
+    '✕': 'equis', '✖': 'equis', '❌': 'equis', '×': 'equis', '✗': 'equis', '🎨': 'paleta', '🔍': 'lupa', '🔎': 'lupa',
+    '✅': 'check', '✔': 'check', '✓': 'check', '🔒': 'candado', '🔐': 'candado', '🔏': 'candado', '🔓': 'abierto',
+    '📤': 'compartir', '📥': 'recibir', '⬇': 'bajar', '⤓': 'bajar', '↓': 'bajar', '⬆': 'subir', '⤒': 'subir', '↑': 'subir',
+    '📄': 'documento', '📃': 'documento', '📑': 'documentoL', '📜': 'documentoL', '🔗': 'enlace', '🔄': 'recargar', '↺': 'recargar', '⟳': 'recargar', '♻': 'recargar',
+    '🏛': 'banco', '🏦': 'banco', '📁': 'carpeta', '📂': 'carpeta', '🔢': 'numeral', '🖼': 'imagen', '↩': 'deshacer', '↶': 'deshacer', '↷': 'rehacer',
+    '🚨': 'alerta', '⚠': 'alerta', '💰': 'dinero', '💵': 'dinero', '💾': 'guardar', '👁': 'ojo', '🙈': 'ojoNo', '▶': 'play', '⏸': 'pausa', '⧉': 'copiar',
+    '🎯': 'diana', '🧹': 'escoba', '🧽': 'escoba', '📝': 'lapiz', '✏': 'lapiz', '✎': 'lapiz', '⭐': 'estrella', '🧾': 'recibo', '▦': 'tabla',
+    '☰': 'menu', '≡': 'menu', '☁': 'nube', '👥': 'personas', '👤': 'persona', '🧮': 'calculadora', '✂': 'tijera', '⛶': 'expandir', '🔤': 'letra',
+    '⇅': 'ordenar', '💬': 'mensaje', '🔘': 'radio', '⚪': 'radio', '📐': 'escuadra', '🔷': 'formas', '📷': 'camara', '📸': 'camara', '📲': 'movil', '📱': 'movil',
+    '◀': 'izq', '‹': 'izq', '⬅': 'izq', '›': 'der', '➡': 'der', '➜': 'der', '➤': 'enviar', '▲': 'arribaC', '▴': 'arribaC', '▼': 'abajoC', '▾': 'abajoC',
+    '📍': 'pin', '⋯': 'puntos', '🖨': 'impresora', '🔁': 'repetir', '∑': 'sigma', '🕘': 'reloj', '🕐': 'reloj', '🕓': 'reloj', '⏰': 'reloj', '⏱': 'reloj',
+    '🖌': 'pincel', '⭕': 'circulo', '◯': 'circulo', '🎙': 'micro', '🎤': 'micro', '🌙': 'luna', '✍': 'firma', '⚖': 'balanza',
+    '📅': 'calendario', '🗓': 'calendario', '📆': 'calendario', '🗂': 'carpetas', '🌐': 'globo', '🧩': 'rompecabezas', '📛': 'etiqueta', '🏷': 'etiqueta',
+    '📌': 'chincheta', '🎚': 'deslizadores', '🔊': 'sonido', '💱': 'cambio', '📨': 'correo', '✉': 'correo', '📧': 'correo', '⏺': 'grabar',
+    '↔': 'flechasH', '⇄': 'flechasH', '🏠': 'casa', '❔': 'ayuda', '❓': 'ayuda', '⌨': 'teclado', '🧭': 'brujula', '❄': 'copo', '🔑': 'llave',
+    '📖': 'libro', '📕': 'libro', '📗': 'libro', '📒': 'libro', '📚': 'libro', '📘': 'libro', '💧': 'gota', '⏳': 'arena', '📦': 'caja', '🏗': 'edificio', '🏢': 'edificio',
+    '🛒': 'carrito', '💡': 'foco', '⚡': 'rayo', '🪟': 'ventana', '📏': 'regla', '🌈': 'arco', '🔽': 'filtro', '⛛': 'filtro', '🧱': 'ladrillos', '🧪': 'matraz',
+    '✦': 'chispa', '✨': 'chispa', '🇨🇷': 'bandera', '🚩': 'bandera', '💼': 'maletin', '☑': 'casilla', '▭': 'rectangulo', '╱': 'linea', '🅣': 'cuadroTexto',
+    '↗': 'externo', '◐': 'contraste', '⤢': 'ampliar', '🚀': 'cohete', '🔏': 'sello', '❤': 'salud', '★': 'estrella', 'ƒ': null
+  };
+  return { trazos: I, porEmoji: E };
+})();
+function svgIconoPro(nombre, clase) {
+  var t = ICONOS_PRO.trazos[nombre]; if (!t) return '';
+  return '<svg class="' + (clase || 'icoP') + '" viewBox="0 0 24 24" aria-hidden="true">' + t.map(function (s) {
+    if (s.indexOf('c:') === 0) { var c = s.slice(2).split(','); return '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '"/>'; }
+    if (s.indexOf('r:') === 0) { var r = s.slice(2).split(','); return '<rect x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '" rx="' + (r[4] || 0) + '"/>'; }
+    return '<path d="' + s + '"/>';
+  }).join('') + '</svg>';
+}
+var RE_EMOJI_INICIO = /^(\s*)((?:\uD83C[\uDDE6-\uDDFF]){2}|(?:[←-⇿∑≡⌀-⏿■-◿☀-➿⤴⤵⬀-⯿ℹ↔-↙⧉✕✖✗×‹›⋯＋]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDEFF])(?:️|‍(?:\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDEFF]|[☀-➿])️?)*)/;
+var SELECTOR_ICONOS = 'button, .tgTab, #mcrPanelTitulo, .rbTab, .ribbon-group-title, .rbGrupoTit, .menuItem, h3, summary, .tabMenuItem';
+var EXCLUIR_ICONOS = '#sheetTable, .tgCard, .tgPrev, .ctrlEstrella, .vozFlag, .dbColor, .mpIconos, .tabla-libre td, [data-no-ico], #emojiPicker, .tlEstilos, .cinterPlay, .catCols, .lfItem, #templateGalleryGrid .tgLabel';
+function iconosActivos() { try { return localStorage.getItem('mcr_iconos') !== 'emoji'; } catch (e) { return true; } }
+function ponerIconoEnElemento(el) {
+  if (el._icoHecho === el.textContent) return;
+  if (el.closest(EXCLUIR_ICONOS)) { el._icoHecho = el.textContent; return; }
+  // Primer nodo de texto con contenido (sin meterse en el ícono ya puesto)
+  var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, { acceptNode: function (n) { return n.parentElement && n.parentElement.closest('.icoP, .emoOculto, .emoMono') ? NodeFilter.FILTER_REJECT : (/\S/.test(n.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP); } });
+  var n = w.nextNode();
+  if (n && !el.querySelector('.icoP, .emoMono')) {
+    var m = RE_EMOJI_INICIO.exec(n.data);
+    if (m) {
+      var emo = m[2], base = emo.replace(/[️‍].*$/, ''), clave = ICONOS_PRO.porEmoji[emo] || ICONOS_PRO.porEmoji[base];
+      var resto = n.data.slice(m[0].length), solo = !/\S/.test(resto) && el.childNodes.length === 1;
+      var esPicto = /[\uD83C-\uD83E]/.test(base) || /[☀-➿]/.test(base);
+      if (clave || esPicto) {
+        var frag = document.createDocumentFragment();
+        if (m[1]) frag.appendChild(document.createTextNode(m[1]));
+        if (clave) {
+          var tmp = document.createElement('span'); tmp.innerHTML = svgIconoPro(clave, 'icoP' + (solo ? ' icoSolo' : ''));
+          frag.appendChild(tmp.firstChild);
+          var oc = document.createElement('span'); oc.className = 'emoOculto'; oc.textContent = emo; frag.appendChild(oc);
+        } else {
+          var mono = document.createElement('span'); mono.className = 'emoMono'; mono.textContent = emo; frag.appendChild(mono);
+        }
+        frag.appendChild(document.createTextNode(resto));
+        n.parentNode.replaceChild(frag, n);
+      }
+    }
+  }
+  el._icoHecho = el.textContent;
+}
+var colaIconos = false;
+function repasarIconos() {
+  colaIconos = false;
+  if (!iconosActivos()) return;
+  document.querySelectorAll(SELECTOR_ICONOS).forEach(ponerIconoEnElemento);
+}
+function pedirRepasoIconos() { if (!colaIconos) { colaIconos = true; requestAnimationFrame(repasarIconos); } }
+(function () {
+  // Las traducciones al inglés buscan el texto con el emoji; con el ícono el texto queda separado,
+  // así que se agrega la misma traducción sin el emoji.
+  try {
+    Object.keys(I18N_EN).forEach(function (k) {
+      var m = RE_EMOJI_INICIO.exec(k); if (!m) return;
+      var k2 = k.slice(m[0].length).trim(), v = String(I18N_EN[k]), mv = RE_EMOJI_INICIO.exec(v), v2 = mv ? v.slice(mv[0].length).trim() : v;
+      if (k2 && I18N_EN[k2] === undefined) I18N_EN[k2] = v2;
+    });
+    if (typeof i18nRegex !== 'undefined') i18nRegex = null;
+  } catch (e) {}
+  document.body.classList.toggle('iconosEmoji', !iconosActivos());
+  new MutationObserver(function (lista) {
+    for (var i = 0; i < lista.length; i++) {
+      var t = lista[i].target, el = t.nodeType === 1 ? t : t.parentElement;
+      if (el && el.closest && !el.closest('#sheetTable')) { pedirRepasoIconos(); return; }
+    }
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  pedirRepasoIconos();
+})();
+function alternarIconosClasicos() {
+  var activar = !iconosActivos();
+  try { localStorage.setItem('mcr_iconos', activar ? 'linea' : 'emoji'); } catch (e) {}
+  document.body.classList.toggle('iconosEmoji', !activar);
+  if (activar) repasarIconos();
+  tgAviso(activar ? 'Íconos de línea' : 'Íconos clásicos (emojis)');
+}
+// ══════════════════════════════════════════════
+// PRO · 2) Inspector de formato (el 🖌 de Numbers)
+// Una hoja que sube desde abajo con pestañas Celda · Texto · Tabla ·
+// Organizar. Todo se aplica en vivo a la selección y se puede deshacer.
+// ══════════════════════════════════════════════
+var COLORES_INSPECTOR = ['', '#ffffff', '#f3f4f6', '#d1d5db', '#fee2e2', '#ffedd5', '#fef9c3', '#dcfce7', '#dbeafe', '#ede9fe', '#fce7f3',
+  '#111827', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#2563eb', '#7c3aed', '#db2777', '#0f766e', '#245f09'];
+var pestanaInspector = 'celda';
+function idsSeleccionInspector() {
+  var b = limitesDeSeleccionOCelda(); if (!b) return [];
+  var ids = []; for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) ids.push(cellId(r, c));
+  return ids;
+}
+function cambiarFormatoInspector(fn) {
+  if (sheetProtegida[activeSheet]) { aviso('🔒 Esta hoja está protegida.'); return; }
+  var ids = idsSeleccionInspector(); if (!ids.length) return;
+  snapshot();
+  var F = sheetFormats[activeSheet] || (sheetFormats[activeSheet] = {});
+  ids.forEach(function (id) { var f = F[id] = F[id] || {}; fn(f, id); });
+  renderAllCells(); autoSave(); pintarInspector();
+}
+function formatoActualInspector() { var id = idsSeleccionInspector()[0]; return ((sheetFormats[activeSheet] || {})[id]) || {}; }
+function abrirInspector() {
+  var ins = document.getElementById('inspectorPro');
+  if (!ins) {
+    ins = document.createElement('div'); ins.id = 'inspectorPro';
+    ins.innerHTML = '<div class="insAsa"></div><div class="insCab"><div class="insTabs">' +
+      [['celda', 'Celda'], ['texto', 'Texto'], ['tabla', 'Tabla'], ['organizar', 'Organizar']].map(function (t) { return '<button type="button" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('') +
+      '</div><button type="button" class="insCerrar" aria-label="Cerrar">' + svgIconoPro('equis') + '</button></div><div class="insCuerpo"></div>';
+    document.body.appendChild(ins);
+    ins.querySelectorAll('[data-tab]').forEach(function (b) { b.addEventListener('click', function () { pestanaInspector = b.dataset.tab; pintarInspector(); }); });
+    ins.querySelector('.insCerrar').addEventListener('click', cerrarInspector);
+    // Arrastrar el asa hacia abajo cierra
+    var y0 = null, asa = ins.querySelector('.insAsa');
+    asa.addEventListener('pointerdown', function (e) { y0 = e.clientY; asa.setPointerCapture(e.pointerId); });
+    asa.addEventListener('pointermove', function (e) { if (y0 !== null) ins.style.transform = 'translateY(' + Math.max(0, e.clientY - y0) + 'px)'; });
+    asa.addEventListener('pointerup', function (e) { var d = y0 === null ? 0 : e.clientY - y0; y0 = null; ins.style.transform = ''; if (d > 70) cerrarInspector(); });
+    ['pointerdown', 'mousedown'].forEach(function (evt) { ins.addEventListener(evt, function (e) { if (e.target.closest('input, select')) return; e.preventDefault(); }); });
+  }
+  document.body.classList.add('conInspector');
+  requestAnimationFrame(function () { ins.classList.add('abierto'); });
+  pintarInspector();
+}
+function cerrarInspector() { var ins = document.getElementById('inspectorPro'); if (ins) ins.classList.remove('abierto'); document.body.classList.remove('conInspector'); }
+function muestrasColorInspector(clave) {
+  var f = formatoActualInspector(), actual = f[clave] || '';
+  return '<div class="insColores">' + COLORES_INSPECTOR.map(function (c) {
+    return '<button type="button" class="insColor' + (c === actual ? ' on' : '') + (c ? '' : ' ninguno') + '" data-color="' + c + '" data-clave="' + clave + '" style="' + (c ? 'background:' + c : '') + '" aria-label="' + (c || 'Sin color') + '"></button>';
+  }).join('') + '<label class="insColor otro" aria-label="Otro color"><input type="color" data-clave="' + clave + '" value="' + (actual || '#000000') + '"></label></div>';
+}
+function pintarInspector() {
+  var ins = document.getElementById('inspectorPro'); if (!ins || !ins.classList.contains('abierto') && !document.body.classList.contains('conInspector')) return;
+  ins.querySelectorAll('[data-tab]').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === pestanaInspector); });
+  var f = formatoActualInspector(), nf = f.numFormat || {}, b = limitesDeSeleccionOCelda();
+  var sel = b ? cellId(b.minR, b.minC) + (b.maxR > b.minR || b.maxC > b.minC ? ':' + cellId(b.maxR, b.maxC) : '') : '—';
+  var btn = function (a, txt, on, extra) { return '<button type="button" class="insBtn' + (on ? ' on' : '') + '" data-a="' + a + '"' + (extra || '') + '>' + txt + '</button>'; };
+  var h = '<div class="insSel">' + sel + '</div>';
+  if (pestanaInspector === 'celda') {
+    var tipo = f.currency ? 'currency' : f.percent ? 'percent' : (nf.type || 'general');
+    h += '<div class="insTit">Formato de los datos</div><div class="insFila insChips">' +
+      [['general', 'Automático'], ['number', 'Número'], ['currency', '₡ Moneda'], ['currency_usd', '$ Dólares'], ['percent', '%'], ['accounting', 'Contable'], ['duracion_hm', 'Duración'], ['custom_fecha', 'Fecha']].map(function (t) { return btn('num:' + t[0], t[1], tipo === t[0] || (t[0] === 'custom_fecha' && nf.type === 'custom' && /d/.test(nf.codigo || ''))); }).join('') + '</div>' +
+      '<div class="insFila"><span class="insEtq">Decimales</span>' + btn('dec:-1', '−') + '<span class="insValor">' + (nf.decimals !== undefined ? nf.decimals : (tipo === 'general' ? 'auto' : 2)) + '</span>' + btn('dec:1', '+') +
+      '<span class="insEtq" style="margin-left:14px">Miles</span>' + btn('miles', nf.thousands === false ? 'No' : 'Sí', nf.thousands !== false) + '</div>' +
+      '<div class="insTit">Relleno</div>' + muestrasColorInspector('bgColor') +
+      '<div class="insTit">Bordes</div><div class="insFila insChips">' + btn('bor:ninguno', 'Ninguno') + btn('bor:todos', 'Todos') + btn('bor:externo', 'Contorno') + btn('bor:abajo', 'Abajo') + btn('bor:doble', 'Total (arriba)') + '</div>';
+  } else if (pestanaInspector === 'texto') {
+    h += '<div class="insFila insEstilos">' + btn('bold', '<b>N</b>', f.bold) + btn('italic', '<i>I</i>', f.italic) + btn('underline', '<u>S</u>', f.underline) + btn('strike', '<s>T</s>', f.strike) + '</div>' +
+      '<div class="insFila"><span class="insEtq">Tamaño</span>' + btn('tam:-1', '−') + '<span class="insValor">' + (f.fontSize || 12) + ' pt</span>' + btn('tam:1', '+') + '</div>' +
+      '<div class="insTit">Color del texto</div>' + muestrasColorInspector('fontColor') +
+      '<div class="insTit">Alineación</div><div class="insFila insChips">' + btn('al:', 'Auto', !f.align) + btn('al:left', 'Izquierda', f.align === 'left') + btn('al:center', 'Centro', f.align === 'center') + btn('al:right', 'Derecha', f.align === 'right') + '</div>' +
+      '<div class="insFila">' + btn('wrap', 'Ajustar texto en la celda', !!f.wrap) + '</div>';
+  } else if (pestanaInspector === 'tabla') {
+    var v = vistaDeHoja();
+    h += '<div class="insTit">Estilo de tabla</div><div class="insTemas">' + TEMAS_HOJA.map(function (t, i) {
+      return '<button type="button" class="insTema" data-a="tema:' + i + '" title="' + t.n + '"><i style="background:' + t.head + '"></i><i style="background:' + t.b1 + '"></i><i style="background:' + t.b2 + '"></i><i style="background:' + t.b1 + '"></i><span>' + t.n + '</span></button>';
+    }).join('') + '</div><div class="mcrNota">Se aplica a la tabla donde está la celda (o a la selección).</div>' +
+      '<div class="insFila insChips">' + btn('vista:sinCuadricula', 'Cuadrícula', !v.sinCuadricula) + btn('vista:sinEncabezados', 'Letras y números', !v.sinEncabezados) + btn('congelar', 'Fijar 1.ª fila', (sheetFreeze[activeSheet] || {}).row === 1) + '</div>' +
+      '<div class="insFila insChips">' + btn('quitarFormato', 'Quitar formato de la selección') + '</div>';
+  } else {
+    h += '<div class="insTit">Filas y columnas</div><div class="insFila insChips">' + btn('clic:cmInsertarFila', 'Fila arriba') + btn('clic:cmInsertarCol', 'Columna a la izq.') + btn('clic:cmEliminarFila', 'Eliminar fila') + btn('clic:cmEliminarCol', 'Eliminar columna') + '</div>' +
+      '<div class="insFila insChips">' + btn('clic:raAutofit', 'Ancho automático') + btn('clic:raOcultarFilas', 'Ocultar filas') + btn('clic:raOcultarCols', 'Ocultar columnas') + btn('clic:raAgruparFilas', 'Agrupar filas') + '</div>' +
+      '<div class="insTit">Datos</div><div class="insFila insChips">' + btn('orden:asc', 'Ordenar A → Z') + btn('orden:desc', 'Ordenar Z → A') + btn('clic:raMerge', 'Combinar celdas') + btn('clic:raQuitarDuplicados', 'Quitar duplicados') + '</div>';
+  }
+  var cuerpo = ins.querySelector('.insCuerpo'); cuerpo.innerHTML = h;
+  cuerpo.querySelectorAll('[data-a]').forEach(function (x) { x.addEventListener('click', function () { accionInspector(x.dataset.a); }); });
+  cuerpo.querySelectorAll('.insColor[data-color]').forEach(function (x) { x.addEventListener('click', function () { var c = x.dataset.color, k = x.dataset.clave; cambiarFormatoInspector(function (f) { if (c) f[k] = c; else delete f[k]; }); }); });
+  cuerpo.querySelectorAll('.insColor input').forEach(function (x) { x.addEventListener('change', function () { var c = x.value, k = x.dataset.clave; cambiarFormatoInspector(function (f) { f[k] = c; }); }); });
+}
+function accionInspector(a) {
+  var p = a.split(':'), k = p[0], v = p.slice(1).join(':');
+  if (k === 'num') return cambiarFormatoInspector(function (f) {
+    f.currency = false; f.percent = false;
+    var dec = f.numFormat && f.numFormat.decimals !== undefined ? f.numFormat.decimals : 2;
+    if (v === 'general') delete f.numFormat;
+    else if (v === 'custom_fecha') f.numFormat = { type: 'custom', codigo: 'dd/mm/aaaa' };
+    else f.numFormat = { type: v, decimals: v === 'percent' ? Math.min(dec, 1) : dec, thousands: true };
+  });
+  if (k === 'dec') return cambiarFormatoInspector(function (f) { var nf = f.numFormat || { type: 'number', thousands: true }; if (nf.type === 'custom' || /^duracion/.test(nf.type)) return; nf.decimals = Math.max(0, Math.min(6, (nf.decimals !== undefined ? nf.decimals : 2) + parseInt(v, 10))); f.numFormat = nf; });
+  if (k === 'miles') return cambiarFormatoInspector(function (f) { var nf = f.numFormat || { type: 'number', decimals: 2 }; nf.thousands = nf.thousands === false; f.numFormat = nf; });
+  if (k === 'bor') {
+    var b = limitesDeSeleccionOCelda();
+    return cambiarFormatoInspector(function (f, id) {
+      var r = filaDe(id), c = colDe(id), col = '#9ca3af';
+      if (v === 'ninguno') { delete f.borders; f.border = false; return; }
+      if (v === 'todos') f.borders = { top: true, bottom: true, left: true, right: true, width: 1, color: col };
+      if (v === 'externo') f.borders = { top: r === b.minR, bottom: r === b.maxR, left: c === b.minC, right: c === b.maxC, width: 1.5, color: '#374151' };
+      if (v === 'abajo') f.borders = { top: false, bottom: true, left: false, right: false, width: 1, color: col };
+      if (v === 'doble') { f.borders = { top: r === b.minR, bottom: false, left: false, right: false, width: 2, color: '#111827' }; f.bold = true; }
+    });
+  }
+  if (k === 'bold' || k === 'italic' || k === 'underline' || k === 'strike' || k === 'wrap') { var on = !formatoActualInspector()[k]; return cambiarFormatoInspector(function (f) { f[k] = on; }); }
+  if (k === 'tam') return cambiarFormatoInspector(function (f) { var t = (f.fontSize || 12) + parseInt(v, 10); f.fontSize = Math.max(7, Math.min(40, t)); if (f.fontSize === 12) f.fontSize = null; });
+  if (k === 'al') return cambiarFormatoInspector(function (f) { if (v) f.align = v; else delete f.align; });
+  if (k === 'tema') {
+    var b0 = limitesDeSeleccionOCelda(); if (!b0) return;
+    if (b0.minR === b0.maxR && b0.minC === b0.maxC) b0 = regionActualDeDatos(b0.minR, b0.minC);
+    snapshot(); aplicarTemaARegion(activeSheet, b0, TEMAS_HOJA[parseInt(v, 10)], {}); renderAllCells(); autoSave();
+    aviso('🎨 ' + TEMAS_HOJA[parseInt(v, 10)].n + ' aplicado a ' + cellId(b0.minR, b0.minC) + ':' + cellId(b0.maxR, b0.maxC)); return;
+  }
+  if (k === 'vista') { alternarVistaHoja(v, v === 'sinCuadricula' ? 'Cuadrícula' : 'Encabezados'); pintarInspector(); return; }
+  if (k === 'congelar') { snapshot(); var fr = sheetFreeze[activeSheet] = sheetFreeze[activeSheet] || { row: 0, col: 0 }; fr.row = fr.row === 1 ? 0 : 1; buildTable(); autoSave(); pintarInspector(); return; }
+  if (k === 'quitarFormato') return cambiarFormatoInspector(function (f, id) { delete sheetFormats[activeSheet][id]; });
+  if (k === 'clic') { var el = document.getElementById(v); if (el) el.click(); setTimeout(pintarInspector, 50); return; }
+  if (k === 'orden') {
+    var bo = limitesDeSeleccionOCelda(); if (!bo) return;
+    var reg = bo.minR === bo.maxR && bo.minC === bo.maxC ? regionActualDeDatos(bo.minR, bo.minC) : bo, colOrden = bo.minC;
+    var d = sheetData[activeSheet] || {}, F = sheetFormats[activeSheet] || {};
+    var conEnc = isNaN(parseFloat(limpiaNum(computeValue(cellId(reg.minR, colOrden))))) && reg.maxR > reg.minR && !isNaN(parseFloat(limpiaNum(computeValue(cellId(reg.minR + 1, colOrden)))));
+    var r0 = reg.minR + (conEnc ? 1 : 0); if (r0 >= reg.maxR) return;
+    snapshot();
+    var filas = [];
+    for (var r = r0; r <= reg.maxR; r++) { var fila = { k: computeValue(cellId(r, colOrden)), v: [], f: [] }; for (var c = reg.minC; c <= reg.maxC; c++) { fila.v.push(d[cellId(r, c)]); fila.f.push(F[cellId(r, c)]); } filas.push(fila); }
+    filas.sort(function (x, y) { var nx = parseFloat(limpiaNum(x.k)), ny = parseFloat(limpiaNum(y.k)), res = !isNaN(nx) && !isNaN(ny) ? nx - ny : String(x.k).localeCompare(String(y.k), 'es', { sensitivity: 'base' }); return v === 'desc' ? -res : res; });
+    filas.forEach(function (fila, i) { for (var c2 = reg.minC; c2 <= reg.maxC; c2++) { var id = cellId(r0 + i, c2), vv = fila.v[c2 - reg.minC], ff = fila.f[c2 - reg.minC]; if (vv === undefined) delete d[id]; else d[id] = vv; if (ff === undefined) delete F[id]; else F[id] = ff; marcarCeldaSucia(activeSheet, id); } });
+    if (typeof cacheCalculo !== 'undefined') cacheCalculo = {};
+    renderAllCells(); autoSave(); aviso('⇅ Ordenado por la columna ' + colLetter(colOrden) + (conEnc ? ' (sin mover el encabezado)' : ''));
+  }
+}
+
+// ══════════════════════════════════════════════
+// PRO · 3) Teclado propio (como el de Numbers en iPhone)
+// Números grandes con operadores y botón =, más modos de funciones,
+// fecha/hora y duración. "abc" vuelve al teclado del teléfono.
+// ══════════════════════════════════════════════
+var tecladoMCR = { modo: '123', objetivo: null };
+function tecladoProActivo() {
+  try { var p = localStorage.getItem('mcr_teclado'); if (p === 'no') return false; if (p === 'si') return true; } catch (e) {}
+  return !!(window.matchMedia && matchMedia('(pointer: coarse)').matches) && innerWidth < 900;
+}
+function esEditableTeclado(el) { return !!(el && el.nodeType === 1 && ((el.classList.contains('cell') && el.isContentEditable) || el.id === 'formulaInput' || (el.closest && el.closest('.tabla-libre') && el.tagName === 'TD'))); }
+function construirTecladoMCR() {
+  var k = document.createElement('div'); k.id = 'tecladoMCR'; k.setAttribute('data-no-ico', '');
+  document.body.appendChild(k);
+  ['pointerdown', 'mousedown', 'touchstart'].forEach(function (evt) { k.addEventListener(evt, function (e) { e.preventDefault(); }, { passive: false }); });
+  k.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) teclaMCR(b.dataset.k, b); });
+  return k;
+}
+function pintarTecladoMCR() {
+  var k = document.getElementById('tecladoMCR') || construirTecladoMCR(), m = tecladoMCR.modo;
+  var t = function (cod, txt, cls) { return '<button type="button" data-k="' + cod.replace(/"/g, '&quot;') + '" class="' + (cls || '') + '">' + (txt === undefined ? cod : txt) + '</button>'; };
+  var modos = '<div class="tkModos">' + t('modo:123', '123', m === '123' ? 'on' : '') + t('modo:fx', 'ƒx', m === 'fx' ? 'on' : '') + t('modo:fecha', svgIconoPro('calendario', 'tkIco'), m === 'fecha' ? 'on' : '') + t('modo:dur', svgIconoPro('reloj', 'tkIco'), m === 'dur' ? 'on' : '') +
+    t('abc', 'abc', 'tkAbc') + '<span class="tkEsp"></span>' + t('izq', svgIconoPro('izq', 'tkIco')) + t('der', svgIconoPro('der', 'tkIco')) + t('cerrar', svgIconoPro('abajoC', 'tkIco'), 'tkCerrar') + '</div>';
+  var cuerpo = '';
+  if (m === 'fx') {
+    cuerpo = '<div class="tkFx">' + ['SUMA(', 'PROMEDIO(', 'SI(', 'CONTAR(', 'MAX(', 'MIN(', 'REDONDEAR(', 'BUSCARX(', 'SUMAR.SI(', 'CONTAR.SI(', 'HOY()', 'Y(', 'O(', 'SI.ERROR(', 'TEXTO(', 'BUSCARV(', 'TIPOCAMBIO("venta")', 'ABS('].map(function (f) { return t('ins:' + (f.charAt(0) === '=' ? f : f), f.replace(/\($/, '')); }).join('') +
+      '</div><div class="tkFila">' + t('ins:=', '=', 'tkOp') + t('ins:(', '(', 'tkOp') + t('ins:)', ')', 'tkOp') + t('ins:;', ';', 'tkOp') + t('ins::', ':', 'tkOp') + t('ins:"', '"', 'tkOp') + t('borrar', '⌫', 'tkOp') + t('enter', '↵', 'tkEnter') + '</div>';
+  } else {
+    var extra = m === 'fecha' ? [t('ins:/', '/', 'tkOp'), t('ins::', ':', 'tkOp'), t('hoy', 'Hoy', 'tkOp'), t('ahora', 'Ahora', 'tkOp')]
+      : m === 'dur' ? [t('ins: h', 'h', 'tkOp'), t('ins: min', 'min', 'tkOp'), t('ins: d', 'd', 'tkOp'), t('ins::', ':', 'tkOp')]
+      : [t('ins:÷', '÷', 'tkOp'), t('ins:×', '×', 'tkOp'), t('ins:−', '−', 'tkOp'), t('ins:+', '+', 'tkOp')];
+    cuerpo = '<div class="tkTop">' + t('ins:=', '=', 'tkIgual') + t('ins:(', '(') + t('ins:)', ')') + t('ins:;', ';') + t('ins:%', '%') + t('ins:₡', '₡') + t('ins:$', '$') + '</div>' +
+      '<div class="tkGrid">' +
+      t('ins:7', '7', 'tkNum') + t('ins:8', '8', 'tkNum') + t('ins:9', '9', 'tkNum') + extra[0] + t('borrar', '⌫', 'tkOp') +
+      t('ins:4', '4', 'tkNum') + t('ins:5', '5', 'tkNum') + t('ins:6', '6', 'tkNum') + extra[1] + t('tab', '⇥', 'tkOp') +
+      t('ins:1', '1', 'tkNum') + t('ins:2', '2', 'tkNum') + t('ins:3', '3', 'tkNum') + extra[2] + t('enter', '↵', 'tkEnter') +
+      t('ins:0', '0', 'tkNum tkCero') + t('ins:,', ',', 'tkNum') + extra[3] + '</div>';
+  }
+  k.innerHTML = modos + cuerpo;
+}
+function mostrarTecladoMCR(el) {
+  tecladoMCR.objetivo = el;
+  if (!document.getElementById('tecladoMCR') || !document.getElementById('tecladoMCR').innerHTML) pintarTecladoMCR();
+  var k = document.getElementById('tecladoMCR');
+  k.classList.add('abierto'); document.body.classList.add('tecladoMCR');
+  document.documentElement.style.setProperty('--altoTeclado', k.offsetHeight + 'px');
+  setTimeout(function () {
+    var wrap = document.getElementById('gridWrap'); if (!wrap || !el.classList.contains('cell')) return;
+    var r = el.getBoundingClientRect(), tope = k.getBoundingClientRect().top - 50;
+    if (r.bottom > tope) wrap.scrollTop += r.bottom - tope + 8;
+  }, 30);
+}
+function ocultarTecladoMCR() { var k = document.getElementById('tecladoMCR'); if (k) k.classList.remove('abierto'); document.body.classList.remove('tecladoMCR'); }
+function insertarEnEditable(el, txt) {
+  if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+    var a = el.selectionStart, b = el.selectionEnd; el.setRangeText(txt, a, b, 'end'); el.dispatchEvent(new Event('input', { bubbles: true })); return;
+  }
+  if (!document.execCommand('insertText', false, txt)) { el.textContent += txt; }
+  el.dataset.editado = '1';
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function teclaMCR(cod, boton) {
+  var el = tecladoMCR.objetivo;
+  if (cod.indexOf('modo:') === 0) { tecladoMCR.modo = cod.slice(5); pintarTecladoMCR(); return; }
+  if (cod === 'cerrar') { if (el) el.blur(); ocultarTecladoMCR(); return; }
+  if (!el || !document.body.contains(el)) return;
+  if (document.activeElement !== el) el.focus();
+  if (cod === 'abc') { el.removeAttribute('inputmode'); el.dataset.tecladoNativo = '1'; ocultarTecladoMCR(); el.blur(); el.focus(); return; }
+  if (cod.indexOf('ins:') === 0) {
+    var s = cod.slice(4); s = { '÷': '/', '×': '*', '−': '-' }[s] || s;
+    // Al empezar a escribir en una celda, lo nuevo reemplaza lo que había (como en Numbers)
+    if (el.classList && el.classList.contains('cell') && el.dataset.editado !== '1') { var rg = document.createRange(); rg.selectNodeContents(el); var sl = getSelection(); sl.removeAllRanges(); sl.addRange(rg); }
+    insertarEnEditable(el, s); return;
+  }
+  if (cod === 'hoy' || cod === 'ahora') { var d = new Date(); insertarEnEditable(el, textoDeFecha(d) + (cod === 'ahora' ? ' ' + dosDig(d.getHours()) + ':' + dosDig(d.getMinutes()) : '')); return; }
+  if (cod === 'borrar') {
+    if (el.tagName === 'TEXTAREA') { var a = el.selectionStart, b = el.selectionEnd; if (a === b && a > 0) a--; el.setRangeText('', a, b, 'end'); el.dispatchEvent(new Event('input', { bubbles: true })); return; }
+    document.execCommand('delete'); el.dataset.editado = '1'; el.dispatchEvent(new Event('input', { bubbles: true })); return;
+  }
+  if (cod === 'izq' || cod === 'der') {
+    if (el.tagName === 'TEXTAREA') { var p = el.selectionStart + (cod === 'izq' ? -1 : 1); el.setSelectionRange(Math.max(0, p), Math.max(0, p)); return; }
+    var sel = getSelection(); if (sel.modify) sel.modify('move', cod === 'izq' ? 'backward' : 'forward', 'character'); return;
+  }
+  if (cod === 'enter' || cod === 'tab') {
+    if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {}
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: cod === 'enter' ? 'Enter' : 'Tab', bubbles: true, cancelable: true }));
+  }
+}
+(function () {
+  // Antes de que la celda reciba el foco: se pide que el teléfono no saque su teclado
+  document.addEventListener('pointerdown', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('.cell, #formulaInput, .tabla-libre td') : null;
+    if (!el || !tecladoProActivo()) return;
+    if (el.dataset.tecladoNativo === '1') return;
+    if (celdaEsTextoTeclado(el)) { el.removeAttribute('inputmode'); return; } // texto: teclado del teléfono, como en Numbers
+    el.setAttribute('inputmode', 'none');
+  }, true);
+  document.addEventListener('focusin', function (e) {
+    var el = e.target;
+    if (!esEditableTeclado(el) || !tecladoProActivo() || el.dataset.tecladoNativo === '1' || celdaEsTextoTeclado(el)) { ocultarTecladoMCR(); return; }
+    el.setAttribute('inputmode', 'none');
+    var crudo = el.classList.contains('cell') ? String(getRaw(el.dataset.id) || '') : '';
+    var fx = (sheetFormats[activeSheet] || {})[el.dataset.id] || {};
+    tecladoMCR.modo = /^duracion/.test((fx.numFormat || {}).type || '') ? 'dur' : (/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(crudo) ? 'fecha' : (tecladoMCR.modo === 'fx' && crudo.charAt(0) === '=' ? 'fx' : '123'));
+    pintarTecladoMCR();
+    mostrarTecladoMCR(el);
+  });
+  document.addEventListener('focusout', function (e) {
+    var el = e.target; if (!esEditableTeclado(el)) return;
+    delete el.dataset.tecladoNativo;
+    setTimeout(function () { if (!esEditableTeclado(document.activeElement)) ocultarTecladoMCR(); }, 120);
+  });
+})();
+// Una celda con texto (un nombre, una descripción) se edita con el teclado del teléfono
+function celdaEsTextoTeclado(el) {
+  var crudo = '';
+  if (el.classList && el.classList.contains('cell')) crudo = String(getRaw(el.dataset.id) || '');
+  else if (el.id === 'formulaInput') crudo = el.value || '';
+  else if (el.closest && el.closest('.tabla-libre')) { var t = el.closest('.tabla-libre'); crudo = el.textContent || ''; }
+  crudo = crudo.trim();
+  if (!crudo || crudo.charAt(0) === '=') return false;
+  return !/^[-+]?[\d\s.,₡$%:/()hmind]+$/i.test(crudo);
+}
+function alternarTecladoPro() {
+  var activo = !tecladoProActivo();
+  try { localStorage.setItem('mcr_teclado', activo ? 'si' : 'no'); } catch (e) {}
+  if (!activo) ocultarTecladoMCR();
+  aviso(activo ? '⌨ Teclado de la matriz activado' : '⌨ Se usa el teclado del teléfono');
+}
+
+// ══════════════════════════════════════════════
+// PRO · 4) Fórmulas con colores
+// Mientras se edita una fórmula, cada referencia sale de un color debajo de
+// la barra de fórmulas y su celda o rango se marca con el mismo color.
+// ══════════════════════════════════════════════
+var COLORES_REF = ['#2563eb', '#dc2626', '#7c3aed', '#16a34a', '#ea580c', '#0891b2', '#db2777', '#ca8a04'];
+var RE_REF_FORMULA = /('(?:[^']|'')+'!|[A-Za-zÁÉÍÓÚÑáéíóúñ0-9_.]+!)?(\$?[A-Z]{1,3}\$?\d+)(?::(\$?[A-Z]{1,3}\$?\d+))?/g;
+function refsColoresFormula(f) {
+  var out = [], enTexto = false, i, tramos = [];
+  // Se ignoran las partes entre comillas
+  var limpio = ''; for (i = 0; i < f.length; i++) { var ch = f.charAt(i); if (ch === '"') enTexto = !enTexto; limpio += enTexto || ch === '"' ? ' ' : ch; }
+  var m, colores = {};
+  RE_REF_FORMULA.lastIndex = 0;
+  while ((m = RE_REF_FORMULA.exec(limpio)) !== null) {
+    var antes = m.index > 0 ? limpio.charAt(m.index - 1) : '';
+    if (/[A-Za-z0-9_.]/.test(antes)) continue;
+    if (limpio.charAt(m.index + m[0].length) === '(') continue; // es una función (LOG10(…)), no una celda
+    var hoja = m[1] ? m[1].slice(0, -1).replace(/^'(.*)'$/, '$1').replace(/''/g, "'") : '';
+    var clave = (hoja + '!' + m[2] + ':' + (m[3] || '')).toUpperCase().replace(/\$/g, '');
+    if (colores[clave] === undefined) colores[clave] = Object.keys(colores).length % COLORES_REF.length;
+    out.push({ ini: m.index, fin: m.index + m[0].length, hoja: hoja, a: m[2].replace(/\$/g, ''), b: (m[3] || m[2]).replace(/\$/g, ''), color: COLORES_REF[colores[clave]] });
+  }
+  return out;
+}
+function pintarRefsFormula(texto) {
+  var cont = document.getElementById('gridWrap'), tira = document.getElementById('fxColores');
+  document.querySelectorAll('.refCaja').forEach(function (x) { x.remove(); });
+  if (!texto || texto.charAt(0) !== '=') { if (tira) tira.classList.remove('ver'); return; }
+  var refs = refsColoresFormula(texto);
+  if (!tira) {
+    tira = document.createElement('div'); tira.id = 'fxColores'; tira.setAttribute('data-no-i18n', '');
+    var fb = document.getElementById('formulaBarRow') || document.getElementById('formulaInput').parentNode;
+    fb.parentNode.insertBefore(tira, fb.nextSibling);
+  }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var h = '', pos = 0;
+  refs.forEach(function (r) { h += esc(texto.slice(pos, r.ini)) + '<b style="color:' + r.color + ';background:' + r.color + '1f">' + esc(texto.slice(r.ini, r.fin)) + '</b>'; pos = r.fin; });
+  h += esc(texto.slice(pos));
+  tira.innerHTML = h; tira.classList.toggle('ver', refs.length > 0);
+  if (!cont) return;
+  var wr = cont.getBoundingClientRect();
+  refs.forEach(function (r) {
+    if (r.hoja && r.hoja.toUpperCase() !== activeSheet.toUpperCase()) return;
+    var e1 = document.getElementById('cell_' + r.a), e2 = document.getElementById('cell_' + r.b);
+    if (!e1 || !e2) return;
+    var a = (e1.closest('td') || e1).getBoundingClientRect(), b = (e2.closest('td') || e2).getBoundingClientRect();
+    var x0 = Math.min(a.left, b.left), y0 = Math.min(a.top, b.top), x1 = Math.max(a.right, b.right), y1 = Math.max(a.bottom, b.bottom);
+    var caja = document.createElement('div'); caja.className = 'refCaja';
+    caja.style.cssText = 'left:' + (x0 - wr.left + cont.scrollLeft) + 'px;top:' + (y0 - wr.top + cont.scrollTop) + 'px;width:' + (x1 - x0) + 'px;height:' + (y1 - y0) + 'px;border-color:' + r.color + ';background:' + r.color + '14';
+    cont.appendChild(caja);
+  });
+}
+(function () {
+  var actual = null;
+  var leer = function () { if (!actual) return ''; return actual.id === 'formulaInput' ? actual.value : actual.textContent; };
+  var refrescar = function () { pintarRefsFormula(leer()); };
+  document.addEventListener('focusin', function (e) { var el = e.target; if (el && (el.id === 'formulaInput' || (el.classList && el.classList.contains('cell')))) { actual = el; setTimeout(refrescar, 0); } });
+  document.addEventListener('input', function (e) { if (e.target === actual) refrescar(); }, true);
+  document.addEventListener('focusout', function (e) { if (e.target === actual) setTimeout(function () { if (document.activeElement !== actual) { actual = null; pintarRefsFormula(''); } }, 60); });
+  var wrap = document.getElementById('gridWrap');
+  if (wrap) wrap.addEventListener('scroll', function () { if (actual) requestAnimationFrame(refrescar); }, { passive: true });
+})();
+
+// ══════════════════════════════════════════════
+// PRO · 5) Zoom con dos dedos (pellizcar) y con el trackpad (Ctrl + rueda)
+// ══════════════════════════════════════════════
+(function () {
+  var wrap = document.getElementById('gridWrap'); if (!wrap) return;
+  var g = null, pend = false;
+  var dist = function (t) { var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.sqrt(dx * dx + dy * dy); };
+  var aplicar = function (nuevo, mx, my) {
+    nuevo = Math.max(30, Math.min(300, Math.round(nuevo)));
+    if (nuevo === zoomLevel) return;
+    var wr = wrap.getBoundingClientRect(), px = mx - wr.left, py = my - wr.top, f = nuevo / zoomLevel;
+    var sx = (wrap.scrollLeft + px) * f - px, sy = (wrap.scrollTop + py) * f - py;
+    zoomLevel = nuevo; applyZoom();
+    wrap.scrollLeft = sx; wrap.scrollTop = sy;
+    var et = document.getElementById('zoomBurbuja');
+    if (!et) { et = document.createElement('div'); et.id = 'zoomBurbuja'; document.body.appendChild(et); }
+    et.textContent = zoomLevel + '%'; et.classList.add('ver'); clearTimeout(et._t); et._t = setTimeout(function () { et.classList.remove('ver'); }, 700);
+  };
+  wrap.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 2) { g = { d0: dist(e.touches), z0: zoomLevel }; e.preventDefault(); }
+  }, { passive: false });
+  wrap.addEventListener('touchmove', function (e) {
+    if (!g || e.touches.length !== 2) return;
+    e.preventDefault();
+    var t = e.touches, mx = (t[0].clientX + t[1].clientX) / 2, my = (t[0].clientY + t[1].clientY) / 2, z = g.z0 * dist(t) / g.d0;
+    if (pend) return; pend = true;
+    requestAnimationFrame(function () { pend = false; aplicar(z, mx, my); });
+  }, { passive: false });
+  wrap.addEventListener('touchend', function (e) { if (g && e.touches.length < 2) { g = null; autoSave(); } });
+  wrap.addEventListener('wheel', function (e) {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    aplicar(zoomLevel * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY);
+    clearTimeout(wrap._zt); wrap._zt = setTimeout(autoSave, 400);
+  }, { passive: false });
+  // Safari (trackpad de Mac): gestos propios
+  var gz = null;
+  wrap.addEventListener('gesturestart', function (e) { e.preventDefault(); gz = zoomLevel; });
+  wrap.addEventListener('gesturechange', function (e) { e.preventDefault(); if (gz !== null) aplicar(gz * e.scale, e.clientX, e.clientY); });
+  wrap.addEventListener('gestureend', function (e) { e.preventDefault(); gz = null; autoSave(); });
+})();
+
+// ══════════════════════════════════════════════
+// PRO · 6) Avisos y preguntas propios
+// aviso(): mensaje breve que se va solo (o una hoja con "Entendido" si es
+// largo). confirmarPro()/preguntarPro(): hojas propias para confirmar o
+// pedir un dato. Reemplazan las cajitas grises del sistema.
+// En pruebas automáticas (o si alguien reemplazó confirm/prompt) se usa el
+// camino de siempre, para no romper nada.
+// ══════════════════════════════════════════════
+var DIALOGOS_NATIVOS = { alert: window.alert, confirm: window.confirm, prompt: window.prompt };
+function dialogosProActivos(n) {
+  if (window.__dialogosPro === false) return false;
+  if (window.__dialogosPro === true) return true;
+  if (navigator.webdriver) return false;
+  return !n || window[n] === DIALOGOS_NATIVOS[n] || window[n] === window['__' + n + 'Pro'];
+}
+function capaDialogoPro() {
+  var c = document.getElementById('dlgPro');
+  if (!c) { c = document.createElement('div'); c.id = 'dlgPro'; c.innerHTML = '<div class="dlgFondo"></div><div class="dlgHoja" role="dialog" aria-modal="true"></div>'; document.body.appendChild(c); }
+  return c;
+}
+var colaDialogosPro = [], dialogoProAbierto = false;
+function mostrarDialogoPro(o) {
+  if (dialogoProAbierto) { colaDialogosPro.push(o); return; }
+  dialogoProAbierto = true;
+  var c = capaDialogoPro(), hoja = c.querySelector('.dlgHoja');
+  var msg = typeof trMensaje === 'function' ? trMensaje(String(o.mensaje == null ? '' : o.mensaje)) : String(o.mensaje);
+  var m = RE_EMOJI_INICIO.exec(msg), icono = '', clave = m ? (ICONOS_PRO.porEmoji[m[2]] || ICONOS_PRO.porEmoji[m[2].replace(/[️‍].*$/, '')]) : null;
+  if (m && clave) { icono = svgIconoPro(clave, 'dlgIco'); msg = msg.slice(m[0].length); }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var lineas = msg.split('\n'), titulo = lineas.length > 1 && lineas[0].length < 70 ? lineas.shift() : '';
+  hoja.innerHTML = (icono ? '<div class="dlgIcoW">' + icono + '</div>' : '') + (titulo ? '<div class="dlgTit">' + esc(titulo) + '</div>' : '') +
+    '<div class="dlgMsg">' + esc(lineas.join('\n')).replace(/\n/g, '<br>') + '</div>' +
+    (o.tipo === 'prompt' ? '<input class="dlgEntrada" type="text" autocomplete="off">' : '') +
+    '<div class="dlgBotones">' + (o.tipo !== 'alert' ? '<button type="button" class="dlgNo">' + (o.textoNo || 'Cancelar') + '</button>' : '') + '<button type="button" class="dlgSi' + (o.peligro ? ' peligro' : '') + '">' + (o.textoSi || (o.tipo === 'alert' ? 'Entendido' : 'Aceptar')) + '</button></div>';
+  if (/^¿?(eliminar|borrar|quitar|vaciar|reemplazar)|eliminar|borrar todo|no se puede deshacer/i.test(msg) && o.tipo === 'confirm') hoja.querySelector('.dlgSi').classList.add('peligro');
+  var entrada = hoja.querySelector('.dlgEntrada');
+  if (entrada) entrada.value = o.defecto == null ? '' : String(o.defecto);
+  c.classList.add('ver');
+  var activoAntes = document.activeElement;
+  var terminar = function (res) {
+    c.classList.remove('ver'); dialogoProAbierto = false;
+    document.removeEventListener('keydown', teclas, true);
+    setTimeout(function () { o.listo(res); var sig = colaDialogosPro.shift(); if (sig) mostrarDialogoPro(sig); }, 0);
+  };
+  var teclas = function (e) {
+    if (e.key === 'Escape') { e.preventDefault(); terminar(o.tipo === 'confirm' ? false : o.tipo === 'prompt' ? null : undefined); }
+    else if (e.key === 'Enter') { e.preventDefault(); hoja.querySelector('.dlgSi').click(); }
+  };
+  document.addEventListener('keydown', teclas, true);
+  hoja.querySelector('.dlgSi').onclick = function () { terminar(o.tipo === 'confirm' ? true : o.tipo === 'prompt' ? entrada.value : undefined); };
+  var no = hoja.querySelector('.dlgNo'); if (no) no.onclick = function () { terminar(o.tipo === 'confirm' ? false : null); };
+  c.querySelector('.dlgFondo').onclick = function () { if (o.tipo === 'alert') terminar(); };
+  setTimeout(function () { if (entrada) { entrada.focus(); entrada.select(); } else hoja.querySelector('.dlgSi').focus(); }, 60);
+}
+// Aviso breve (se va solo) o, si es largo, hoja con "Entendido"
+function aviso(mensaje) {
+  var s = String(mensaje == null ? '' : mensaje);
+  if (s.length <= 90 && s.indexOf('\n') === -1) {
+    var t = document.getElementById('toastPro');
+    if (!t) { t = document.createElement('div'); t.id = 'toastPro'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    var tr = typeof trMensaje === 'function' ? trMensaje(s) : s, m = RE_EMOJI_INICIO.exec(tr), clave = m ? (ICONOS_PRO.porEmoji[m[2]] || ICONOS_PRO.porEmoji[m[2].replace(/[️‍].*$/, '')]) : null;
+    t.innerHTML = (clave ? svgIconoPro(clave, 'toastIco') : '') + '<span></span>';
+    t.querySelector('span').textContent = clave ? tr.slice(m[0].length) : tr;
+    t.classList.add('ver'); clearTimeout(t._t); t._t = setTimeout(function () { t.classList.remove('ver'); }, 2600 + Math.min(2000, s.length * 25));
+    return;
+  }
+  mostrarDialogoPro({ tipo: 'alert', mensaje: s, listo: function () {} });
+}
+// Promesa "inmediata" cuando la respuesta ya se sabe (pruebas o diálogo del sistema): así el código sigue en el mismo instante, como antes
+function respuestaInmediata(v) { return { then: function (cb) { cb(v); return respuestaInmediata(undefined); } }; }
+function confirmarPro(mensaje, opciones) {
+  if (!dialogosProActivos('confirm')) return respuestaInmediata(window.confirm(mensaje));
+  return new Promise(function (ok) { mostrarDialogoPro(Object.assign({ tipo: 'confirm', mensaje: mensaje, listo: ok }, opciones || {})); });
+}
+function preguntarPro(mensaje, defecto, opciones) {
+  if (!dialogosProActivos('prompt')) return respuestaInmediata(window.prompt(mensaje, defecto));
+  return new Promise(function (ok) { mostrarDialogoPro(Object.assign({ tipo: 'prompt', mensaje: mensaje, defecto: defecto, listo: ok }, opciones || {})); });
+}
+(function () {
+  // window.alert: los avisos pasan a ser propios (no bloquean; el código siguiente igual se ejecuta)
+  var alertTraducido = window.alert;
+  window.__alertPro = function (m) { if (!dialogosProActivos()) return alertTraducido(m); aviso(m); };
+  window.alert = window.__alertPro;
+  DIALOGOS_NATIVOS.alert = window.__alertPro;
+})();
+document.getElementById('btnInspector').addEventListener('click', abrirInspector);
+document.getElementById('raInspector').addEventListener('click', function () { var bar = document.getElementById('rangeActionsBar'); if (bar) bar.classList.remove('show'); abrirInspector(); });
+document.getElementById('cmInspector').addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); abrirInspector(); });
+document.getElementById('ebInspector').addEventListener('click', function () { abrirInspector(); });
+document.getElementById('btnIconosClasicos').addEventListener('click', alternarIconosClasicos);
+document.getElementById('btnTecladoPro').addEventListener('click', alternarTecladoPro);
+// El inspector sigue a la selección
+document.addEventListener('focusin', function (e) { if (e.target && e.target.classList && e.target.classList.contains('cell') && document.body.classList.contains('conInspector')) setTimeout(pintarInspector, 0); });
 (function () {
   var rtg = renderizarTemplateGaleria;
   renderizarTemplateGaleria = function () { try { sincronizarMisPlantillasEnGaleria(); } catch (e) {} return rtg.apply(this, arguments); };
@@ -36746,7 +37642,8 @@ function ccTodos(aceptar) {
   var hojas = ccHojasDelPanel(), n = 0, bloqueadas = 0;
   hojas.forEach(function (h) { var c = ccDatos(h); if (c) n += Object.keys(c.cambios || {}).length + (c.est || []).length; });
   if (!n) return;
-  if (!confirm((aceptar ? '¿Aceptar' : '¿Rechazar') + ' los ' + n + ' cambio(s) pendientes' + (hojas.length > 1 ? ' de todas las hojas' : ' de la hoja "' + activeSheet + '"') + '?' + (aceptar ? '' : '\n\nCada celda vuelve al valor que tenía antes de cambiarla. Las filas y columnas insertadas o eliminadas no se pueden rechazar (usá Deshacer).'))) return;
+  confirmarPro((aceptar ? '¿Aceptar' : '¿Rechazar') + ' los ' + n + ' cambio(s) pendientes' + (hojas.length > 1 ? ' de todas las hojas' : ' de la hoja "' + activeSheet + '"') + '?' + (aceptar ? '' : '\n\nCada celda vuelve al valor que tenía antes de cambiarla. Las filas y columnas insertadas o eliminadas no se pueden rechazar (usá Deshacer).')).then((__ok) => {
+    if (!__ok) return;
   snapshot();
   hojas.forEach(function (h) {
     var c = ccDatos(h); if (!c) return;
@@ -36758,6 +37655,8 @@ function ccTodos(aceptar) {
   });
   renderAllCells(); autoSave(); ccRefrescarPanel();
   if (bloqueadas) alert('🔒 ' + bloqueadas + ' cambio(s) no se rechazaron porque están en celdas de una hoja protegida.');
+
+  }); return;
 }
 function ccIrA(h, id) {
   document.getElementById('ctrlCambiosOverlay').classList.remove('show');
@@ -37068,7 +37967,7 @@ document.getElementById('tdCalcularBtn').addEventListener('click', function () {
 // ── What-If: Administrador de Escenarios ──
 function crearEscenario(bounds) {
   if (!bounds) { alert('Seleccioná primero las celdas que querés que el escenario recuerde (arrastrando), con los valores ya puestos como quieras guardarlos.'); return; }
-  var nombre = prompt('Nombre para este escenario (ej: Optimista, Pesimista):', '');
+  preguntarPro('Nombre para este escenario (ej: Optimista, Pesimista):', '').then((nombre) => {
   if (nombre === null) return;
   nombre = nombre.trim();
   if (!nombre) { alert('Ponele un nombre.'); return; }
@@ -37085,6 +37984,8 @@ function crearEscenario(bounds) {
   autoSave();
   renderEscenariosList();
   document.getElementById('saveStatus').textContent = '✓ Escenario "' + nombre + '" guardado';
+
+  }); return;
 }
 function aplicarEscenario(idEsc) {
   var lista = sheetEscenarios[activeSheet] || [];
@@ -37120,12 +38021,15 @@ function renderEscenariosList() {
   });
   wrap.querySelectorAll('.escEliminarBtn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      if (!confirm('¿Eliminar este escenario?')) return;
+      confirmarPro('¿Eliminar este escenario?').then((__ok) => {
+    if (!__ok) return;
       snapshot();
       sheetEscenarios[activeSheet] = (sheetEscenarios[activeSheet] || []).filter(function (e) { return e.id !== btn.dataset.id; });
       autoSave();
       renderEscenariosList();
-    });
+    
+  }); return;
+});
   });
 }
 document.getElementById('btnEscenarios').addEventListener('click', function () {
@@ -37255,23 +38159,31 @@ function renderVistasList() {
     var bts = document.createElement('div'); bts.className = 'vistaBts';
     [['▶ Mostrar', 'vistaAplicarBtn', function () { aplicarVistaGuardada(v.id); }],
      ['✎', 'vistaRenombrarBtn', function () {
-        var n = prompt('Nuevo nombre de la vista:', v.nombre);
+        preguntarPro('Nuevo nombre de la vista:', v.nombre).then((n) => {
         if (!n || !n.trim()) return;
         v.nombre = n.trim(); autoSave(); renderVistasList();
-      }],
+      
+  }); return;
+}],
      ['⟳', 'vistaActualizarBtn', function () {
-        if (!confirm('¿Reemplazar la vista "' + v.nombre + '" con cómo se ve ahora la hoja "' + activeSheet + '"?')) return;
+        confirmarPro('¿Reemplazar la vista "' + v.nombre + '" con cómo se ve ahora la hoja "' + activeSheet + '"?').then((__ok) => {
+    if (!__ok) return;
         var nueva = capturarVista(activeSheet, v.conFilasCols !== false, !!v.conImpresion);
         Object.keys(nueva).forEach(function (k) { v[k] = nueva[k]; });
         autoSave(); renderVistasList();
         document.getElementById('saveStatus').textContent = '✓ Vista "' + v.nombre + '" actualizada';
-      }],
+      
+  }); return;
+}],
      ['🗑', 'vistaEliminarBtn', function () {
-        if (!confirm('¿Eliminar la vista "' + v.nombre + '"?')) return;
+        confirmarPro('¿Eliminar la vista "' + v.nombre + '"?').then((__ok) => {
+    if (!__ok) return;
         vistasGuardadas = vistasGuardadas.filter(function (x) { return x.id !== v.id; });
         if (vistaActivaId === v.id) vistaActivaId = null;
         autoSave(); renderVistasList();
-      }]].forEach(function (b) {
+      
+  }); return;
+}]].forEach(function (b) {
       var bt = document.createElement('button'); bt.type = 'button'; bt.className = b[1]; bt.dataset.id = v.id; bt.textContent = b[0];
       if (b[0] === '✎') bt.title = 'Cambiar nombre';
       if (b[0] === '⟳') bt.title = 'Reemplazar con cómo se ve ahora';
@@ -38671,7 +39583,8 @@ function abrirFormularioDatos(indice, criterios) {
   if (g('fdBuscarSig')) g('fdBuscarSig').addEventListener('click', function () { buscar(1); });
   if (g('fdBuscarAnt')) g('fdBuscarAnt').addEventListener('click', function () { buscar(-1); });
   if (g('fdBorrar')) g('fdBorrar').addEventListener('click', function () {
-    if (!confirm('¿Eliminar este registro? Se borra la fila ' + (fila + 1) + ' completa.')) return;
+    confirmarPro('¿Eliminar este registro? Se borra la fila ' + (fila + 1) + ' completa.').then((__ok) => {
+    if (!__ok) return;
     if (!ejecutarEstructura('del_fila', fila, 1)) return;
     L.r2--;
     if (L.tabla) { var mt = /^([A-Z]+)(\d+)$/.exec(L.tabla.def.to); if (mt && parseInt(mt[2], 10) - 1 >= fila) { /* la estructura ya movió la tabla */ } }
@@ -38679,7 +39592,9 @@ function abrirFormularioDatos(indice, criterios) {
     document.getElementById('saveStatus').textContent = '🗑 Registro eliminado';
     if (L.r2 <= L.r1) { cerrarPanel(); estadoFormulario = null; return; }
     abrirFormularioDatos(Math.min(indice, L.r2 - L.r1 - 1));
-  });
+  
+  }); return;
+});
   var primero = document.querySelector('.fdCampo'); if (primero && (esNuevo || criterios)) setTimeout(function () { try { primero.focus(); } catch (e) {} }, 60);
 }
 
@@ -39264,9 +40179,12 @@ function abrirListaConsultas() {
   var ba = document.getElementById('pqActualizar'); if (ba) ba.addEventListener('click', function () { actualizarTodasLasConsultas(); abrirListaConsultas(); });
   document.querySelectorAll('.lpItem [data-editar]').forEach(function (b) { b.addEventListener('click', function () { var q = qs[parseInt(b.dataset.editar, 10)]; consultaEditando = JSON.parse(JSON.stringify(q)); consultaEditando.indice = parseInt(b.dataset.editar, 10); abrirEditorConsulta(); }); });
   document.querySelectorAll('.lpItem [data-borrar]').forEach(function (b) { b.addEventListener('click', function () {
-    if (!confirm('¿Borrar esta consulta? La hoja con el resultado se queda como está.')) return;
+    confirmarPro('¿Borrar esta consulta? La hoja con el resultado se queda como está.').then((__ok) => {
+    if (!__ok) return;
     consultasLibro().splice(parseInt(b.dataset.borrar, 10), 1); autoSave(); abrirListaConsultas();
-  }); });
+  
+  }); return;
+}); });
 }
 function abrirEditorConsulta() {
   var q = consultaEditando, esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
@@ -39565,11 +40483,14 @@ document.getElementById('reciboClose').addEventListener('click', function () {
   document.getElementById('reciboOverlay').classList.remove('show');
 });
 document.getElementById('reciboEliminarBtn').addEventListener('click', function () {
-  if (!confirm('¿Eliminar este recibo adjunto?')) return;
+  confirmarPro('¿Eliminar este recibo adjunto?').then((__ok) => {
+    if (!__ok) return;
   var id = document.getElementById('cellRef').textContent;
   if (sheetAttachments[activeSheet]) delete sheetAttachments[activeSheet][id];
   renderAllCells(); autoSave();
   document.getElementById('reciboOverlay').classList.remove('show');
+
+  }); return;
 });
 // Backup automático (versión del historial): cada 6 horas como máximo, si hay una matriz abierta
 try {
@@ -39934,20 +40855,25 @@ function abrirRecurrentes() {
     var datos = leerFormularioFactura();
     var buenas = datos.lineas.filter(function (l) { return l.precio > 0 && l.detalle; });
     if (!buenas.length || !datos.receptor.nombre) { alert('Primero armá la factura en 🧾 Factura (cliente y al menos una línea con precio) y volvé acá para guardarla como recurrente.'); return; }
-    var nombre = prompt('Nombre de esta factura recurrente (ej: Alquiler local 3):', datos.receptor.nombre); if (nombre === null) return;
+    preguntarPro('Nombre de esta factura recurrente (ej: Alquiler local 3):', datos.receptor.nombre).then((nombre) => { if (nombre === null) return;
     var dia = parseInt(prompt('¿Qué día del mes toca? (1 a 28)', '1'), 10); if (!(dia >= 1 && dia <= 28)) { alert('El día tiene que estar entre 1 y 28.'); return; }
     datos.lineas = buenas; datos.id = 'rec_' + Date.now(); datos.nombre = (nombre || '').trim() || datos.receptor.nombre; datos.dia = dia; datos.ultimaPreparada = '';
     facturasRecurrentes.push(datos); autoSave(); abrirRecurrentes();
-  });
+  
+  }); return;
+});
   body.querySelectorAll('.recPrepBtn').forEach(function (b) { b.addEventListener('click', function () {
     var p = facturasRecurrentes.filter(function (x) { return x.id === b.dataset.id; })[0]; if (!p) return;
     p.ultimaPreparada = mesActualClave(); autoSave(); cerrarPanel(); cargarRecurrenteEnFactura(p);
     document.getElementById('saveStatus').textContent = '🔁 "' + p.nombre + '" lista: revisá y enviá a Hacienda';
   }); });
   body.querySelectorAll('.recDelBtn').forEach(function (b) { b.addEventListener('click', function () {
-    if (!confirm('¿Eliminar esta factura recurrente?')) return;
+    confirmarPro('¿Eliminar esta factura recurrente?').then((__ok) => {
+    if (!__ok) return;
     facturasRecurrentes = facturasRecurrentes.filter(function (x) { return x.id !== b.dataset.id; }); autoSave(); abrirRecurrentes();
-  }); });
+  
+  }); return;
+}); });
 }
 document.getElementById('btnRecurrentes').addEventListener('click', abrirRecurrentes);
 // ══════════════════════════════════════════════
@@ -40854,8 +41780,8 @@ function verificarAlertasAutomaticas(){
 
 
 function compararPeriodos(){
-  var p1=prompt('Período 1 (ej: 2025-10):');
-  var p2=prompt('Período 2 (ej: 2025-09):');
+  preguntarPro('Período 1 (ej: 2025-10):').then((p1) => {
+  preguntarPro('Período 2 (ej: 2025-09):').then((p2) => {
   if(!p1||!p2)return;
   if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
   var diario=filasDeHoja('Diario'),saldos={p1:{},p2:{}};
@@ -40874,6 +41800,10 @@ function compararPeriodos(){
   snapshot();
   var r=escribirTablaEnHojaNueva(filas);
   document.getElementById('saveStatus').textContent='📊 Comparativo '+p1+' vs '+p2+': '+r.filas+' cuentas';
+
+  }); return;
+
+  }); return;
 }
 
 
@@ -40960,7 +41890,8 @@ var ultimoBackup=0;function respaldoAutomatico(){
   }
 }
 function restaurarDelUltimoBackup(){
-  if(!confirm('¿Restaurar datos del último backup?'))return;
+  confirmarPro('¿Restaurar datos del último backup?').then((__ok) => {
+    if (!__ok) return;
   var backup=JSON.parse(localStorage.getItem('mcrBackupLocal'));
   if(backup){
     sheetData=backup.sheetData;
@@ -40970,6 +41901,8 @@ function restaurarDelUltimoBackup(){
     renderizar();
     document.getElementById('saveStatus').textContent='✅ Restaurado del backup: '+backup.timestamp;
   }else alert('No hay backup local disponible');
+
+  }); return;
 }
 
 if(document.getElementById("btnBackup"))document.getElementById("btnBackup").addEventListener("click",respaldoAutomatico);
@@ -41110,7 +42043,8 @@ function mostrarMapeoCSV(encabezados,datos){
   abrirPanel('📥 Mapeo CSV',html,[{texto:'Cancelar'}]);
 }
 function importarFilasCSV(datos){
-  if(!confirm('¿Importar '+datos.length+' filas al Diario?'))return;
+  confirmarPro('¿Importar '+datos.length+' filas al Diario?').then((__ok) => {
+    if (!__ok) return;
   if(sheets.indexOf('Diario')<0)crearHoja('Diario');
   var diario=sheetData['Diario'];
   datos.forEach(d=>{
@@ -41118,6 +42052,8 @@ function importarFilasCSV(datos){
   });
   snapshot();renderizar();
   document.getElementById('saveStatus').textContent='✅ '+datos.length+' filas importadas del CSV';
+
+  }); return;
 }
 
 if(document.getElementById("btnImportCSV"))document.getElementById("btnImportCSV").addEventListener("click",importarCSVMejorado);
@@ -41162,10 +42098,12 @@ if(document.getElementById("btnD105"))document.getElementById("btnD105").addEven
 if(document.getElementById("btnExportGS"))document.getElementById("btnExportGS").addEventListener("click",exportarAGoogleSheets);
 
 function sincronizarConGoogleSheets(){
-  var id=prompt('ID de Google Sheet:');
+  preguntarPro('ID de Google Sheet:').then((id) => {
   if(!id)return;
   localStorage.setItem('mcrGoogleSheetId',id);
   alert('✅ Google Sheet configurado. La sincronización ocurrirá automáticamente.');
+
+  }); return;
 }
 function exportarAGoogleSheets(){
   var id=localStorage.getItem('mcrGoogleSheetId');
@@ -41184,10 +42122,12 @@ if(document.getElementById("btnGSheets"))document.getElementById("btnGSheets").a
 if(document.getElementById("btnExportGS"))document.getElementById("btnExportGS").addEventListener("click",exportarAGoogleSheets);
 
 function sincronizarConGoogleSheets(){
-  var id=prompt('ID de Google Sheet:');
+  preguntarPro('ID de Google Sheet:').then((id) => {
   if(!id)return;
   localStorage.setItem('mcrGoogleSheetId',id);
   alert('Google Sheet configurado');
+
+  }); return;
 }
 function exportarAGoogleSheets(){
   var id=localStorage.getItem('mcrGoogleSheetId');
@@ -41216,7 +42156,8 @@ function mostrarHistorialVersiones(){
   abrirPanel('History',html,[{texto:'Cerrar'}]);
 }
 function restaurarVersion(idx){
-  if(!confirm('Restaurar version?'))return;
+  confirmarPro('Restaurar version?').then((__ok) => {
+    if (!__ok) return;
   var v=versionesAnteriores[versionesAnteriores.length-1-idx];
   sheetData=v.data.sheetData;
   sheetFormats=v.data.sheetFormats;
@@ -41224,6 +42165,8 @@ function restaurarVersion(idx){
   snapshot();
   renderizar();
   document.getElementById('saveStatus').textContent='Restaurado: '+v.timestamp;
+
+  }); return;
 }
 
 if(document.getElementById("btnHistorial"))document.getElementById("btnHistorial").addEventListener("click",mostrarHistorialVersiones);
@@ -41459,7 +42402,7 @@ var historialAportesCCSS={};function registrarAporteCCSS(cedula,mes,monto){
   localStorage.setItem('mcrHistorialCCSS',JSON.stringify(historialAportesCCSS));
 }
 function verHistorialAportesCCSS(){
-  var cedula=prompt('Ingresa cédula del empleado:');
+  preguntarPro('Ingresa cédula del empleado:').then((cedula) => {
   if(!cedula)return;
   cedula=cedula.trim();
   var aportes=historialAportesCCSS[cedula]||[];
@@ -41475,6 +42418,8 @@ function verHistorialAportesCCSS(){
   var total=aportes.reduce((s,a)=>s+toNum(a.monto),0);
   html+='<div style="padding:12px;border-top:2px solid #ccc;margin-top:8px;"><b>Total acumulado:</b> ₡'+Math.round(total*100)/100+'</div>';
   abrirPanel('Historial Aportes CCSS',html,[{texto:'Cerrar'}]);
+
+  }); return;
 }
 function cargarHistorialAportesCCSS(){
   var stored=localStorage.getItem('mcrHistorialCCSS');
@@ -41485,7 +42430,7 @@ cargarHistorialAportesCCSS();
 if(document.getElementById("btnHistorialAportes"))document.getElementById("btnHistorialAportes").addEventListener("click",verHistorialAportesCCSS);
 
 var proyectosActivos={};function crearProyecto(){
-  var nombre=prompt('Nombre del proyecto/sucursal:');
+  preguntarPro('Nombre del proyecto/sucursal:').then((nombre) => {
   if(!nombre)return;
   nombre=nombre.trim();
   if(proyectosActivos[nombre]){alert('Proyecto ya existe');return;}
@@ -41496,6 +42441,8 @@ var proyectosActivos={};function crearProyecto(){
   snapshot();
   renderizar();
   document.getElementById('saveStatus').textContent='✅ Proyecto creado: '+nombre;
+
+  }); return;
 }
 function listarProyectos(){
   var stored=localStorage.getItem('mcrProyectos');
@@ -41581,14 +42528,18 @@ function importarExtractoDatos(datos){
 if(document.getElementById("btnImportExtracto"))document.getElementById("btnImportExtracto").addEventListener("click",importarExtractoBancario);
 
 var reportesPersonalizados={};function crearReportePersonalizado(){
-  var nombre=prompt('Nombre del reporte:');
+  preguntarPro('Nombre del reporte:').then((nombre) => {
   if(!nombre)return;
   nombre=nombre.trim();
-  var filtro=prompt('Filtro (ej: cuenta, mes, rango):');
+  preguntarPro('Filtro (ej: cuenta, mes, rango):').then((filtro) => {
   if(!filtro)return;
   reportesPersonalizados[nombre]={filtro:filtro,created:new Date().toISOString()};
   localStorage.setItem('mcrReportes',JSON.stringify(reportesPersonalizados));
   document.getElementById('saveStatus').textContent='✅ Reporte guardado: '+nombre;
+
+  }); return;
+
+  }); return;
 }
 function ejecutarReportePersonalizado(){
   var stored=localStorage.getItem('mcrReportes');
@@ -41625,12 +42576,12 @@ function generarReporte(nombre){
 if(document.getElementById("btnReportesCustom"))document.getElementById("btnReportesCustom").addEventListener("click",ejecutarReportePersonalizado);
 
 var plantillasContables={};function crearPlantilla(){
-  var nombre=prompt('Nombre de la plantilla (ej: Nómina, Arriendo):');
+  preguntarPro('Nombre de la plantilla (ej: Nómina, Arriendo):').then((nombre) => {
   if(!nombre)return;
   nombre=nombre.trim();
-  var cuenta1=prompt('Primera cuenta (Ej: 5101):');
-  var desc1=prompt('Descripción 1:');
-  var monto1=prompt('Monto 1 (puede ser variable con {monto}):');
+  preguntarPro('Primera cuenta (Ej: 5101):').then((cuenta1) => {
+  preguntarPro('Descripción 1:').then((desc1) => {
+  preguntarPro('Monto 1 (puede ser variable con {monto}):').then((monto1) => {
   if(!cuenta1||!desc1)return;
   plantillasContables[nombre]=[
     {cuenta:cuenta1,descripcion:desc1,monto:monto1,tipo:'debe'},
@@ -41638,6 +42589,14 @@ var plantillasContables={};function crearPlantilla(){
   ];
   localStorage.setItem('mcrPlantillas',JSON.stringify(plantillasContables));
   document.getElementById('saveStatus').textContent='✅ Plantilla creada: '+nombre;
+
+  }); return;
+
+  }); return;
+
+  }); return;
+
+  }); return;
 }
 function abrirPlantillas(){
   var stored=localStorage.getItem('mcrPlantillas');
@@ -41653,7 +42612,7 @@ function abrirPlantillas(){
 function usarPlantilla(nombre){
   if(sheets.indexOf('Diario')<0)crearHoja('Diario');
   var plantilla=plantillasContables[nombre];
-  var monto=prompt('Monto de la transacción:');
+  preguntarPro('Monto de la transacción:').then((monto) => {
   if(!monto)return;
   monto=toNum(monto);
   var fecha=new Date().toISOString().slice(0,10);
@@ -41666,12 +42625,14 @@ function usarPlantilla(nombre){
   });
   snapshot();renderizar();
   document.getElementById('saveStatus').textContent='✅ Plantilla '+nombre+' aplicada';
+
+  }); return;
 }
 
 if(document.getElementById("btnPlantillas"))document.getElementById("btnPlantillas").addEventListener("click",abrirPlantillas);
 
 function validarConHacienda(){
-  var cedula=prompt('Ingresa cédula o RUC a validar:');
+  preguntarPro('Ingresa cédula o RUC a validar:').then((cedula) => {
   if(!cedula)return;
   cedula=cedula.trim();
   var html='<div class="mcrNota">Validando '+cedula+' en Hacienda...</div>';
@@ -41683,11 +42644,15 @@ function validarConHacienda(){
   html+='</div>';
   abrirPanel('Validación Hacienda',html,[{texto:'Cerrar'}]);
   localStorage.setItem('mcrCedulaValidacion',cedula);
+
+  }); return;
 }
 function extraerDatosDeclaracion(){
-  var tipo=prompt('Tipo de declaración (D-101, D-104, D-105):');
+  preguntarPro('Tipo de declaración (D-101, D-104, D-105):').then((tipo) => {
   if(!tipo)return;
   alert('Extractor de '+tipo+' - Requiere archivo XML de Hacienda para procesar.');
+
+  }); return;
 }
 function generarXMLHacienda(){
   if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
@@ -41714,9 +42679,9 @@ if(document.getElementById("btnExportXML"))document.getElementById("btnExportXML
 
 function crearTablaDinamica(){
   if(sheets.indexOf('Diario')<0){alert('Falta Diario');return;}
-  var campo1=prompt('Campo filas (ej: Cuenta, Mes, Departamento):');
-  var campo2=prompt('Campo columnas (ej: Mes, Tipo):');
-  var valorAgregar=prompt('Valor a sumar (ej: Debe, Haber):');
+  preguntarPro('Campo filas (ej: Cuenta, Mes, Departamento):').then((campo1) => {
+  preguntarPro('Campo columnas (ej: Mes, Tipo):').then((campo2) => {
+  preguntarPro('Valor a sumar (ej: Debe, Haber):').then((valorAgregar) => {
   if(!campo1||!campo2||!valorAgregar)return;
   
   var diario=filasDeHoja('Diario');
@@ -41742,19 +42707,31 @@ function crearTablaDinamica(){
   
   snapshot();var r=escribirTablaEnHojaNueva(filas);
   document.getElementById('saveStatus').textContent='✅ Tabla dinámica creada: '+r.filas+' filas';
+
+  }); return;
+
+  }); return;
+
+  }); return;
 }
 
 if(document.getElementById("btnTablaDinamica"))document.getElementById("btnTablaDinamica").addEventListener("click",crearTablaDinamica);
 
 var formatoCondicional={};function aplicarFormatoCondicional(){
-  var rango=prompt('Rango (ej: A1:A10):');
-  var condicion=prompt('Condición (ej: >1000, <0, =Activo):');
-  var color=prompt('Color fondo (ej: #ff0000, green):');
+  preguntarPro('Rango (ej: A1:A10):').then((rango) => {
+  preguntarPro('Condición (ej: >1000, <0, =Activo):').then((condicion) => {
+  preguntarPro('Color fondo (ej: #ff0000, green):').then((color) => {
   if(!rango||!condicion||!color)return;
   formatoCondicional[rango]={condicion:condicion,color:color};
   localStorage.setItem('mcrFormatoCondicional',JSON.stringify(formatoCondicional));
   aplicarEstilosCondicionales();
   document.getElementById('saveStatus').textContent='✅ Formato condicional aplicado a '+rango;
+
+  }); return;
+
+  }); return;
+
+  }); return;
 }
 function aplicarEstilosCondicionales(){
   var stored=localStorage.getItem('mcrFormatoCondicional');
@@ -41777,20 +42754,24 @@ if(document.getElementById("btnFormatoCondicional"))document.getElementById("btn
 setTimeout(aplicarEstilosCondicionales,500);
 
 var listasValidacion={};function crearListaValidacion(){
-  var nombre=prompt('Nombre de la lista (ej: Estados):');
-  var valores=prompt('Valores separados por coma (ej: Activo, Inactivo, Suspendido):');
+  preguntarPro('Nombre de la lista (ej: Estados):').then((nombre) => {
+  preguntarPro('Valores separados por coma (ej: Activo, Inactivo, Suspendido):').then((valores) => {
   if(!nombre||!valores)return;
   listasValidacion[nombre]=valores.split(',').map(v=>v.trim());
   localStorage.setItem('mcrListasValidacion',JSON.stringify(listasValidacion));
   document.getElementById('saveStatus').textContent='✅ Lista de validación creada: '+nombre;
+
+  }); return;
+
+  }); return;
 }
 function aplicarValidacion(){
   var stored=localStorage.getItem('mcrListasValidacion');
   if(stored)listasValidacion=JSON.parse(stored);
   if(!Object.keys(listasValidacion).length){alert('Crea una lista de validación primero');return;}
-  var listaNombre=prompt('Selecciona lista: '+Object.keys(listasValidacion).join(', '));
+  preguntarPro('Selecciona lista: '+Object.keys(listasValidacion).join(', ')).then((listaNombre) => {
   if(!listaNombre||!listasValidacion[listaNombre]){alert('Lista no encontrada');return;}
-  var celda=prompt('Celda a aplicar (ej: A1):');
+  preguntarPro('Celda a aplicar (ej: A1):').then((celda) => {
   if(!celda)return;
   var html='<div class="mcrNota">Valores válidos en '+celda+':</div><div style="padding:12px;">';
   listasValidacion[listaNombre].forEach(v=>{
@@ -41798,6 +42779,10 @@ function aplicarValidacion(){
   });
   html+='</div>';
   abrirPanel('Validación de Datos',html,[{texto:'Cerrar'}]);
+
+  }); return;
+
+  }); return;
 }
 function insertarValor(valor){
   document.getElementById('saveStatus').textContent='✅ Valor seleccionado: '+valor;
@@ -41806,10 +42791,10 @@ function insertarValor(valor){
 if(document.getElementById("btnValidacionDatos"))document.getElementById("btnValidacionDatos").addEventListener("click",aplicarValidacion);
 
 function analizarWhatIf(){
-  var variable=prompt('Variable a cambiar (ej: gastos, ingresos, cantidad):');
-  var valorOriginal=prompt('Valor original:');
-  var valorNuevo=prompt('Valor nuevo:');
-  var metricaImpacto=prompt('Métrica a monitorear (ej: utilidad, flujo):');
+  preguntarPro('Variable a cambiar (ej: gastos, ingresos, cantidad):').then((variable) => {
+  preguntarPro('Valor original:').then((valorOriginal) => {
+  preguntarPro('Valor nuevo:').then((valorNuevo) => {
+  preguntarPro('Métrica a monitorear (ej: utilidad, flujo):').then((metricaImpacto) => {
   if(!variable||!valorOriginal||!valorNuevo)return;
   
   var dif=toNum(valorNuevo)-toNum(valorOriginal);
@@ -41826,12 +42811,20 @@ function analizarWhatIf(){
   html+='<div style="font-size:18px;color:#0ea5e9;margin-top:8px;">'+String(Math.round(impactoEstimado*100)/100)+'%</div>';
   html+='</div></div>';
   abrirPanel('Simulación What-If',html,[{texto:'Cerrar'}]);
+
+  }); return;
+
+  }); return;
+
+  }); return;
+
+  }); return;
 }
 
 if(document.getElementById("btnWhatIf"))document.getElementById("btnWhatIf").addEventListener("click",analizarWhatIf);
 
 var filaCongelada=0,columnaCongelada=0;function congelarFilas(){
-  var cantidad=prompt('¿Cuántas filas congelar? (ej: 3):');
+  preguntarPro('¿Cuántas filas congelar? (ej: 3):').then((cantidad) => {
   if(!cantidad)return;
   filaCongelada=parseInt(cantidad)||0;
   var diario=document.querySelector('.hoja');
@@ -41848,9 +42841,11 @@ var filaCongelada=0,columnaCongelada=0;function congelarFilas(){
     });
   }
   document.getElementById('saveStatus').textContent='✅ '+cantidad+' filas congeladas (encabezados fijos)';
+
+  }); return;
 }
 function congelarColumnas(){
-  var cantidad=prompt('¿Cuántas columnas congelar? (ej: 2):');
+  preguntarPro('¿Cuántas columnas congelar? (ej: 2):').then((cantidad) => {
   if(!cantidad)return;
   columnaCongelada=parseInt(cantidad)||0;
   var diario=document.querySelector('.hoja');
@@ -41867,6 +42862,8 @@ function congelarColumnas(){
     });
   }
   document.getElementById('saveStatus').textContent='✅ '+cantidad+' columnas congeladas (fijas a la izquierda)';
+
+  }); return;
 }
 function descongelar(){
   filaCongelada=0;
@@ -42282,7 +43279,7 @@ function habilitarGestos(){
   var touchStartX=0,touchStartY=0;
   document.addEventListener('touchstart',(e)=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;});
   document.addEventListener('touchend',(e)=>{
-    var touchEndX=e.changedTouches[0].clientX,touchEndY=e.changedTouches[0].clientY;
+    if(!e.changedTouches||!e.changedTouches[0])return; var touchEndX=e.changedTouches[0].clientX,touchEndY=e.changedTouches[0].clientY;
     var diffX=touchEndX-touchStartX,diffY=touchEndY-touchStartY;
     if(Math.abs(diffX)>100&&Math.abs(diffY)<50){
       if(diffX>0)console.log('Gesto: deslizar derecha');
