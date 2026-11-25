@@ -1556,6 +1556,53 @@
 .vcItem small{color:#6b7280}
 .vcG{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid #d1d5db;background:#fff;font-weight:800;color:#1a73e8}
 #ecMsg{resize:vertical;font-family:inherit}
+.cell.has-control.ctrlEstrellas { justify-content: flex-start; gap: 0; padding: 0 2px; }
+.ctrlEstrella { border: 0; background: none; padding: 0 1px; font-size: 16px; line-height: 1; color: #cbd5e1; cursor: pointer; }
+.ctrlEstrella.on { color: #f59e0b; }
+.catCols { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; margin: 2px 0 6px; }
+.catCols label { display: flex; gap: 4px; align-items: center; }
+.chart-float .cinter { display: flex; align-items: center; gap: 8px; padding: 4px 10px 6px; }
+.chart-float .cinterPlay { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #9cc47f; background: #f1f8ea; color: #245f09; font-size: 13px; flex: none; padding: 0; }
+.chart-float .cinterRango { flex: 1; min-width: 60px; accent-color: #2d7a0c; }
+.chart-float .cinterEtq { font-size: 12px; font-weight: 700; color: #245f09; white-space: nowrap; max-width: 45%; overflow: hidden; text-overflow: ellipsis; }
+.lfLista { max-height: 52vh; overflow-y: auto; margin-top: 6px; }
+.lfHoja { font-weight: 800; color: #245f09; font-size: 12px; margin: 8px 0 3px; }
+.lfItem { display: grid; grid-template-columns: 52px 1fr auto; gap: 6px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid #eef2ee; background: none; padding: 6px 2px; font-size: 12px; align-items: center; }
+.lfItem.err { background: #fef2f2; }
+.lfCel { font-weight: 700; color: #374151; }
+.lfF { font-family: ui-monospace, Menlo, monospace; color: #1d4ed8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lfR { color: #6b7280; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lfItem.err .lfR { color: #b91c1c; font-weight: 700; }
+.mpIconos { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 18px; margin-bottom: 6px; }
+.mpItem { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid #eef2ee; }
+.mpIc { font-size: 22px; } .mpNom { flex: 1; font-size: 13px; } .mpItem button { border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 7px; padding: 5px 9px; font-size: 12px; }
+#dibujoOverlay { position: fixed; inset: 0; z-index: 9800; touch-action: none; background: rgba(255,255,255,0.04); }
+#dibujoOverlay .dbLienzo { position: absolute; inset: 0; touch-action: none; cursor: crosshair; }
+#dibujoOverlay .dbBarra { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 8px); transform: translateX(-50%); z-index: 2; display: flex; gap: 6px; align-items: center; background: #fff; border-radius: 24px; padding: 6px 10px; box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+#dibujoOverlay .dbColor { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #cbd5e1; padding: 0; }
+#dibujoOverlay .dbColor.on { box-shadow: 0 0 0 2px #2d7a0c; }
+#dibujoOverlay .dbGrosor { font-size: 12px; border-radius: 6px; padding: 3px; }
+#dibujoOverlay .dbBtn { border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 14px; padding: 4px 9px; font-size: 13px; }
+#dibujoOverlay .dbListo { background: #2d7a0c; color: #fff; border-color: #2d7a0c; font-weight: 700; }
+#dibujoOverlay .dbFirmaGuia { position: absolute; left: 8%; right: 8%; top: 55%; border-bottom: 2px dashed #94a3b8; pointer-events: none; }
+#dibujoOverlay .dbFirmaGuia span { position: absolute; left: 0; top: 4px; font-size: 12px; color: #94a3b8; }
+.vozFlag { position: absolute; right: 1px; bottom: 0; border: 0; background: none; padding: 0 1px; font-size: 11px; line-height: 1; cursor: pointer; z-index: 2; }
+.vozGrabar { display: flex; gap: 10px; align-items: center; margin: 8px 0; } .vozGrabar span { font-variant-numeric: tabular-nums; font-weight: 700; color: #b91c1c; }
+.tabla-libre { position: absolute; z-index: 30; background: #fff; border-radius: 8px; box-shadow: 0 3px 12px rgba(0,0,0,.16); border: 1px solid var(--tlBorde); overflow: hidden; max-width: calc(100vw - 20px); }
+.tabla-libre.tlDestello { box-shadow: 0 0 0 3px #f59e0b, 0 3px 12px rgba(0,0,0,.16); }
+.tabla-libre .tlHead { display: flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; cursor: grab; touch-action: none; background: #fafafa; border-bottom: 1px solid var(--tlBorde); }
+.tabla-libre .tlTitulo { font-weight: 800; font-size: 13px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tabla-libre .tlRef { font-size: 10px; color: #6b7280; font-family: ui-monospace, Menlo, monospace; }
+.tabla-libre .tlHead button { border: 0; background: none; font-size: 16px; padding: 0 6px; }
+.tabla-libre .tlCuerpo { overflow-x: auto; }
+.tabla-libre table { border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+.tabla-libre td { border: 1px solid var(--tlBorde); padding: 4px 6px; height: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; outline: none; }
+.tabla-libre td.n { text-align: right; font-variant-numeric: tabular-nums; }
+.tabla-libre td:focus { box-shadow: inset 0 0 0 2px #2d7a0c; white-space: normal; text-overflow: clip; text-align: left; }
+.tabla-libre tr.tlEnc td { background: var(--tlEnc); color: var(--tlEncTxt); font-weight: 700; }
+.tabla-libre tr.tlBanda td { background: var(--tlBanda); }
+.tabla-libre tr.tlTot td { background: var(--tlTot); font-weight: 800; }
+.tlEstilos { display: flex; gap: 8px; margin: 4px 0 8px; } .tlEstilos button { width: 34px; height: 26px; border-radius: 6px; border: 1px solid #cbd5e1; } .tlEstilos button.on { box-shadow: 0 0 0 2px #2d7a0c; }
 </style>
 </head>
 <body>
@@ -1668,7 +1715,9 @@
         <button id="btnValidacion">✅ Validación</button>
         <button id="btnFreeze">❄ Congelar</button>
         <button id="btnNote">📝 Nota</button>
+        <button id="btnNotaVoz" title="Grabar una nota de voz en la celda">🎙 Nota de voz</button>
         <button id="btnInsertarTabla">🎨 +Tabla</button>
+        <button id="btnTablaLibre" title="Tabla suelta que se mueve sobre la hoja, como en Numbers (si hay celdas seleccionadas, las copia)">▦ Tabla libre</button>
         <button id="btnGSheets">Cloud Sync</button>
         <button id="btnCongelarFilas" title="Congelar filas de encabezado">🔒 Congelar Filas</button>
         <button id="btnCongelarColumnas" title="Congelar columnas a la izquierda">🔒 Congelar Columnas</button>
@@ -1745,6 +1794,7 @@
         <button id="btnSegmentacion" title="Botones para filtrar la tabla tocando valores (segmentación de datos)">🔘 Segmentación</button>
         <button id="btnEscalaTiempo" title="Filtrar la tabla o la tabla dinámica por años, trimestres, meses o días tocando una barra de tiempo">📅 Escala de tiempo</button>
         <button id="btnSubtotales" title="Insertar filas de subtotal cada vez que cambia el valor de una columna">Σ Subtotales por grupo</button>
+        <button id="btnCategorias" title="Agrupar las filas por cliente, mes o cuenta con subtotales plegables que se actualizan solos (como las Categorías de Numbers)">🗂 Categorías</button>
         <button id="btnQuitarDuplicados">🧹 Quitar duplicados</button>
         <button id="btnTextoEnColumnas" title="Divide el texto de una columna en varias (por coma, espacio, etc.)">✂ Texto en columnas</button>
         <button id="btnAutofiltro">🔽 Autofiltro</button>
@@ -1795,13 +1845,19 @@
       <div class="rbSecHead" role="button" tabindex="0"><span class="rbSecIco">📈</span><span class="rbSecTit">Gráficos y análisis</span><span class="rbSecN"></span><span class="rbChev">▾</span></div>
       <div class="rbGrid">
         <button id="btnChart">📊 Gráfico</button>
+        <button id="btnListaFormulas" title="Todas las fórmulas del libro: buscar, ir, ver errores y reemplazar">ƒx Lista de fórmulas</button>
+        <button id="btnGraficoInteractivo" title="Gráfico con deslizador para recorrer los meses (o las columnas) uno por uno">▶ Gráfico interactivo</button>
         <button id="btnSimbolo" title="Insertar símbolos que cuesta encontrar en el teclado: ₡ € ± × ÷ ≤ ≥ ✓ → ½ ° ©…">Ω Símbolo</button>
         <button id="btnEcuacion" title="Insertar una ecuación con fracciones, raíces, sumatorias, exponentes… (como Insertar → Ecuación de Excel)">π Ecuación</button>
         <button id="btnFormas">🔷 Formas</button>
+        <button id="btnDibujar" title="Dibujar a mano alzada sobre la hoja (dedo o Apple Pencil)">✏ Dibujar</button>
+        <button id="btnFirmar" title="Firmar a mano y dejar la firma en la hoja">✍ Firmar</button>
+        <button id="btnMisPlantillas" title="Guardar este libro u hoja como plantilla propia y usar las que guardaste">⭐ Mis plantillas</button>
         <button id="btnSmartArt" title="Diagramas desde una lista: organigrama, proceso, ciclo, pirámide, radial (SmartArt de Excel)">🔷 SmartArt</button>
         <button id="btnPanelSeleccion" title="Ver todos los objetos de la hoja: orden (frente/atrás), agrupar y ocultar">☰ Panel de selección</button>
         <button id="btnCtrlNumero" title="Control de número ▲▼ ligado a la celda seleccionada">🔢 Control de número</button>
         <button id="btnCtrlDeslizante" title="Barra deslizante ligada a la celda seleccionada">🎚 Barra deslizante</button>
+        <button id="btnCtrlEstrellas" title="Calificación con estrellas que se tocan en la celda (como en Numbers)">★ Estrellas</button>
         <button id="btnImagen" title="Insertar una imagen o foto sobre la hoja">🖼 Imagen</button>
         <input type="file" id="imagenHojaInput" accept="image/*" style="display:none;">
         <button id="btnDashboard">📊 Dashboard</button>
@@ -2201,6 +2257,7 @@
     <button id="raRadio">⚪ Radio</button>
     <button id="raSpinner">🔢 Control de número</button>
     <button id="raSlider">🎚 Barra deslizante</button>
+    <button id="raEstrellas">★ Estrellas</button>
     <button id="raClear" class="danger">🗑 Borrar rango</button>
   </div>
   </div>
@@ -2218,6 +2275,7 @@
     <button id="cmFormatoNum">🔢 Formato de número</button>
     <button id="cmCombinar">⛶ Combinar/separar celdas</button>
     <button id="cmNota">📝 Nota</button>
+    <button id="cmVoz">🎙 Nota de voz</button>
     <div class="cmSep"></div>
     <button id="cmInsertarFila">➕ Insertar fila arriba</button>
     <button id="cmInsertarCol">➕ Insertar columna a la izq.</button>
@@ -2325,6 +2383,9 @@
         <option value="sunburst">Proyección solar (sunburst)</option>
         <option value="waterfall">Cascada</option>
         <option value="funnel">Embudo</option>
+        <option value="bar3d">Barras 3D</option>
+        <option value="pie3d">Torta 3D</option>
+        <option value="radialbar">Barras radiales</option>
         <option value="radar">Radar</option>
         <option value="heat">Mapa de calor</option>
         <option value="gantt">Gantt</option>
@@ -2392,6 +2453,10 @@
       <option value="currency_eur">Moneda (€)</option>
       <option value="percent">Porcentaje</option>
       <option value="accounting">Contable (paréntesis en negativos)</option>
+      <option value="duracion_hm">Duración (2 h 30 min)</option>
+      <option value="duracion_hhmm">Duración en horas (26:30)</option>
+      <option value="duracion_dhm">Duración larga (1 d 2 h 30 min)</option>
+      <option value="duracion_h">Duración en horas decimales (2,5 h)</option>
       <option value="custom">Personalizado (código tipo Excel)</option>
     </select>
     <div id="fmtCustomBox" style="display:none;">
@@ -5081,12 +5146,7 @@ function computeExpr(expr) {
     }
     if ((inner = matchFn('COINCIDIR|MATCH')) !== null) {
       args = splitArgs(inner);
-      var sv3 = String(resolveArg(args[0])).toLowerCase();
-      if (isRange(args[1])) {
-        var mv = rangeVals(args[1]);
-        for (var i2 = 0; i2 < mv.length; i2++) if (String(mv[i2]).toLowerCase() === sv3) return String(i2 + 1);
-      }
-      return '#N/A';
+      return isRange(args[1]) ? posicionCoincidir(resolveArg(args[0]), rangeVals(args[1]), args[2] !== undefined && String(args[2]).trim() !== '' ? resolveNum(args[2]) : 1) : '#N/A';
     }
     if ((inner = matchFn('INDICE|INDEX')) !== null) {
       args = splitArgs(inner);
@@ -5620,14 +5680,8 @@ if ((inner = matchFn('BUSCARX|XLOOKUP')) !== null) {
       return notFound;
     }
 if ((inner = matchFn('COINCIDIR|MATCH')) !== null) {
-      args = splitArgs(inner); var sv4 = String(resolveArg(args[0])).toLowerCase();
-      if (isRange(args[1])) {
-        var matchVals = rangeVals(args[1]);
-        for (var i15 = 0; i15 < matchVals.length; i15++) {
-          if (String(matchVals[i15]).toLowerCase() === sv4) return String(i15 + 1);
-        }
-      }
-      return '#N/A';
+      args = splitArgs(inner);
+      return isRange(args[1]) ? posicionCoincidir(resolveArg(args[0]), rangeVals(args[1]), args[2] !== undefined && String(args[2]).trim() !== '' ? resolveNum(args[2]) : 1) : '#N/A';
     }
 if ((inner = matchFn('INDICE|INDEX')) !== null) {
       args = splitArgs(inner);
@@ -8123,6 +8177,32 @@ function serialDeFechaTexto(t) {
   var base = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(1899, 11, 30);
   return base / 86400000 + (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400;
 }
+// COINCIDIR / MATCH: primero busca el valor exacto (sin importar mayúsculas, y los números
+// se comparan como números aunque vengan con formato, "3 313 200" = 3313200).
+// Si no está: tipo 1 = el mayor que sea ≤ al buscado; tipo -1 = el menor que sea ≥; tipo 0 = #N/A.
+function numeroDeCoincidir(v) {
+  if (typeof v === 'number') return v;
+  var t = String(v === null || v === undefined ? '' : v).trim();
+  if (!t || !/\d/.test(t) || !/^[\s\d.,₡$%+\-\u00a0\u202f]+$/.test(t)) return NaN;
+  var n = toNum(t);
+  return typeof n === 'number' ? n : NaN;
+}
+function posicionCoincidir(buscado, vals, tipo) {
+  var nb = numeroDeCoincidir(buscado), sb = String(buscado === null || buscado === undefined ? '' : buscado).toLowerCase();
+  for (var i = 0; i < vals.length; i++) {
+    var nv = numeroDeCoincidir(vals[i]);
+    if (!isNaN(nb) && !isNaN(nv) ? Math.abs(nb - nv) < 1e-9 : String(vals[i]).toLowerCase() === sb) return String(i + 1);
+  }
+  tipo = Number(tipo);
+  if (!tipo || isNaN(nb)) return '#N/A';
+  var mejor = -1, mejorV = null;
+  for (var j = 0; j < vals.length; j++) {
+    var v = numeroDeCoincidir(vals[j]); if (isNaN(v)) continue;
+    if (tipo > 0 && v <= nb && (mejorV === null || v >= mejorV)) { mejor = j; mejorV = v; }
+    if (tipo < 0 && v >= nb && (mejorV === null || v <= mejorV)) { mejor = j; mejorV = v; }
+  }
+  return mejor >= 0 ? String(mejor + 1) : '#N/A';
+}
 function esTextoFecha(v) { return typeof v === 'string' && !isNaN(serialDeFechaTexto(v)); }
 // Número de un valor de celda, entendiendo fechas como número de serie
 function numFechaONum(v) { if (typeof v === 'string') { var s = serialDeFechaTexto(v); if (!isNaN(s)) return s; } return toNum(v); }
@@ -9411,6 +9491,7 @@ function applyNumberFormat(val, fmt) {
   if (SIMBOLOS_MONEDA_PRESET[type]) return (isNeg ? '-' : '') + SIMBOLOS_MONEDA_PRESET[type] + absStr;
   if (type === 'accounting') return isNeg ? '(₡' + absStr + ')' : '₡' + absStr;
   if (type === 'number') return (isNeg ? '-' : '') + absStr;
+  if (/^duracion/.test(type)) return formatearDuracion(num, type);
   if (type === 'scientific') { var ex = num.toExponential(dec).split('e'), ev = parseInt(ex[1], 10); return ex[0].replace('.', ',') + 'E' + (ev < 0 ? '-' : '+') + (Math.abs(ev) < 10 ? '0' : '') + Math.abs(ev); }
   return String(val);
 }
@@ -11009,6 +11090,9 @@ function renderAllCellsInterno() {
   if (typeof comparacionActiva !== 'undefined' && comparacionActiva) pintarResaltadoComparacion();
   if (typeof pintarTiposDatos === 'function') pintarTiposDatos();
   if (window.revisarBotonErrorSibo) window.revisarBotonErrorSibo();
+  if (typeof pintarNotasVoz === 'function') pintarNotasVoz();
+  if (typeof renderizarTablasLibres === 'function') renderizarTablasLibres();
+  if (typeof revisarCategoriasActivas === 'function' && opcionesLibro.categorias && opcionesLibro.categorias[activeSheet]) setTimeout(revisarCategoriasActivas, 0);
   if (typeof circulosValidacionActivos !== 'undefined' && circulosValidacionActivos) pintarCirculosValidacion();
   Object.keys(notes).forEach(function (id) {
     var el = document.getElementById('cell_' + id);
@@ -11087,6 +11171,7 @@ function renderAllCellsInterno() {
     el.classList.add('has-control');
     el.innerHTML = '';
     if (ctrl.tipo === 'numero' || ctrl.tipo === 'deslizante') { pintarControlNumerico(el, idCtrl, ctrl); return; }
+    if (ctrl.tipo === 'estrellas') { pintarEstrellas(el, idCtrl, ctrl); return; }
     var valCtrl = String(computeValue(idCtrl)).toUpperCase();
     var marcado = valCtrl === 'VERDADERO' || valCtrl === 'TRUE' || valCtrl === '1';
     var input = document.createElement('input');
@@ -16674,6 +16759,7 @@ function commitCell(el) {
   var anterior = (sheetData[activeSheet] && sheetData[activeSheet][id]) || '';
   if (val !== anterior && !validarAlConfirmar(id, val, anterior)) { el.textContent = anterior; el.classList.remove('selected'); renderAllCells(); return; }
   if (el.dataset.editado === '1' && val !== anterior) { var vAC = aplicarAutocorreccion(val); if (vAC !== val) { document.getElementById('saveStatus').textContent = '✍ Autocorrección: ' + vAC.slice(0, 60) + ' (Ctrl+Z para deshacer)'; val = vAC; el.textContent = val; } }
+  if (val !== anterior) val = entradaDuracion(activeSheet, id, val);
   if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
   if (val === '') delete sheetData[activeSheet][id]; else sheetData[activeSheet][id] = val;
   if (val !== anterior) marcarCeldaSucia(activeSheet, id);
@@ -21843,13 +21929,249 @@ var PLANTILLAS_MAS = {
     cols: [{ t: 'Materia', w: 140 }, { t: 'Tarea / trabajo', w: 220 }, { t: 'Entrega', w: 100 }, { t: 'Estado', w: 120, lista: ['Pendiente', 'En proceso', 'Entregada'] }, { t: 'Nota', w: 80, f: 'num' }],
     filas: [['Ciencias', 'Maqueta del sistema solar', '28/11/2026', 'En proceso'], ['Español', 'Análisis de cuento', '02/12/2026', 'Pendiente'], ['Matemática', 'Práctica de fracciones', '25/11/2026', 'Entregada', '95']], vacias: 20,
     resumen: [['Pendientes', '=CONTAR.SI(D{ini}:D{fin};"Pendiente")', 'num'], ['Promedio de notas', '=SI(CONTAR(E{ini}:E{fin})=0;"";PROMEDIO(E{ini}:E{fin}))', 'dec']]
+  },
+  // ── Plantillas tipo Numbers: patrimonio, préstamos, comprar vs alquilar, inversiones ──
+  patrimonioneto: (function () {
+    var M = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    var serie = function (f) { return M.map(function (_, i) { return String(Math.max(0, Math.round(f(i) / 1000) * 1000)); }); };
+    var fx = function (t) { return new Array(12).fill(t); };
+    return {
+      cat: 'finanzas', icono: '💎', color: '#0f766e', titulo: 'Patrimonio neto', hoja: 'PatrimonioNeto',
+      desc: 'Lo que tenés menos lo que debés, mes a mes, con su gráfico',
+      cols: [{ t: 'Concepto', w: 200 }].concat(M.map(function (m) { return { t: m, w: 110, f: 'num' }; })),
+      filas: [
+        ['Efectivo y cuentas bancarias'].concat(serie(function (i) { return 850000 + i * 40000; })),
+        ['Ahorros y CDP'].concat(serie(function (i) { return 1500000 + i * 100000; })),
+        ['Inversiones'].concat(serie(function (i) { return 2000000 * Math.pow(1.006, i); })),
+        ['Vehículos'].concat(serie(function (i) { return 6500000 - i * 45000; })),
+        ['Casa / propiedades'].concat(serie(function (i) { return 45000000 + i * 90000; })),
+        ['TOTAL ACTIVOS'].concat(fx('=SUMA({L}{r1}:{L}{r5})')),
+        ['Tarjetas de crédito'].concat(serie(function (i) { return 450000 - i * 25000; })),
+        ['Préstamos personales'].concat(serie(function (i) { return 3200000 - i * 95000; })),
+        ['Hipoteca'].concat(serie(function (i) { return 32000000 - i * 120000; })),
+        ['TOTAL DEUDAS'].concat(fx('=SUMA({L}{r7}:{L}{r9})')),
+        ['PATRIMONIO NETO'].concat(fx('={L}{r6}-{L}{r10}'))
+      ],
+      negritas: [5, 9, 10],
+      resumen: [
+        ['Patrimonio neto a diciembre', '=M{r11}', 'num'],
+        ['Cambio en el año', '=M{r11}-B{r11}', 'num'],
+        ['Crecimiento en el año', '=SI(B{r11}=0;0;(M{r11}-B{r11})/ABS(B{r11}))', 'pct1'],
+        ['Deudas / activos (diciembre)', '=SI(M{r6}=0;0;M{r10}/M{r6})', 'pct']
+      ],
+      graficos: [
+        { tipo: 'line', titulo: 'Patrimonio neto mes a mes', fila: 10, desdeCol: 1, hastaCol: 12 },
+        { tipo: 'bar', titulo: 'Activos por mes', bloque: { desdeFila: 0, hastaFila: 4, desdeCol: 0, hastaCol: 12 }, interactivo: true }
+      ],
+      pie: 'Anotá los saldos al cierre de cada mes. Las deudas van en positivo (lo que debés); el patrimonio se calcula solo.'
+    };
+  })(),
+  compararprestamos: (function () {
+    var cuota = '=SI({L}{r2}="";"";SI({L}{r3}=0;{L}{r2}/{L}{r4};REDONDEAR({L}{r2}*({L}{r3}/12)/(1-1/(1+{L}{r3}/12)^{L}{r4});0)))';
+    var tres = function (t) { return [t, t, t]; };
+    return {
+      cat: 'finanzas', icono: '⚖️', color: '#1d4ed8', titulo: 'Comparar préstamos', hoja: 'CompararPrestamos',
+      desc: 'Hasta 3 ofertas lado a lado: cuota, intereses y costo total',
+      cols: [{ t: 'Concepto', w: 230 }, { t: 'Oferta A', w: 135, f: 'num' }, { t: 'Oferta B', w: 135, f: 'num' }, { t: 'Oferta C', w: 135, f: 'num' }],
+      filas: [
+        ['Entidad', 'Banco A', 'Banco B', 'Cooperativa C'],
+        ['Monto del préstamo', '10000000', '10000000', '10000000'],
+        ['Tasa de interés anual', '0.115', '0.098', '0.13'],
+        ['Plazo (meses)', '60', '84', '48'],
+        ['Comisión de formalización (%)', '0.02', '0.025', '0.01'],
+        ['Seguros y cargos mensuales', '9000', '12500', '7000'],
+        ['Cuota mensual (sin seguros)'].concat(tres(cuota)),
+        ['Cuota mensual con seguros'].concat(tres('=SI({L}{r7}="";"";{L}{r7}+{L}{r6})')),
+        ['Comisión de formalización (₡)'].concat(tres('=SI({L}{r2}="";"";{L}{r2}*{L}{r5})')),
+        ['Total pagado al final'].concat(tres('=SI({L}{r2}="";"";{L}{r8}*{L}{r4}+{L}{r9})')),
+        ['Intereses totales'].concat(tres('=SI({L}{r2}="";"";{L}{r7}*{L}{r4}-{L}{r2})')),
+        ['COSTO TOTAL DEL CRÉDITO'].concat(tres('=SI({L}{r2}="";"";{L}{r10}-{L}{r2})'))
+      ],
+      formatosFila: { 2: 'pct1', 4: 'pct1' },
+      negritas: [7, 11],
+      resumen: [
+        ['La más barata (menor costo total)', '=INDICE(B{r1}:D{r1};1;COINCIDIR(MIN(B{r12}:D{r12});B{r12}:D{r12};0))', ''],
+        ['Ahorro frente a la más cara', '=MAX(B{r12}:D{r12})-MIN(B{r12}:D{r12})', 'num'],
+        ['La cuota más baja', '=MIN(B{r8}:D{r8})', 'num']
+      ],
+      graficos: [{ tipo: 'bar', titulo: 'Costo total de cada oferta', fila: 11, desdeCol: 1, hastaCol: 3, filaEtq: 0 }],
+      pie: 'Cuota con tasa fija (sistema francés). Si la tasa es variable (TBP + margen), probá también con una tasa 2 o 3 puntos más alta.'
+    };
+  })(),
+  comprarvsalquilar: (function () {
+    var P = '({c0}*(1-{c1}))', i = '({c2}/12)', n = '({c3}*12)', m = '(A{r}*12)';
+    var CUOTA = 'SI({c2}=0;' + P + '/' + n + ';' + P + '*' + i + '/(1-1/(1+' + i + ')^' + n + '))';
+    var SALDO = 'SI({c2}=0;' + P + '*(1-' + m + '/' + n + ');' + P + '*(1+' + i + ')^' + m + '-(' + CUOTA + ')*((1+' + i + ')^' + m + '-1)/' + i + ')';
+    var filas = []; for (var a = 1; a <= 20; a++) filas.push([String(a)]);
+    return {
+      cat: 'finanzas', icono: '🏡', color: '#b45309', titulo: 'Comprar vs. alquilar', hoja: 'ComprarAlquilar',
+      desc: 'Hipoteca contra alquiler: patrimonio de cada camino año por año',
+      campos: [['Precio de la vivienda', '85000000'], ['Prima (%)', '0.1'], ['Tasa de interés anual', '0.095'], ['Plazo (años)', '30'],
+        ['Alquiler mensual actual', '450000'], ['Aumento anual del alquiler', '0.05'], ['Plusvalía anual de la vivienda', '0.03'],
+        ['Mantenimiento, seguros e impuestos (% anual)', '0.012'], ['Rendimiento si invierto el dinero', '0.06'], ['Gastos de compra (traspaso, avalúo…)', '0.035']],
+      camposFmt: { 0: 'num', 1: 'pct1', 2: 'pct1', 3: 'num', 4: 'num', 5: 'pct1', 6: 'pct1', 7: 'pct1', 8: 'pct1', 9: 'pct1' },
+      cols: [{ t: 'Año', w: 70 },
+        { t: 'Alquiler del año', w: 125, f: 'num', calc: '={c4}*12*(1+{c5})^(A{r}-1)', si: 'A' },
+        { t: 'Costo de ser dueño', w: 135, f: 'num', calc: '=SI(A{r}<={c3};(' + CUOTA + ')*12;0)+{c0}*(1+{c6})^(A{r}-1)*{c7}', si: 'A' },
+        { t: 'Valor de la vivienda', w: 135, f: 'num', calc: '={c0}*(1+{c6})^A{r}', si: 'A' },
+        { t: 'Saldo de la hipoteca', w: 135, f: 'num', calc: '=SI(A{r}>={c3};0;MAX(0;' + SALDO + '))', si: 'A' },
+        { t: 'Patrimonio si compro', w: 140, f: 'num', calc: '=D{r}-E{r}', si: 'A' },
+        { t: 'Patrimonio si alquilo', w: 140, f: 'num', calc1: '={c0}*({c1}+{c9})*(1+{c8})+(C{r}-B{r})', calc: '=G{p}*(1+{c8})+(C{r}-B{r})', si: 'A' },
+        { t: '¿Qué conviene?', w: 115, calc: '=SI(F{r}>=G{r};"Comprar";"Alquilar")', si: 'A' }],
+      filas: filas,
+      resumen: [
+        ['Prima', '={c0}*{c1}', 'num'],
+        ['Gastos de compra', '={c0}*{c9}', 'num'],
+        ['Cuota mensual de la hipoteca', '=' + CUOTA.replace(/A\{r\}/g, '0'), 'num'],
+        ['Primer año en que comprar conviene', '=SI(CONTAR.SI(H{ini}:H{fin};"Comprar")=0;"Ninguno en 20 años";INDICE(A{ini}:A{fin};COINCIDIR("Comprar";H{ini}:H{fin};0)))', '']
+      ],
+      graficos: [{ tipo: 'line', titulo: 'Patrimonio: comprar vs. alquilar', col: 5, col2: 6, etq: 0 }],
+      pie: 'Si alquilás, se supone que invertís la prima, los gastos de compra y lo que te ahorrás cada año frente a ser dueño. Cambiá los datos de arriba y mirá cuándo cruza la línea.'
+    };
+  })(),
+  portafolio: {
+    cat: 'finanzas', icono: '📈', color: '#7c3aed', titulo: 'Portafolio de inversiones', hoja: 'Portafolio',
+    desc: 'CDP, fondos y acciones: ganancia, rendimiento y distribución',
+    campos: [['Tipo de cambio (₡ por US$)', '505']], camposFmt: { 0: 'dec' },
+    cols: [{ t: 'Instrumento', w: 190 }, { t: 'Tipo', w: 135, lista: ['CDP', 'Fondo de inversión', 'Acciones', 'Bonos', 'Ahorro a plazo', 'Otro'] },
+      { t: 'Entidad', w: 130 }, { t: 'Moneda', w: 75, lista: ['₡', '$'] }, { t: 'Fecha de inicio', w: 110 },
+      { t: 'Monto invertido', w: 125, f: 'num' }, { t: 'Valor actual', w: 125, f: 'num' },
+      { t: 'Ganancia', w: 115, f: 'num', calc: '=G{r}-F{r}', si: 'A' },
+      { t: 'Rendimiento', w: 105, f: 'pct1', calc: '=SI(F{r}=0;0;H{r}/F{r})', si: 'A' },
+      { t: 'Rend. anual', w: 105, f: 'pct1', calc: '=SI(O(E{r}="";F{r}=0;HOY()-E{r}<30);"";(G{r}/F{r})^(365/(HOY()-E{r}))-1)', si: 'A' },
+      { t: 'Valor en ₡', w: 130, f: 'num', calc: '=SI(D{r}="$";G{r}*{c0};G{r})', si: 'A' },
+      { t: 'Ganancia en ₡', w: 125, f: 'num', calc: '=SI(D{r}="$";H{r}*{c0};H{r})', si: 'A' }],
+    filas: [['CDP 12 meses', 'CDP', 'Banco A', '₡', '15/01/2026', '5000000', '5310000'],
+      ['Fondo de mercado de dinero', 'Fondo de inversión', 'SAFI B', '₡', '01/03/2026', '2000000', '2085000'],
+      ['Fondo en dólares', 'Fondo de inversión', 'SAFI C', '$', '10/02/2026', '4000', '4120'],
+      ['ETF de acciones', 'Acciones', 'Puesto de bolsa D', '$', '05/06/2025', '3000', '3560']], vacias: 8,
+    total: { etiqueta: 'Total del portafolio (₡)', col: 0, sumas: [10, 11] },
+    resumen: [['Rendimiento total del portafolio', '=SI(K{tot}-L{tot}=0;0;L{tot}/(K{tot}-L{tot}))', 'pct1'],
+      ['Parte en dólares', '=SI(K{tot}=0;0;SUMAR.SI(D{ini}:D{fin};"$";K{ini}:K{fin})/K{tot})', 'pct']],
+    graficos: [{ tipo: 'pie', titulo: 'Distribución del portafolio (₡)', col: 10, etq: 0 }],
+    pie: 'Valor actual = lo que dice tu último estado de cuenta. Para un CDP podés estimarlo: monto × (1 + tasa × días / 365).'
+  },
+  // ── Restaurantes y comercios de Costa Rica ──
+  arqueocaja: {
+    cat: 'comercio', icono: '🧮', color: '#166534', titulo: 'Arqueo y cierre de caja', hoja: 'ArqueoCaja',
+    desc: 'Conteo de billetes y monedas, SINPE y tarjeta contra el sistema: faltante o sobrante',
+    nota: 'Una hoja por cajero y por día (duplicá la hoja para el siguiente). Contá el efectivo y anotá lo que dice el sistema.',
+    campos: [['Fecha', '{hoy}'], ['Cajero(a)', 'Nombre'], ['Caja / turno', 'Caja 1 · mañana'], ['Fondo inicial de caja', '50000'],
+      ['Ventas en efectivo (según sistema)', '385000'], ['Retiros y pagos con efectivo de la caja', '12500'],
+      ['SINPE Móvil según sistema', '142000'], ['SINPE Móvil recibido (comprobantes)', '142000'],
+      ['Tarjeta según sistema', '268400'], ['Tarjeta según cierre del datáfono', '268400']],
+    camposFmt: { 3: 'num', 4: 'num', 5: 'num', 6: 'num', 7: 'num', 8: 'num', 9: 'num' },
+    cols: [{ t: 'Denominación', w: 140, f: 'num' }, { t: 'Tipo', w: 90 }, { t: 'Cantidad', w: 95, f: 'num' }, { t: 'Total', w: 130, f: 'num', calc: '=A{r}*C{r}', si: 'C' }],
+    filas: [['50000', 'Billete', ''], ['20000', 'Billete', '8'], ['10000', 'Billete', '12'], ['5000', 'Billete', '15'], ['2000', 'Billete', '18'], ['1000', 'Billete', '22'],
+      ['500', 'Moneda', '14'], ['100', 'Moneda', '22'], ['50', 'Moneda', '4'], ['25', 'Moneda', '2'], ['10', 'Moneda', '4'], ['5', 'Moneda', '2']],
+    total: { etiqueta: 'Efectivo contado', col: 1, sumas: [3] },
+    resumen: [
+      ['Efectivo contado', '=D{tot}', 'num'],
+      ['Efectivo que debería haber', '={c3}+{c4}-{c5}', 'num'],
+      ['Diferencia en efectivo', '={V}{s1}-{V}{s2}', 'num'],
+      ['Diferencia en SINPE', '={c7}-{c6}', 'num'],
+      ['Diferencia en tarjeta', '={c9}-{c8}', 'num'],
+      ['DIFERENCIA TOTAL', '={V}{s3}+{V}{s4}+{V}{s5}', 'num'],
+      ['Resultado', '=SI(ABS({V}{s6})<1;"✅ Cuadra";SI({V}{s6}>0;"Sobrante";"Faltante"))', ''],
+      ['Efectivo a depositar (sin el fondo)', '=MAX(0;{V}{s1}-{c3})', 'num'],
+      ['Total vendido en el turno', '={c4}+{c6}+{c8}', 'num']
+    ],
+    pie: 'Diferencia positiva = sobrante; negativa = faltante.   Firma cajero(a): ______________   Firma supervisor(a): ______________'
+  },
+  costeoreceta: {
+    cat: 'comercio', icono: '🍲', color: '#c2410c', titulo: 'Costeo de receta / ficha técnica', hoja: 'CosteoReceta',
+    desc: 'Costo por plato, food cost, margen y precio sugerido con IVA',
+    nota: 'Cantidad usada en la MISMA unidad del precio de compra (250 g = 0,25 kg). Una hoja por plato.',
+    campos: [['Plato', 'Arroz con pollo'], ['Porciones que rinde', '6'], ['% de costo objetivo (food cost)', '0.32'], ['Merma e imprevistos (%)', '0.05'],
+      ['Precio actual en el menú (con IVA)', '4500'], ['IVA del plato', '0.13']],
+    camposFmt: { 1: 'num', 2: 'pct1', 3: 'pct1', 4: 'num', 5: 'pct1' },
+    cols: [{ t: 'Ingrediente', w: 190 }, { t: 'Unidad', w: 85, lista: ['kg', 'g', 'l', 'ml', 'unidad', 'paquete'] }, { t: 'Precio de compra (₡ por unidad)', w: 150, f: 'num' },
+      { t: 'Cantidad usada', w: 110, f: 'dec' }, { t: 'Costo', w: 120, f: 'num', calc: '=REDONDEAR(C{r}*D{r};0)', si: 'A' }],
+    filas: [['Muslo de pollo', 'kg', '2900', '1.2'], ['Arroz', 'kg', '1150', '0.6'], ['Zanahoria y petit pois', 'kg', '1600', '0.35'], ['Chile, cebolla y culantro', 'kg', '1500', '0.25'],
+      ['Achiote', 'unidad', '450', '1'], ['Consomé', 'unidad', '150', '2'], ['Aceite', 'l', '2300', '0.06'], ['Ensalada y acompañamiento', 'unidad', '180', '6']], vacias: 8,
+    total: { etiqueta: 'Costo de ingredientes', col: 0, sumas: [4] },
+    resumen: [
+      ['Costo total de la receta (con merma)', '=E{tot}*(1+{c3})', 'num'],
+      ['Costo por porción', '=SI({c1}=0;0;{V}{s1}/{c1})', 'num'],
+      ['Precio sugerido sin IVA', '=SI({c2}=0;0;{V}{s2}/{c2})', 'num'],
+      ['Precio sugerido con IVA (redondeado a ₡50)', '=REDONDEAR.MAS({V}{s3}*(1+{c5})/50;0)*50', 'num'],
+      ['Precio actual sin IVA', '={c4}/(1+{c5})', 'num'],
+      ['Food cost actual', '=SI({V}{s5}=0;0;{V}{s2}/{V}{s5})', 'pct1'],
+      ['Ganancia bruta por plato', '={V}{s5}-{V}{s2}', 'num']
+    ],
+    graficos: [{ tipo: 'pie', titulo: '¿En qué se va el costo?', col: 4, etq: 0 }],
+    pie: 'El 10% de servicio se cobra aparte sobre el consumo sin IVA y es de los saloneros: no entra en el costeo.'
+  },
+  servicio10: {
+    cat: 'comercio', icono: '🤝', color: '#0e7490', titulo: 'Servicio 10% y propinas', hoja: 'Servicio10',
+    desc: 'Cálculo del 10% de servicio y reparto entre saloneros por horas',
+    nota: 'Se reparte según las horas trabajadas. Si lo reparten por partes iguales, poné las mismas horas a todos.',
+    campos: [['Semana del', '{hoy}'], ['Consumo a la mesa sin IVA', '3850000'], ['Propinas voluntarias (tarjeta y efectivo)', '96000']],
+    camposFmt: { 1: 'num', 2: 'num' },
+    cols: [{ t: 'Salonero(a)', w: 170 }, { t: 'Turnos', w: 80, f: 'num' }, { t: 'Horas trabajadas', w: 110, f: 'dec' },
+      { t: '% del reparto', w: 105, f: 'pct1', calc: '=SI(SUMA($C${r1}:$C${r10})=0;0;C{r}/SUMA($C${r1}:$C${r10}))', si: 'A' },
+      { t: 'Servicio 10%', w: 125, f: 'num', calc: '=REDONDEAR(D{r}*{c1}*0,1;0)', si: 'A' },
+      { t: 'Propinas', w: 110, f: 'num', calc: '=REDONDEAR(D{r}*{c2};0)', si: 'A' },
+      { t: 'Total a recibir', w: 130, f: 'num', calc: '=E{r}+F{r}', si: 'A' }],
+    filas: [['Andrea', '6', '48'], ['Luis', '6', '48'], ['Karla', '5', '40'], ['Josué (medio tiempo)', '4', '24']], vacias: 6,
+    total: { etiqueta: 'Totales', col: 0, sumas: [2, 3, 4, 5, 6] },
+    resumen: [
+      ['Servicio 10% del período', '=REDONDEAR({c1}*0,1;0)', 'num'],
+      ['Total a repartir (servicio + propinas)', '={V}{s1}+{c2}', 'num'],
+      ['Control: diferencia por redondeo', '=G{tot}-{V}{s2}', 'num']
+    ],
+    graficos: [{ tipo: 'bar', titulo: 'Total a recibir por persona', col: 6, etq: 0 }],
+    pie: 'Ley 9116: el 10% se calcula sobre el consumo sin IVA, es para saloneros y meseros, no se le puede rebajar nada y no es salario (no lleva cargas sociales).'
+  },
+  horasextraferiados: {
+    cat: 'comercio', icono: '⏰', color: '#7c2d12', titulo: 'Horas extra y feriados', hoja: 'HorasExtra',
+    desc: 'Planilla semanal: tiempo y medio, feriado doble y extra en feriado',
+    nota: 'Valor hora = salario mensual ÷ 30 ÷ horas de la jornada (diurna 8, mixta 7, nocturna 6). Las horas en feriado van aparte de las ordinarias.',
+    campos: [['Semana del', '{hoy}'], ['Feriado(s) de la semana', '—']],
+    cols: [{ t: 'Empleado(a)', w: 160 }, { t: 'Jornada', w: 95, lista: ['Diurna', 'Mixta', 'Nocturna'] }, { t: 'Salario mensual', w: 120, f: 'num' },
+      { t: 'Valor hora', w: 100, f: 'num', calc: '=REDONDEAR(C{r}/30/SI(B{r}="Nocturna";6;SI(B{r}="Mixta";7;8));2)', si: 'A' },
+      { t: 'Horas ordinarias', w: 105, f: 'dec' }, { t: 'Horas extra', w: 95, f: 'dec' }, { t: 'Horas en feriado', w: 105, f: 'dec' }, { t: 'Extra en feriado', w: 105, f: 'dec' },
+      { t: 'Pago ordinario', w: 120, f: 'num', calc: '=REDONDEAR(D{r}*E{r};0)', si: 'A' },
+      { t: 'Extra (×1,5)', w: 115, f: 'num', calc: '=REDONDEAR(D{r}*F{r}*1,5;0)', si: 'A' },
+      { t: 'Feriado (×2)', w: 115, f: 'num', calc: '=REDONDEAR(D{r}*G{r}*2;0)', si: 'A' },
+      { t: 'Extra en feriado (×3)', w: 135, f: 'num', calc: '=REDONDEAR(D{r}*H{r}*3;0)', si: 'A' },
+      { t: 'Total de la semana', w: 135, f: 'num', calc: '=I{r}+J{r}+K{r}+L{r}', si: 'A' },
+      { t: 'Revisar', w: 190, calc: '=SI(E{r}+G{r}>SI(B{r}="Nocturna";36;SI(B{r}="Mixta";42;48));"Pasa de la jornada semanal";SI(F{r}+H{r}>24;"Muchas horas extra";""))', si: 'A' }],
+    filas: [['María Rojas', 'Diurna', '420000', '', '48', '6', '', ''], ['Carlos Vargas', 'Mixta', '390000', '', '35', '3', '7', '2'], ['Daniela Mora', 'Nocturna', '400000', '', '30', '0', '6', '']], vacias: 8,
+    total: { etiqueta: 'Totales', col: 0, sumas: [4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    resumen: [['Costo de horas extra y feriados', '=J{tot}+K{tot}+L{tot}', 'num'], ['% sobre el pago ordinario', '=SI(I{tot}=0;0;{V}{s1}/I{tot})', 'pct1']],
+    pie: 'Jornada máxima: diurna 8 h/día y 48 h/semana, mixta 7 y 42, nocturna 6 y 36; sumando extras, no más de 12 h al día. Feriados 2026: 1 ene, 2 y 3 abr, 11 abr, 1 may, 25 jul, 2 ago, 15 ago, 31 ago, 15 set, 1 dic y 25 dic (revisá en el MTSS cuáles son de pago obligatorio). Las cargas de CCSS se calculan en 👥 Planilla.'
+  },
+  mermacarne: {
+    cat: 'comercio', icono: '🥩', color: '#991b1b', titulo: 'Inventario con merma (carnicería)', hoja: 'MermaCarne',
+    desc: 'Peso de entrada, peso vendible, % de merma y costo real por kilo',
+    nota: 'Pesá lo que entra y lo que queda listo para vender. El hueso, la grasa y los recortes que se venden bajan el costo real.',
+    campos: [['Proveedor', 'Nombre'], ['Fecha de entrada', '{hoy}'], ['Margen deseado sobre el precio', '0.3'], ['IVA del producto', '0.01']],
+    camposFmt: { 2: 'pct1', 3: 'pct1' },
+    cols: [{ t: 'Producto / corte', w: 170 }, { t: 'Peso de entrada (kg)', w: 125, f: 'dec' }, { t: 'Costo total pagado', w: 130, f: 'num' },
+      { t: 'Hueso y grasa (kg)', w: 120, f: 'dec' }, { t: 'Recortes y goteo (kg)', w: 130, f: 'dec' }, { t: 'Venta de subproductos (₡)', w: 145, f: 'num' },
+      { t: 'Peso vendible (kg)', w: 120, f: 'dec', calc: '=B{r}-D{r}-E{r}', si: 'A' },
+      { t: '% de merma', w: 100, f: 'pct1', calc: '=SI(B{r}=0;0;(B{r}-G{r})/B{r})', si: 'A' },
+      { t: 'Costo por kg comprado', w: 135, f: 'num', calc: '=SI(B{r}=0;0;C{r}/B{r})', si: 'A' },
+      { t: 'Costo real por kg vendible', w: 155, f: 'num', calc: '=SI(G{r}<=0;0;(C{r}-F{r})/G{r})', si: 'A' },
+      { t: 'Precio de venta por kg', w: 135, f: 'num' },
+      { t: 'Margen real', w: 100, f: 'pct1', calc: '=SI(K{r}="";"";1-J{r}/(K{r}/(1+{c3})))', si: 'A' },
+      { t: 'Precio sugerido por kg', w: 140, f: 'num', calc: '=REDONDEAR.MAS(J{r}/(1-{c2})*(1+{c3})/50;0)*50', si: 'A' }],
+    filas: [['Cuarto trasero de res', '120', '480000', '18', '3', '15000', '', '', '', '', '6500'],
+      ['Posta de cerdo', '40', '128000', '4', '1', '3000', '', '', '', '', '4800'],
+      ['Pollo entero', '60', '108000', '9', '2', '0', '', '', '', '', '2700']], vacias: 10,
+    total: { etiqueta: 'Totales', col: 0, sumas: [1, 2, 3, 4, 5, 6] },
+    resumen: [['Merma total del lote', '=SI(B{tot}=0;0;1-G{tot}/B{tot})', 'pct1'], ['Costo real promedio por kg vendible', '=SI(G{tot}<=0;0;(C{tot}-F{tot})/G{tot})', 'num']],
+    graficos: [{ tipo: 'bar', titulo: '% de merma por corte', col: 7, etq: 0 }],
+    pie: 'IVA: los cortes de la canasta básica pagan 1%; otros pueden pagar 13%. Revisá la tarifa del CABYS de cada producto.'
   }
 };
 var PLANTILLAS_MAS_CATEGORIAS = [
   { id: 'ventas', nombre: 'Ventas y facturación' },
   { id: 'rrhh', nombre: 'Personal (RR.HH.)' },
   { id: 'hogar', nombre: 'Hogar' },
-  { id: 'educacion', nombre: 'Educación' }
+  { id: 'educacion', nombre: 'Educación' },
+  { id: 'comercio', nombre: 'Restaurantes y comercios' }
 ];
 // Se suman a la galería (TEMPLATES_GALERIA, TG_CATEGORIAS) y a las miniaturas (TG_PREVIEWS).
 (function () {
@@ -23623,13 +23945,13 @@ function plantillaTipoExcel(tipo, h) {
   // Gráfico ligado a rangos de la plantilla (se actualiza solo al cambiar los datos).
   // Se coloca debajo de la tabla, a partir de la fila indicada (0 = fila 1), para que en el teléfono
   // se vea al bajar sin tener que desplazarse de lado.
-  function grafico(tipo, titulo, rango, rango2, etiquetas, filaLibre) {
+  function grafico(tipo, titulo, rango, rango2, etiquetas, filaLibre, extra) {
     var graficos = sheetGraficos[name] || (sheetGraficos[name] = []);
-    graficos.push({
+    graficos.push(Object.assign({
       id: nuevoIdGrafico() + graficos.length, tipo: tipo, titulo: titulo,
       x: 44, y: 34 + filaLibre * 33, w: 330, h: 240,
       fuente: { rango: rango, rango2: rango2 || '', rangoEtiquetas: etiquetas || '' }
-    });
+    }, extra || {}));
   }
 
   // ── Plantillas descritas con datos (PLANTILLAS_MAS) ──
@@ -23638,7 +23960,7 @@ function plantillaTipoExcel(tipo, h) {
     function mergeRangeP(r1, c1, r2, c2) { (sheetMerges[name] || (sheetMerges[name] = [])).push({ r1: r1, c1: c1, r2: r2, c2: c2 }); }
     function sumaAnchos(a, b) { var t = 0; for (var q = a; q <= b; q++) t += (cols[q] && cols[q].w) || 110; return t; }
     var claro = tonoClaroPlantilla(p.color, 0.84), claro2 = tonoClaroPlantilla(p.color, 0.7);
-    var FMT = { num: NUM, dec: { numFormat: { type: 'number', decimals: 2, thousands: true } }, pct: PCT };
+    var FMT = { num: NUM, ent: NUM, dec: { numFormat: { type: 'number', decimals: 2, thousands: true } }, pct: PCT, pct1: { numFormat: { type: 'percent', decimals: 1 } } };
     var anchoTitulo = Math.max(2, Math.min(n, 8));
     // Anchos (se calculan antes para acomodar los datos de arriba)
     var w = {};
@@ -23702,6 +24024,7 @@ function plantillaTipoExcel(tipo, h) {
     }
     // Formatos de número por columna (datos + total)
     cols.forEach(function (c, j) { if (FMT[c.f]) styleRange(ini, j, filaTot >= 0 ? filaTot : fin, j, FMT[c.f]); });
+    Object.keys(p.formatosFila || {}).forEach(function (k) { var ff = FMT[p.formatosFila[k]]; if (ff) styleRange(ini + parseInt(k, 10), 1, ini + parseInt(k, 10), n - 1, ff); });
     // Listas desplegables
     cols.forEach(function (c, j) {
       if (!c.lista) return;
@@ -23727,7 +24050,8 @@ function plantillaTipoExcel(tipo, h) {
         set(rk, cE, lin[0], true);
         if (cV - 1 > cE) mergeRangeP(rk, cE, rk, cV - 1);
         var fx = campos(lin[1]).replace(/\{V\}/g, letraV).replace(/\{ini\}/g, ini + 1).replace(/\{fin\}/g, fin + 1).replace(/\{tot\}/g, filaTot + 1)
-          .replace(/\{s(\d+)\}/g, function (_, q) { return filasRes[parseInt(q, 10) - 1]; });
+          .replace(/\{s(\d+)\}/g, function (_, q) { return filasRes[parseInt(q, 10) - 1]; })
+          .replace(/\{r(\d+)\}/g, function (_, q) { return String(ini + parseInt(q, 10)); });
         F(rk, cV, fx);
         styleRange(rk, cE, rk, cV, { border: true });
         styleRange(rk, cV, rk, cV, FMT[lin[2]] || {});
@@ -23739,13 +24063,17 @@ function plantillaTipoExcel(tipo, h) {
     if (p.pie) { set(ultima + 2, 0, p.pie); ultima += 2; }
     if (filasCampos.length && w[colVal] < 150) w[colVal] = 150; // los datos de arriba caben
     colWidths[name] = w;
-    // Gráfico ligado a los datos
-    if (p.grafico) {
-      var g = p.grafico, rango, rango2 = '', etiquetas = '';
-      if (g.fila !== undefined) {
+    // Gráficos ligados a los datos (uno o varios, uno debajo del otro)
+    (p.graficos || (p.grafico ? [p.grafico] : [])).forEach(function (g, kG) {
+      var rango, rango2 = '', etiquetas = '';
+      if (g.bloque) {
+        // Bloque con encabezados y etiquetas (cada columna es una serie: sirve para el gráfico interactivo)
+        rango = colLetter(g.bloque.desdeCol) + (filaEnc + 1) + ':' + colLetter(g.bloque.hastaCol) + (ini + g.bloque.hastaFila + 1);
+      } else if (g.fila !== undefined) {
         var fr = ini + g.fila + 1;
         rango = colLetter(g.desdeCol) + fr + ':' + colLetter(g.hastaCol) + fr;
-        etiquetas = colLetter(g.desdeCol) + (filaEnc + 1) + ':' + colLetter(g.hastaCol) + (filaEnc + 1);
+        var filaEt = g.filaEtq !== undefined ? ini + g.filaEtq + 1 : filaEnc + 1;
+        etiquetas = colLetter(g.desdeCol) + filaEt + ':' + colLetter(g.hastaCol) + filaEt;
       } else {
         // Las filas con datos de ejemplo (si agregás más, se amplía el rango en ✎ del gráfico)
         var finG = ini + Math.max(1, p.filas.length) - 1;
@@ -23753,8 +24081,8 @@ function plantillaTipoExcel(tipo, h) {
         if (g.col2 !== undefined) rango2 = colLetter(g.col2) + (ini + 1) + ':' + colLetter(g.col2) + (finG + 1);
         if (g.etq !== undefined) etiquetas = colLetter(g.etq) + (ini + 1) + ':' + colLetter(g.etq) + (finG + 1);
       }
-      grafico(g.tipo || 'bar', g.titulo || p.titulo, rango, rango2, etiquetas, ultima + 2);
-    }
+      grafico(g.tipo || 'bar', g.titulo || p.titulo, rango, rango2, etiquetas, ultima + 2 + kG * 9, g.interactivo ? { interactivo: true, h: 280 } : null);
+    });
   }
 
   if (tipo === 'presupuestomensual') {
@@ -25837,6 +26165,7 @@ function abrirEditarGrafico(g, el, pestanaInicial) {
     '<label class="mcrF">Título del eje vertical</label><input id="egTituloY" class="mcrI" type="text" value="' + esc(g.tituloY) + '" placeholder="Ej: Colones">' +
     '<label class="mcrF">Título del eje secundario</label><input id="egTituloY2" class="mcrI" type="text" value="' + esc(g.tituloY2) + '">' +
     chk('egTabla', '▦ Tabla de datos debajo del gráfico', cfg.tablaDatos) +
+    chk('egInteractivo', '▶ Gráfico interactivo: una serie a la vez, con deslizador (necesita varias columnas o filas de datos)', !!g.interactivo) +
     '<label class="mcrF">Barras de error</label>' + sel('egErrores', [['', 'Ninguna'], ['fijo', 'Valor fijo'], ['pct', 'Porcentaje'], ['desv', 'Desviación estándar'], ['error', 'Error estándar']], cfg.errores) +
     '<label class="mcrF">Valor de las barras de error <small>(monto fijo, % o cantidad de desviaciones)</small></label>' + num('egErrorValor', g.errorValor, 'Ej: 5');
   // Pestaña Ejes
@@ -25919,7 +26248,7 @@ function abrirEditarGrafico(g, el, pestanaInicial) {
     } else { delete g.etiquetasRango; delete g.etiquetasSerie; }
     ponerSel('leyenda', 'egLeyenda', 'auto'); ponerSel('etiquetas', 'egEtiquetas', 'auto'); ponerSel('cuadricula', 'egCuadricula', ESTILOS_GRAFICO[estiloElegido].cuadricula);
     ponerTxt('tituloX', 'egTituloX'); ponerTxt('tituloY', 'egTituloY'); ponerTxt('tituloY2', 'egTituloY2');
-    ponerChk('tablaDatos', 'egTabla'); ponerSel('errores', 'egErrores', ''); ponerNum('errorValor', 'egErrorValor');
+    ponerChk('tablaDatos', 'egTabla'); ponerChk('interactivo', 'egInteractivo'); ponerSel('errores', 'egErrores', ''); ponerNum('errorValor', 'egErrorValor');
     ponerSel('ejeFormato', 'egFormato', 'auto'); ponerNum('ejeMin', 'egMin'); ponerNum('ejeMax', 'egMax'); ponerNum('ejeMin2', 'egMin2'); ponerNum('ejeMax2', 'egMax2'); ponerChk('ejeLog', 'egLog');
     if (estiloElegido !== 'clasico') g.estilo = estiloElegido; else delete g.estilo;
     if (paletaElegida !== 'matriz') g.paleta = paletaElegida; else delete g.paleta;
@@ -26528,12 +26857,18 @@ function dibujarUnGrafico(g, el) {
   var cvs = el.querySelector('canvas');
   if (cvs) { cvs.setAttribute('role', 'img'); cvs.setAttribute('aria-label', g.alt || g.titulo || 'Gráfico'); }
   pintarBarraPivote(g, el);
-  var W = Math.max(150, g.w - 20), H = Math.max(100, g.h - 52 - (g.pivote ? 30 : 0));
+  var W = Math.max(150, g.w - 20), H = Math.max(100, g.h - 52 - (g.pivote ? 30 : 0) - (g.interactivo ? 34 : 0));
   cvs.dataset.w = W; cvs.dataset.h = H;
   var tEl = el.querySelector('.ctitle');
   if (tEl) tEl.textContent = (g.pivote ? '🧩 ' : '📊 ') + tituloVisibleGrafico(g) + (graficoFiltrado(g) ? ' ⛛' : '');
   var fb = el.querySelector('.cfiltro'); if (fb) fb.classList.toggle('on', graficoFiltrado(g));
   var d = datosVisiblesGrafico(g);
+  var inter = prepararGraficoInteractivo(g, d);
+  pintarBarraInteractiva(g, el, inter);
+  if (inter) {
+    d = inter.d;
+    if (tEl) tEl.textContent = '▶ ' + tituloVisibleGrafico(g) + ' — ' + inter.nombre;
+  }
   if (!d.values.length || (g.tipo === 'prevision' && !d.values.concat(d.values2 || []).some(function (v) { return v !== null; }))) {
     var c2 = cvs.getContext('2d'); cvs.width = W; cvs.height = H; cvs.style.width = W + 'px'; cvs.style.height = H + 'px';
     c2.fillStyle = '#fff'; c2.fillRect(0, 0, W, H); c2.fillStyle = '#999'; c2.font = '11px sans-serif'; c2.textAlign = 'center';
@@ -26541,7 +26876,14 @@ function dibujarUnGrafico(g, el) {
     return;
   }
   cvs._hits = [];
-  drawChart(cvs.id, g.tipo, tituloVisibleGrafico(g), d.labels, d.values, d.values2, opcionesDibujoGrafico(g, d));
+  var opD = opcionesDibujoGrafico(g, d);
+  if (inter) {
+    // Escala fija para todas las series: así se nota cuándo sube o baja
+    opD.nombres = [inter.nombre];
+    if (opD.cfg.ejeMin === undefined || opD.cfg.ejeMin === '') opD.cfg.ejeMin = inter.min;
+    if (opD.cfg.ejeMax === undefined || opD.cfg.ejeMax === '') opD.cfg.ejeMax = inter.max > 0 ? inter.max * 1.05 : inter.max;
+  }
+  drawChart(cvs.id, g.tipo, tituloVisibleGrafico(g) + (inter ? ' — ' + inter.nombre : ''), d.labels, d.values, d.values2, opD);
   activarTooltipGrafico(el);
 }
 // Dibuja (o actualiza) los gráficos de la hoja activa y quita los de otras hojas.
@@ -27413,7 +27755,7 @@ function drawChart(canvasId, type, title, labels, values, values2, opts) {
     var ser = opts.series && opts.series.length ? opts.series : [{ nombre: nom[0] || '', valores: values || [] }].concat(values2 && values2.length ? [{ nombre: nom[1] || '', valores: values2 }] : []);
     ser = ser.map(function (s2) { return { nombre: s2.nombre, valores: (s2.valores || []).map(function (v) { v = Number(v); return isFinite(v) ? v : 0; }) }; });
     var cfgM = opts.cfg || cfgGrafico({ tendencia: !!opts.tendencia });
-    var especiales = { waterfall: dibujarCascadaSeries, funnel: dibujarEmbudoSeries, boxplot: dibujarCajaSeries, radar: dibujarRadarSeries, bubble: dibujarBurbujaSeries, heat: dibujarCalorSeries, mapa_cr: dibujarMapaSeries };
+    var especiales = { bar3d: dibujarBarras3DSeries, pie3d: dibujarTorta3DSeries, radialbar: dibujarRadialSeries, waterfall: dibujarCascadaSeries, funnel: dibujarEmbudoSeries, boxplot: dibujarCajaSeries, radar: dibujarRadarSeries, bubble: dibujarBurbujaSeries, heat: dibujarCalorSeries, mapa_cr: dibujarMapaSeries };
     if (especiales[type]) especiales[type](cvsM, ctxM, WM, HM, type, title, labels || [], ser, cfgM);
     else if (type === 'gantt') dibujarGanttSeries(cvsM, ctxM, WM, HM, type, title, labels || [], ser, cfgM, opts.gantt || null);
     else if (type === 'pie' || type === 'donut' || type === 'pie_pie') dibujarTortaSeries(cvsM, ctxM, WM, HM, type, title, labels || [], ser, cfgM);
@@ -28013,7 +28355,7 @@ var ESTILOS_GRAFICO = {
 // Tipos que dibuja este motor
 var TIPOS_MOTOR_SERIES = ['bar', 'bar_grouped', 'bar_stacked', 'bar_stacked100', 'bar_h', 'bar_h_stacked', 'bar_h_stacked100',
   'line', 'line_double', 'line_stacked', 'step', 'area', 'area_stacked', 'area_stacked100', 'mixed', 'combo', 'pareto',
-  'scatter', 'scatter_lines', 'pie', 'donut', 'pie_pie', 'waterfall', 'funnel', 'boxplot', 'radar', 'bubble', 'gantt', 'heat', 'mapa_cr'];
+  'scatter', 'scatter_lines', 'pie', 'donut', 'pie_pie', 'waterfall', 'funnel', 'boxplot', 'radar', 'bubble', 'gantt', 'heat', 'mapa_cr', 'bar3d', 'pie3d', 'radialbar'];
 
 function cfgGrafico(g) {
   g = g || {};
@@ -34091,6 +34433,999 @@ document.getElementById('raSpinner').addEventListener('click', function () { ins
 document.getElementById('raSlider').addEventListener('click', function () { insertarControlNumerico('deslizante'); });
 document.getElementById('btnCtrlNumero').addEventListener('click', function () { insertarControlNumerico('numero'); });
 document.getElementById('btnCtrlDeslizante').addEventListener('click', function () { insertarControlNumerico('deslizante'); });
+// ══════════════════════════════════════════════
+// TIPO NUMBERS · 5) Calificación con estrellas ★
+// La celda guarda un número (0 a 5); se toca la estrella para calificar.
+// Tocar la misma estrella otra vez baja una (así se puede volver a 0).
+// ══════════════════════════════════════════════
+function pintarEstrellas(el, idCtrl, ctrl) {
+  var max = Math.max(1, Math.min(10, parseInt(ctrl.max, 10) || 5));
+  var v = Math.round(toNum(computeValue(idCtrl)));
+  if (!isFinite(v)) v = 0;
+  v = Math.max(0, Math.min(max, v));
+  el.classList.add('ctrlEstrellas');
+  el.title = v + ' de ' + max;
+  for (var k = 1; k <= max; k++) {
+    (function (k) {
+      var s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'ctrlEstrella' + (k <= v ? ' on' : '');
+      s.textContent = k <= v ? '★' : '☆';
+      s.setAttribute('aria-label', k + ' estrella' + (k === 1 ? '' : 's'));
+      ['pointerdown', 'pointerup', 'mousedown', 'click', 'touchstart'].forEach(function (evt) { s.addEventListener(evt, function (e) { e.stopPropagation(); }, { passive: true }); });
+      s.addEventListener('click', function () { escribirControlNum(idCtrl, k === v ? k - 1 : k); });
+      el.appendChild(s);
+    })(k);
+  }
+}
+function insertarEstrellas() {
+  var b = limitesDeSeleccionOCelda();
+  if (!b) { alert('Tocá primero la celda (o seleccioná la columna) donde van las estrellas.'); return; }
+  var id0 = cellId(b.minR, b.minC), previo = (sheetControles[activeSheet] || {})[id0] || {};
+  var html = '<div class="mcrNota">' + (b.maxR > b.minR || b.maxC > b.minC ? 'Las celdas seleccionadas' : 'La celda ' + id0) +
+    ' van a mostrar estrellas que se tocan para calificar. Guardan un número (0 a máximo), así que sirven en fórmulas: =PROMEDIO(…), =CONTAR.SI(…;5).</div>' +
+    '<label class="mcrF">Cantidad de estrellas</label><select id="estMax" class="mcrI">' + [3, 4, 5, 6, 7, 10].map(function (n) { return '<option' + (n === (previo.max || 5) ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select>' +
+    (previo.tipo === 'estrellas' ? '<button type="button" class="egAccion" id="estQuitar">✕ Quitar las estrellas (deja el número)</button>' : '');
+  abrirPanel('★ Calificación con estrellas', html, [{ texto: 'Cancelar' }, { texto: 'Aplicar', ok: true, accion: function () {
+    var max = parseInt(document.getElementById('estMax').value, 10) || 5;
+    snapshot();
+    if (!sheetControles[activeSheet]) sheetControles[activeSheet] = {};
+    if (!sheetData[activeSheet]) sheetData[activeSheet] = {};
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) {
+      var id = cellId(r, c), crudo = sheetData[activeSheet][id], v = toNum(crudo);
+      if (crudo !== undefined && /★/.test(String(crudo))) v = (String(crudo).match(/★/g) || []).length; // "★★★" escrito a mano
+      sheetControles[activeSheet][id] = { tipo: 'estrellas', max: max };
+      if (String(crudo || '').charAt(0) !== '=') sheetData[activeSheet][id] = String(isFinite(v) ? Math.max(0, Math.min(max, Math.round(v))) : 0);
+    }
+    var bar = document.getElementById('rangeActionsBar'); if (bar) bar.classList.remove('show');
+    buildTable(); autoSave();
+  } }]);
+  var q = document.getElementById('estQuitar');
+  if (q) q.addEventListener('click', function () {
+    snapshot();
+    for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) delete sheetControles[activeSheet][cellId(r, c)];
+    cerrarPanel(); buildTable(); autoSave();
+  });
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS · 6) Categorías
+// Agrupa las filas de una tabla por el valor de una columna (cliente, mes,
+// cuenta…) en una hoja aparte, con una fila de subtotal por categoría que se
+// pliega con −/+. Se rearma sola cuando cambian los datos de la tabla
+// original (filas nuevas, montos, o un cliente que cambia de nombre), y
+// recuerda qué categorías dejaste plegadas.
+// ══════════════════════════════════════════════
+var MESES_CAT = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+function configsCategorias() { return opcionesLibro.categorias = opcionesLibro.categorias || {}; }
+// Lee la tabla de origen: encabezados en cfg.filaEnc y datos hacia abajo hasta 2 filas vacías seguidas
+function leerTablaCategorias(cfg) {
+  var h = cfg.origen, out = { enc: [], filas: [] };
+  for (var c = cfg.c1; c <= cfg.c2; c++) out.enc.push(String(computeValueEnHoja(h, cellId(cfg.filaEnc, c)) || colLetter(c)));
+  var vacias = 0;
+  for (var r = cfg.filaEnc + 1; r < ROWS && vacias < 2; r++) {
+    var fila = [], alguno = false;
+    for (var c2 = cfg.c1; c2 <= cfg.c2; c2++) {
+      var v = computeValueEnHoja(h, cellId(r, c2));
+      v = v === null || v === undefined ? '' : v;
+      if (String(v).trim() !== '') alguno = true;
+      fila.push(v);
+    }
+    if (!alguno) { vacias++; continue; }
+    vacias = 0;
+    // Una fila de "Total" al final de la tabla no es un dato
+    if (/^total/i.test(String(fila[0]).trim()) && r > cfg.filaEnc + 1) continue;
+    out.filas.push({ r: r, v: fila });
+  }
+  return out;
+}
+function claveCategoria(v, cfg) {
+  var s = String(v === null || v === undefined ? '' : v).trim();
+  if (!s) return { k: '~', t: '(vacío)', o: '~' };
+  if (cfg.fechas && cfg.fechas !== 'exacta' && esTextoFecha(s)) {
+    var d = fechaDe(s);
+    if (d && !isNaN(d)) {
+      if (cfg.fechas === 'anio') return { k: String(d.getFullYear()), t: String(d.getFullYear()), o: String(d.getFullYear()) };
+      var km = d.getFullYear() + '-' + dosDig(d.getMonth() + 1);
+      return { k: km, t: MESES_CAT[d.getMonth()] + ' ' + d.getFullYear(), o: km };
+    }
+  }
+  var n = parseFloat(limpiaNum(s));
+  return { k: s.toLowerCase(), t: s, o: !isNaN(n) && /^-?[\d.,\s₡$]+$/.test(s) ? ('#' + String(1e15 + n).padStart(22, '0')) : s.toLowerCase() };
+}
+function firmaCategorias(cfg) {
+  if (sheets.indexOf(cfg.origen) === -1) return 'sin-origen';
+  var t = leerTablaCategorias(cfg);
+  return JSON.stringify([t.enc, t.filas.map(function (f) { return f.v; })]);
+}
+function generarCategorias(destino, conSnapshot) {
+  var cfg = configsCategorias()[destino];
+  if (!cfg || sheets.indexOf(cfg.origen) === -1) return false;
+  if (conSnapshot) snapshot();
+  // Guardar lo plegado antes de rearmar
+  (sheetGroupsRow[destino] || []).forEach(function (g) { var val = (cfg.mapa || {})[g.from]; if (val !== undefined) { if (g.collapsed) cfg.plegadas[val] = true; else delete cfg.plegadas[val]; } });
+  var t = leerTablaCategorias(cfg), nC = t.enc.length, jG = cfg.col - cfg.c1;
+  var grupos = {}, orden = [];
+  t.filas.forEach(function (f) {
+    var cl = claveCategoria(f.v[jG], cfg);
+    if (!grupos[cl.k]) { grupos[cl.k] = { t: cl.t, o: cl.o, filas: [] }; orden.push(cl.k); }
+    grupos[cl.k].filas.push(f);
+  });
+  if (cfg.orden === 'az' || cfg.orden === 'za') {
+    orden.sort(function (a, b) { var x = grupos[a].o, y = grupos[b].o; return x < y ? -1 : x > y ? 1 : 0; });
+    if (cfg.orden === 'za') orden.reverse();
+  }
+  var d = sheetData[destino] = {}, f = sheetFormats[destino] = {};
+  sheetMerges[destino] = []; sheetGroupsRow[destino] = [];
+  var fmtOrigen = sheetFormats[cfg.origen] || {};
+  var fmtCol = t.enc.map(function (_, j) { var fx = t.filas[0] ? fmtOrigen[cellId(t.filas[0].r, cfg.c1 + j)] : null; return fx && fx.numFormat ? { numFormat: fx.numFormat } : null; });
+  var FN = { suma: 'SUMA', promedio: 'PROMEDIO', contar: 'CONTARA', max: 'MAX', min: 'MIN' }[cfg.fn] || 'SUMA';
+  var NOMBRE_FN = { suma: 'Suma', promedio: 'Promedio', contar: 'Cantidad', max: 'Máximo', min: 'Mínimo' }[cfg.fn] || 'Suma';
+  d.A1 = '🗂 ' + cfg.origen + ' por ' + t.enc[jG];
+  f.A1 = { bold: true, fontSize: 15, fontColor: '#14532d' };
+  d.A2 = 'Se actualiza sola · los datos se editan en "' + cfg.origen + '"';
+  f.A2 = { fontColor: '#6b7280', fontSize: 11 };
+  var fe = 3;
+  t.enc.forEach(function (e, j) { d[cellId(fe, j)] = e; f[cellId(fe, j)] = { bold: true, bgColor: '#dcfce7', border: true }; });
+  var r = fe + 1, rangosPorCol = {}, mapa = {};
+  orden.forEach(function (k) {
+    var g = grupos[k], rg = r, a = rg + 2, b = rg + 1 + g.filas.length; // filas de detalle (desde 1)
+    d[cellId(rg, 0)] = g.t + '  (' + g.filas.length + ')';
+    for (var j = 0; j < nC; j++) {
+      f[cellId(rg, j)] = Object.assign({ bold: true, bgColor: '#f0fdf4', border: true }, cfg.sumas.indexOf(cfg.c1 + j) !== -1 && fmtCol[j] ? fmtCol[j] : {});
+      if (cfg.sumas.indexOf(cfg.c1 + j) !== -1 && j !== 0) {
+        d[cellId(rg, j)] = '=' + FN + '(' + colLetter(j) + a + ':' + colLetter(j) + b + ')';
+        (rangosPorCol[j] = rangosPorCol[j] || []).push(colLetter(j) + a + ':' + colLetter(j) + b);
+      }
+    }
+    g.filas.forEach(function (fi, q) {
+      var rr = rg + 1 + q;
+      fi.v.forEach(function (v, j) {
+        if (v !== '') d[cellId(rr, j)] = String(v);
+        f[cellId(rr, j)] = Object.assign({ border: true }, fmtCol[j] || {});
+      });
+    });
+    var plegada = cfg.plegadas[k] !== undefined ? !!cfg.plegadas[k] : !!cfg.plegarTodo;
+    sheetGroupsRow[destino].push({ from: rg, to: rg + g.filas.length, collapsed: plegada });
+    mapa[rg] = k;
+    r = rg + g.filas.length + 1;
+  });
+  // Total general
+  d[cellId(r, 0)] = NOMBRE_FN + ' general';
+  for (var j = 0; j < nC; j++) {
+    f[cellId(r, j)] = Object.assign({ bold: true, bgColor: '#bbf7d0', border: true }, fmtCol[j] || {});
+    if (rangosPorCol[j] && j !== 0) d[cellId(r, j)] = '=' + FN + '(' + rangosPorCol[j].join(';') + ')';
+  }
+  if (!orden.length) d[cellId(fe + 1, 0)] = '(la tabla de origen no tiene datos)';
+  // Anchos como en la tabla original
+  var meta = colWidths[destino] || (colWidths[destino] = {}), wO = colWidths[cfg.origen] || {};
+  t.enc.forEach(function (_, j) { meta[j] = Math.max(wO[cfg.c1 + j] || 110, j === 0 ? 170 : 90); });
+  cfg.mapa = mapa;
+  cfg.firma = firmaCategorias(cfg);
+  return true;
+}
+var ultimaRevisionCategorias = 0;
+function revisarCategoriasActivas() {
+  var cfg = (opcionesLibro.categorias || {})[activeSheet];
+  if (!cfg || revisarCategoriasActivas.ocupado) return;
+  var ahora = Date.now();
+  if (ahora - ultimaRevisionCategorias < 600) return;
+  ultimaRevisionCategorias = ahora;
+  var firma = firmaCategorias(cfg);
+  if (firma === cfg.firma) return;
+  revisarCategoriasActivas.ocupado = true;
+  try {
+    if (generarCategorias(activeSheet, false)) { buildTable(); autoSave(); document.getElementById('saveStatus').textContent = '🗂 Categorías al día con "' + cfg.origen + '"'; }
+  } finally { revisarCategoriasActivas.ocupado = false; }
+}
+function abrirCategorias() {
+  var cfgs = configsCategorias(), editando = cfgs[activeSheet] || null;
+  var origen = editando ? editando.origen : activeSheet;
+  if (editando && sheets.indexOf(origen) === -1) { alert('La hoja de origen "' + origen + '" ya no existe.'); return; }
+  var b;
+  if (editando) b = { minR: editando.filaEnc, minC: editando.c1, maxC: editando.c2 };
+  else {
+    var sel = limitesDeSeleccionOCelda();
+    if (!sel) { alert('Tocá una celda de la tabla que querés agrupar.'); return; }
+    b = sel.maxR > sel.minR || sel.maxC > sel.minC ? sel : regionActualDeDatos(sel.minR, sel.minC);
+    // Si arriba hay un título suelto, el encabezado es la primera fila con varias celdas llenas
+    var dO = sheetData[origen] || {};
+    for (var rr = b.minR; rr < Math.min(b.maxR, b.minR + 5); rr++) {
+      var llenas = 0; for (var cc = b.minC; cc <= b.maxC; cc++) if (String(dO[cellId(rr, cc)] || '').trim()) llenas++;
+      if (llenas >= Math.min(2, b.maxC - b.minC + 1)) { b.minR = rr; break; }
+    }
+  }
+  if (b.maxC === b.minC) { alert('La tabla necesita al menos 2 columnas (una para agrupar y otra con montos).'); return; }
+  var prueba = { origen: origen, filaEnc: b.minR, c1: b.minC, c2: b.maxC };
+  var t = leerTablaCategorias(prueba);
+  if (!t.filas.length) { alert('No encontré datos debajo de los encabezados (fila ' + (b.minR + 1) + ').'); return; }
+  var esNumCol = t.enc.map(function (_, j) { var n = 0, tot = 0; t.filas.forEach(function (f) { var v = f.v[j]; if (String(v).trim() === '') return; tot++; if (!esTextoFecha(String(v)) && !isNaN(parseFloat(limpiaNum(v))) && /\d/.test(String(v))) n++; }); return tot > 0 && n / tot >= 0.8; });
+  var esc = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var colPorDefecto = editando ? editando.col : (function () { for (var j = 0; j < t.enc.length; j++) if (!esNumCol[j]) return b.minC + j; return b.minC; })();
+  var html = '<div class="mcrNota">Tabla de <b>' + esc(origen) + '</b>: ' + colLetter(b.minC) + (b.minR + 1) + ':' + colLetter(b.maxC) + ' (' + t.filas.length + ' filas). Las categorías van en una hoja aparte que se actualiza sola.</div>' +
+    '<label class="mcrF">Agrupar por</label><select id="catCol" class="mcrI">' + t.enc.map(function (e, j) { return '<option value="' + (b.minC + j) + '"' + (b.minC + j === colPorDefecto ? ' selected' : '') + '>' + esc(e) + '</option>'; }).join('') + '</select>' +
+    '<label class="mcrF">Si la columna tiene fechas, agrupar por</label><select id="catFechas" class="mcrI"><option value="mes">Mes</option><option value="anio">Año</option><option value="exacta">Fecha exacta</option></select>' +
+    '<label class="mcrF">Subtotal de</label><div class="catCols">' + t.enc.map(function (e, j) {
+      var marcado = editando ? editando.sumas.indexOf(b.minC + j) !== -1 : esNumCol[j] && j > 0;
+      return '<label><input type="checkbox" class="catSuma" value="' + (b.minC + j) + '"' + (marcado ? ' checked' : '') + '> ' + esc(e) + '</label>';
+    }).join('') + '</div>' +
+    '<div class="egDos"><div><label class="mcrF">Cálculo</label><select id="catFn" class="mcrI"><option value="suma">Suma</option><option value="promedio">Promedio</option><option value="contar">Cantidad</option><option value="max">Máximo</option><option value="min">Mínimo</option></select></div>' +
+    '<div><label class="mcrF">Orden</label><select id="catOrden" class="mcrI"><option value="az">A → Z</option><option value="za">Z → A</option><option value="aparicion">Como aparecen</option></select></div></div>' +
+    '<label class="mcrF" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="catPlegar"' + (editando && editando.plegarTodo ? ' checked' : '') + '> Empezar con todo plegado (solo subtotales)</label>' +
+    (editando ? '<button type="button" class="egAccion" id="catSoltar">✂ Dejar de actualizar (queda como hoja normal)</button>' : '');
+  abrirPanel(editando ? '🗂 Categorías de "' + origen + '"' : '🗂 Categorías', html, [{ texto: 'Cancelar' }, { texto: editando ? 'Actualizar' : 'Crear', ok: true, accion: function () {
+    var sumas = [].slice.call(document.querySelectorAll('.catSuma:checked')).map(function (x) { return parseInt(x.value, 10); });
+    var cfg = { origen: origen, filaEnc: b.minR, c1: b.minC, c2: b.maxC, col: parseInt(document.getElementById('catCol').value, 10), sumas: sumas,
+      fn: document.getElementById('catFn').value, orden: document.getElementById('catOrden').value, fechas: document.getElementById('catFechas').value,
+      plegarTodo: document.getElementById('catPlegar').checked, plegadas: editando ? editando.plegadas : {} };
+    if (editando && (editando.col !== cfg.col || editando.plegarTodo !== cfg.plegarTodo)) cfg.plegadas = {};
+    snapshot();
+    var destino = editando ? activeSheet : crearHojaDestino(('Cat ' + origen).slice(0, 24));
+    if (editando && editando.col !== cfg.col) sheetGroupsRow[destino] = [];
+    cfgs[destino] = cfg;
+    activeSheet = destino;
+    generarCategorias(destino, false);
+    buildTable(); renderTabs(); autoSave();
+    document.getElementById('saveStatus').textContent = '🗂 ' + Object.keys(cfg.mapa).length + ' categorías en "' + destino + '"';
+  } }]);
+  if (editando) {
+    document.getElementById('catFn').value = editando.fn; document.getElementById('catOrden').value = editando.orden; document.getElementById('catFechas').value = editando.fechas || 'mes';
+    document.getElementById('catSoltar').addEventListener('click', function () { delete cfgs[activeSheet]; autoSave(); cerrarPanel(); document.getElementById('saveStatus').textContent = 'La hoja ya no se actualiza sola'; });
+  }
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS · 7) Gráfico interactivo
+// Muestra una serie a la vez (un mes, por ejemplo) con un deslizador y ▶
+// para recorrerlas. La escala queda fija para comparar a simple vista.
+// ══════════════════════════════════════════════
+function prepararGraficoInteractivo(g, d) {
+  if (!g.interactivo || !d.series || d.series.length < 2) return null;
+  var n = d.series.length, k = Math.max(0, Math.min(n - 1, parseInt(g.interactivoIdx, 10) || 0));
+  var todos = []; d.series.forEach(function (s) { (s.valores || []).forEach(function (v) { if (typeof v === 'number' && isFinite(v)) todos.push(v); }); });
+  var s = d.series[k];
+  var d2 = Object.assign({}, d, { series: [{ nombre: s.nombre, valores: s.valores }], values: s.valores, values2: null });
+  return { d: d2, k: k, n: n, nombre: s.nombre, nombres: d.series.map(function (x) { return x.nombre; }),
+    min: todos.length ? Math.min(0, Math.min.apply(null, todos)) : 0, max: todos.length ? Math.max.apply(null, todos) : 0 };
+}
+function pintarBarraInteractiva(g, el, inter) {
+  var barra = el.querySelector('.cinter');
+  if (!inter) { if (barra) barra.remove(); return; }
+  if (!barra || parseInt(barra.dataset.n, 10) !== inter.n) {
+    if (barra) barra.remove();
+    barra = document.createElement('div');
+    barra.className = 'cinter'; barra.dataset.n = inter.n;
+    barra.innerHTML = '<button type="button" class="cinterPlay" title="Reproducir">▶</button><input type="range" class="cinterRango" min="0" max="' + (inter.n - 1) + '" step="1"><span class="cinterEtq"></span>';
+    ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(function (evt) { barra.addEventListener(evt, function (e) { e.stopPropagation(); }, { passive: true }); });
+    var rango = barra.querySelector('.cinterRango'), play = barra.querySelector('.cinterPlay');
+    var ir = function (k) { g.interactivoIdx = k; dibujarUnGrafico(g, el); };
+    rango.addEventListener('input', function () { ir(parseInt(rango.value, 10)); });
+    rango.addEventListener('change', function () { autoSave(); });
+    play.addEventListener('click', function () {
+      if (el._playInter) { clearInterval(el._playInter); el._playInter = null; play.textContent = '▶'; autoSave(); return; }
+      play.textContent = '⏸';
+      el._playInter = setInterval(function () {
+        if (!document.body.contains(el)) { clearInterval(el._playInter); el._playInter = null; return; }
+        var n = parseInt(barra.dataset.n, 10), k = ((parseInt(g.interactivoIdx, 10) || 0) + 1) % n;
+        ir(k);
+      }, 1200);
+    });
+    var res = el.querySelector('.cresize');
+    if (res) el.insertBefore(barra, res); else el.appendChild(barra);
+  }
+  barra.querySelector('.cinterRango').value = inter.k;
+  barra.querySelector('.cinterEtq').textContent = (inter.nombre || ('Serie ' + (inter.k + 1))) + '  ·  ' + (inter.k + 1) + '/' + inter.n;
+}
+function insertarGraficoInteractivo() {
+  var sel = limitesDeSeleccionOCelda();
+  if (!sel) { alert('Tocá una celda de la tabla (con los meses o períodos como columnas).'); return; }
+  var b = sel.maxR > sel.minR || sel.maxC > sel.minC ? sel : regionActualDeDatos(sel.minR, sel.minC);
+  // Saltar el título y las notas de arriba: la tabla empieza en la primera fila con varias celdas llenas
+  var dH = sheetData[activeSheet] || {};
+  var llenas = function (r) { var n = 0; for (var c = b.minC; c <= b.maxC; c++) if (String(dH[cellId(r, c)] || '').trim()) n++; return n; };
+  while (b.minR < b.maxR - 1 && llenas(b.minR) < 2) b.minR++;
+  var rango = cellId(b.minR, b.minC) + ':' + cellId(b.maxR, b.maxC);
+  var sr = seriesDeRango(rango, false, '');
+  if (sr.series.length < 2) { alert('El gráfico interactivo necesita varias columnas de datos (por ejemplo un mes por columna) para recorrerlas con el deslizador.'); return; }
+  snapshot();
+  var lista = sheetGraficos[activeSheet] || (sheetGraficos[activeSheet] = []);
+  var wrap = document.getElementById('gridWrap');
+  lista.push({ id: nuevoIdGrafico(), tipo: 'bar', titulo: 'Gráfico interactivo', x: (wrap ? wrap.scrollLeft : 0) + 30 + lista.length * 14, y: (wrap ? wrap.scrollTop : 0) + 60 + lista.length * 14,
+    w: 340, h: 290, fuente: { rango: rango, rango2: '', rangoEtiquetas: '' }, interactivo: true, interactivoIdx: 0 });
+  autoSave(); renderizarGraficos();
+  document.getElementById('saveStatus').textContent = '▶ Gráfico interactivo: ' + sr.series.length + ' series para recorrer';
+}
+document.getElementById('btnCtrlEstrellas').addEventListener('click', insertarEstrellas);
+document.getElementById('raEstrellas').addEventListener('click', insertarEstrellas);
+document.getElementById('btnCategorias').addEventListener('click', abrirCategorias);
+document.getElementById('btnGraficoInteractivo').addEventListener('click', insertarGraficoInteractivo);
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Lista de fórmulas
+// Todas las fórmulas del libro en un panel: buscar, ir a cada una, ver las
+// que dan error y reemplazar texto adentro de las fórmulas.
+// ══════════════════════════════════════════════
+function todasLasFormulas() {
+  var out = [];
+  sheets.forEach(function (h) {
+    var d = sheetData[h] || {};
+    Object.keys(d).forEach(function (id) {
+      var v = d[id];
+      if (typeof v !== 'string' || v.charAt(0) !== '=' || !/^[A-Z]{1,3}\d+$/.test(id)) return;
+      var res;
+      try { res = computeValueEnHoja(h, id); } catch (e) { res = '#ERROR'; }
+      out.push({ h: h, id: id, f: v, r: res, err: /^#/.test(String(res)) });
+    });
+  });
+  out.sort(function (a, b) { return a.h === b.h ? (filaDe(a.id) - filaDe(b.id) || colDe(a.id) - colDe(b.id)) : sheets.indexOf(a.h) - sheets.indexOf(b.h); });
+  return out;
+}
+function abrirListaFormulas() {
+  var esc = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var html = '<div class="egDos"><div><input id="lfBuscar" class="mcrI" placeholder="🔍 Buscar en fórmulas, hojas o resultados"></div>' +
+    '<div><select id="lfFiltro" class="mcrI"><option value="todas">Todas</option><option value="errores">Solo con error</option><option value="hoja">Solo esta hoja</option></select></div></div>' +
+    '<div class="egDos"><div><input id="lfReemplazo" class="mcrI" placeholder="Reemplazar por…"></div><div><button type="button" class="egAccion" id="lfReemplazar">⇄ Reemplazar en las que se ven</button></div></div>' +
+    '<div id="lfResumen" class="mcrNota"></div><div id="lfLista" class="lfLista"></div>';
+  abrirPanel('ƒx Lista de fórmulas', html, [{ texto: 'Cerrar', ok: true }]);
+  var visibles = [];
+  var pintar = function () {
+    var q = document.getElementById('lfBuscar').value.trim().toLowerCase(), filtro = document.getElementById('lfFiltro').value;
+    var todas = todasLasFormulas();
+    visibles = todas.filter(function (x) {
+      if (filtro === 'errores' && !x.err) return false;
+      if (filtro === 'hoja' && x.h !== activeSheet) return false;
+      return !q || (x.h + '!' + x.id + ' ' + x.f + ' ' + x.r).toLowerCase().indexOf(q) !== -1;
+    });
+    var nErr = todas.filter(function (x) { return x.err; }).length;
+    document.getElementById('lfResumen').innerHTML = todas.length + ' fórmulas en el libro' + (nErr ? ' · <b class="mcrMal">' + nErr + ' con error</b>' : ' · <span class="mcrOk">ninguna con error</span>') + (visibles.length !== todas.length ? ' · se muestran ' + visibles.length : '');
+    var hojaAnt = '';
+    document.getElementById('lfLista').innerHTML = visibles.slice(0, 400).map(function (x, i) {
+      var cab = x.h !== hojaAnt ? '<div class="lfHoja">' + esc(x.h) + (hojaOculta(x.h) ? ' <small>(oculta)</small>' : '') + '</div>' : '';
+      hojaAnt = x.h;
+      return cab + '<button type="button" class="lfItem' + (x.err ? ' err' : '') + '" data-i="' + i + '"><span class="lfCel">' + x.id + '</span><span class="lfF">' + esc(x.f) + '</span><span class="lfR">' + esc(String(x.r).slice(0, 40)) + '</span></button>';
+    }).join('') + (visibles.length > 400 ? '<div class="mcrNota">… y ' + (visibles.length - 400) + ' más. Afiná la búsqueda.</div>' : '') +
+      (!visibles.length ? '<div class="mcrNota">No hay fórmulas que coincidan.</div>' : '');
+    document.querySelectorAll('.lfItem').forEach(function (b) { b.addEventListener('click', function () {
+      var x = visibles[parseInt(b.dataset.i, 10)];
+      cerrarPanel();
+      if (hojaOculta(x.h)) { var t = tablaLibreDeHoja(x.h); if (t) { activeSheet = t.anfitriona; buildTable(); renderTabs(); resaltarTablaLibre(t.t.id); return; } }
+      irAReferencia(x.h + '!' + x.id);
+    }); });
+  };
+  var t0 = null;
+  document.getElementById('lfBuscar').addEventListener('input', function () { clearTimeout(t0); t0 = setTimeout(pintar, 200); });
+  document.getElementById('lfFiltro').addEventListener('change', pintar);
+  document.getElementById('lfReemplazar').addEventListener('click', function () {
+    var q = document.getElementById('lfBuscar').value;
+    if (!q.trim()) { alert('Escribí arriba el texto que querés buscar dentro de las fórmulas.'); return; }
+    var nuevo = document.getElementById('lfReemplazo').value;
+    var afectadas = visibles.filter(function (x) { return x.f.toLowerCase().indexOf(q.toLowerCase()) !== -1; });
+    if (!afectadas.length) { alert('El texto no aparece dentro de las fórmulas que se ven (puede estar solo en el resultado).'); return; }
+    if (!confirm('¿Reemplazar "' + q + '" por "' + nuevo + '" en ' + afectadas.length + ' fórmula(s)?')) return;
+    snapshot();
+    var re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    afectadas.forEach(function (x) { sheetData[x.h][x.id] = x.f.replace(re, nuevo); marcarCeldaSucia(x.h, x.id); });
+    if (typeof cacheCalculo !== 'undefined') cacheCalculo = {};
+    renderAllCells(); autoSave();
+    document.getElementById('lfBuscar').value = nuevo;
+    pintar();
+    document.getElementById('saveStatus').textContent = '⇄ ' + afectadas.length + ' fórmula(s) cambiadas';
+  });
+  pintar();
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Mis plantillas
+// Guardar una hoja (o todo el libro) como plantilla propia que aparece en la
+// galería, en la pestaña ⭐ Mis plantillas. Se guardan en este dispositivo.
+// ══════════════════════════════════════════════
+var CLAVE_MIS_PLANTILLAS = 'mcr_mis_plantillas';
+function misPlantillas() { try { return JSON.parse(localStorage.getItem(CLAVE_MIS_PLANTILLAS) || '[]'); } catch (e) { return []; } }
+function guardarMisPlantillas(l) { localStorage.setItem(CLAVE_MIS_PLANTILLAS, JSON.stringify(l)); }
+// Todas las partes de una hoja (datos, formatos, anchos, gráficos, controles…), sacadas del estado del libro
+function partesDeHoja(h) {
+  var est = estadoActualComoObjeto(), partes = {};
+  Object.keys(est).forEach(function (k) {
+    var v = est[k];
+    if (k === 'sheets' || !v || typeof v !== 'object' || Array.isArray(v)) return;
+    if (Object.prototype.hasOwnProperty.call(v, h) && v[h] !== undefined && v[h] !== null) partes[k] = JSON.parse(JSON.stringify(v[h]));
+  });
+  return partes;
+}
+function ponerPartesDeHoja(h, partes) {
+  Object.keys(partes).forEach(function (k) {
+    var dest = window[k];
+    if (dest && typeof dest === 'object' && !Array.isArray(dest)) dest[h] = JSON.parse(JSON.stringify(partes[k]));
+  });
+  ['sheetData', 'sheetFormats', 'sheetNotes', 'sheetAttachments', 'colWidths'].forEach(function (k) { if (window[k] && !window[k][h]) window[k][h] = {}; });
+  if (!sheetMerges[h]) sheetMerges[h] = [];
+  if (!sheetFreeze[h]) sheetFreeze[h] = { row: 0, col: 0 };
+  if (sheetProtegida[h] === undefined) sheetProtegida[h] = false;
+}
+function nombreLibreDeHoja(base) {
+  var n = base, k = 2;
+  while (sheets.indexOf(n) !== -1) n = base + ' ' + k++;
+  return n;
+}
+function abrirGuardarComoPlantilla() {
+  var esc = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  var ICONOS = ['⭐', '📒', '🧾', '🥩', '🍲', '🛒', '🏪', '🚚', '💼', '🏡', '📊', '🧮'];
+  var html = '<label class="mcrF">Nombre de la plantilla</label><input id="mpNombre" class="mcrI" value="' + esc(hojaOculta(activeSheet) ? 'Mi plantilla' : activeSheet) + '">' +
+    '<label class="mcrF">Ícono</label><div class="mpIconos">' + ICONOS.map(function (ic, i) { return '<label><input type="radio" name="mpIcono" value="' + ic + '"' + (i === 0 ? ' checked' : '') + '> ' + ic + '</label>'; }).join('') + '</div>' +
+    '<label class="mcrF">Qué guardar</label><select id="mpQue" class="mcrI"><option value="hoja">Solo esta hoja (' + esc(activeSheet) + ')</option><option value="libro">Todas las hojas visibles (' + hojasVisibles().length + ')</option></select>' +
+    '<label class="mcrF" style="display:flex;gap:6px;align-items:flex-start"><input type="checkbox" id="mpVaciar" checked> Vaciar los números escritos a mano (quedan los títulos, las fórmulas, los formatos y las listas)</label>' +
+    '<div class="mcrNota">La plantilla queda en la galería (📁 Plantilla…), pestaña <b>⭐ Mis plantillas</b>, guardada en este dispositivo.</div>';
+  abrirPanel('⭐ Guardar como plantilla', html, [{ texto: 'Cancelar' }, { texto: 'Guardar', ok: true, accion: function () {
+    var nombre = document.getElementById('mpNombre').value.trim();
+    if (!nombre) { alert('Ponele un nombre.'); return false; }
+    var icono = (document.querySelector('input[name="mpIcono"]:checked') || {}).value || '⭐';
+    var hojas = document.getElementById('mpQue').value === 'libro' ? hojasVisibles() : [activeSheet];
+    // Las tablas libres de esas hojas viven en hojas ocultas: también van
+    var conTablas = hojas.slice();
+    hojas.forEach(function (h) { ((colWidths[h] || {}).tablasLibres || []).forEach(function (t) { if (sheets.indexOf(t.hoja) !== -1 && conTablas.indexOf(t.hoja) === -1) conTablas.push(t.hoja); }); });
+    var vaciar = document.getElementById('mpVaciar').checked;
+    var paquete = conTablas.map(function (h) {
+      var p = partesDeHoja(h);
+      if (vaciar && p.sheetData) Object.keys(p.sheetData).forEach(function (id) {
+        var v = String(p.sheetData[id]);
+        if (v.charAt(0) !== '=' && /^-?[\d.,\s₡$%]+$/.test(v) && /\d/.test(v) && !(sheetControles[h] || {})[id]) delete p.sheetData[id];
+      });
+      return { nombre: h, partes: p };
+    });
+    var lista = misPlantillas().filter(function (x) { return x.nombre !== nombre; });
+    var vp = paquete[0].partes.sheetData || {};
+    lista.unshift({ id: 'p' + Date.now().toString(36), nombre: nombre, icono: icono, fecha: Date.now(), hojas: paquete,
+      vista: [0, 1, 2, 3, 4].map(function (r) { return [0, 1, 2, 3].map(function (c) { var v = vp[cellId(r, c)]; return v === undefined || String(v).charAt(0) === '=' ? '' : String(v).slice(0, 18); }); }) });
+    try { guardarMisPlantillas(lista); }
+    catch (e) { alert('No hay espacio para guardar la plantilla en este dispositivo (' + e.message + '). Probá guardar solo una hoja o borrar plantillas viejas.'); return false; }
+    tgAviso('⭐ Plantilla "' + nombre + '" guardada');
+    document.getElementById('saveStatus').textContent = '⭐ Plantilla guardada: ' + nombre + ' (' + hojas.length + ' hoja' + (hojas.length === 1 ? '' : 's') + ')';
+  } }]);
+}
+function cargarMiPlantilla(id) {
+  var p = misPlantillas().filter(function (x) { return x.id === id; })[0];
+  if (!p) { alert('Esa plantilla ya no existe.'); return; }
+  snapshot();
+  var mapa = {}, primera = null;
+  p.hojas.forEach(function (hj) { mapa[hj.nombre] = nombreLibreDeHoja(hj.nombre); });
+  p.hojas.forEach(function (hj) {
+    var nueva = mapa[hj.nombre], partes = JSON.parse(JSON.stringify(hj.partes));
+    // Si cambió el nombre de alguna hoja, las fórmulas que la usan se ajustan
+    Object.keys(mapa).forEach(function (vieja) {
+      if (mapa[vieja] === vieja || !partes.sheetData) return;
+      var re = new RegExp("(^|[^A-Za-z0-9_])('?)" + vieja.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "\\2!", 'g');
+      var dest = /^[A-Za-z0-9_]+$/.test(mapa[vieja]) ? mapa[vieja] + '!' : "'" + mapa[vieja] + "'!";
+      Object.keys(partes.sheetData).forEach(function (c) { var v = partes.sheetData[c]; if (typeof v === 'string' && v.charAt(0) === '=') partes.sheetData[c] = v.replace(re, function (m, a) { return a + dest; }); });
+    });
+    if (partes.colWidths && partes.colWidths.tablasLibres) partes.colWidths.tablasLibres.forEach(function (t) { if (mapa[t.hoja]) t.hoja = mapa[t.hoja]; t.id = 'tl' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); });
+    if (partes.sheetGraficos) partes.sheetGraficos.forEach(function (g) { g.id = nuevoIdGrafico(); });
+    sheets.push(nueva);
+    ponerPartesDeHoja(nueva, partes);
+    if (!primera && !(partes.colWidths && partes.colWidths.oculta)) primera = nueva;
+  });
+  activeSheet = primera || mapa[p.hojas[0].nombre];
+  if (typeof cacheCalculo !== 'undefined') cacheCalculo = {};
+  buildTable(); renderTabs(); autoSave();
+  tgAviso('✓ ' + p.icono + ' ' + p.nombre);
+}
+function sincronizarMisPlantillasEnGaleria() {
+  for (var i = TEMPLATES_GALERIA.length - 1; i >= 0; i--) if (/^mia_/.test(TEMPLATES_GALERIA[i].tipo)) TEMPLATES_GALERIA.splice(i, 1);
+  var l = misPlantillas(), tipos = [];
+  l.forEach(function (p) {
+    var tipo = 'mia_' + p.id; tipos.push(tipo);
+    TEMPLATES_GALERIA.unshift({ tipo: tipo, icono: p.icono, color: '#b45309', titulo: p.icono + ' ' + p.nombre, desc: 'Plantilla tuya · ' + p.hojas.filter(function (h) { return !(h.partes.colWidths && h.partes.colWidths.oculta); }).length + ' hoja(s)' });
+    TG_PREVIEWS[tipo] = { cols: (p.vista && p.vista[0]) || ['', '', '', ''], filas: (p.vista || []).slice(1) };
+  });
+  var cat = TG_CATEGORIAS.filter(function (c) { return c.id === 'mias'; })[0];
+  if (tipos.length) { if (!cat) TG_CATEGORIAS.splice(1, 0, { id: 'mias', nombre: '⭐ Mis plantillas', tipos: tipos }); else cat.tipos = tipos; }
+  else if (cat) TG_CATEGORIAS.splice(TG_CATEGORIAS.indexOf(cat), 1);
+}
+function abrirMisPlantillas() {
+  var esc = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var l = misPlantillas();
+  var html = '<button type="button" class="egAccion" id="mpNueva">⭐ Guardar lo que tengo como plantilla nueva</button>' +
+    (l.length ? l.map(function (p) {
+      return '<div class="mpItem"><span class="mpIc">' + p.icono + '</span><span class="mpNom"><b>' + esc(p.nombre) + '</b><br><small>' + p.hojas.length + ' hoja(s) · ' + new Date(p.fecha).toLocaleDateString('es-CR') + '</small></span>' +
+        '<button type="button" data-a="usar" data-id="' + p.id + '">Usar</button><button type="button" data-a="ren" data-id="' + p.id + '">✏</button><button type="button" data-a="del" data-id="' + p.id + '">🗑</button></div>';
+    }).join('') : '<div class="mcrNota">Todavía no tenés plantillas propias. Armá una hoja como te gusta (con fórmulas y formato) y guardala.</div>');
+  abrirPanel('⭐ Mis plantillas', html, [{ texto: 'Cerrar', ok: true }]);
+  document.getElementById('mpNueva').addEventListener('click', abrirGuardarComoPlantilla);
+  document.querySelectorAll('.mpItem button').forEach(function (b) { b.addEventListener('click', function () {
+    var lista = misPlantillas(), p = lista.filter(function (x) { return x.id === b.dataset.id; })[0]; if (!p) return;
+    if (b.dataset.a === 'usar') { cerrarPanel(); cargarMiPlantilla(p.id); return; }
+    if (b.dataset.a === 'ren') { var n = prompt('Nuevo nombre:', p.nombre); if (!n || !n.trim()) return; p.nombre = n.trim(); }
+    if (b.dataset.a === 'del') { if (!confirm('¿Eliminar la plantilla "' + p.nombre + '"?')) return; lista.splice(lista.indexOf(p), 1); }
+    guardarMisPlantillas(lista); abrirMisPlantillas();
+  }); });
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Dibujo a mano alzada
+// Con el dedo o el Apple Pencil sobre la hoja: anotar, encerrar un monto o
+// firmar. Al terminar queda como una imagen (se mueve, cambia de tamaño y
+// se borra como cualquier forma).
+// ══════════════════════════════════════════════
+function abrirModoDibujo(firma) {
+  var wrap = document.getElementById('gridWrap'); if (!wrap) return;
+  var ov = document.createElement('div'); ov.id = 'dibujoOverlay';
+  ov.innerHTML = '<div class="dbBarra">' +
+    ['#111827', '#dc2626', '#2563eb', '#16a34a', '#facc15'].map(function (c, i) { return '<button type="button" class="dbColor' + (i === 0 ? ' on' : '') + '" data-c="' + c + '" style="background:' + c + '"></button>'; }).join('') +
+    '<select class="dbGrosor"><option value="2">Fino</option><option value="4" selected>Medio</option><option value="8">Grueso</option><option value="18">Resaltador</option></select>' +
+    '<button type="button" class="dbBtn" data-a="atras" title="Deshacer el último trazo">↶</button><button type="button" class="dbBtn" data-a="limpiar" title="Borrar todo">🗑</button>' +
+    '<button type="button" class="dbBtn" data-a="cancelar">✕</button><button type="button" class="dbBtn dbListo" data-a="listo">✓ Listo</button></div>' +
+    (firma ? '<div class="dbFirmaGuia"><span>Firmá aquí</span></div>' : '') + '<canvas class="dbLienzo"></canvas>';
+  document.body.appendChild(ov);
+  var cv = ov.querySelector('canvas'), ctx = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  var ajustar = function () { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); redibujar(); };
+  var trazos = [], actual = null, color = '#111827', grosor = 4;
+  var dibujarTrazo = function (t) {
+    ctx.save(); ctx.strokeStyle = t.c; ctx.lineWidth = t.g; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.globalAlpha = t.g >= 18 ? 0.35 : 1;
+    ctx.beginPath(); ctx.moveTo(t.p[0][0], t.p[0][1]);
+    for (var i = 1; i < t.p.length - 1; i++) { var mx = (t.p[i][0] + t.p[i + 1][0]) / 2, my = (t.p[i][1] + t.p[i + 1][1]) / 2; ctx.quadraticCurveTo(t.p[i][0], t.p[i][1], mx, my); }
+    if (t.p.length > 1) ctx.lineTo(t.p[t.p.length - 1][0], t.p[t.p.length - 1][1]); else ctx.lineTo(t.p[0][0] + 0.1, t.p[0][1]);
+    ctx.stroke(); ctx.restore();
+  };
+  var redibujar = function () { ctx.clearRect(0, 0, cv.width, cv.height); trazos.forEach(dibujarTrazo); if (actual) dibujarTrazo(actual); };
+  if (firma) { grosor = 2; ov.querySelector('.dbGrosor').value = '2'; }
+  cv.addEventListener('pointerdown', function (e) { e.preventDefault(); cv.setPointerCapture(e.pointerId); actual = { c: color, g: grosor, p: [[e.clientX, e.clientY]] }; redibujar(); });
+  cv.addEventListener('pointermove', function (e) { if (!actual) return; var ev = e.getCoalescedEvents ? e.getCoalescedEvents() : [e]; (ev.length ? ev : [e]).forEach(function (x) { actual.p.push([x.clientX, x.clientY]); }); redibujar(); });
+  var soltar = function () { if (actual) { trazos.push(actual); actual = null; redibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  ov.querySelectorAll('.dbColor').forEach(function (b) { b.addEventListener('click', function () { ov.querySelectorAll('.dbColor').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); color = b.dataset.c; }); });
+  ov.querySelector('.dbGrosor').addEventListener('change', function (e) { grosor = parseInt(e.target.value, 10); });
+  var cerrar = function () { removeEventListener('resize', ajustar); ov.remove(); };
+  ov.querySelectorAll('.dbBtn').forEach(function (b) { b.addEventListener('click', function () {
+    var a = b.dataset.a;
+    if (a === 'atras') { trazos.pop(); redibujar(); }
+    else if (a === 'limpiar') { trazos = []; redibujar(); }
+    else if (a === 'cancelar') cerrar();
+    else if (a === 'listo') { if (trazos.length) guardarDibujo(trazos, firma); cerrar(); }
+  }); });
+  addEventListener('resize', ajustar);
+  ajustar();
+}
+function guardarDibujo(trazos, firma) {
+  var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  trazos.forEach(function (t) { t.p.forEach(function (p) { x0 = Math.min(x0, p[0] - t.g); y0 = Math.min(y0, p[1] - t.g); x1 = Math.max(x1, p[0] + t.g); y1 = Math.max(y1, p[1] + t.g); }); });
+  var w = Math.max(10, x1 - x0), h = Math.max(10, y1 - y0);
+  var r = function (v) { return Math.round(v * 10) / 10; };
+  var paths = trazos.map(function (t) {
+    var d = 'M' + r(t.p[0][0] - x0) + ' ' + r(t.p[0][1] - y0);
+    for (var i = 1; i < t.p.length - 1; i++) d += ' Q' + r(t.p[i][0] - x0) + ' ' + r(t.p[i][1] - y0) + ' ' + r((t.p[i][0] + t.p[i + 1][0]) / 2 - x0) + ' ' + r((t.p[i][1] + t.p[i + 1][1]) / 2 - y0);
+    var u = t.p[t.p.length - 1]; d += ' L' + r(u[0] - x0 + (t.p.length === 1 ? 0.1 : 0)) + ' ' + r(u[1] - y0);
+    return '<path d="' + d + '" fill="none" stroke="' + t.c + '" stroke-width="' + t.g + '" stroke-linecap="round" stroke-linejoin="round"' + (t.g >= 18 ? ' stroke-opacity="0.35"' : '') + '/>';
+  }).join('');
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + r(w) + '" height="' + r(h) + '" viewBox="0 0 ' + r(w) + ' ' + r(h) + '">' + paths + '</svg>';
+  var wrap = document.getElementById('gridWrap'), rc = wrap.getBoundingClientRect();
+  snapshot();
+  var lista = sheetGraficos[activeSheet] || (sheetGraficos[activeSheet] = []);
+  lista.push({ id: nuevoIdGrafico(), kind: 'forma', forma: 'imagen', src: 'data:image/svg+xml;base64,' + utf8ToBase64(svg), ratio: w / h, nombre: firma ? 'Firma' : 'Dibujo',
+    x: Math.max(0, Math.round(x0 - rc.left + wrap.scrollLeft)), y: Math.max(0, Math.round(y0 - rc.top + wrap.scrollTop)), w: Math.round(w), h: Math.round(h),
+    color: '#000000', relleno: '', texto: '', tam: 13, flip: 0 });
+  autoSave(); renderizarGraficos();
+  document.getElementById('saveStatus').textContent = firma ? '✍ Firma agregada' : '✏ Dibujo agregado (tocalo para moverlo o borrarlo)';
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Formato de duración
+// La celda guarda la duración en días (como Excel: 0,5 = 12 horas), así
+// que se suma, se resta y sirve en fórmulas (=A1*24 da las horas).
+// Se escribe 2:30, 2h 30m, 90 min, 1d 4h… y se ve "2 h 30 min" o "26:30".
+// ══════════════════════════════════════════════
+function formatearDuracion(dias, tipo) {
+  var neg = dias < 0, min = Math.round(Math.abs(dias) * 1440), h = Math.floor(min / 60), m = min % 60, s = '';
+  if (tipo === 'duracion_hhmm') s = h + ':' + dosDig(m);
+  else if (tipo === 'duracion_dhm') {
+    var d = Math.floor(h / 24), hh = h % 24, partes = [];
+    if (d) partes.push(d + ' d'); if (hh) partes.push(hh + ' h'); if (m || !partes.length) partes.push(m + ' min');
+    s = partes.join(' ');
+  } else if (tipo === 'duracion_h') s = (Math.round(Math.abs(dias) * 24 * 100) / 100).toLocaleString('es-CR') + ' h';
+  else s = h && m ? h + ' h ' + m + ' min' : h ? h + ' h' : m + ' min';
+  return (neg ? '-' : '') + s;
+}
+function textoADuracion(t, comoHorasSiNumero) {
+  var s = String(t || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  if (!s) return null;
+  var neg = s.charAt(0) === '-'; if (neg) s = s.slice(1).trim();
+  var m = /^(\d+):(\d{1,2})(?::(\d{1,2}))?$/.exec(s), dias = null;
+  if (m) dias = (parseInt(m[1], 10) * 3600 + parseInt(m[2], 10) * 60 + (m[3] ? parseInt(m[3], 10) : 0)) / 86400;
+  else {
+    var re = /(\d+(?:[.,]\d+)?)\s*(d[ií]as?|d|horas?|hrs?|h|minutos?|mins?|m|segundos?|segs?|s)\b\.?/g, x, total = 0, usado = '';
+    while ((x = re.exec(s)) !== null) {
+      var n = parseFloat(x[1].replace(',', '.')), u = x[2].charAt(0);
+      total += u === 'd' ? n * 86400 : u === 'h' ? n * 3600 : u === 'm' ? n * 60 : n;
+      usado += x[0];
+    }
+    if (usado && usado.replace(/\s/g, '') === s.replace(/\s/g, '')) dias = total / 86400;
+    else if (comoHorasSiNumero && /^\d+(?:[.,]\d+)?$/.test(s)) dias = parseFloat(s.replace(',', '.')) / 24;
+  }
+  if (dias === null || !isFinite(dias)) return null;
+  dias = Math.round(dias * 86400) / 86400;
+  return neg ? -dias : dias;
+}
+// Al confirmar una celda: convierte lo escrito si la celda tiene formato de duración,
+// o si lo escrito claramente es una duración ("2h 30min") — en ese caso le pone el formato.
+function entradaDuracion(hoja, id, val) {
+  if (!val || val.charAt(0) === '=') return val;
+  var f = (sheetFormats[hoja] || {})[id] || {}, nf = f.numFormat;
+  if (nf && /^duracion/.test(nf.type)) { var d = textoADuracion(val, true); return d === null ? val : String(d); }
+  if (nf && nf.type !== 'general') return val;
+  if (!/[a-z]/i.test(val) || !/\d/.test(val)) return val;
+  var d2 = textoADuracion(val, false);
+  if (d2 === null) return val;
+  sheetFormats[hoja] = sheetFormats[hoja] || {};
+  sheetFormats[hoja][id] = Object.assign({}, f, { numFormat: { type: /d/.test(val.toLowerCase().replace(/\d/g, '')) && /\bd(ias?|ías?)?\b/.test(val.toLowerCase()) ? 'duracion_dhm' : 'duracion_hm' } });
+  return String(d2);
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Gráficos 3D y de barras radiales
+// ══════════════════════════════════════════════
+function sombraColor(hex, f) {
+  var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '')); if (!m) return hex;
+  var n = parseInt(m[1], 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  var t = function (c) { return Math.max(0, Math.min(255, Math.round(f < 0 ? c * (1 + f) : c + (255 - c) * f))); };
+  return 'rgb(' + t(r) + ',' + t(g) + ',' + t(b) + ')';
+}
+function dibujarBarras3DSeries(cvs, ctx, W, H, tipo, title, labels, series, cfg) {
+  var m = marcoGrafico(cvs, ctx, W, H, title, cfg), fs = m.fs, C = m.C, hits = m.hits;
+  var ns = series.length, n = labels.length || (series[0] ? series[0].valores.length : 0); if (!n) return;
+  var todos = []; series.forEach(function (s) { s.valores.forEach(function (v) { todos.push(v); }); });
+  var E = escalaBonita(Math.min(0, Math.min.apply(null, todos)), Math.max(0, Math.max.apply(null, todos)), 4);
+  if (cfg.ejeMin !== undefined && cfg.ejeMin !== '' && isFinite(cfg.ejeMin)) E.min = Number(cfg.ejeMin);
+  if (cfg.ejeMax !== undefined && cfg.ejeMax !== '' && isFinite(cfg.ejeMax)) E.max = Number(cfg.ejeMax);
+  ctx.font = fs + 'px sans-serif';
+  var anchoEje = 0; for (var v = E.min; v <= E.max + 1e-9; v += E.paso) anchoEje = Math.max(anchoEje, ctx.measureText(formatoValorGrafico(v, cfg.ejeFormato, true)).width);
+  var prof = Math.max(6, Math.min(16, W / 40));
+  var ley = ns > 1 ? fs + 10 : 0;
+  var x0 = anchoEje + 10, x1 = W - 8 - prof, y0 = m.padT + prof + 2, y1 = H - fs - 12 - ley;
+  var py = function (val) { return y1 - (val - E.min) / (E.max - E.min || 1) * (y1 - y0); };
+  // Fondo y piso en perspectiva
+  ctx.fillStyle = 'rgba(148,163,184,0.12)'; ctx.beginPath(); ctx.moveTo(x0, y1); ctx.lineTo(x0 + prof, y1 - prof); ctx.lineTo(x1 + prof, y1 - prof); ctx.lineTo(x1, y1); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = C.rejilla || '#e5e7eb'; ctx.lineWidth = 1; ctx.fillStyle = C.suave || '#6b7280'; ctx.textAlign = 'right';
+  for (var t = E.min; t <= E.max + 1e-9; t += E.paso) {
+    var yy = py(t);
+    ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x0 + prof, yy - prof); ctx.lineTo(x1 + prof, yy - prof); ctx.stroke();
+    ctx.fillText(formatoValorGrafico(t, cfg.ejeFormato, true), x0 - 4, yy + fs / 2 - 1);
+  }
+  var slot = (x1 - x0) / n, bw = Math.max(4, Math.min(slot * 0.7 / ns, 40));
+  for (var i = 0; i < n; i++) {
+    series.forEach(function (s, si) {
+      var val = s.valores[i] || 0, base = (cfg.series[si] && cfg.series[si].color) || colorSerieGrafico(cfg, si);
+      var col = cfg.variarColores && ns === 1 ? colorSerieGrafico(cfg, i) : colorPuntoGrafico(cfg, si, i, labels[i], base) || base;
+      var x = x0 + slot * i + (slot - bw * ns) / 2 + bw * si, ya = py(Math.max(0, val)), yb = py(Math.min(0, val)), d = Math.min(prof, bw * 0.6);
+      ctx.fillStyle = sombraColor(col, -0.25); ctx.beginPath(); ctx.moveTo(x + bw, ya); ctx.lineTo(x + bw + d, ya - d); ctx.lineTo(x + bw + d, yb - d); ctx.lineTo(x + bw, yb); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = sombraColor(col, 0.3); ctx.beginPath(); ctx.moveTo(x, ya); ctx.lineTo(x + d, ya - d); ctx.lineTo(x + bw + d, ya - d); ctx.lineTo(x + bw, ya); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = col; ctx.fillRect(x, ya, bw, Math.max(1, yb - ya));
+      if (cfg.etiquetas !== 'no' && (cfg.etiquetas !== 'auto' || n * ns <= 12)) { ctx.fillStyle = C.texto; ctx.textAlign = 'center'; ctx.font = (fs - 1) + 'px sans-serif'; ctx.fillText(formatoValorGrafico(val, cfg.ejeFormato, true), x + bw / 2 + d / 2, ya - d - 3); ctx.font = fs + 'px sans-serif'; }
+      hits.push({ x: x, y: ya, w: bw + d, h: Math.max(6, yb - ya), texto: (labels[i] || '') + (s.nombre ? ' · ' + s.nombre : '') + ': ' + fmtTipGrafico(val, cfg) });
+    });
+    ctx.fillStyle = C.texto; ctx.textAlign = 'center'; ctx.fillText(textoQueCabe(ctx, labels[i], slot - 2), x0 + slot * i + slot / 2, y1 + fs + 4);
+  }
+  if (ns > 1) leyendaSimpleGrafico(ctx, series.map(function (s, si) { return [(cfg.series[si] && cfg.series[si].color) || colorSerieGrafico(cfg, si), s.nombre || ('Serie ' + (si + 1))]; }), W, H - 6, fs, C);
+}
+function dibujarTorta3DSeries(cvs, ctx, W, H, tipo, title, labels, series, cfg) {
+  var m = marcoGrafico(cvs, ctx, W, H, title, cfg), fs = m.fs, C = m.C, hits = m.hits;
+  var vals = ((series[0] && series[0].valores) || []).map(function (v) { return Math.max(0, v); }), tot = vals.reduce(function (a, b) { return a + b; }, 0); if (!tot) return;
+  var leyAncho = Math.min(W * 0.38, 140), cx = (W - leyAncho) / 2, rx = Math.min((W - leyAncho) / 2 - 10, (H - m.padT - 20) / 1.2), ry = rx * 0.55, alto = Math.max(8, rx * 0.18), cy = m.padT + (H - m.padT - alto) / 2;
+  var ang = -Math.PI / 2, partes = vals.map(function (v, i) { var a0 = ang; ang += v / tot * Math.PI * 2; return { a0: a0, a1: ang, v: v, i: i, c: colorPuntoGrafico(cfg, 0, i, labels[i], null) || colorSerieGrafico(cfg, i) }; });
+  // Lados (solo la mitad de adelante se ve)
+  partes.forEach(function (p) {
+    var a0 = Math.max(p.a0, 0), a1 = Math.min(p.a1, Math.PI); if (a1 <= a0) { a0 = Math.max(p.a0, 2 * Math.PI); a1 = Math.min(p.a1, 3 * Math.PI); if (a1 <= a0) return; }
+    ctx.fillStyle = sombraColor(p.c, -0.3); ctx.beginPath();
+    for (var a = a0; a <= a1 + 1e-6; a += (a1 - a0) / 24 || 1) ctx.lineTo(cx + rx * Math.cos(a), cy + ry * Math.sin(a));
+    for (var b = a1; b >= a0 - 1e-6; b -= (a1 - a0) / 24 || 1) ctx.lineTo(cx + rx * Math.cos(b), cy + alto + ry * Math.sin(b));
+    ctx.closePath(); ctx.fill();
+  });
+  partes.forEach(function (p) {
+    ctx.fillStyle = p.c; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.ellipse(cx, cy, rx, ry, 0, p.a0, p.a1); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1; ctx.stroke();
+    var am = (p.a0 + p.a1) / 2, pct = Math.round(p.v / tot * 1000) / 10;
+    if (pct >= 5 && cfg.etiquetas !== 'no') { ctx.fillStyle = '#fff'; ctx.font = 'bold ' + (fs - 1) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(pct + '%', cx + rx * 0.6 * Math.cos(am), cy + ry * 0.6 * Math.sin(am) + fs / 3); }
+    hits.push({ x: cx + rx * 0.6 * Math.cos(am) - 12, y: cy + ry * 0.6 * Math.sin(am) - 10, w: 24, h: 20, texto: (labels[p.i] || '') + ': ' + fmtTipGrafico(p.v, cfg) + ' (' + pct + ' %)' });
+  });
+  ctx.font = fs + 'px sans-serif'; ctx.textAlign = 'left';
+  var ly = m.padT + 6, lx = W - leyAncho + 4;
+  partes.forEach(function (p) { if (ly > H - 6) return; ctx.fillStyle = p.c; ctx.fillRect(lx, ly, 9, 9); ctx.fillStyle = C.texto; ctx.fillText(textoQueCabe(ctx, labels[p.i], leyAncho - 18), lx + 13, ly + 8); ly += fs + 6; });
+}
+function dibujarRadialSeries(cvs, ctx, W, H, tipo, title, labels, series, cfg) {
+  var m = marcoGrafico(cvs, ctx, W, H, title, cfg), fs = m.fs, C = m.C, hits = m.hits;
+  var vals = ((series[0] && series[0].valores) || []).map(function (v) { return Math.max(0, v); }), n = vals.length; if (!n) return;
+  var max = cfg.ejeMax !== undefined && cfg.ejeMax !== '' && isFinite(cfg.ejeMax) ? Number(cfg.ejeMax) : Math.max.apply(null, vals) * 1.1 || 1;
+  var cx = W / 2, cy = m.padT + (H - m.padT) / 2 + 2, R = Math.min(W / 2 - 10, (H - m.padT) / 2 - 6), r0 = R * 0.28;
+  var anillo = (R - r0) / n, gr = Math.max(3, anillo * 0.72);
+  ctx.font = (fs - 1) + 'px sans-serif';
+  vals.forEach(function (v, i) {
+    var r = R - anillo * i - anillo / 2, a1 = -Math.PI / 2 + Math.min(1, v / max) * Math.PI * 1.75;
+    var col = colorPuntoGrafico(cfg, 0, i, labels[i], null) || colorSerieGrafico(cfg, i);
+    ctx.lineCap = 'round'; ctx.lineWidth = gr;
+    ctx.strokeStyle = 'rgba(148,163,184,0.18)'; ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 1.75); ctx.stroke();
+    ctx.strokeStyle = col; ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, a1); ctx.stroke();
+    ctx.fillStyle = C.texto; ctx.textAlign = 'right';
+    ctx.fillText(textoQueCabe(ctx, labels[i], cx - 8) + (cfg.etiquetas !== 'no' ? '  ' + formatoValorGrafico(v, cfg.ejeFormato, true) : ''), cx - 6, cy - r + fs / 3);
+    hits.push({ x: cx + r * Math.cos(a1) - 10, y: cy + r * Math.sin(a1) - 10, w: 20, h: 20, texto: (labels[i] || '') + ': ' + fmtTipGrafico(v, cfg) });
+  });
+  ctx.lineCap = 'butt';
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Nota de voz en la celda
+// Un audio corto (hasta 60 s) pegado a la celda. Se guarda con la hoja.
+// ══════════════════════════════════════════════
+function audiosDeHoja(h) { var m = colWidths[h] = colWidths[h] || {}; return m.audios = m.audios || {}; }
+function pintarNotasVoz() {
+  var aud = (colWidths[activeSheet] || {}).audios;
+  document.querySelectorAll('.vozFlag').forEach(function (x) { if (!aud || !aud[x.dataset.id]) x.remove(); });
+  if (!aud) return;
+  Object.keys(aud).forEach(function (id) {
+    var el = document.getElementById('cell_' + id);
+    if (!el || el.querySelector('.vozFlag')) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'vozFlag'; b.dataset.id = id; b.textContent = '🎙'; b.title = 'Nota de voz';
+    ['pointerdown', 'mousedown', 'click', 'touchstart'].forEach(function (evt) { b.addEventListener(evt, function (e) { e.stopPropagation(); if (evt === 'click') abrirNotaVoz(id); }, { passive: evt !== 'click' }); });
+    el.appendChild(b);
+  });
+}
+function abrirNotaVoz(idForzado) {
+  var id = idForzado || document.getElementById('cellRef').textContent;
+  if (!/^[A-Z]+\d+$/.test(id)) { alert('Tocá primero la celda.'); return; }
+  var aud = audiosDeHoja(activeSheet), previo = aud[id];
+  var puede = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  var html = '<div class="mcrNota">Celda <b>' + id + '</b>. Grabá una explicación corta (hasta 60 segundos) para quien revise la hoja.</div>' +
+    (previo ? '<label class="mcrF">Nota guardada · ' + Math.round(previo.seg || 0) + ' s · ' + new Date(previo.fecha).toLocaleString('es-CR') + '</label><audio controls src="' + previo.data + '" style="width:100%"></audio>' : '') +
+    (puede ? '<div class="vozGrabar"><button type="button" class="egAccion" id="vozBtn">⏺ Grabar' + (previo ? ' otra' : '') + '</button><span id="vozTiempo">0:00</span></div><audio id="vozNueva" controls style="width:100%;display:none"></audio>'
+      : '<div class="mcrNota mcrMal">Este navegador no permite grabar audio. En la app hace falta dar permiso al micrófono.</div>');
+  var botones = [{ texto: 'Cerrar' }];
+  if (previo) botones.unshift({ texto: '🗑 Borrar nota', accion: function () { snapshot(); delete aud[id]; autoSave(); renderAllCells(); } });
+  var nueva = null;
+  botones.push({ texto: 'Guardar', ok: true, accion: function () {
+    if (!nueva) return previo ? undefined : (alert('Primero grabá la nota.'), false);
+    snapshot(); aud[id] = nueva; autoSave(); renderAllCells();
+    document.getElementById('saveStatus').textContent = '🎙 Nota de voz guardada en ' + id;
+  } });
+  abrirPanel('🎙 Nota de voz', html, botones);
+  if (!puede) return;
+  var rec = null, trozos = [], t0 = 0, reloj = null, stream = null;
+  var btn = document.getElementById('vozBtn'), lbl = document.getElementById('vozTiempo');
+  var parar = function () { if (rec && rec.state !== 'inactive') rec.stop(); clearInterval(reloj); };
+  btn.addEventListener('click', function () {
+    if (rec && rec.state === 'recording') { parar(); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+      stream = s; trozos = [];
+      var tipo = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', ''].filter(function (t) { return !t || (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)); })[0];
+      rec = new MediaRecorder(s, Object.assign({ audioBitsPerSecond: 32000 }, tipo ? { mimeType: tipo } : {}));
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) trozos.push(e.data); };
+      rec.onstop = function () {
+        stream.getTracks().forEach(function (tr) { tr.stop(); });
+        var blob = new Blob(trozos, { type: rec.mimeType || 'audio/mp4' }), seg = (Date.now() - t0) / 1000;
+        var fr = new FileReader();
+        fr.onload = function () {
+          nueva = { data: fr.result, seg: seg, fecha: Date.now(), autor: (typeof currentUser !== 'undefined' && currentUser && currentUser.email) || '' };
+          var a = document.getElementById('vozNueva'); if (a) { a.src = fr.result; a.style.display = ''; }
+          if (btn) btn.textContent = '⏺ Grabar de nuevo';
+        };
+        fr.readAsDataURL(blob);
+      };
+      rec.start(); t0 = Date.now(); btn.textContent = '⏹ Detener';
+      reloj = setInterval(function () { var s2 = Math.floor((Date.now() - t0) / 1000); lbl.textContent = Math.floor(s2 / 60) + ':' + dosDig(s2 % 60); if (s2 >= 60) parar(); }, 250);
+    }).catch(function (e) { alert('No se pudo usar el micrófono (' + (e && e.message || e) + '). Revisá el permiso.'); });
+  });
+  var obs = new MutationObserver(function () { if (!document.getElementById('mcrPanelOv').classList.contains('show')) { parar(); obs.disconnect(); } });
+  obs.observe(document.getElementById('mcrPanelOv'), { attributes: true, attributeFilter: ['class'] });
+}
+
+// ══════════════════════════════════════════════
+// TIPO NUMBERS (2) · Tablas libres (varias tablas en una hoja)
+// Cada tabla flota sobre la hoja y se mueve donde querás. Sus datos viven
+// en una hoja oculta propia (Tabla1, Tabla2…), así que tiene fórmulas
+// completas, y desde cualquier hoja se usa como =Tabla1!B2.
+// ══════════════════════════════════════════════
+var ESTILOS_TABLA_LIBRE = {
+  verde: { enc: '#2d7a0c', encTxt: '#fff', banda: '#f0f8ea', borde: '#cce9ae', tot: '#dcefcf' },
+  azul: { enc: '#1d4ed8', encTxt: '#fff', banda: '#eff4ff', borde: '#c7d7fe', tot: '#dbe5ff' },
+  gris: { enc: '#374151', encTxt: '#fff', banda: '#f3f4f6', borde: '#d1d5db', tot: '#e5e7eb' },
+  naranja: { enc: '#c2410c', encTxt: '#fff', banda: '#fff4ec', borde: '#fed7aa', tot: '#ffe4d1' },
+  simple: { enc: '#ffffff', encTxt: '#111827', banda: '#ffffff', borde: '#d1d5db', tot: '#f9fafb' }
+};
+function tablasLibres(h) { var m = colWidths[h] = colWidths[h] || {}; return m.tablasLibres = m.tablasLibres || []; }
+function tablaLibreDeHoja(oculta) {
+  for (var i = 0; i < sheets.length; i++) {
+    var l = (colWidths[sheets[i]] || {}).tablasLibres || [];
+    for (var j = 0; j < l.length; j++) if (l[j].hoja === oculta) return { anfitriona: sheets[i], t: l[j] };
+  }
+  return null;
+}
+function crearTablaLibre() {
+  if (hojaOculta(activeSheet)) return;
+  var sel = currentRangeBounds && currentRangeBounds(), desde = sel && sel.isMulti ? sel : null;
+  var n = 1; while (sheets.indexOf('Tabla' + n) !== -1) n++;
+  var hoja = 'Tabla' + n;
+  snapshot();
+  crearHojaVaciaConNombre(hoja);
+  colWidths[hoja] = colWidths[hoja] || {}; colWidths[hoja].oculta = true;
+  var d = sheetData[hoja], filas = 4, cols = 3;
+  if (desde) {
+    filas = desde.maxR - desde.minR + 1; cols = desde.maxC - desde.minC + 1;
+    for (var r = 0; r < filas; r++) for (var c = 0; c < cols; c++) {
+      var v = computeValue(cellId(desde.minR + r, desde.minC + c));
+      if (v !== '' && v !== null && v !== undefined) d[cellId(r, c)] = String(v);
+      var fx = (sheetFormats[activeSheet] || {})[cellId(desde.minR + r, desde.minC + c)];
+      if (fx && fx.numFormat) sheetFormats[hoja][cellId(r, c)] = { numFormat: JSON.parse(JSON.stringify(fx.numFormat)) };
+    }
+  } else { d.A1 = 'Concepto'; d.B1 = 'Monto'; d.C1 = 'Nota'; }
+  var wrap = document.getElementById('gridWrap'), lista = tablasLibres(activeSheet);
+  var t = { id: 'tl' + Date.now().toString(36), hoja: hoja, titulo: 'Tabla ' + n, filas: Math.max(2, filas), cols: Math.max(1, cols), estilo: 'verde', totales: false,
+    x: (wrap ? wrap.scrollLeft : 0) + 40 + lista.length * 16, y: (wrap ? wrap.scrollTop : 0) + 60 + lista.length * 16, anchos: {} };
+  lista.push(t);
+  buildTable(); renderTabs(); autoSave();
+  document.getElementById('saveStatus').textContent = '▦ ' + t.titulo + ' creada · en fórmulas se usa como =' + hoja + '!B2';
+  return t;
+}
+function eliminarTablaLibre(anfitriona, t) {
+  var lista = tablasLibres(anfitriona), i = lista.indexOf(t); if (i === -1) return;
+  lista.splice(i, 1);
+  var est = estadoActualComoObjeto();
+  Object.keys(est).forEach(function (k) { var v = window[k]; if (v && typeof v === 'object' && !Array.isArray(v) && Object.prototype.hasOwnProperty.call(v, t.hoja)) delete v[t.hoja]; });
+  var k = sheets.indexOf(t.hoja); if (k !== -1) sheets.splice(k, 1);
+}
+function resaltarTablaLibre(id) { var el = document.querySelector('.tabla-libre[data-id="' + id + '"]'); if (el) { el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' }); el.classList.add('tlDestello'); setTimeout(function () { el.classList.remove('tlDestello'); }, 1400); } }
+function textoCeldaTablaLibre(t, id) {
+  var v = computeValueEnHoja(t.hoja, id), fx = (sheetFormats[t.hoja] || {})[id];
+  if (v === null || v === undefined) return '';
+  if (fx && fx.numFormat) { try { return fx.numFormat.type === 'custom' ? aplicarFormatoPersonalizado(v, fx.numFormat.codigo).texto : applyNumberFormat(v, fx.numFormat); } catch (e) {} }
+  if (typeof v === 'number' || (/^-?\d+(\.\d+)?$/.test(String(v)) && !/^0\d/.test(String(v)))) { var nn = Number(v); if (isFinite(nn) && Math.abs(nn) >= 1000) return nn.toLocaleString('es-CR', { maximumFractionDigits: 2 }); }
+  return String(v);
+}
+function renderizarTablasLibres() {
+  var cont = document.getElementById('gridWrap'); if (!cont) return;
+  var lista = hojaOculta(activeSheet) ? [] : ((colWidths[activeSheet] || {}).tablasLibres || []);
+  var ids = {}; lista.forEach(function (t) { ids[t.id] = true; });
+  cont.querySelectorAll('.tabla-libre').forEach(function (el) { if (!ids[el.dataset.id]) el.remove(); });
+  lista.forEach(function (t) {
+    if (sheets.indexOf(t.hoja) === -1) return;
+    var el = cont.querySelector('.tabla-libre[data-id="' + t.id + '"]');
+    var editando = el && el.contains(document.activeElement) && document.activeElement.tagName === 'TD';
+    var firma = t.filas + 'x' + t.cols + '|' + t.estilo + '|' + (t.totales ? 1 : 0) + '|' + JSON.stringify(t.anchos || {});
+    if (!el) {
+      el = document.createElement('div'); el.className = 'tabla-libre'; el.dataset.id = t.id;
+      el.innerHTML = '<div class="tlHead"><span class="tlTitulo"></span><span class="tlRef"></span><button type="button" data-a="menu" title="Opciones de la tabla">⋯</button></div><div class="tlCuerpo"></div>';
+      cont.appendChild(el);
+      prepararArrastreTablaLibre(el, t);
+      el.querySelector('[data-a="menu"]').addEventListener('click', function (e) { e.stopPropagation(); menuTablaLibre(activeSheet, t); });
+    }
+    el.style.left = t.x + 'px'; el.style.top = t.y + 'px';
+    var est = ESTILOS_TABLA_LIBRE[t.estilo] || ESTILOS_TABLA_LIBRE.verde;
+    el.style.setProperty('--tlEnc', est.enc); el.style.setProperty('--tlEncTxt', est.encTxt); el.style.setProperty('--tlBanda', est.banda); el.style.setProperty('--tlBorde', est.borde); el.style.setProperty('--tlTot', est.tot);
+    el.querySelector('.tlTitulo').textContent = t.titulo;
+    el.querySelector('.tlRef').textContent = t.hoja;
+    var cuerpo = el.querySelector('.tlCuerpo');
+    if (editando && cuerpo.dataset.firma === firma) {
+      cuerpo.querySelectorAll('td[data-id]').forEach(function (td) { if (td !== document.activeElement) td.textContent = textoCeldaTablaLibre(t, td.dataset.id); });
+      cuerpo.querySelectorAll('td[data-tot]').forEach(function (td) { td.textContent = totalColTablaLibre(t, parseInt(td.dataset.tot, 10)); });
+      return;
+    }
+    var h = '<table><colgroup>';
+    for (var c = 0; c < t.cols; c++) h += '<col style="width:' + ((t.anchos || {})[c] || 100) + 'px">';
+    h += '</colgroup>';
+    for (var r = 0; r < t.filas; r++) {
+      h += '<tr class="' + (r === 0 ? 'tlEnc' : (r % 2 === 0 ? 'tlBanda' : '')) + '">';
+      for (var c2 = 0; c2 < t.cols; c2++) {
+        var id = cellId(r, c2), txt = textoCeldaTablaLibre(t, id);
+        var esNum = r > 0 && txt !== '' && /^[-₡$(]?[\d\s.,]+[%)]?$/.test(txt.replace(/ | /g, ' '));
+        h += '<td contenteditable="true" data-id="' + id + '"' + (esNum ? ' class="n"' : '') + '>' + escHtml(txt) + '</td>';
+      }
+      h += '</tr>';
+    }
+    if (t.totales) {
+      h += '<tr class="tlTot">';
+      for (var c3 = 0; c3 < t.cols; c3++) h += '<td data-tot="' + c3 + '" class="n">' + (c3 === 0 ? 'Total' : totalColTablaLibre(t, c3)) + '</td>';
+      h += '</tr>';
+    }
+    h += '</table>';
+    if (cuerpo._html === h && cuerpo.dataset.firma === firma) return; // nada cambió
+    cuerpo.innerHTML = h; cuerpo._html = h; cuerpo.dataset.firma = firma;
+    cuerpo.querySelectorAll('td[data-id]').forEach(function (td) { prepararCeldaTablaLibre(td, t); });
+  });
+}
+function totalColTablaLibre(t, c) {
+  if (c === 0) return 'Total';
+  var s = 0, hay = false;
+  for (var r = 1; r < t.filas; r++) { var v = computeValueEnHoja(t.hoja, cellId(r, c)), n = parseFloat(limpiaNum(v)); if (v !== '' && v !== null && isFinite(n) && /\d/.test(String(v))) { s += n; hay = true; } }
+  if (!hay) return '';
+  var fx = (sheetFormats[t.hoja] || {})[cellId(1, c)];
+  return fx && fx.numFormat && fx.numFormat.type !== 'custom' ? applyNumberFormat(String(s), fx.numFormat) : s.toLocaleString('es-CR', { maximumFractionDigits: 2 });
+}
+function prepararCeldaTablaLibre(td, t) {
+  var id = td.dataset.id;
+  ['pointerdown', 'mousedown', 'touchstart'].forEach(function (evt) { td.addEventListener(evt, function (e) { e.stopPropagation(); }, { passive: true }); });
+  td.addEventListener('focus', function () {
+    var crudo = (sheetData[t.hoja] || {})[id];
+    td.textContent = crudo === undefined ? '' : String(crudo);
+    td.dataset.antes = td.textContent;
+    var rg = document.createRange(); rg.selectNodeContents(td); var s = getSelection(); s.removeAllRanges(); s.addRange(rg);
+  });
+  td.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); var sig = td.closest('tr').nextElementSibling; var cel = sig && sig.children[td.cellIndex]; td.blur(); if (cel && cel.dataset.id) cel.focus(); }
+    else if (e.key === 'Tab') { e.preventDefault(); var nx = td.nextElementSibling || (td.closest('tr').nextElementSibling && td.closest('tr').nextElementSibling.firstElementChild); td.blur(); if (nx && nx.dataset.id) nx.focus(); }
+    else if (e.key === 'Escape') { td.textContent = td.dataset.antes || ''; td.blur(); }
+    e.stopPropagation();
+  });
+  td.addEventListener('blur', function () {
+    var nuevo = td.textContent.replace(/ /g, ' ').trim(), antes = td.dataset.antes;
+    if (antes === undefined) return;
+    delete td.dataset.antes;
+    if (nuevo !== antes) {
+      snapshot();
+      nuevo = entradaDuracion(t.hoja, id, nuevo);
+      if (nuevo === '') delete sheetData[t.hoja][id]; else sheetData[t.hoja][id] = nuevo;
+      marcarCeldaSucia(t.hoja, id);
+      if (typeof cacheCalculo !== 'undefined') cacheCalculo = {};
+      autoSave();
+    }
+    setTimeout(function () { renderAllCells(); }, 0);
+  });
+}
+function prepararArrastreTablaLibre(el, t) {
+  var head = el.querySelector('.tlHead'), arr = null;
+  head.addEventListener('pointerdown', function (e) {
+    if (e.target.tagName === 'BUTTON') return;
+    arr = { dx: e.clientX - el.offsetLeft, dy: e.clientY - el.offsetTop, movio: false };
+    head.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
+  });
+  head.addEventListener('pointermove', function (e) {
+    if (!arr) return;
+    var nx = Math.max(0, e.clientX - arr.dx), ny = Math.max(0, e.clientY - arr.dy);
+    if (Math.abs(nx - t.x) + Math.abs(ny - t.y) > 2) arr.movio = true;
+    t.x = nx; t.y = ny; el.style.left = nx + 'px'; el.style.top = ny + 'px';
+  });
+  head.addEventListener('pointerup', function () { if (arr) { if (arr.movio) autoSave(); arr = null; } });
+}
+function menuTablaLibre(anfitriona, t) {
+  var esc = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  var html = '<label class="mcrF">Título</label><input id="tlTit" class="mcrI" value="' + esc(t.titulo) + '">' +
+    '<div class="mcrNota">En fórmulas de cualquier hoja: <b>=' + t.hoja + '!B2</b> o <b>=SUMA(' + t.hoja + '!B2:B' + t.filas + ')</b></div>' +
+    '<div class="egDos"><button type="button" class="egAccion" data-a="+f">➕ Fila</button><button type="button" class="egAccion" data-a="-f">➖ Fila</button></div>' +
+    '<div class="egDos"><button type="button" class="egAccion" data-a="+c">➕ Columna</button><button type="button" class="egAccion" data-a="-c">➖ Columna</button></div>' +
+    '<div class="egDos"><button type="button" class="egAccion" data-a="ancho">↔ Ancho de columnas</button><button type="button" class="egAccion" data-a="tot">' + (t.totales ? 'Σ Quitar fila de totales' : 'Σ Fila de totales') + '</button></div>' +
+    '<label class="mcrF">Estilo</label><div class="tlEstilos">' + Object.keys(ESTILOS_TABLA_LIBRE).map(function (k) { var e = ESTILOS_TABLA_LIBRE[k]; return '<button type="button" data-est="' + k + '" class="' + (t.estilo === k ? 'on' : '') + '" style="background:linear-gradient(' + e.enc + ' 0 40%,' + e.banda + ' 40%)" title="' + k + '"></button>'; }).join('') + '</div>' +
+    '<div class="egDos"><button type="button" class="egAccion" data-a="pegar">📋 Pasar a la hoja (en la celda activa)</button><button type="button" class="egAccion" data-a="del">🗑 Eliminar tabla</button></div>';
+  abrirPanel('▦ ' + t.titulo, html, [{ texto: 'Listo', ok: true, accion: function () { var v = document.getElementById('tlTit').value.trim(); if (v && v !== t.titulo) { snapshot(); t.titulo = v; autoSave(); renderizarTablasLibres(); } } }]);
+  var rehacer = function () { var el = document.querySelector('.tabla-libre[data-id="' + t.id + '"] .tlCuerpo'); if (el) el.dataset.firma = ''; renderizarTablasLibres(); autoSave(); };
+  document.querySelectorAll('#mcrPanelBody [data-a]').forEach(function (b) { b.addEventListener('click', function () {
+    var a = b.dataset.a;
+    if (a === 'del') { if (!confirm('¿Eliminar "' + t.titulo + '" y sus datos? Las fórmulas que la usan van a dar error.')) return; snapshot(); eliminarTablaLibre(anfitriona, t); cerrarPanel(); renderizarTablasLibres(); autoSave(); return; }
+    snapshot();
+    if (a === '+f') t.filas++;
+    if (a === '-f' && t.filas > 2) { t.filas--; for (var c = 0; c < 200; c++) delete sheetData[t.hoja][cellId(t.filas, c)]; }
+    if (a === '+c') t.cols++;
+    if (a === '-c' && t.cols > 1) { t.cols--; for (var r = 0; r < 500; r++) delete sheetData[t.hoja][cellId(r, t.cols)]; }
+    if (a === 'tot') { t.totales = !t.totales; b.textContent = t.totales ? 'Σ Quitar fila de totales' : 'Σ Fila de totales'; }
+    if (a === 'ancho') { var w = prompt('Ancho de las columnas en píxeles (todas):', String((t.anchos || {})[0] || 100)); var nw = parseInt(w, 10); if (nw >= 40 && nw <= 400) { t.anchos = {}; for (var c4 = 0; c4 < t.cols; c4++) t.anchos[c4] = nw; } }
+    if (a === 'pegar') {
+      var m = /^([A-Z]+)(\d+)$/.exec(document.getElementById('cellRef').textContent || ''); if (!m) { alert('Tocá primero una celda de la hoja.'); return; }
+      var r0 = parseInt(m[2], 10) - 1, c0 = colIndex(m[1]), dd = sheetData[anfitriona] = sheetData[anfitriona] || {};
+      for (var rr = 0; rr < t.filas; rr++) for (var cc = 0; cc < t.cols; cc++) { var v = computeValueEnHoja(t.hoja, cellId(rr, cc)); if (v !== '' && v !== null && v !== undefined) { dd[cellId(r0 + rr, c0 + cc)] = String(v); marcarCeldaSucia(anfitriona, cellId(r0 + rr, c0 + cc)); } }
+      cerrarPanel(); buildTable(); autoSave(); document.getElementById('saveStatus').textContent = '📋 ' + t.titulo + ' copiada a la hoja (como valores)'; return;
+    }
+    rehacer();
+  }); });
+  document.querySelectorAll('.tlEstilos [data-est]').forEach(function (b) { b.addEventListener('click', function () {
+    snapshot(); t.estilo = b.dataset.est;
+    document.querySelectorAll('.tlEstilos [data-est]').forEach(function (x) { x.classList.toggle('on', x === b); });
+    rehacer();
+  }); });
+}
+document.getElementById('btnListaFormulas').addEventListener('click', abrirListaFormulas);
+document.getElementById('btnMisPlantillas').addEventListener('click', abrirMisPlantillas);
+document.getElementById('btnDibujar').addEventListener('click', function () { abrirModoDibujo(false); });
+document.getElementById('btnFirmar').addEventListener('click', function () { abrirModoDibujo(true); });
+document.getElementById('btnNotaVoz').addEventListener('click', function () { abrirNotaVoz(); });
+document.getElementById('cmVoz').addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); abrirNotaVoz(); });
+document.getElementById('btnTablaLibre').addEventListener('click', crearTablaLibre);
+(function () {
+  var rtg = renderizarTemplateGaleria;
+  renderizarTemplateGaleria = function () { try { sincronizarMisPlantillasEnGaleria(); } catch (e) {} return rtg.apply(this, arguments); };
+  var lt = loadTemplate;
+  loadTemplate = function (tipo) { if (/^mia_/.test(String(tipo))) return cargarMiPlantilla(String(tipo).slice(4)); return lt.apply(this, arguments); };
+})();
 
 // ── "Power Query" casero: Tipo de Cambio (Hacienda/BCCR) ──
 // api.hacienda.go.cr es la misma API pública que usan muchos sitios y
