@@ -289,6 +289,10 @@ export default function SheetEditor({ userId, sheetId }) {
         domStorageEnabled={true}
         mixedContentMode="always"
         allowFileAccess={true}
+        // Notas de voz en las celdas: el micrófono se pide una sola vez (iOS 15+ / Android)
+        mediaCapturePermissionGrantType="grant"
+        allowsInlineMediaPlayback={true}
+        mediaPlaybackRequiresUserAction={false}
         onMessage={(event) => {
           try {
             const msg = JSON.parse(event.nativeEvent.data)
