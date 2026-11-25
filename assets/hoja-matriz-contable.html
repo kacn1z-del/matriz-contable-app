@@ -1170,6 +1170,55 @@
     #toolbar .rbGrid button:hover { background: #e1e1e1 !important; border-color: #c8c8c8; }
     #toolbar .rbGrid button:active { background: #d2e0d6 !important; color: #0b5c2e !important; border-color: #107c41; }
   }
+  /* ── Cinta "Lima": degradado verde lima → blanco, pestaña activa tipo píldora y
+     botones con efecto vidrio. Solo en pantalla grande (computadora / Windows). ── */
+  @media (min-width: 1000px) {
+    #ribbonTrigger { background: linear-gradient(100deg, #14532d 0%, #1f7a44 55%, #3f8f1c 100%); }
+    #ribbonModal, #ribbonModal.rbMin {
+      background: linear-gradient(180deg, #a6e33a 0%, #c5f075 22%, #e2f7c3 52%, #f2f8ee 80%, #eef2f6 100%);
+      border-bottom: 1px solid rgba(20, 83, 45, .16);
+      box-shadow: 0 8px 20px -14px rgba(20, 83, 45, .55);
+    }
+    #toolbar, #toolbar:not(.rbBuscando), #ribbonModal.rbMin #toolbar, #rbTabs { background: transparent; }
+    #rbTabs { gap: 4px; padding-left: 6px; }
+    .rbTab {
+      color: #1c3a12; border-bottom: none; border-radius: 999px; margin-top: 3px;
+      padding: 5px 14px; transition: background .15s, box-shadow .15s, color .15s;
+    }
+    .rbTab:hover { background: rgba(255, 255, 255, .45); }
+    .rbTab.on {
+      background: rgba(255, 255, 255, .88); color: #14532d; border-bottom: none;
+      box-shadow: 0 1px 2px rgba(20, 83, 45, .18), 0 4px 12px -4px rgba(20, 83, 45, .35);
+    }
+    .rbTab .icoP { color: #2f6d13; }
+    #rbBuscar {
+      background: rgba(255, 255, 255, .72); border: 1px solid rgba(20, 83, 45, .18); border-radius: 999px;
+      padding-left: 14px; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    #rbBuscar:focus { background: #fff; border-color: #1f7a44; box-shadow: 0 0 0 3px rgba(132, 204, 22, .35); outline: none; }
+    #toolbar .rbSec, #toolbar:not(.rbBuscando) .rbSec { border-right: 1px solid rgba(20, 83, 45, .14); }
+    #toolbar .rbSecTit { color: #3f6212; font-weight: 600; letter-spacing: .2px; }
+    #toolbar .rbGrid button { color: #1f2d16; border-radius: 7px; transition: background .12s, box-shadow .12s; }
+    #toolbar .rbGrid button .icoP { color: #2f6d13; }
+    #toolbar .rbGrid button:hover {
+      background: rgba(255, 255, 255, .7) !important; border-color: rgba(255, 255, 255, .95);
+      box-shadow: 0 1px 3px rgba(20, 83, 45, .18);
+    }
+    #toolbar .rbGrid button:active { background: #fff !important; color: #14532d !important; border-color: #84cc16; }
+    /* Modo oscuro: el mismo efecto, en verde bosque */
+    body.dark #ribbonModal, body.dark #ribbonModal.rbMin {
+      background: linear-gradient(180deg, #2f5a12 0%, #233f15 30%, #1b2a1d 65%, #181c20 100%);
+      border-bottom-color: rgba(163, 230, 53, .15);
+    }
+    body.dark .rbTab { color: #d9f99d; }
+    body.dark .rbTab:hover { background: rgba(255, 255, 255, .08); }
+    body.dark .rbTab.on { background: rgba(163, 230, 53, .18); color: #ecfccb; box-shadow: none; }
+    body.dark #toolbar .rbGrid button { color: #e5e7eb; }
+    body.dark #toolbar .rbGrid button .icoP, body.dark .rbTab .icoP { color: #a3e635; }
+    body.dark #toolbar .rbGrid button:hover { background: rgba(255, 255, 255, .08) !important; border-color: rgba(255, 255, 255, .12); box-shadow: none; }
+    body.dark #toolbar .rbSecTit { color: #a3e635; }
+    body.dark #rbBuscar { background: rgba(0, 0, 0, .25); color: #e5e7eb; border-color: rgba(163, 230, 53, .2); }
+  }
   /* Galería e Inicio en pantalla grande (tablet, computadora, Windows): ocupan toda la ventana,
      con el contenido centrado y más tarjetas por fila */
   @media (min-width: 700px) {
@@ -1728,6 +1777,22 @@ body.modoLectura #editBar, body.modoLectura .cresize, body.modoLectura .ftools {
 
 
 
+
+/* GOOGLE SHEETS (5) · vistas de filtro, rangos protegidos por persona, preguntas a Sibö */
+#bandaVistaFiltro { position: fixed; top: calc(8px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 9300; background: #374151; color: #fff; border-radius: 999px; padding: 6px 8px 6px 14px; font: 600 13px -apple-system, system-ui, sans-serif; display: none; align-items: center; gap: 6px; box-shadow: 0 6px 18px rgba(0,0,0,.25); max-width: 92vw; }
+#bandaVistaFiltro.ver { display: flex; }
+#bandaVistaFiltro span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#bandaVistaFiltro small { opacity: .75; font-weight: 500; }
+#bandaVistaFiltro button { border: 0; background: rgba(255,255,255,.15); color: #fff; border-radius: 999px; width: 28px; height: 28px; font-size: 14px; flex: 0 0 auto; }
+body.conVistaFiltro #sheetTable th { background: #4b5563 !important; color: #fff !important; }
+.fpItem.vfActiva { background: #f3f4f6; border-radius: 10px; }
+.cell.celdaProtPersona { background-image: repeating-linear-gradient(135deg, rgba(100,116,139,.13) 0 4px, transparent 4px 9px) !important; }
+.exPreguntar { border: 1px solid #d1fae5; background: #f0fdf4; border-radius: 12px; padding: 10px; margin: 8px 0; }
+.exFila { display: flex; gap: 6px; align-items: center; }
+.exFila input { flex: 1; margin: 0; }
+.exFila button { flex: 0 0 auto; }
+.exFila .egAccion { width: auto; margin: 0; padding: 9px 14px; text-align: center; }
+.exRespuesta { background: #fff; border-radius: 10px; padding: 10px; margin-top: 8px; font-size: 14px; line-height: 1.5; border: 1px solid #e5e7eb; }
 /* GOOGLE SHEETS (4) · IA, tabla con Sibö, selección múltiple, roles y avisos con condición */
 .ctsIdeas { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
 .ctsIdeas button { border: 1px solid #d1fae5; background: #f0fdf4; color: #166534; border-radius: 999px; padding: 5px 10px; font-size: 12px; }
@@ -2153,6 +2218,7 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
         <button id="btnLimpiezaDatos" title="Encuentra espacios de más, números guardados como texto, fechas mezcladas, mayúsculas disparejas y filas repetidas, y los arregla con un toque">✨ Sugerencias de limpieza</button>
         <button id="btnTextoEnColumnas" title="Divide el texto de una columna en varias (por coma, espacio, etc.)">✂ Texto en columnas</button>
         <button id="btnAutofiltro">🔽 Autofiltro</button>
+        <button id="btnVistasFiltro" title="Filtrar solo para vos, sin cambiarle la hoja a los demás (como las vistas de filtro de Google Sheets)">🔍 Vistas de filtro</button>
         <button id="btnEsquemaAuto" title="Agrupar solo las filas de detalle de cada subtotal (=SUMA de las filas de arriba), con botones −/+">📑 Esquema automático</button>
         <button id="btnBorrarEsquema" title="Quitar todos los grupos −/+ de la hoja">✕ Borrar esquema</button>
         <button id="btnRelaciones" title="Unir dos tablas por una columna clave para usarlas juntas en la tabla dinámica (Modelo de datos)">🔗 Relaciones</button>
@@ -2230,6 +2296,7 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
         <button id="btnLeerEnter" title="Leer en voz alta cada dato al terminar de escribirlo, para comprobarlo sin mirar">🔊 Leer al escribir</button>
         <button id="btnAutocorreccion" title="Corrige al escribir: (c) → ©, -> → →, qeu → que, DOs MAyúsculas… con tu propia lista">✍ Autocorrección</button>
         <button id="btnHistorialCelda">🕓 Historial</button>
+        <button id="btnRangosPersona" title="Elegir quién puede editar un rango (o solo mostrar una advertencia)">🛡 Rangos protegidos</button>
         <button id="btnPermisos" title="Quién tiene acceso a esta matriz y con qué permiso: lector, comentarista o editor">👥 Personas y permisos</button>
         <button id="btnReglasAviso" title="Avisos cuando una columna cambie a un valor, baje de un número o tenga filas nuevas (por notificación o correo)">🔔 Avisos con condición</button>
         <button id="btnActividad" title="Quién abrió y quién editó esta matriz compartida, y cuándo">📈 Panel de actividad</button>
@@ -12320,6 +12387,7 @@ function renderAllCellsInterno() {
         });
         sheetData[activeSheet][idCtrl] = 'VERDADERO';
       } else {
+        if (typeof hayRangosPersona === 'function' && hayRangosPersona(activeSheet) && !puedoEditarCeldasPersona(activeSheet, [idCtrl])) { input.checked = !input.checked; aviso(mensajeBloqueoPersona); mensajeBloqueoPersona = ''; return; }
         sheetData[activeSheet][idCtrl] = input.checked ? (ctrl.valorSi || 'VERDADERO') : (ctrl.valorNo || 'FALSO');
       }
       marcarCeldaSucia(activeSheet, idCtrl);
@@ -18257,11 +18325,11 @@ function aplicarOperacionPegado(actualRaw, actualVal, srcVal, op) {
 }
 function ejecutarPegado(modo) {
   if (!clipboard) { alert('Nada para pegar. Usá Copiar o Cortar primero.'); return; }
-  if (sheetProtegida[activeSheet]) {
+  if (sheetProtegida[activeSheet] || (typeof hayRangosPersona === 'function' && hayRangosPersona(activeSheet))) {
     var bP = boundsDeId(document.getElementById('cellRef').textContent), fP = clipboard.rangeRows.length, cP = fP ? clipboard.rangeRows[0].length : 0;
     if (modo === 'transponer') { var tmpP = fP; fP = cP; cP = tmpP; }
     var idsP = []; for (var rP = 0; rP < fP; rP++) for (var cc2 = 0; cc2 < cP; cc2++) idsP.push(cellId(bP.minR + rP, bP.minC + cc2));
-    if (hojaBloqueadaParaIds(idsP)) { alert('🔒 Esta hoja está protegida: solo se puede pegar sobre celdas marcadas como editables. Desbloqueala (🔒 Proteger Hoja) o marcá esas celdas en 🔓 Celdas editables.'); return; }
+    if (hojaBloqueadaParaIds(idsP)) { if (mensajeBloqueoPersona) { avisoHojaProtegida(); return; } alert('🔒 Esta hoja está protegida: solo se puede pegar sobre celdas marcadas como editables. Desbloqueala (🔒 Proteger Hoja) o marcá esas celdas en 🔓 Celdas editables.'); return; }
   }
   snapshot();
   var destinoId = document.getElementById('cellRef').textContent;
@@ -32474,6 +32542,15 @@ function xlsxBase64ConImagenes(wb, hojas) {
       for (var qc = 0; qc < candC.length; qc++) { var ixc = xmlHoja.indexOf(candC[qc]); if (ixc !== -1) { corteC = ixc; break; } }
       if (corteC !== -1) { xmlHoja = xmlHoja.slice(0, corteC) + h.cond + xmlHoja.slice(corteC); escribir(rutaHoja, xmlHoja); }
     }
+    if (h.pane) {
+      xmlHoja = xmlHoja.replace(/<sheetView([^>]*?)\/>/, '<sheetView$1>' + h.pane + '</sheetView>');
+      escribir(rutaHoja, xmlHoja);
+    }
+    if (h.dv && xmlHoja.indexOf('<dataValidations') === -1) {
+      var candV = ['<hyperlinks', '<printOptions', '<pageMargins', '<pageSetup', '<headerFooter', '<rowBreaks', '<colBreaks', '<customProperties', '<cellWatches', '<ignoredErrors', '<smartTags', '<drawing', '<legacyDrawing', '<tableParts', '<extLst', '</worksheet>'], corteV = -1;
+      for (var qv = 0; qv < candV.length; qv++) { var ixv = xmlHoja.indexOf(candV[qv]); if (ixv !== -1) { corteV = ixv; break; } }
+      if (corteV !== -1) { xmlHoja = xmlHoja.slice(0, corteV) + h.dv + xmlHoja.slice(corteV); escribir(rutaHoja, xmlHoja); }
+    }
     if (!h.imagenes || !h.imagenes.length) return;
     h.imagenes.forEach(function (im, j) {
       var X = Math.round(im.x * 9525), Y = Math.round(im.y * 9525), CX = Math.round(im.w * 9525), CY = Math.round(im.h * 9525);
@@ -32568,7 +32645,9 @@ function exportarExcelInterno() {
           ws[refExcel] = celdaF;
         } else {
           var numCrudo = /^-?\d+(\.\d+)?$/.test(crudo.trim()) ? parseFloat(crudo) : null;
-          ws[refExcel] = numCrudo !== null ? { t: 'n', v: numCrudo } : { t: 's', v: crudo };
+          var serialF = numCrudo === null ? serialExcelDeTexto(crudo) : null;
+          if (serialF !== null) ws[refExcel] = { t: 'n', v: serialF, z: /:/.test(crudo) ? 'dd/mm/yyyy hh:mm' : 'dd/mm/yyyy' };
+          else ws[refExcel] = numCrudo !== null ? { t: 'n', v: numCrudo } : { t: 's', v: crudo };
         }
         var zExcel = formatoNumeroExcel(fmtCelda);
         if (zExcel && ws[refExcel].t === 'n') ws[refExcel].z = zExcel;
@@ -32590,6 +32669,8 @@ function exportarExcelInterno() {
       if (hpxv > 0) { filasExcel[rhx] = { hpx: hpxv }; hayAltos = true; } else filasExcel[rhx] = {};
     }
     if (hayAltos) ws['!rows'] = filasExcel;
+    var afX = sheetAutoFiltro[sheetName];
+    if (afX && afX.colFin >= afX.colIni) ws['!autofilter'] = { ref: cellId(afX.fila, afX.colIni) + ':' + cellId(Math.max(afX.fila, maxRow), afX.colFin) };
     var combinadas = sheetMerges[sheetName] || [];
     if (combinadas.length) {
       ws['!merges'] = combinadas.map(function (m) {
@@ -32614,8 +32695,10 @@ function exportarExcelInterno() {
     ordenExport.forEach(function (nombreH) {
       var cx = reglasCondicionalesExcel(nombreH);
       if (cx) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].cond = cx; nCond += (cx.match(/<conditionalFormatting/g) || []).length; }
+      var pX = paneExcel(nombreH), dvX = validacionesListaExcel(nombreH);
+      if (pX || dvX) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].pane = pX; porHoja[nombreH].dv = dvX; }
     });
-    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '' }; }).filter(function (h) { return h.indice > 0; });
+    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '', pane: porHoja[nh].pane || '', dv: porHoja[nh].dv || '' }; }).filter(function (h) { return h.indice > 0; });
     if (imgHojas.length && XLSX.CFB) {
       wbout = xlsxBase64ConImagenes(wb, imgHojas);
       imgHojas.forEach(function (h) { h.imagenes.forEach(function (im) { if (im.chartXml) nNativos++; else conImagenes++; }); });
@@ -32664,6 +32747,187 @@ function formulaDesdeExcel(f) {
   return out;
 }
 // Formato de número de Excel (z) → formato de la hoja. null si es "General".
+
+// ══════════════════════════════════════════════
+// EXCEL · fidelidad (1): lo que la librería no lee ni escribe
+// Al importar: paneles inmovilizados, autofiltro y listas desplegables.
+// Al exportar: fechas como fechas de verdad, paneles, autofiltro y listas.
+// ══════════════════════════════════════════════
+// Excel 97-2003 (.xls): la librería no trae estilos, así que se leen directo del
+// archivo (registros FONT, XF y PALETTE del formato BIFF8): negrita, cursiva,
+// subrayado, color de letra, relleno y alineación.
+var PALETA_XLS = ['000000','FFFFFF','FF0000','00FF00','0000FF','FFFF00','FF00FF','00FFFF','800000','008000','000080','808000','800080','008080','C0C0C0','808080','9999FF','993366','FFFFCC','CCFFFF','660066','FF8080','0066CC','CCCCFF','000080','FF00FF','FFFF00','00FFFF','800080','800000','008080','0000FF','00CCFF','CCFFFF','CCFFCC','FFFF99','99CCFF','FF99CC','CC99FF','FFCC99','3366FF','33CCCC','99CC00','FFCC00','FF9900','FF6600','666699','969696','003366','339966','003300','333300','993300','993366','333399','333333'];
+function leerEstilosXls(binario) {
+  if (!window.XLSX || !XLSX.CFB) return {};
+  var cfb;
+  try { cfb = XLSX.CFB.read(binario, { type: 'binary' }); } catch (e) { return {}; }
+  var flujo = XLSX.CFB.find(cfb, 'Workbook') || XLSX.CFB.find(cfb, 'Book');
+  if (!flujo || !flujo.content) return {};
+  var b = flujo.content instanceof Uint8Array ? flujo.content : new Uint8Array(flujo.content);
+  var u16 = function (o) { return b[o] | (b[o + 1] << 8); };
+  var u32 = function (o) { return (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16)) + b[o + 3] * 16777216; };
+  var fuentes = [], xfs = [], paleta = PALETA_XLS.slice(), hojas = [], hojaActual = -1, enGlobales = true, out = {};
+  var colorDe = function (icv) { return icv >= 8 && icv - 8 < paleta.length ? '#' + paleta[icv - 8].toLowerCase() : (icv < 8 ? '#' + PALETA_XLS[icv].toLowerCase() : null); };
+  var estiloXf = function (i) {
+    var x = xfs[i]; if (!x) return null;
+    if (x.cache !== undefined) return x.cache;
+    var f = fuentes[x.fnt >= 4 ? x.fnt - 1 : x.fnt] || {}, st = {};
+    if (f.bold) st.bold = true;
+    if (f.italic) st.italic = true;
+    if (f.underline) st.underline = true;
+    if (f.color && f.color !== 0x7FFF && f.color !== 8 && f.color !== 64) { var cf = colorDe(f.color); if (cf && cf !== '#000000') st.fontColor = cf; }
+    if (x.patron === 1 && x.fondo !== 64 && x.fondo !== 65) { var cb = colorDe(x.fondo); if (cb && cb !== '#ffffff') st.bgColor = cb; }
+    if (x.horiz === 1) st.align = 'left'; else if (x.horiz === 2) st.align = 'center'; else if (x.horiz === 3) st.align = 'right';
+    if (x.wrap) st.wrap = true;
+    x.cache = Object.keys(st).length ? st : null;
+    return x.cache;
+  };
+  var marcar = function (fila, col, ixf) {
+    if (hojaActual < 0 || !hojas[hojaActual]) return;
+    var st = estiloXf(ixf); if (!st) return;
+    var m = out[hojas[hojaActual].nombre] || (out[hojas[hojaActual].nombre] = {});
+    m[XLSX.utils.encode_cell({ r: fila, c: col })] = JSON.parse(JSON.stringify(st));
+  };
+  var pos = 0, nCeldas = 0, prof = 0;
+  while (pos + 4 <= b.length && nCeldas < 200000) {
+    var tipo = u16(pos), largo = u16(pos + 2), d = pos + 4;
+    if (d + largo > b.length) break;
+    if (tipo === 0x0809) { // BOF (los gráficos dentro de una hoja traen su propio BOF/EOF)
+      prof++;
+      if (!enGlobales && prof === 1) hojaActual++;
+    } else if (tipo === 0x000A) { // EOF
+      prof = Math.max(0, prof - 1);
+      if (prof === 0) enGlobales = false;
+    } else if (prof !== 1) {
+      // dentro de un gráfico incrustado: nada que leer
+    } else if (enGlobales) {
+      if (tipo === 0x0031) fuentes.push({ italic: !!(u16(d + 2) & 2), color: u16(d + 4), bold: u16(d + 6) >= 700, underline: b[d + 10] > 0 });
+      else if (tipo === 0x00E0) { var al = b[d + 6]; xfs.push({ fnt: u16(d), horiz: al & 7, wrap: !!(al & 8), patron: (u32(d + 14) >>> 26) & 63, fondo: u16(d + 18) & 127 }); }
+      else if (tipo === 0x0092) { var n = u16(d); for (var k = 0; k < n && k < 56; k++) { var o = d + 2 + k * 4; paleta[k] = [b[o], b[o + 1], b[o + 2]].map(function (v) { return (v < 16 ? '0' : '') + v.toString(16); }).join('').toUpperCase(); } }
+      else if (tipo === 0x0085) { var cch = b[d + 6], uni = b[d + 7] & 1, nombre = ''; for (var q = 0; q < cch; q++) nombre += String.fromCharCode(uni ? u16(d + 8 + q * 2) : b[d + 8 + q]); hojas.push({ nombre: nombre, pos: u32(d), tipo: b[d + 5] }); hojas.sort(function (x, y) { return x.pos - y.pos; }); }
+    } else if (tipo === 0x00FD || tipo === 0x0203 || tipo === 0x027E || tipo === 0x0204 || tipo === 0x0205 || tipo === 0x0006 || tipo === 0x0201) {
+      marcar(u16(d), u16(d + 2), u16(d + 4)); nCeldas++;
+    } else if (tipo === 0x00BD) { // MULRK
+      var f1 = u16(d), c1 = u16(d + 2), nk = (largo - 6) / 6;
+      for (var j = 0; j < nk; j++) marcar(f1, c1 + j, u16(d + 4 + j * 6));
+      nCeldas += nk;
+    } else if (tipo === 0x00BE) { // MULBLANK
+      var f2 = u16(d), c2 = u16(d + 2), nb = (largo - 6) / 2;
+      for (var j2 = 0; j2 < nb; j2++) marcar(f2, c2 + j2, u16(d + 4 + j2 * 2));
+      nCeldas += nb;
+    }
+    pos = d + largo;
+  }
+  return out;
+}
+// Hoja para un Excel importado: si ya hay una hoja con ese nombre y está vacía
+// (como la Hoja1 de un libro nuevo) se usa esa; si tiene datos, queda "Hoja1 (2)".
+function crearHojaParaImportar(nombre) {
+  nombre = String(nombre || 'Hoja').replace(/[\\\/?*\[\]:]/g, ' ').trim().slice(0, 31) || 'Hoja';
+  var i = sheets.indexOf(nombre);
+  if (i !== -1) {
+    var vacia = !Object.keys(sheetData[nombre] || {}).length && !Object.keys(sheetFormats[nombre] || {}).length && !(sheetGraficos[nombre] || []).length;
+    if (vacia) { sheetMerges[nombre] = []; colWidths[nombre] = colWidths[nombre] || {}; return nombre; }
+    var k = 2, base = nombre.slice(0, 26);
+    while (sheets.indexOf(base + ' (' + k + ')') !== -1) k++;
+    nombre = base + ' (' + k + ')';
+  }
+  return crearHojaDestino(nombre);
+}
+function leerExtrasXlsx(binario) {
+  if (!window.XLSX || !XLSX.CFB) return {};
+  var cfb;
+  try { cfb = XLSX.CFB.read(binario, { type: 'binary' }); } catch (e) { return {}; }
+  function archivo(ruta) {
+    for (var i = 0; i < cfb.FullPaths.length; i++) {
+      var fp = cfb.FullPaths[i];
+      if (fp.slice(-ruta.length) === ruta && (fp.length === ruta.length || /[\/]$/.test(fp.slice(0, fp.length - ruta.length)))) {
+        var c = cfb.FileIndex[i].content;
+        if (!c) return '';
+        return new TextDecoder('utf-8').decode(c instanceof Uint8Array ? c : new Uint8Array(c));
+      }
+    }
+    return '';
+  }
+  function desescapar(t) { return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&'); }
+  function attr(tag, nombre) { var m = tag.match(new RegExp('(?:^|\\s)' + nombre + '="([^"]*)"')); return m ? m[1] : null; }
+  var wbXml = archivo('xl/workbook.xml'), rels = archivo('xl/_rels/workbook.xml.rels');
+  if (!wbXml) return {};
+  var destinos = {};
+  (rels.match(/<Relationship\s[^>]*\/?>/g) || []).forEach(function (r) { destinos[attr(r, 'Id')] = attr(r, 'Target'); });
+  var out = {};
+  (wbXml.match(/<sheet\s[^>]*\/?>/g) || []).forEach(function (t) {
+    var nombre = desescapar(attr(t, 'name') || ''), dest = destinos[attr(t, 'r:id')];
+    if (!nombre || !dest) return;
+    var xml = archivo('xl/' + dest.replace(/^\/?(xl\/)?/, ''));
+    if (!xml) return;
+    var ex = {};
+    // <pane xSplit="1" ySplit="1" state="frozen"/>
+    var pane = (xml.match(/<pane\s[^>]*\/?>/) || [])[0];
+    if (pane && /state="frozen(Split)?"/.test(pane)) ex.freeze = { row: parseInt(attr(pane, 'ySplit') || '0', 10) || 0, col: parseInt(attr(pane, 'xSplit') || '0', 10) || 0 };
+    // <dataValidation type="list" sqref="E2:E50"><formula1>"Sí,No"</formula1>
+    var listas = [];
+    (xml.match(/<dataValidation\s[^>]*>[\s\S]*?<\/dataValidation>/g) || []).forEach(function (dv) {
+      var cab = dv.match(/<dataValidation\s[^>]*>/)[0];
+      if (attr(cab, 'type') !== 'list') return;
+      var f1 = (dv.match(/<formula1>([\s\S]*?)<\/formula1>/) || [])[1];
+      var sq = attr(cab, 'sqref');
+      if (!f1 || !sq) return;
+      f1 = desescapar(f1).trim();
+      var ops = /^".*"$/.test(f1) ? f1.slice(1, -1).split(',').map(function (x) { return x.trim(); }).filter(Boolean) : ['=' + f1.replace(/\$/g, '')];
+      if (!ops.length) return;
+      sq.split(/\s+/).forEach(function (rg) { if (rg) listas.push({ rango: rg.replace(/\$/g, '').toUpperCase(), ops: ops }); });
+    });
+    if (listas.length) ex.listas = listas;
+    out[nombre] = ex;
+  });
+  return out;
+}
+function aplicarExtrasXlsx(hoja, wsX, ex) {
+  if (ex.freeze && (ex.freeze.row || ex.freeze.col)) sheetFreeze[hoja] = { row: Math.min(ex.freeze.row, 50), col: Math.min(ex.freeze.col, 20) };
+  var af = wsX && wsX['!autofilter'];
+  if (af && af.ref) {
+    try {
+      var rg = XLSX.utils.decode_range(String(af.ref).replace(/\$/g, ''));
+      sheetAutoFiltro[hoja] = { fila: rg.s.r, colIni: rg.s.c, colFin: rg.e.c, filtros: {} };
+    } catch (e) {}
+  }
+  (ex.listas || []).forEach(function (L) {
+    sheetValidations[hoja] = sheetValidations[hoja] || {};
+    var rango = /:/.test(L.rango) ? L.rango : L.rango + ':' + L.rango;
+    sheetValidations[hoja][rango] = L.ops;
+  });
+}
+// Fecha escrita en la hoja (dd/mm/aaaa) → número de serie de Excel, o null
+function serialExcelDeTexto(t) {
+  if (typeof t !== 'string' || !/^\d{1,2}\/\d{1,2}\/\d{4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?$/.test(t.trim())) return null;
+  var s = serialDeFechaTexto(t.trim());
+  return isFinite(s) && s > 0 ? s : null;
+}
+// Lista desplegable → <dataValidation> de Excel
+function validacionesListaExcel(hoja) {
+  var vals = sheetValidations[hoja] || {}, xml = '', n = 0;
+  Object.keys(vals).forEach(function (rango) {
+    var l = vals[rango]; if (!Array.isArray(l) || !l.length) return;
+    var sq = String(rango).replace(/^([A-Z]+\d+):\1$/, '$1'), f1;
+    if (l.length === 1 && /^=/.test(String(l[0]).trim())) f1 = String(l[0]).trim().slice(1);
+    else {
+      var txt = l.map(function (x) { return String(x).replace(/,/g, ' '); }).join(',');
+      if (txt.length > 250) return; // Excel no acepta listas escritas tan largas
+      f1 = '"' + txt + '"';
+    }
+    n++;
+    xml += '<dataValidation type="list" allowBlank="1" showInputMessage="1" showErrorMessage="1" sqref="' + escXml(sq) + '"><formula1>' + escXml(f1) + '</formula1></dataValidation>';
+  });
+  return n ? '<dataValidations count="' + n + '">' + xml + '</dataValidations>' : '';
+}
+// Paneles inmovilizados → <pane> dentro de <sheetView>
+function paneExcel(hoja) {
+  var fz = sheetFreeze[hoja] || {}, r = fz.row || 0, c = fz.col || 0;
+  if (!r && !c) return '';
+  var activo = r && c ? 'bottomRight' : (r ? 'bottomLeft' : 'topRight');
+  return '<pane' + (c ? ' xSplit="' + c + '"' : '') + (r ? ' ySplit="' + r + '"' : '') + ' topLeftCell="' + cellId(r, c) + '" activePane="' + activo + '" state="frozen"/>';
+}
 function formatoDesdeExcelZ(z) {
   if (!z || z === 'General') return null;
   var primera = String(z).split(';')[0];
@@ -32671,9 +32935,11 @@ function formatoDesdeExcelZ(z) {
   var dec = m ? m[1].length : 0;
   if (primera.indexOf('%') !== -1) return { type: 'percent', decimals: dec, thousands: false };
   var miles = primera.indexOf('#,##0') !== -1;
-  if (/₡|CRC/.test(primera)) return { type: 'currency', decimals: dec, thousands: miles };
-  if (/\$/.test(primera) && !/\[\$-/.test(primera)) return { type: 'currency_usd', decimals: dec, thousands: miles };
-  if (/€/.test(primera)) return { type: 'currency_eur', decimals: dec, thousands: miles };
+  // Excel marca la moneda como [$€-C0A], [$USD-409] o [$₡-140A]; [$-409] solo es el idioma
+  var simbolo = (primera.match(/\[\$([^\]-]+)(?:-[0-9A-Fa-f]+)?\]/) || [])[1] || '';
+  if (/₡|CRC/.test(primera) || /₡|CRC/.test(simbolo)) return { type: 'currency', decimals: dec, thousands: miles };
+  if (/€|EUR/.test(simbolo) || (!simbolo && /€/.test(primera))) return { type: 'currency_eur', decimals: dec, thousands: miles };
+  if (/\$|USD/.test(simbolo) || (/\$/.test(primera.replace(/\[\$[^\]]*\]/g, '')))) return { type: 'currency_usd', decimals: dec, thousands: miles };
   if (miles || /^0\.0+$/.test(primera)) return { type: 'number', decimals: dec, thousands: miles };
   return null;
 }
@@ -32842,12 +33108,15 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
       var MAX_FILAS = MAX_FILAS_HOJA, MAX_COLS = MAX_COLUMNAS;
       var estilosXlsx = {};
       try { estilosXlsx = leerEstilosXlsx(ev.target.result); } catch (eEst) { estilosXlsx = {}; }
+      if (!Object.keys(estilosXlsx || {}).length) { try { estilosXlsx = leerEstilosXls(ev.target.result); } catch (eXls) { estilosXlsx = {}; } }
+      var extrasXlsx = {};
+      try { extrasXlsx = leerExtrasXlsx(ev.target.result); } catch (eExt) { extrasXlsx = {}; }
       snapshot();
       var renombradas = {}, creadas = [], recortadas = 0, hojasVacias = 0, ocultasImport = [];
       wb.SheetNames.forEach(function (wsName) {
         var wsX = wb.Sheets[wsName];
         if (!wsX || !wsX['!ref']) { hojasVacias++; return; }
-        var nombreFinal = crearHojaDestino(wsName.substring(0, 31));
+        var nombreFinal = crearHojaParaImportar(wsName.substring(0, 31));
         if (nombreFinal !== wsName) renombradas[wsName] = nombreFinal;
         creadas.push({ nombre: nombreFinal, ws: wsX, orig: wsName });
         try { var idxWb = wb.SheetNames.indexOf(wsName), infoWb = wb.Workbook && wb.Workbook.Sheets && wb.Workbook.Sheets[idxWb]; if (infoWb && infoWb.Hidden) ocultasImport.push(nombreFinal); } catch (eOc) {}
@@ -32870,7 +33139,9 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
             });
             valor = '=' + fx;
           } else if (cel.t === 'n') {
-            valor = (cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z) && cel.w) ? String(cel.w) : String(typeof cel.v === 'number' && isFinite(cel.v) ? Number(cel.v.toPrecision(15)) : cel.v);
+            var esFechaZ = cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z);
+            if (esFechaZ && typeof cel.v === 'number' && isFinite(cel.v) && cel.v >= 1 && /[dy]/i.test(String(cel.z).replace(/"[^"]*"|\[[^\]]*\]/g, ''))) valor = textoDeSerialFecha(cel.v);
+            else valor = (esFechaZ && cel.w) ? String(cel.w) : String(typeof cel.v === 'number' && isFinite(cel.v) ? Number(cel.v.toPrecision(15)) : cel.v);
           } else if (cel.t === 'b') {
             valor = cel.v ? 'VERDADERO' : 'FALSO';
           } else if (cel.t === 'e') {
@@ -32914,6 +33185,7 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
           var px = col.wpx || (col.wch ? col.wch * 7 : 0);
           if (px > 0) colWidths[it.nombre][ci] = Math.round(px);
         });
+        aplicarExtrasXlsx(it.nombre, wsX, extrasXlsx[it.orig] || {});
       });
       if (!creadas.length) { alert('El archivo no tiene datos para importar.'); document.getElementById('excelFileInput').value = ''; return; }
       if (maxFilaUsada + 1 > ROWS) ROWS = maxFilaUsada + 1;
@@ -34991,7 +35263,8 @@ var RB_MAPA = {};
   m('datos', 'btnEstadColumna btnLimpiezaDatos btnCronograma btnFormularioPublico');
   m('revisar', 'btnAvisosCambios btnActividad');
   m('datos', 'btnVistaAgrupada btnPublicarWeb btnTablaSibo');
-  m('revisar', 'btnPermisos btnReglasAviso');
+  m('revisar', 'btnPermisos btnReglasAviso btnRangosPersona');
+  m('datos', 'btnVistasFiltro');
   m('datos', 'btnImportarWeb btnFormularioDatos btnTiposDatos btnConsultas btnActualizarConsultas btnRelaciones btnEsquemaAuto btnBorrarEsquema');
   m('contabilidad', 'btnCongelarFilas btnCongelarColumnas btnDescongelar btnWhatIf btnValidacionDatos btnFormatoCondicional btnTablaDinamica btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
@@ -35176,9 +35449,10 @@ function crearBackup(silencioso, nota) {
   return firestoreDB.collection('matrices').doc(idBackup).collection('backups').add(payload);
   }).then(function () {
     firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').get().then(function (snap) {
-      var docs = snap.docs;
-      if (docs.length > 30) {
-        docs.slice(30).forEach(function (d) { d.ref.delete(); });
+      // Se quedan los 30 más nuevos; los que tienen nombre no se borran nunca
+      var sinNombre = snap.docs.filter(function (d) { return !(d.data() || {}).nombre; });
+      if (sinNombre.length > 30) {
+        sinNombre.slice(30).forEach(function (d) { d.ref.delete(); });
       }
     });
     if (!silencioso) { renderBackupList(); document.getElementById('saveStatus').textContent = '✓ Backup creado'; }
@@ -35191,9 +35465,11 @@ function renderBackupList() {
   var wrap = document.getElementById('backupList');
   if (!currentMatrizId) { wrap.innerHTML = '<div style="padding:10px;">Guardá esta matriz primero (📁 Mis Matrices) para usar backups.</div>'; return; }
   wrap.innerHTML = '<div style="padding:10px;">Cargando...</div>';
-  firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').limit(30).get().then(function (snap) {
+  firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').limit(80).get().then(function (snap) {
     if (snap.empty) { wrap.innerHTML = '<div style="padding:10px;">Sin backups todavía. Creá el primero arriba.</div>'; return; }
     var docs = snap.docs;
+    var hayNombrados = docs.some(function (d) { return (d.data() || {}).nombre; });
+    if (backupsSoloNombre) docs = docs.filter(function (d) { return (d.data() || {}).nombre; });
     var estadoActual = estadoActualComoObjeto();
     // Cada backup se compara contra el que le sigue cronológicamente: el más
     // reciente contra lo que tenés abierto AHORA, y cada uno de los demás
@@ -35211,8 +35487,9 @@ function renderBackupList() {
         : '— Sin cambios después de este backup';
       html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-        '<div>' + fechaFmt + '<div style="color:#888;font-size:11px;">' + escHtml(d.creadoPor || '') + (d.nota ? ' · ' + escHtml(d.nota) : '') + '</div></div>' +
+        '<div>' + (d.nombre ? '<div class="vrNombre">🏷 ' + escHtml(d.nombre) + '</div>' : '') + fechaFmt + '<div style="color:#888;font-size:11px;">' + escHtml(d.creadoPor || '') + (d.nota ? ' · ' + escHtml(d.nota) : '') + '</div></div>' +
         '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+        '<button class="backupNombreBtn" data-idx="' + i + '" title="Ponerle nombre a esta versión" style="padding:6px 8px;border-radius:6px;background:#fff;color:#245f09;border:1px solid #cce9ae;">🏷</button>' +
         '<button class="backupVerCambiosBtn" data-idx="' + i + '" style="padding:6px 8px;border-radius:6px;background:#eef6e3;color:#245f09;border:1px solid #cce9ae;white-space:nowrap;">👁 Cambios</button>' +
         '<button class="backupRestaurarBtn" data-idx="' + i + '" style="padding:6px 8px;border-radius:6px;background:#2d7a0c;color:#fff;border:none;white-space:nowrap;">Restaurar</button>' +
         '</div></div>' +
@@ -35220,7 +35497,12 @@ function renderBackupList() {
         '<div class="backupDiffBox" data-idx="' + i + '" style="display:none;margin-top:6px;background:#f7fbf0;border-radius:8px;padding:8px;max-height:160px;overflow-y:auto;"></div>' +
         '</div>';
     });
-    wrap.innerHTML = html;
+    wrap.innerHTML = '<label class="vrFiltroNom"><input type="checkbox" id="bkSoloNombre"' + (backupsSoloNombre ? ' checked' : '') + '> 🏷 Solo versiones con nombre' + (hayNombrados ? '' : ' <small>(todavía no hay)</small>') + '</label>' +
+      (html || '<div style="padding:10px;color:#888;">No hay versiones con nombre. Tocá 🏷 en un backup para ponerle uno.</div>');
+    document.getElementById('bkSoloNombre').addEventListener('change', function (e) { backupsSoloNombre = e.target.checked; renderBackupList(); });
+    wrap.querySelectorAll('.backupNombreBtn').forEach(function (btn) {
+      btn.addEventListener('click', function () { var d = docs[parseInt(btn.dataset.idx, 10)]; nombrarBackupNube(d.id, (d.data() || {}).nombre || ''); });
+    });
 
     wrap.querySelectorAll('.backupVerCambiosBtn').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -40101,6 +40383,418 @@ function abrirReglasAviso() {
   var on = function (id, fn) { var b = document.getElementById(id); if (b) b.addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); fn(); }); };
   on('btnTablaSibo', abrirCrearTablaSibo); on('btnPermisos', abrirPermisos); on('btnReglasAviso', abrirReglasAviso);
   on('cmReIA', volverAPreguntarIA); on('cmValoresCasilla', abrirValoresCasilla);
+})();
+
+Object.assign(I18N_EN, {"🔍 Vistas de filtro":"🔍 Filter views","🛡 Rangos protegidos":"🛡 Protected ranges","🤖 Preguntale a Sibö sobre esta tabla":"🤖 Ask Sibö about this table","🏷 Solo versiones con nombre":"🏷 Named versions only","Preguntar":"Ask"});
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (quinta tanda) · 1) Vistas de filtro
+// Como en Google Sheets: cada persona filtra a su gusto sin cambiarle la
+// hoja a los demás. Las vistas se guardan en el libro (colWidths[hoja].
+// vistasFiltro) para que cualquiera las pueda abrir, pero cuál está abierta
+// es solo de este dispositivo: el autofiltro "de todos" no se toca.
+// ══════════════════════════════════════════════
+var vistaFiltroActiva = {};   // hoja -> id de la vista abierta (solo aquí)
+var afCompartidoVista = {};   // hoja -> autofiltro de todos mientras hay una vista abierta
+function clonAf(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
+function vistasFiltroHoja(h) {
+  var cw = colWidths[h] = colWidths[h] || {};
+  return cw.vistasFiltro || (cw.vistasFiltro = []);
+}
+function vistaFiltroObj(h) {
+  var id = vistaFiltroActiva[h]; if (!id) return null;
+  return vistasFiltroHoja(h).filter(function (v) { return v.id === id; })[0] || null;
+}
+function hayVistaFiltroAbierta() { return Object.keys(vistaFiltroActiva).some(function (h) { return !!vistaFiltroActiva[h]; }); }
+// Lo filtrado dentro de la vista se guarda en la vista (no en el autofiltro de todos)
+function guardarFiltroEnVistas() {
+  Object.keys(vistaFiltroActiva).forEach(function (h) {
+    var v = vistaFiltroObj(h);
+    if (v) { v.af = clonAf(sheetAutoFiltro[h]); v.editada = Date.now(); }
+  });
+}
+function abrirVistaFiltro(id, h) {
+  h = h || activeSheet;
+  var v = vistasFiltroHoja(h).filter(function (x) { return x.id === id; })[0]; if (!v) return;
+  guardarFiltroEnVistas();
+  if (!vistaFiltroActiva[h]) afCompartidoVista[h] = clonAf(sheetAutoFiltro[h]);
+  vistaFiltroActiva[h] = id;
+  sheetAutoFiltro[h] = clonAf(v.af);
+  buildTable(); pintarBandaVistaFiltro();
+}
+function cerrarVistaFiltro(h) {
+  h = h || activeSheet;
+  if (!vistaFiltroActiva[h]) return;
+  guardarFiltroEnVistas();
+  sheetAutoFiltro[h] = clonAf(afCompartidoVista[h]);
+  delete vistaFiltroActiva[h]; delete afCompartidoVista[h];
+  autoSave(); buildTable(); pintarBandaVistaFiltro();
+}
+function crearVistaFiltro(nombre) {
+  var h = activeSheet, af = null;
+  // Arranca con el filtro que esté a la vista (el de otra vista o el de todos)
+  if (sheetAutoFiltro[h]) { af = clonAf(sheetAutoFiltro[h]); }
+  else {
+    var b = limitesDeSeleccionOCelda(), reg = b && (b.minR === b.maxR && b.minC === b.maxC) ? regionActualDeDatos(b.minR, b.minC) : b;
+    if (!reg) { aviso('Tocá una celda de la tabla que querés filtrar'); return null; }
+    af = { fila: reg.minR, colIni: reg.minC, colFin: reg.maxC, filtros: {} };
+  }
+  var v = { id: 'vf' + Date.now().toString(36), nombre: nombre || ('Filtro ' + (vistasFiltroHoja(h).length + 1)), af: af, creador: (currentUser && currentUser.email) || '', creada: Date.now() };
+  vistasFiltroHoja(h).push(v);
+  abrirVistaFiltro(v.id, h);
+  autoSave();
+  return v;
+}
+function pintarBandaVistaFiltro() {
+  var banda = document.getElementById('bandaVistaFiltro'), v = vistaFiltroObj(activeSheet);
+  document.body.classList.toggle('conVistaFiltro', !!v);
+  if (!v) { if (banda) banda.classList.remove('ver'); return; }
+  if (!banda) {
+    banda = document.createElement('div'); banda.id = 'bandaVistaFiltro';
+    document.body.appendChild(banda);
+  }
+  banda.innerHTML = '<span>🔍 <b>' + escHtml(v.nombre) + '</b> <small>· solo la ves vos</small></span>' +
+    '<button type="button" data-a="lista" title="Otras vistas">☰</button><button type="button" data-a="cerrar" title="Cerrar la vista">✕</button>';
+  banda.classList.add('ver');
+  banda.querySelector('[data-a="cerrar"]').onclick = function () { cerrarVistaFiltro(activeSheet); };
+  banda.querySelector('[data-a="lista"]').onclick = abrirPanelVistasFiltro;
+}
+function abrirPanelVistasFiltro() {
+  var h = activeSheet, lista = vistasFiltroHoja(h), activa = vistaFiltroActiva[h];
+  var html = '<div class="mcrNota">Filtrá sin cambiarle la hoja a nadie: los demás siguen viendo todo. Las vistas quedan guardadas en el libro para usarlas cuando quieras.</div>' +
+    (lista.length ? lista.map(function (v, i) {
+      var n = v.af ? Object.keys(v.af.filtros || {}).filter(function (k) { return (v.af.filtros[k] || []).length; }).length + Object.keys(v.af.colores || {}).length : 0;
+      return '<div class="fpItem' + (v.id === activa ? ' vfActiva' : '') + '"><div><b>' + (v.id === activa ? '👁 ' : '') + escHtml(v.nombre) + '</b><br><small>' + (n ? n + ' columna(s) filtrada(s)' : 'Sin filtros todavía') + (v.creador ? ' · ' + escHtml(v.creador) : '') + '</small></div>' +
+        '<div class="fpBotones">' + (v.id === activa ? '<button type="button" data-a="cerrar" data-i="' + i + '">✕ Cerrar</button>' : '<button type="button" data-a="abrir" data-i="' + i + '">Abrir</button>') +
+        '<button type="button" data-a="nombre" data-i="' + i + '">✏️</button><button type="button" data-a="borrar" data-i="' + i + '">🗑</button></div></div>';
+    }).join('') : '<div class="mcrNota">Todavía no hay vistas de filtro en "' + escHtml(h) + '".</div>');
+  abrirPanel('🔍 Vistas de filtro', html, [{ texto: 'Cerrar' }, { texto: '➕ Nueva vista', ok: true, accion: function () {
+    preguntarPro('Nombre de la vista (ej. "Solo pendientes"):', 'Filtro ' + (lista.length + 1)).then(function (n) {
+      if (n === null) return;
+      var v = crearVistaFiltro(String(n).trim());
+      if (v) aviso('🔍 Vista "' + v.nombre + '" abierta: usá las flechas ▾ de los títulos para filtrar');
+    });
+  } }]);
+  document.querySelectorAll('#mcrPanelBody .fpBotones button').forEach(function (b) {
+    b.onclick = function () {
+      var v = lista[parseInt(b.dataset.i, 10)]; if (!v) return;
+      if (b.dataset.a === 'abrir') { cerrarPanel(); abrirVistaFiltro(v.id, h); }
+      else if (b.dataset.a === 'cerrar') { cerrarPanel(); cerrarVistaFiltro(h); }
+      else if (b.dataset.a === 'nombre') {
+        preguntarPro('Nuevo nombre:', v.nombre).then(function (n) { if (n === null || !String(n).trim()) return; v.nombre = String(n).trim(); autoSave(); pintarBandaVistaFiltro(); abrirPanelVistasFiltro(); });
+      } else if (b.dataset.a === 'borrar') {
+        confirmarPro('¿Borrar la vista "' + v.nombre + '"? (no toca los datos)').then(function (ok) {
+          if (!ok) return;
+          if (vistaFiltroActiva[h] === v.id) cerrarVistaFiltro(h);
+          lista.splice(lista.indexOf(v), 1); autoSave(); abrirPanelVistasFiltro();
+        });
+      }
+    };
+  });
+}
+(function () {
+  // Al guardar: lo de la vista va a la vista; al disco y a la nube va el autofiltro de todos
+  var autoPrev = autoSave;
+  autoSave = function () {
+    if (!hayVistaFiltroAbierta()) return autoPrev.apply(this, arguments);
+    guardarFiltroEnVistas();
+    var enVista = {};
+    Object.keys(vistaFiltroActiva).forEach(function (h) { enVista[h] = sheetAutoFiltro[h]; sheetAutoFiltro[h] = afCompartidoVista[h] || null; });
+    try { return autoPrev.apply(this, arguments); }
+    finally { Object.keys(enVista).forEach(function (h) { sheetAutoFiltro[h] = enVista[h]; }); }
+  };
+  var estadoPrev = estadoActualComoObjeto;
+  estadoActualComoObjeto = function () {
+    var o = estadoPrev.apply(this, arguments);
+    if (o && hayVistaFiltroAbierta()) {
+      guardarFiltroEnVistas();
+      var af = Object.assign({}, sheetAutoFiltro);
+      Object.keys(vistaFiltroActiva).forEach(function (h) { af[h] = clonAf(afCompartidoVista[h]); });
+      o.sheetAutoFiltro = af;
+    }
+    return o;
+  };
+  // Si llega un cambio de la nube con la vista abierta, se actualiza el de todos y la vista sigue
+  var cargarPrev = cargarEstadoDesdeObjeto;
+  cargarEstadoDesdeObjeto = function () {
+    var r = cargarPrev.apply(this, arguments);
+    try {
+      Object.keys(vistaFiltroActiva).forEach(function (h) {
+        var v = vistaFiltroObj(h);
+        if (!v || sheets.indexOf(h) === -1) { delete vistaFiltroActiva[h]; delete afCompartidoVista[h]; return; }
+        afCompartidoVista[h] = clonAf(sheetAutoFiltro[h]);
+        sheetAutoFiltro[h] = clonAf(v.af);
+      });
+      setTimeout(pintarBandaVistaFiltro, 0);
+    } catch (e) {}
+    return r;
+  };
+  // La banda cambia al cambiar de hoja
+  var renderPrev = renderAllCells;
+  renderAllCells = function () {
+    var r = renderPrev.apply(this, arguments);
+    try {
+      var b = document.getElementById('bandaVistaFiltro');
+      if (!!vistaFiltroObj(activeSheet) !== !!(b && b.classList.contains('ver'))) pintarBandaVistaFiltro();
+      pintarRangosPersona();
+    } catch (e) {}
+    return r;
+  };
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (quinta tanda) · 2) Rangos protegidos por persona
+// "Solo Ana y Luis pueden editar B2:B50", o "Solo mostrar una advertencia".
+// El dueño siempre puede editar. Se guarda en colWidths[hoja].rangosPersona.
+// Nota: lo hace cumplir la app; las reglas de Firebase no ven celdas sueltas.
+// ══════════════════════════════════════════════
+var avisosRangoAceptados = {}, mensajeBloqueoPersona = '';
+function rangosPersonaHoja(h) { return ((colWidths[h || activeSheet] || {}).rangosPersona) || []; }
+function soyEditorDeRango(R) {
+  if (typeof rolActual !== 'undefined' && rolActual === 'dueño') return true;
+  var yo = String((currentUser && currentUser.email) || '').toLowerCase();
+  return !!yo && (R.editores || []).map(function (x) { return String(x).toLowerCase(); }).indexOf(yo) !== -1;
+}
+function rangoPersonaDeCelda(h, id) {
+  var l = rangosPersonaHoja(h);
+  for (var i = 0; i < l.length; i++) {
+    try { if (condRangeToIds(l[i].rango).indexOf(id) !== -1) return l[i]; } catch (e) {}
+  }
+  return null;
+}
+function nombresEditores(R) {
+  var l = (R.editores || []).map(function (x) { return String(x).split('@')[0]; });
+  return l.length ? l.join(', ') : 'el dueño';
+}
+// ¿Puedo editar estas celdas? Si el rango es "solo advertencia", pregunta una vez por sesión.
+function puedoEditarCeldasPersona(h, ids) {
+  mensajeBloqueoPersona = '';
+  var vistos = {};
+  for (var i = 0; i < ids.length; i++) {
+    var R = rangoPersonaDeCelda(h, ids[i]); if (!R || vistos[R.id]) continue; vistos[R.id] = 1;
+    if (R.modo === 'aviso') {
+      if (avisosRangoAceptados[R.id]) continue;
+      var ok = window.confirm('⚠ ' + (R.desc ? '"' + R.desc + '" — ' : '') + 'El rango ' + R.rango + ' está protegido. ¿Querés editarlo igual?');
+      if (!ok) { mensajeBloqueoPersona = '🛡 No se cambió el rango protegido ' + R.rango; return false; }
+      avisosRangoAceptados[R.id] = true;
+    } else if (!soyEditorDeRango(R)) {
+      mensajeBloqueoPersona = '🛡 ' + R.rango + (R.desc ? ' (' + R.desc + ')' : '') + ': solo pueden editarlo ' + nombresEditores(R);
+      return false;
+    }
+  }
+  return true;
+}
+function hayRangosPersona(h) { return rangosPersonaHoja(h).length > 0; }
+(function () {
+  var commitPrev = commitCell;
+  commitCell = function (el) {
+    var id = el && el.dataset && el.dataset.id;
+    if (id && hayRangosPersona(activeSheet)) {
+      var raw = (sheetData[activeSheet] || {})[id] || '';
+      if (String(el.textContent) !== String(raw) && String(el.textContent) !== String(computeValue(id)) && !puedoEditarCeldasPersona(activeSheet, [id])) {
+        el.textContent = String(computeValue(id)); el.dataset.editado = '0';
+        aviso(mensajeBloqueoPersona); mensajeBloqueoPersona = '';
+        return;
+      }
+    }
+    return commitPrev.apply(this, arguments);
+  };
+  var bloqPrev = hojaBloqueadaParaIds;
+  hojaBloqueadaParaIds = function (ids) {
+    if (bloqPrev.apply(this, arguments)) return true;
+    return hayRangosPersona(activeSheet) && !puedoEditarCeldasPersona(activeSheet, ids || []);
+  };
+  var avisoPrev = avisoHojaProtegida;
+  avisoHojaProtegida = function () {
+    if (mensajeBloqueoPersona) { aviso(mensajeBloqueoPersona); mensajeBloqueoPersona = ''; return; }
+    return avisoPrev.apply(this, arguments);
+  };
+  var elegirPrev = elegirDeListaValidacion;
+  elegirDeListaValidacion = function (id) {
+    if (hayRangosPersona(activeSheet) && !puedoEditarCeldasPersona(activeSheet, [id])) { aviso(mensajeBloqueoPersona); mensajeBloqueoPersona = ''; return; }
+    return elegirPrev.apply(this, arguments);
+  };
+})();
+// Rayado suave en las celdas que yo no puedo editar
+function pintarRangosPersona() {
+  document.querySelectorAll('.celdaProtPersona').forEach(function (el) { el.classList.remove('celdaProtPersona'); });
+  rangosPersonaHoja(activeSheet).forEach(function (R) {
+    if (R.modo !== 'aviso' && soyEditorDeRango(R) && !R.verSiempre) return;
+    var ids = []; try { ids = condRangeToIds(R.rango).slice(0, 3000); } catch (e) {}
+    ids.forEach(function (id) { var el = celdaEl(id); if (el) el.classList.add('celdaProtPersona'); });
+  });
+}
+function abrirRangosPersona(editarIdx) {
+  var h = activeSheet, lista = rangosPersonaHoja(h), esDueno = typeof rolActual === 'undefined' || rolActual === 'dueño';
+  var b = limitesDeSeleccionOCelda(), rangoSel = b ? (cellId(b.minR, b.minC) + (b.maxR !== b.minR || b.maxC !== b.minC ? ':' + cellId(b.maxR, b.maxC) : '')) : 'A1';
+  var R0 = editarIdx !== undefined ? lista[editarIdx] : null;
+  var gente = (typeof datosRolesMatriz !== 'undefined' && datosRolesMatriz.sharedWith || []).concat(personasDelLibro || []).map(function (x) { return String(x || '').toLowerCase(); })
+    .filter(function (x, i, a) { return x && esCorreo(x) && a.indexOf(x) === i && x !== String((currentUser && currentUser.email) || '').toLowerCase(); });
+  (R0 && R0.editores || []).forEach(function (x) { if (gente.indexOf(x) === -1) gente.push(x); });
+  var html = (lista.length ? '<div class="mcrNota">Rangos protegidos de "' + escHtml(h) + '":</div>' + lista.map(function (R, i) {
+      return '<div class="fpItem"><div><b>🛡 ' + escHtml(R.rango) + '</b>' + (R.desc ? ' · ' + escHtml(R.desc) : '') + '<br><small>' + (R.modo === 'aviso' ? '⚠ Solo advierte antes de editar' : 'Pueden editar: ' + escHtml(nombresEditores(R)) + ' y el dueño') + '</small></div>' +
+        (esDueno ? '<div class="fpBotones"><button type="button" data-a="editar" data-i="' + i + '">✏️</button><button type="button" data-a="borrar" data-i="' + i + '">🗑</button></div>' : '') + '</div>';
+    }).join('') : '<div class="mcrNota">Elegí quién puede cambiar un rango, como en Google Sheets. Los demás lo ven rayado y no lo pueden editar.</div>');
+  if (esDueno) {
+    html += '<div class="raNueva"><b>' + (R0 ? '✏️ Editar ' + escHtml(R0.rango) : '➕ Proteger un rango') + '</b>' +
+      '<label class="mcrF">Rango</label><input id="rpRango" class="mcrI" value="' + escHtml(R0 ? R0.rango : rangoSel) + '">' +
+      '<label class="mcrF">Descripción (opcional)</label><input id="rpDesc" class="mcrI" placeholder="Ej. Precios aprobados" value="' + escHtml(R0 ? R0.desc || '' : '') + '">' +
+      '<label class="raCanal"><input type="radio" name="rpModo" value="restringido"' + (!R0 || R0.modo !== 'aviso' ? ' checked' : '') + '> 🛡 Solo pueden editar las personas que marque</label>' +
+      '<label class="raCanal"><input type="radio" name="rpModo" value="aviso"' + (R0 && R0.modo === 'aviso' ? ' checked' : '') + '> ⚠ Cualquiera, pero con una advertencia</label>' +
+      '<div id="rpGente">' + (gente.length ? gente.map(function (em) { return '<label class="raCanal"><input type="checkbox" class="rpEd" value="' + escHtml(em) + '"' + (R0 && (R0.editores || []).indexOf(em) !== -1 ? ' checked' : '') + '> ' + escHtml(em) + '</label>'; }).join('') : '<div class="mcrNota">Todavía no compartiste la matriz con nadie: por ahora solo vos podrías editarlo.</div>') + '</div>' +
+      '<input id="rpOtro" class="mcrI" type="email" placeholder="Otro correo (opcional)"></div>';
+  } else html += '<div class="mcrNota">Solo el dueño de la matriz puede cambiar los rangos protegidos.</div>';
+  var botones = [{ texto: 'Cerrar' }];
+  if (esDueno) botones.push({ texto: R0 ? 'Guardar' : '🛡 Proteger', ok: true, accion: function () {
+    var rango = document.getElementById('rpRango').value.trim().toUpperCase().replace(/\$/g, '');
+    if (!/^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(rango)) { aviso('Escribí un rango válido, ej. B2:B50'); return false; }
+    var modo = (document.querySelector('input[name="rpModo"]:checked') || {}).value || 'restringido';
+    var eds = [].map.call(document.querySelectorAll('.rpEd:checked'), function (x) { return x.value; });
+    var otro = document.getElementById('rpOtro').value.trim().toLowerCase();
+    if (otro) { if (!esCorreo(otro)) { aviso('El correo no es válido'); return false; } if (eds.indexOf(otro) === -1) eds.push(otro); }
+    snapshot();
+    var cw = colWidths[h] = colWidths[h] || {}; cw.rangosPersona = cw.rangosPersona || [];
+    var R = R0 || { id: 'rp' + Date.now().toString(36) };
+    R.rango = rango; R.desc = document.getElementById('rpDesc').value.trim(); R.modo = modo; R.editores = modo === 'aviso' ? [] : eds;
+    if (!R0) cw.rangosPersona.push(R);
+    autoSave(); renderAllCells(); aviso('🛡 ' + rango + ' protegido'); setTimeout(function () { abrirRangosPersona(); }, 50);
+  } });
+  abrirPanel('🛡 Rangos protegidos', html, botones);
+  document.querySelectorAll('#mcrPanelBody .fpBotones button').forEach(function (bt) {
+    bt.onclick = function () {
+      var i = parseInt(bt.dataset.i, 10);
+      if (bt.dataset.a === 'editar') { abrirRangosPersona(i); return; }
+      confirmarPro('¿Quitar la protección de ' + lista[i].rango + '?').then(function (ok) { if (!ok) return; snapshot(); lista.splice(i, 1); autoSave(); renderAllCells(); abrirRangosPersona(); });
+    };
+  });
+  var ajustar = function () { var m = (document.querySelector('input[name="rpModo"]:checked') || {}).value; var g = document.getElementById('rpGente'), o = document.getElementById('rpOtro'); if (g) g.style.display = m === 'aviso' ? 'none' : ''; if (o) o.style.display = m === 'aviso' ? 'none' : ''; };
+  document.querySelectorAll('input[name="rpModo"]').forEach(function (x) { x.onchange = ajustar; }); ajustar();
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (quinta tanda) · 3) Tareas asignadas: aviso automático
+// Al asignar un comentario (📌) la persona recibe notificación y correo; al
+// marcarlo ✅ hecho, le llega el aviso a quien lo asignó.
+// ══════════════════════════════════════════════
+function correoDePersona(t) {
+  t = String(t || '').trim().replace(/^@/, '');
+  if (esCorreo(t)) return t.toLowerCase();
+  var tl = t.toLowerCase();
+  var p = personasMencionables().filter(function (x) { return esCorreo(x) && x.toLowerCase().split('@')[0] === tl; })[0];
+  return p ? p.toLowerCase() : '';
+}
+function avisarPersona(para, titulo, cuerpo) {
+  para = String(para || '').toLowerCase();
+  if (!para || !currentUser || !firestoreDB || para === String(currentUser.email || '').toLowerCase()) return Promise.resolve(false);
+  var push = firestoreDB.collection('userDirectory').doc(para).get().then(function (d) {
+    var tokens = d.exists && Array.isArray(d.data().pushTokens) ? d.data().pushTokens : [];
+    if (!tokens.length) return false;
+    return fetchViaXHR(NOTIFICAR_CAMBIO_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tokens: tokens, titulo: titulo, cuerpo: cuerpo.split('\n')[0], datos: { matrizId: currentMatrizId || '' } }) }).then(function () { return true; });
+  }).catch(function () { return false; });
+  var correo = currentMatrizId ? currentUser.getIdToken().then(function (tk) {
+    return fetchViaXHR(AVISO_CORREO_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: tk, para: para, matrizId: currentMatrizId, asunto: titulo, texto: cuerpo }) }).then(function (r) { return r.ok !== false; });
+  }).catch(function () { return false; }) : Promise.resolve(false);
+  return Promise.all([push, correo]).then(function (x) { return x[0] || x[1]; });
+}
+(function () {
+  var btn = document.getElementById('noteSave');
+  btn.addEventListener('click', function () {
+    var id = document.getElementById('noteCellRef').textContent, hilo = hiloDeNotas(activeSheet, id), c = hilo[hilo.length - 1];
+    if (!c || !c.asignado || c.avisado) return;
+    var para = correoDePersona(c.asignado); if (!para) return;
+    c.avisado = true;
+    var ref = activeSheet + '!' + id, libro = currentMatrizName || 'Matriz Contable CR';
+    avisarPersona(para, '📌 Tarea nueva en ' + libro, (c.autor || 'Alguien') + ' te asignó una tarea en ' + ref + ':\n' + String(c.texto || '').slice(0, 400) + '\n\nAbrí la matriz y tocá la celda para verla.').then(function (ok) {
+      if (ok) { var s = document.getElementById('saveStatus'); if (s) s.textContent = '📌 Le avisamos a ' + para; }
+    });
+    autoSave();
+  });
+  // Marcar como hecha: le avisa a quien la asignó
+  document.getElementById('noteHilo').addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.noteTarea button'); if (!b) return;
+    var it = b.closest('.noteItem'); if (!it) return;
+    var id = document.getElementById('noteCellRef').textContent, c = hiloDeNotas(activeSheet, id)[parseInt(it.getAttribute('data-idx'), 10)];
+    if (!c || !c.hecho) return;
+    var para = correoDePersona(c.autor); if (!para) return;
+    avisarPersona(para, '✅ Tarea hecha', autorActual() + ' marcó como hecha la tarea de ' + activeSheet + '!' + id + ':\n' + String(c.texto || '').slice(0, 300));
+  });
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (quinta tanda) · 4) Explorar: preguntas sobre la tabla
+// En 💡 Analizar datos, además de los hallazgos, se le puede preguntar a
+// Sibö en palabras ("¿qué cliente compró más en octubre?").
+// ══════════════════════════════════════════════
+function tablaComoTextoParaIA(P, maxFilas) {
+  var filas = [], ant = cacheCalculo;
+  try {
+    cacheCalculo = {};
+    for (var r = P.r1; r <= Math.min(P.r2, P.r1 + (maxFilas || 300)); r++) {
+      var f = [];
+      for (var c = P.c1; c <= P.c2; c++) f.push(String(computeValue(cellId(r, c))).replace(/[\t\n]/g, ' '));
+      filas.push(f.join('\t'));
+    }
+  } finally { cacheCalculo = ant; }
+  var t = filas.join('\n');
+  return t.length > 14000 ? t.slice(0, 14000) + '\n…(recortado)' : t;
+}
+function preguntarSiboSobreTabla(P, pregunta, caja) {
+  caja.innerHTML = '<div class="ctsCargando">🤖 Sibö está revisando la tabla…</div>';
+  var msg = 'Respondé en español de Costa Rica, corto y directo (máximo 6 líneas), con los números exactos calculados a partir de esta tabla. No propongas acciones.\n' +
+    'Tabla ' + cellId(P.r1, P.c1) + ':' + cellId(P.r2, P.c2) + ' de la hoja "' + activeSheet + '" (separada por tabulaciones, la primera fila son los títulos):\n' + tablaComoTextoParaIA(P) + '\n\nPregunta: ' + pregunta;
+  fetchViaXHR(SIBO_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, history: [], sheetContext: '' }) })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var t = String((d && d.text) || '');
+      try { t = extraerAccionesSibo(t).texto || t; } catch (e) {}
+      if (!t.trim()) throw new Error('sin respuesta');
+      caja.innerHTML = '<div class="exRespuesta">' + escHtml(t.trim()).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') + '</div>';
+    })
+    .catch(function () { caja.innerHTML = '<div class="fpError">Sibö no respondió. Revisá la conexión y probá de nuevo.</div>'; });
+}
+(function () {
+  var analizarPrev = abrirAnalizarDatos;
+  abrirAnalizarDatos = function () {
+    var r = analizarPrev.apply(this, arguments);
+    try {
+      var body = document.getElementById('mcrPanelBody'), b0 = limitesDeSeleccionOCelda(); if (!body || !b0) return r;
+      var reg = (b0.minR === b0.maxR && b0.minC === b0.maxC) ? regionActualDeDatos(b0.minR, b0.minC) : b0;
+      if (!reg || reg.maxR <= reg.minR || !body.querySelector('.anCard')) return r;
+      var P = { r1: reg.minR, r2: reg.maxR, c1: reg.minC, c2: reg.maxC };
+      var box = document.createElement('div'); box.className = 'exPreguntar';
+      box.innerHTML = '<div class="ctsTit">🤖 Preguntale a Sibö sobre esta tabla</div>' +
+        '<div class="ctsIdeas">' + ['¿Cuál es el total por categoría?', '¿Cuál fue el mejor y el peor mes?', 'Resumí la tabla en 3 puntos'].map(function (t) { return '<button type="button">' + t + '</button>'; }).join('') + '</div>' +
+        '<div class="exFila"><input class="mcrI" id="exPregunta" placeholder="Ej. ¿Qué cliente debe más?"><button type="button" class="egAccion" id="exEnviar">Preguntar</button></div><div id="exResp"></div>' +
+        '<div class="mcrNota">Para responder, la tabla (hasta 300 filas) se envía a Sibö.</div>';
+      body.insertBefore(box, body.children[1] || null);
+      var enviar = function () { var q = document.getElementById('exPregunta').value.trim(); if (q) preguntarSiboSobreTabla(P, q, document.getElementById('exResp')); };
+      document.getElementById('exEnviar').onclick = enviar;
+      document.getElementById('exPregunta').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); enviar(); } };
+      box.querySelectorAll('.ctsIdeas button').forEach(function (bt) { bt.onclick = function () { document.getElementById('exPregunta').value = bt.textContent; enviar(); }; });
+    } catch (e) {}
+    return r;
+  };
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (quinta tanda) · 5) Versiones con nombre en la nube
+// Los respaldos de la nube (🕘 Versiones y backups) se pueden nombrar, como
+// "Cierre de octubre"; los que tienen nombre no se borran al limpiar los
+// viejos y se pueden ver solos.
+// ══════════════════════════════════════════════
+var backupsSoloNombre = false;
+function nombrarBackupNube(docId, actual) {
+  preguntarPro('Nombre de esta versión (ej. "Cierre de octubre"). Vacío para quitárselo:', actual || '').then(function (n) {
+    if (n === null || !currentMatrizId) return;
+    var v = String(n).trim();
+    firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').doc(docId).update({ nombre: v }).then(function () {
+      aviso(v ? '🏷 Versión nombrada "' + v + '"' : '🏷 Nombre quitado'); renderBackupList();
+    }).catch(function (e) { aviso('No se pudo guardar el nombre' + (e && e.code === 'permission-denied' ? ': no tenés permiso de edición' : '')); });
+  });
+}
+
+(function () {
+  var on = function (id, fn) { var b = document.getElementById(id); if (b) b.addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); fn(); }); };
+  on('btnVistasFiltro', abrirPanelVistasFiltro); on('btnRangosPersona', function () { abrirRangosPersona(); });
 })();
 
 // ══════════════════════════════════════════════
