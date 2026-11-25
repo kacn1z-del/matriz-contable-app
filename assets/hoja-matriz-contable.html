@@ -1727,6 +1727,29 @@ body.modoLectura #editBar, body.modoLectura .cresize, body.modoLectura .ftools {
 
 
 
+
+/* GOOGLE SHEETS (4) · IA, tabla con Sibö, selección múltiple, roles y avisos con condición */
+.ctsIdeas { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.ctsIdeas button { border: 1px solid #d1fae5; background: #f0fdf4; color: #166534; border-radius: 999px; padding: 5px 10px; font-size: 12px; }
+.ctsCargando { padding: 18px; text-align: center; color: #6b7280; }
+.ctsTit { font-weight: 700; margin: 10px 0 6px; }
+.ctsTabla { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+.ctsTabla th { background: #e2efda; padding: 6px 8px; text-align: left; white-space: nowrap; }
+.ctsTabla td { border-top: 1px solid #f1f5f9; padding: 5px 8px; white-space: nowrap; }
+.cell .chipsMulti { display: inline-flex; gap: 3px; max-width: 100%; overflow: hidden; vertical-align: middle; }
+.cell .chipsMulti .chipLista { flex: 0 0 auto; }
+#validPicker .vpOp .vpCheck { margin-right: 6px; font-size: 15px; }
+#validPicker .vpOp.vpMarcada { background: #f0fdf4; }
+#validPicker .vpListo { position: sticky; bottom: 0; background: #217346; color: #fff; text-align: center; font-weight: 700; padding: 9px; border-radius: 0 0 8px 8px; cursor: pointer; }
+#bandaRol { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 9400; background: #1f2937; color: #fff; border-radius: 999px; padding: 8px 14px; font: 600 13px -apple-system, system-ui, sans-serif; display: none; align-items: center; gap: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.25); white-space: nowrap; }
+#bandaRol.ver { display: flex; }
+#bandaRol button { border: 0; background: #34d399; color: #064e3b; border-radius: 999px; padding: 5px 10px; font-weight: 700; }
+.permFila { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+.permFila > div { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.permFila select { width: auto; flex: 0 0 auto; }
+.raNueva { border: 1px dashed #cbd5e1; border-radius: 12px; padding: 10px; margin-top: 10px; }
+.raNueva select, .raNueva input { margin-bottom: 6px; }
+.raCanal { display: flex; align-items: center; gap: 6px; font-size: 14px; padding: 4px 0; }
 /* GOOGLE SHEETS (3) · lugar, reacciones, vista agrupada, publicar, actividad, sugerencias de fórmula */
 .cell .chipLugar { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 1px 9px 1px 4px; border-radius: 999px; background: #fef2f2; color: #991b1b; font-size: 12px; font-weight: 600; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; vertical-align: middle; border: 1px solid #fecaca; }
 .cell .chipLugar b { font-size: 11px; }
@@ -2124,6 +2147,7 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
         <button id="btnEstadColumna" title="Resumen de la columna actual: datos, vacías, únicos, los más repetidos, suma, promedio y distribución (como en Google Sheets)">📊 Estadísticas de columna</button>
         <button id="btnCronograma" title="Ver las filas de una tabla como barras en una línea de tiempo (inicio → fin), agrupadas por persona o categoría">🗓 Vista de cronograma</button>
         <button id="btnFormularioPublico" title="Un link para que otras personas llenen un formulario sin cuenta; cada respuesta entra como fila nueva (como Google Forms)">📝 Formulario público</button>
+        <button id="btnTablaSibo" title="Describí lo que necesitás controlar y Sibö arma la hoja con títulos, fórmulas, listas y ejemplos">✨ Crear tabla con Sibö</button>
         <button id="btnVistaAgrupada" title="Juntar las filas de una tabla en grupos por una columna (Estado, Cliente…), con cantidad y subtotales; no cambia los datos">🗂 Vista agrupada</button>
         <button id="btnPublicarWeb" title="Un link de solo lectura de esta hoja o rango que se actualiza solo (como Publicar en la web de Google Sheets)">🌐 Publicar en la web</button>
         <button id="btnLimpiezaDatos" title="Encuentra espacios de más, números guardados como texto, fechas mezcladas, mayúsculas disparejas y filas repetidas, y los arregla con un toque">✨ Sugerencias de limpieza</button>
@@ -2206,6 +2230,8 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
         <button id="btnLeerEnter" title="Leer en voz alta cada dato al terminar de escribirlo, para comprobarlo sin mirar">🔊 Leer al escribir</button>
         <button id="btnAutocorreccion" title="Corrige al escribir: (c) → ©, -> → →, qeu → que, DOs MAyúsculas… con tu propia lista">✍ Autocorrección</button>
         <button id="btnHistorialCelda">🕓 Historial</button>
+        <button id="btnPermisos" title="Quién tiene acceso a esta matriz y con qué permiso: lector, comentarista o editor">👥 Personas y permisos</button>
+        <button id="btnReglasAviso" title="Avisos cuando una columna cambie a un valor, baje de un número o tenga filas nuevas (por notificación o correo)">🔔 Avisos con condición</button>
         <button id="btnActividad" title="Quién abrió y quién editó esta matriz compartida, y cuándo">📈 Panel de actividad</button>
         <button id="btnAvisosCambios" title="Recibir una notificación en el teléfono cuando otra persona cambie esta matriz">🔔 Avisos de cambios</button>
         <button id="btnCtrlCambios" title="Marca cada celda que se cambie para aceptar o rechazar los cambios después (como Control de cambios de Excel)">📝 Control de cambios</button>
@@ -2614,6 +2640,8 @@ html.modoFormulario body > :not(#formPublico) { display: none !important; }
     <button id="cmLimpieza">✨ Sugerencias de limpieza</button>
     <button id="cmVistaAgrupada">🗂 Vista agrupada</button>
     <button id="cmLinkCelda">🔗 Link a esta celda</button>
+    <button id="cmReIA">🔄 Volver a preguntar a la IA</button>
+    <button id="cmValoresCasilla">☑ Valores de la casilla</button>
     <button id="cmCombinar">⛶ Combinar/separar celdas</button>
     <button id="cmNota">📝 Nota</button>
     <button id="cmVoz">🎙 Nota de voz</button>
@@ -6976,6 +7004,11 @@ if((inner=matchFn('REGEXEXTRACCION|REGEXEXTRACT'))!==null){
         var m1=String(resolveArg(args[0])).match(new RegExp(String(resolveArg(args[1]))));
         return m1?m1[0]:'#N/A';
       }catch(e2){return '#VALOR!';}
+    }
+if((inner=matchFn('IA|AI'))!==null){
+      // =IA(instrucción; [celdas o rangos con los datos]) — responde Sibö
+      var aIA=splitArgs(inner);
+      return resultadoIA(String(resolveArg(aIA[0]||'')), valoresDeArgsSheets(aIA.slice(1)).join(' | '));
     }
 if((inner=matchFn('GOOGLEFINANCE'))!==null){
       // Solo monedas: "CURRENCY:USDCRC" usa el tipo de cambio del BCCR (venta)
@@ -12265,7 +12298,7 @@ function renderAllCellsInterno() {
     if (ctrl.tipo === 'numero' || ctrl.tipo === 'deslizante') { pintarControlNumerico(el, idCtrl, ctrl); return; }
     if (ctrl.tipo === 'estrellas') { pintarEstrellas(el, idCtrl, ctrl); return; }
     var valCtrl = String(computeValue(idCtrl)).toUpperCase();
-    var marcado = valCtrl === 'VERDADERO' || valCtrl === 'TRUE' || valCtrl === '1';
+    var marcado = ctrl.tipo === 'checkbox' && typeof esCasillaMarcada === 'function' ? esCasillaMarcada(ctrl, computeValue(idCtrl)) : (valCtrl === 'VERDADERO' || valCtrl === 'TRUE' || valCtrl === '1');
     var input = document.createElement('input');
     input.type = ctrl.tipo === 'radio' ? 'radio' : 'checkbox';
     if (ctrl.tipo === 'radio' && ctrl.grupo) input.name = 'radiogrupo_' + ctrl.grupo;
@@ -12287,7 +12320,7 @@ function renderAllCellsInterno() {
         });
         sheetData[activeSheet][idCtrl] = 'VERDADERO';
       } else {
-        sheetData[activeSheet][idCtrl] = input.checked ? 'VERDADERO' : 'FALSO';
+        sheetData[activeSheet][idCtrl] = input.checked ? (ctrl.valorSi || 'VERDADERO') : (ctrl.valorNo || 'FALSO');
       }
       marcarCeldaSucia(activeSheet, idCtrl);
       renderAllCells(); autoSave();
@@ -27192,7 +27225,8 @@ function celdasNoValidas() {
   var malas = [], listas = sheetValidations[activeSheet] || {}, reglas = reglasValidacionHoja(activeSheet), cacheAntes = cacheCalculo;
   Object.keys(listas).forEach(function (rg) {
     var l = opcionesDeLista(listas[rg] || [], activeSheet).map(function (x) { return String(x).toLowerCase(); });
-    condRangeToIds(rg).forEach(function (id) { var v = String(computeValue(id)); if (v !== '' && l.indexOf(v.toLowerCase()) === -1) malas.push(id); });
+    var multiRg = !!(((colWidths[activeSheet] || {}).listaMultiple || {})[rg]);
+    condRangeToIds(rg).forEach(function (id) { var v = String(computeValue(id)); if (v === '') return; var partes = multiRg ? partesMultiples(v) : [v]; if (partes.some(function (x) { return l.indexOf(x.toLowerCase()) === -1; })) malas.push(id); });
   });
   Object.keys(reglas).forEach(function (rg) {
     condRangeToIds(rg).forEach(function (id) { var v = computeValue(id); try { if (!cumpleReglaValidacion(reglas[rg], rg, id, v)) malas.push(id); } catch (e) {} });
@@ -34956,7 +34990,8 @@ var RB_MAPA = {};
   m('datos', 'btnDesdeImagen btnAnalizarDatos btnCombinar btnRelacionar');
   m('datos', 'btnEstadColumna btnLimpiezaDatos btnCronograma btnFormularioPublico');
   m('revisar', 'btnAvisosCambios btnActividad');
-  m('datos', 'btnVistaAgrupada btnPublicarWeb');
+  m('datos', 'btnVistaAgrupada btnPublicarWeb btnTablaSibo');
+  m('revisar', 'btnPermisos btnReglasAviso');
   m('datos', 'btnImportarWeb btnFormularioDatos btnTiposDatos btnConsultas btnActualizarConsultas btnRelaciones btnEsquemaAuto btnBorrarEsquema');
   m('contabilidad', 'btnCongelarFilas btnCongelarColumnas btnDescongelar btnWhatIf btnValidacionDatos btnFormatoCondicional btnTablaDinamica btnValidarHacienda btnExportXML btnPlantillas btnReportesCustom btnImportExtracto btnCrearProyecto btnListarProyectos btnConsolidar btnHistorialAportes btnAlertasCCSS btnValidarMontos btnCalcAportes btnExportNominaCCSS btnReporteCCSS btnValidarCCSS btnCargarPadron btnHistorial btnGSheets btnExportGS btnD105 btnImportCSV btnTrend btnProyec btnDedup btnBackup btnRestore btnExportPDF btnExportD104 btnDarkMode btnAlertas btnComparativo btnFlujo btnHistorico btnBalanceComp btnD104 btnRatios btnBusqueda btnFlujoCajaProyectado btnRoles btnXmlHacienda btnFlujoCaja btnPlantillas btnAlertas btnActivosFijos btnPlanillas btnCierreMes btnConciliar');
   m('favoritos', '');
@@ -38130,16 +38165,19 @@ function htmlChipLista(valor, color, conFlecha) {
   return '<span class="chipLista" style="background:' + tonoChip(color, 0.78) + ';color:' + tonoChip(color, -0.45) + '">' + esc(valor) + (conFlecha ? '<i>▾</i>' : '') + '</span>';
 }
 function pintarChipsLista() {
-  var cl = chipsListaHoja(activeSheet), vals = sheetValidations[activeSheet] || {};
-  Object.keys(cl).forEach(function (rango) {
+  var cl = chipsListaHoja(activeSheet), vals = sheetValidations[activeSheet] || {}, lm = (colWidths[activeSheet] || {}).listaMultiple || {};
+  var rangos = Object.keys(cl).concat(Object.keys(lm).filter(function (r) { return lm[r] && !cl[r]; }));
+  rangos.forEach(function (rango) {
     if (!vals[rango]) return;
-    var colores = cl[rango].colores || {}, ops = opcionesDeLista(vals[rango], activeSheet);
+    var colores = (cl[rango] || {}).colores || {}, ops = opcionesDeLista(vals[rango], activeSheet), multi = !!lm[rango];
     condRangeToIds(rango).forEach(function (id) {
       var el = document.getElementById('cell_' + id);
       if (!el || document.activeElement === el || el.classList.contains('has-control')) return;
       var v = String(computeValue(id));
       if (v === '') return;
-      var color = colores[v] || (ops.indexOf(v) === -1 ? '#9ca3af' : colorSugeridoChip(v, ops.indexOf(v)));
+      var colorDe = function (x) { return colores[x] || (ops.indexOf(x) === -1 ? '#9ca3af' : colorSugeridoChip(x, ops.indexOf(x))); };
+      if (multi) { el.innerHTML = '<span class="chipsMulti">' + partesMultiples(v).map(function (x) { return htmlChipLista(x, colorDe(x), false); }).join('') + '</span>'; return; }
+      var color = colorDe(v);
       el.innerHTML = htmlChipLista(v, color, false);
     });
   });
@@ -39162,6 +39200,12 @@ Object.assign(I18N_EN, {"🌐 Publicar en la web":"🌐 Publish to the web","�
 // ══════════════════════════════════════════════
 // GOOGLE SHEETS (tercera tanda) · nombres para el motor y la biblioteca fx
 // ══════════════════════════════════════════════
+['IA', 'AI'].forEach(function (n) { if (FN_MOTOR_NOMBRES.indexOf(n) === -1) FN_MOTOR_NOMBRES.push(n); });
+(function () {
+  var ag = function (cat, n, d, s, x) { if (fnData[cat] && !fnData[cat].some(function (f) { return f.n === n; })) fnData[cat].push({ n: n, e: n, d: d, s: s, x: x }); };
+  ag('Texto', 'IA', 'Le pide a Sibö que responda con los datos que le pasés (resumir, clasificar, sacar el sentimiento, extraer datos). La respuesta se guarda; clic derecho → "Volver a preguntar a la IA" para actualizarla.', 'IA(instrucción; [celdas o rangos])', '=IA("Clasificá este gasto en una categoría contable"; B2)');
+  ag('Texto', 'AI', 'Igual que IA (nombre en inglés, como en Google Sheets).', 'AI(prompt; [range])', '=AI("Summarize"; A2:A10)');
+})();
 ['GOOGLEFINANCE', 'IMPORTFEED', 'GOOGLETRANSLATE', 'COUNTUNIQUE', 'CONTAR.UNICOS', 'ISBETWEEN', 'FLATTEN', 'ARRAY_CONSTRAIN', 'JOIN', 'EPOCHTODATE', 'TO_DATE', 'TO_PERCENT', 'TO_DOLLARS', 'TO_TEXT', 'MARGINOFERROR'].forEach(function (n) { if (FN_MOTOR_NOMBRES.indexOf(n) === -1) FN_MOTOR_NOMBRES.push(n); });
 (function () {
   var ag = function (cat, n, d, s, x) { if (fnData[cat] && !fnData[cat].some(function (f) { return f.n === n; })) fnData[cat].push({ n: n, e: n, d: d, s: s, x: x }); };
@@ -39595,6 +39639,468 @@ function rangoNumericoVecino(id) {
     var t = setInterval(function () { if (!linkCeldaPendiente) { clearInterval(t); return; } if (currentUser && firestoreDB) { clearInterval(t); abrirLinkACeldaPendiente(); } }, 700);
     setTimeout(function () { if (linkCeldaPendiente && !currentUser) aviso('🔗 Iniciá sesión (👤) para abrir la matriz del link'); }, 4000);
   }
+})();
+
+Object.assign(I18N_EN, {"✨ Crear tabla con Sibö":"✨ Create table with Sibö","👥 Personas y permisos":"👥 People and permissions","🔔 Avisos con condición":"🔔 Conditional alerts","🔄 Volver a preguntar a la IA":"🔄 Ask the AI again","☑ Valores de la casilla":"☑ Checkbox values","Permitir elegir varias opciones (selección múltiple)":"Allow multiple selections","👁 Lector":"👁 Viewer","💬 Comentarista":"💬 Commenter","✏️ Editor":"✏️ Editor","Pensando…":"Thinking…"});
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (cuarta tanda) · 1) =IA(instrucción; [celdas…])
+// Como la nueva =AI() de Google Sheets: Sibö responde dentro de la celda.
+//   =IA("Clasificá este gasto: comida, transporte u oficina"; B2)
+// Las respuestas se guardan en el libro (colWidths[hoja].iaCache) para no
+// volver a preguntar lo mismo; "🔄 Volver a preguntar a la IA" las renueva.
+// ══════════════════════════════════════════════
+var colaIA = [], pidiendoIA = 0, erroresIA = {}, IA_MAX_SIMULTANEAS = 2;
+function claveIA(instr, ctx) {
+  var s = instr + '\u0001' + ctx, h = 5381;
+  for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+  return 'k' + h.toString(36) + s.length.toString(36);
+}
+function cacheIAHoja(h) { var cw = colWidths[h] = colWidths[h] || {}; return cw.iaCache || (cw.iaCache = {}); }
+function limpiarRespuestaIA(t) {
+  var x = String(t || '');
+  try { x = extraerAccionesSibo(x).texto || x; } catch (e) {}
+  x = x.replace(/```[\s\S]*?```/g, ' ').replace(/[*_`#>]/g, '').replace(/^\s*(respuesta|resultado)\s*:\s*/i, '').trim();
+  x = x.split(/\n+/).filter(function (l) { return l.trim(); })[0] || '';
+  x = x.replace(/^["“'«]+|["”'»]+$/g, '').trim();
+  return x.slice(0, 500);
+}
+function pedirIA(job) {
+  pidiendoIA++;
+  var msg = 'Respondé SOLO con el resultado final, en una sola línea corta, sin explicaciones, sin comillas y sin proponer acciones.\nInstrucción: ' + job.instr + (job.ctx ? '\nDatos: ' + job.ctx : '');
+  fetchViaXHR(SIBO_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, history: [], sheetContext: '' }) })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var t = limpiarRespuestaIA(data && data.text);
+      if (!t) throw new Error('sin respuesta');
+      cacheIAHoja(job.hoja)[job.clave] = t; delete erroresIA[job.clave];
+    })
+    .catch(function (e) { erroresIA[job.clave] = { msj: '#IA! ' + (navigator.onLine ? 'Sibö no respondió' : 'sin conexión'), ts: Date.now() }; })
+    .then(function () {
+      pidiendoIA--; job.enCola = false;
+      if (!colaIA.length && !pidiendoIA) { redibujarTrasImportar(); autoSave(); }
+      else if (colaIA.length % 5 === 0) redibujarTrasImportar();
+      siguienteIA();
+    });
+}
+function siguienteIA() { while (pidiendoIA < IA_MAX_SIMULTANEAS && colaIA.length) pedirIA(colaIA.shift()); }
+var pendientesIA = {};
+function resultadoIA(instr, ctx) {
+  var hoja = hojaFormulaActual || activeSheet, clave = claveIA(instr, ctx);
+  var pila = pilaEvaluacionFormulas, celda = pila.length ? pila[pila.length - 1] : '';
+  if (celda) ultimaClaveIAPorCelda[celda] = { hoja: hoja, clave: clave };
+  var c = cacheIAHoja(hoja);
+  if (Object.prototype.hasOwnProperty.call(c, clave)) return c[clave];
+  var err = erroresIA[clave];
+  if (err && Date.now() - err.ts < 60000) return err.msj;
+  if (!instr.trim()) return '#VALOR!';
+  if (!pendientesIA[clave] || !pendientesIA[clave].enCola && !pidiendoIA && !colaIA.length) {
+    if (colaIA.length >= 300) return '#IA! demasiadas a la vez';
+    var job = pendientesIA[clave] = { instr: instr, ctx: ctx, clave: clave, hoja: hoja, enCola: true };
+    colaIA.push(job); setTimeout(siguienteIA, 0);
+  }
+  return 'Pensando…';
+}
+var ultimaClaveIAPorCelda = {};
+function volverAPreguntarIA() {
+  var b = typeof currentRangeBounds === 'function' ? currentRangeBounds() : null, ids = [];
+  if (b) { for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) ids.push(cellId(r, c)); }
+  else ids.push(document.getElementById('cellRef').textContent);
+  var n = 0;
+  ids.forEach(function (id) {
+    var raw = String((sheetData[activeSheet] || {})[id] || '');
+    if (!/^=.*\b(IA|AI)\s*\(/i.test(raw)) return;
+    var k = ultimaClaveIAPorCelda[activeSheet + '!' + id];
+    if (k) { delete cacheIAHoja(k.hoja)[k.clave]; delete erroresIA[k.clave]; delete pendientesIA[k.clave]; n++; }
+  });
+  if (!n) { aviso('Seleccioná celdas con =IA(…) para volver a preguntar'); return; }
+  if (typeof cacheCalculo !== 'undefined') cacheCalculo = null;
+  renderAllCells(); aviso('🔄 Preguntando de nuevo a Sibö (' + n + ')');
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (cuarta tanda) · 2) ✨ Crear tabla con Sibö
+// Se describe lo que se necesita y Sibö arma la hoja: títulos, filas de
+// ejemplo, fórmulas, listas desplegables (con chips) y columnas de moneda.
+// ══════════════════════════════════════════════
+function abrirCrearTablaSibo() {
+  var html = '<div class="mcrNota">Contale a Sibö qué querés controlar y arma la tabla con títulos, fórmulas, listas y ejemplos.</div>' +
+    '<textarea id="ctsDesc" class="mcrI" rows="4" placeholder="Ej: control de pedidos de una panadería con cliente, producto, cantidad, precio, total y estado de pago"></textarea>' +
+    '<div class="ctsIdeas">' + ['Inventario de una pulpería con stock mínimo', 'Control de citas de un salón de belleza', 'Gastos del hogar por categoría', 'Cuentas por cobrar con fecha de vencimiento'].map(function (t) { return '<button type="button">' + t + '</button>'; }).join('') + '</div><div id="ctsVista"></div>';
+  abrirPanel('✨ Crear tabla con Sibö', html, [{ texto: 'Cancelar' }, { texto: '✨ Generar', ok: true, accion: function () { generarTablaSibo(); return false; } }]);
+  document.querySelectorAll('.ctsIdeas button').forEach(function (b) { b.onclick = function () { document.getElementById('ctsDesc').value = b.textContent; }; });
+}
+function generarTablaSibo() {
+  var desc = (document.getElementById('ctsDesc').value || '').trim();
+  if (!desc) { aviso('Escribí qué tabla necesitás'); return; }
+  var vista = document.getElementById('ctsVista');
+  vista.innerHTML = '<div class="ctsCargando">✨ Sibö está armando la tabla…</div>';
+  var msg = 'Armá una tabla para una hoja de cálculo en español de Costa Rica. Necesidad: ' + desc + '\n' +
+    'Respondé SOLO con un JSON válido (sin texto antes ni después, sin ```), con esta forma exacta:\n' +
+    '{"nombre":"NombreCorto","columnas":["Título1","Título2"],"filas":[["valor","=FORMULA en español con ; y referencias de fila 2"]],"listas":{"Título":["opción1","opción2"]},"monedas":["Título de columna en colones"],"fechas":["Título de columna de fecha"]}\n' +
+    'Reglas: 4 a 9 columnas; 5 filas de ejemplo realistas de Costa Rica (empiezan en la fila 2, la fila 1 son los títulos); fórmulas en español (SUMA, SI, PRODUCTO…) con ";" como separador y referencias relativas de su propia fila (ej. =C2*D2 en la fila 2, =C3*D3 en la fila 3); fechas en dd/mm/aaaa; montos sin símbolo ni separador de miles.';
+  fetchViaXHR(SIBO_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, history: [], sheetContext: '' }) })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var t = String((data && data.text) || ''), m = /\{[\s\S]*\}/.exec(t);
+      if (!m) throw new Error('Sibö no devolvió una tabla');
+      var T = JSON.parse(m[0]);
+      if (!Array.isArray(T.columnas) || !T.columnas.length) throw new Error('la tabla no trae columnas');
+      T.filas = (T.filas || []).filter(Array.isArray).slice(0, 30);
+      mostrarVistaTablaSibo(T);
+    })
+    .catch(function (e) { vista.innerHTML = '<div class="fpError">No se pudo: ' + escHtml((e && e.message) || e) + '. Probá de nuevo o describilo con otras palabras.</div>'; });
+}
+function mostrarVistaTablaSibo(T) {
+  var vista = document.getElementById('ctsVista'); if (!vista) return;
+  vista.innerHTML = '<div class="ctsTit">📄 ' + escHtml(T.nombre || 'Tabla') + '</div><div class="pubScroll"><table class="ctsTabla"><tr>' + T.columnas.map(function (c) { return '<th>' + escHtml(c) + '</th>'; }).join('') + '</tr>' +
+    T.filas.map(function (f) { return '<tr>' + T.columnas.map(function (_, i) { var v = f[i] === undefined ? '' : String(f[i]); return '<td>' + escHtml(v) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>' +
+    (T.listas && Object.keys(T.listas).length ? '<div class="mcrNota">Listas: ' + Object.keys(T.listas).map(function (k) { return '<b>' + escHtml(k) + '</b> (' + escHtml((T.listas[k] || []).join(', ')) + ')'; }).join(' · ') + '</div>' : '') +
+    '<button type="button" class="egAccion" id="ctsCrear">✅ Crear esta hoja</button>';
+  document.getElementById('ctsCrear').onclick = function () { crearHojaDeTablaSibo(T); cerrarPanel(); };
+}
+function crearHojaDeTablaSibo(T) {
+  snapshot();
+  var nom = String(T.nombre || 'Tabla').slice(0, 31).replace(/[\\\/?*\[\]:]/g, '') || 'Tabla', base = nom, k = 2;
+  while (sheets.indexOf(nom) !== -1) nom = base + ' (' + (k++) + ')';
+  crearHojaVaciaConNombre(nom);
+  var d = sheetData[nom], f = sheetFormats[nom], cw = colWidths[nom] = colWidths[nom] || {}, nCol = T.columnas.length, ultimaFila = 50;
+  T.columnas.forEach(function (c, i) { d[cellId(0, i)] = String(c); f[cellId(0, i)] = { bold: true, bgColor: '#e2efda', border: true }; cw[i] = Math.max(90, Math.min(220, String(c).length * 9 + 30)); });
+  T.filas.forEach(function (fila, r) { T.columnas.forEach(function (_, i) { var v = fila[i]; if (v !== undefined && v !== null && String(v) !== '') d[cellId(r + 1, i)] = String(v); }); });
+  var idx = function (titulo) { return T.columnas.map(function (x) { return String(x).toLowerCase(); }).indexOf(String(titulo).toLowerCase()); };
+  (T.monedas || []).forEach(function (t) { var i = idx(t); if (i < 0) return; for (var r = 1; r <= ultimaFila; r++) { var id = cellId(r, i); f[id] = Object.assign(f[id] || {}, { numFormat: { type: 'currency', decimals: 0, thousands: true } }); } });
+  sheetValidations[nom] = sheetValidations[nom] || {};
+  Object.keys(T.listas || {}).forEach(function (t) {
+    var i = idx(t), ops = (T.listas[t] || []).map(String).filter(Boolean); if (i < 0 || !ops.length) return;
+    var rango = cellId(1, i) + ':' + cellId(ultimaFila, i);
+    sheetValidations[nom][rango] = ops;
+    var col = {}; ops.forEach(function (o, j) { col[o] = colorSugeridoChip(o, j); });
+    chipsListaHoja(nom, true)[rango] = { colores: col };
+  });
+  activeSheet = nom; renderTabs(); buildTable(); renderAllCells(); autoSave();
+  aviso('✨ Hoja "' + nom + '" creada con ' + nCol + ' columnas');
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (cuarta tanda) · 3) Lista desplegable de selección múltiple
+// En ✅ Validación (lista): "Permitir elegir varias opciones". La celda queda
+// "Pan, Queque" y cada opción se ve como un chip.
+// ══════════════════════════════════════════════
+function rangoListaMultipleDeCelda(id, h) {
+  var lm = (colWidths[h || activeSheet] || {}).listaMultiple || {}, vals = sheetValidations[h || activeSheet] || {};
+  var ks = Object.keys(lm);
+  for (var i = 0; i < ks.length; i++) if (lm[ks[i]] && vals[ks[i]] && condRangeToIds(ks[i]).indexOf(id) !== -1) return ks[i];
+  return null;
+}
+function partesMultiples(v) { return String(v || '').split(/\s*,\s*/).map(function (x) { return x.trim(); }).filter(Boolean); }
+(function () {
+  // Opción en el panel de validación
+  var caja = document.getElementById('validBoxLista');
+  if (caja) {
+    var lbl = document.createElement('label');
+    lbl.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;color:#245f09;margin:4px 0 6px;';
+    lbl.innerHTML = '<input id="validMultiple" type="checkbox" style="width:auto;margin:0;"> Permitir elegir varias opciones (selección múltiple)';
+    var chipsBox = document.getElementById('validChips'); caja.insertBefore(lbl, chipsBox ? chipsBox.closest('div') : null);
+  }
+  document.getElementById('btnValidacion').addEventListener('click', function () {
+    setTimeout(function () { var r = (document.getElementById('validRange').value || '').trim().toUpperCase(); var m = document.getElementById('validMultiple'); if (m) m.checked = !!(((colWidths[activeSheet] || {}).listaMultiple || {})[r]); }, 10);
+  });
+  var pedido = null, btn = document.getElementById('validAddBtn');
+  btn.addEventListener('click', function () { var m = document.getElementById('validMultiple'); pedido = { rango: (document.getElementById('validRange').value || '').trim().toUpperCase(), multi: !!(m && m.checked), tipo: document.getElementById('validTipo').value }; }, true);
+  btn.addEventListener('click', function () {
+    if (!pedido) return; var p = pedido; pedido = null;
+    if (p.tipo !== 'lista' || !(sheetValidations[activeSheet] || {})[p.rango]) return;
+    var cw = colWidths[activeSheet] = colWidths[activeSheet] || {}; cw.listaMultiple = cw.listaMultiple || {};
+    if (p.multi) cw.listaMultiple[p.rango] = true; else delete cw.listaMultiple[p.rango];
+    renderAllCells(); autoSave();
+  });
+  // Elegir en la lista: con selección múltiple se marca/desmarca y la lista sigue abierta
+  var elegirOrig = elegirDeListaValidacion;
+  elegirDeListaValidacion = function (id, val) {
+    if (!rangoListaMultipleDeCelda(id)) return elegirOrig.apply(this, arguments);
+    var el = celdaEl(id); if (!el) return;
+    var actuales = partesMultiples(el.textContent).filter(function (x) { return getValidationListForCell(id).indexOf(x) !== -1; });
+    var k = actuales.indexOf(val); if (k === -1) actuales.push(val); else actuales.splice(k, 1);
+    el.textContent = actuales.join(', '); el.dataset.editado = '1';
+    document.getElementById('formulaInput').value = el.textContent;
+    showValidPicker(id, '');
+  };
+  // La lista muestra ✓ en las elegidas y un botón "Listo"
+  var showPrev = showValidPicker;
+  showValidPicker = function (id, filtro) {
+    var multi = rangoListaMultipleDeCelda(id);
+    if (multi && filtro && filtro.indexOf(',') !== -1) filtro = filtro.split(',').pop().trim();
+    if (multi && filtro && partesMultiples(filtro).length && getValidationListForCell(id) && getValidationListForCell(id).indexOf(filtro) !== -1) filtro = '';
+    showPrev(id, filtro);
+    if (!multi) return;
+    var box = document.getElementById('validPicker'), el = celdaEl(id), elegidas = partesMultiples(el ? el.textContent : getRaw(id));
+    box.querySelectorAll('div.vpOp').forEach(function (row) {
+      var v = row.getAttribute('data-v'), si = elegidas.indexOf(v) !== -1;
+      row.classList.toggle('vpMarcada', si);
+      var marca = document.createElement('span'); marca.className = 'vpCheck'; marca.textContent = si ? '☑' : '☐'; row.insertBefore(marca, row.firstChild);
+    });
+    var listo = document.createElement('div'); listo.className = 'vpListo'; listo.textContent = '✓ Listo (' + elegidas.length + ')';
+    listo.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      box.classList.remove('show', 'lista'); box.innerHTML = ''; box.removeAttribute('data-lista');
+      if (el) { snapshot(); commitCell(el); el.blur(); renderAllCells(); }
+    });
+    box.appendChild(listo);
+  };
+})();
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (cuarta tanda) · 4) Casillas con valores propios
+// Al marcar o desmarcar, la celda queda con el valor elegido (Sí/No,
+// Pagado/Pendiente, 1/0…) en vez de VERDADERO/FALSO.
+// ══════════════════════════════════════════════
+function abrirValoresCasilla() {
+  var b = typeof currentRangeBounds === 'function' ? currentRangeBounds() : null, ids = [];
+  if (b) { for (var r = b.minR; r <= b.maxR; r++) for (var c = b.minC; c <= b.maxC; c++) ids.push(cellId(r, c)); } else ids.push(document.getElementById('cellRef').textContent);
+  var ctrls = sheetControles[activeSheet] || {};
+  ids = ids.filter(function (id) { return ctrls[id] && ctrls[id].tipo === 'checkbox'; });
+  if (!ids.length) { aviso('Seleccioná celdas con casilla ☑ (se ponen con @ → Casilla)'); return; }
+  var c0 = ctrls[ids[0]], PRE = [['VERDADERO', 'FALSO'], ['Sí', 'No'], ['Pagado', 'Pendiente'], ['Listo', 'Pendiente'], ['1', '0'], ['✓', '✗']];
+  var html = '<div class="mcrNota">' + ids.length + ' casilla(s). Qué valor queda en la celda:</div>' +
+    '<div class="ctsIdeas">' + PRE.map(function (p, i) { return '<button type="button" data-i="' + i + '">' + p[0] + ' / ' + p[1] + '</button>'; }).join('') + '</div>' +
+    '<label class="mcrF">☑ Marcada</label><input id="vcSi" class="mcrI" value="' + escHtml(c0.valorSi || 'VERDADERO') + '">' +
+    '<label class="mcrF">☐ Sin marcar</label><input id="vcNo" class="mcrI" value="' + escHtml(c0.valorNo || 'FALSO') + '">';
+  abrirPanel('☑ Valores de la casilla', html, [{ texto: 'Cancelar' }, { texto: 'Aplicar', ok: true, accion: function () {
+    var si = document.getElementById('vcSi').value.trim() || 'VERDADERO', no = document.getElementById('vcNo').value.trim() || 'FALSO';
+    if (si === no) { aviso('Los dos valores tienen que ser distintos'); return false; }
+    snapshot();
+    ids.forEach(function (id) {
+      var ct = ctrls[id], antes = String(getRaw(id) || ''), marcado = esCasillaMarcada(ct, antes);
+      if (si === 'VERDADERO' && no === 'FALSO') { delete ct.valorSi; delete ct.valorNo; } else { ct.valorSi = si; ct.valorNo = no; }
+      sheetData[activeSheet][id] = marcado ? si : no; marcarCeldaSucia(activeSheet, id);
+    });
+    renderAllCells(); autoSave();
+  } }]);
+  document.querySelectorAll('.ctsIdeas button').forEach(function (bt) { bt.onclick = function () { var p = PRE[parseInt(bt.dataset.i, 10)]; document.getElementById('vcSi').value = p[0]; document.getElementById('vcNo').value = p[1]; }; });
+}
+function esCasillaMarcada(ctrl, valor) {
+  var v = String(valor == null ? '' : valor).trim();
+  if (ctrl && ctrl.valorSi) return v.toLowerCase() === String(ctrl.valorSi).toLowerCase();
+  var u = v.toUpperCase(); return u === 'VERDADERO' || u === 'TRUE' || u === '1';
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (cuarta tanda) · 5) Roles al compartir
+// Lector (solo ve), Comentarista (ve y comenta) o Editor. Se guarda en la
+// matriz (roles: { correo: rol }); el dueño es el único que los cambia.
+// ══════════════════════════════════════════════
+var rolActual = 'dueño', datosRolesMatriz = { ownerId: '', roles: {}, sharedWith: [], ownerEmail: '' };
+var NOMBRES_ROL = { lector: '👁 Lector', comentarista: '💬 Comentarista', editor: '✏️ Editor' };
+function calcularMiRol(obj) {
+  if (!obj || !obj.ownerId || !currentUser) return 'dueño';
+  if (obj.ownerId === currentUser.uid) return 'dueño';
+  var r = (obj.roles || {})[String(currentUser.email || '').toLowerCase()] || (obj.roles || {})[currentUser.email];
+  return r === 'lector' || r === 'comentarista' ? r : 'editor';
+}
+function aplicarRolActual() {
+  var banda = document.getElementById('bandaRol');
+  if (rolActual === 'lector' || rolActual === 'comentarista') {
+    if (!modoLectura) cambiarModoLectura(true);
+    if (!banda) { banda = document.createElement('div'); banda.id = 'bandaRol'; banda.setAttribute('data-no-i18n', ''); document.body.appendChild(banda); }
+    banda.innerHTML = (rolActual === 'lector' ? '👁 Solo podés ver esta matriz' : '💬 Podés ver y comentar') + (rolActual === 'comentarista' ? ' <button type="button" id="bandaRolComentar">💬 Comentar celda</button>' : '');
+    banda.classList.add('ver');
+    var bc = document.getElementById('bandaRolComentar'); if (bc) bc.onclick = function () { document.getElementById('btnNote').click(); };
+  } else if (banda) banda.classList.remove('ver');
+}
+(function () {
+  var cargarOrig = cargarEstadoDesdeObjeto;
+  cargarEstadoDesdeObjeto = function (obj) {
+    var r = cargarOrig.apply(this, arguments);
+    try {
+      var antes = rolActual;
+      datosRolesMatriz = { ownerId: (obj && obj.ownerId) || '', roles: (obj && obj.roles) || {}, sharedWith: (obj && obj.sharedWith) || [], ownerEmail: (obj && obj.ownerEmail) || '' };
+      rolActual = calcularMiRol(obj);
+      if (rolActual !== antes || rolActual === 'lector' || rolActual === 'comentarista') setTimeout(aplicarRolActual, 50);
+      if ((antes === 'lector' || antes === 'comentarista') && rolActual !== antes && modoLectura) cambiarModoLectura(false);
+    } catch (e) {}
+    return r;
+  };
+  // Con rol de lector no se sale de la vista de lectura
+  var cambiarOrig = cambiarModoLectura;
+  cambiarModoLectura = function (on) {
+    if (!on && (rolActual === 'lector' || rolActual === 'comentarista')) { aviso(rolActual === 'lector' ? '👁 Tenés permiso solo para ver esta matriz' : '💬 Podés comentar, pero no editar celdas'); return; }
+    return cambiarOrig.apply(this, arguments);
+  };
+  // Lector no guarda nada en la nube; comentarista solo guarda los comentarios
+  var guardarOrig = guardarMatrizEnNube;
+  guardarMatrizEnNube = function () {
+    if (rolActual === 'lector') return;
+    if (rolActual === 'comentarista') {
+      if (!currentUser || !currentMatrizId || applyingRemote) return;
+      var marca = Date.now(); ultimoUpdatedAtEnviado = marca; celdasPendientesSync = {};
+      firestoreDB.collection('matrices').doc(currentMatrizId).update({ sheetNotes: JSON.parse(JSON.stringify(sheetNotes)), updatedAt: marca }).then(function () {
+        setSyncStatus('online', '💬 ' + currentUser.email + ' · ' + currentMatrizName);
+      }, function () { setSyncStatus('error', 'No se pudo guardar el comentario'); });
+      return;
+    }
+    return guardarOrig.apply(this, arguments);
+  };
+  // Al compartir, el dueño elige el rol
+  var modal = document.getElementById('shareModal');
+  if (modal) {
+    var st = document.getElementById('shareStatus'), sel = document.createElement('div');
+    sel.innerHTML = '<span class="field-label">Permiso</span><select id="shareRol" style="width:100%;padding:9px;border-radius:9px;border:1px solid #cfe3c4;margin-bottom:8px;font-size:14px;"><option value="editor">✏️ Editor — puede cambiar todo</option><option value="comentarista">💬 Comentarista — ve y comenta</option><option value="lector">👁 Lector — solo ve</option></select>';
+    modal.insertBefore(sel, st);
+  }
+  document.getElementById('shareConfirmBtn').addEventListener('click', function () {
+    var email = document.getElementById('shareEmailInput').value.trim().toLowerCase(), rol = (document.getElementById('shareRol') || {}).value || 'editor', id = shareTargetId;
+    if (!email || !id || !currentUser) return;
+    // Después de agregarlo a "sharedWith" (lo hace el botón), el dueño anota el rol
+    setTimeout(function () {
+      firestoreDB.collection('matrices').doc(id).get().then(function (doc) {
+        if (!doc.exists || doc.data().ownerId !== currentUser.uid) return;
+        return firestoreDB.collection('matrices').doc(id).update(new firebase.firestore.FieldPath('roles', email), rol).then(function () {
+          var s = document.getElementById('shareStatus'); if (s && /Compartido/.test(s.textContent)) s.textContent += ' como ' + NOMBRES_ROL[rol].replace(/^\S+\s/, '');
+        });
+      }).catch(function () {});
+    }, 1500);
+  });
+})();
+function abrirPermisos() {
+  if (!currentUser || !currentMatrizId) { aviso('Los permisos son para matrices de la nube (📁 Mis Matrices)'); return; }
+  firestoreDB.collection('matrices').doc(currentMatrizId).get().then(function (doc) {
+    var d = doc.data() || {}, esDueno = d.ownerId === currentUser.uid, roles = d.roles || {};
+    var gente = (d.sharedWith || []).filter(function (x, i, a) { return x && a.indexOf(x) === i; });
+    var html = '<div class="mcrNota">Dueño: <b>' + escHtml(d.ownerEmail || '—') + '</b>' + (esDueno ? ' (vos)' : '') + '. Tu permiso: <b>' + (esDueno ? '👑 Dueño' : NOMBRES_ROL[calcularMiRol(d)]) + '</b>.</div>' +
+      (gente.length ? gente.map(function (em) {
+        var r = roles[em] || 'editor';
+        return '<div class="permFila"><div><b>' + escHtml(em) + '</b></div>' + (esDueno ? '<select class="mcrI permRol" data-em="' + escHtml(em) + '">' + Object.keys(NOMBRES_ROL).map(function (k) { return '<option value="' + k + '"' + (k === r ? ' selected' : '') + '>' + NOMBRES_ROL[k] + '</option>'; }).join('') + '<option value="quitar">🚫 Quitar acceso</option></select>' : '<span>' + NOMBRES_ROL[r] + '</span>') + '</div>';
+      }).join('') : '<div class="mcrNota">Todavía no la compartiste con nadie (📁 Mis Matrices → 🔗 Compartir).</div>');
+    abrirPanel('👥 Personas y permisos', html, esDueno && gente.length ? [{ texto: 'Cerrar' }, { texto: 'Guardar', ok: true, accion: function () {
+      var cambios = [], quitar = [];
+      document.querySelectorAll('.permRol').forEach(function (s) { var em = s.dataset.em; if (s.value === 'quitar') quitar.push(em); else if ((roles[em] || 'editor') !== s.value) cambios.push([em, s.value]); });
+      var ref = firestoreDB.collection('matrices').doc(currentMatrizId), ps = [];
+      cambios.forEach(function (c) { ps.push(ref.update(new firebase.firestore.FieldPath('roles', c[0]), c[1])); });
+      if (quitar.length) ps.push(ref.update({ sharedWith: firebase.firestore.FieldValue.arrayRemove.apply(null, quitar) }));
+      Promise.all(ps).then(function () { aviso('👥 Permisos guardados'); }, function (e) { aviso('No se pudo guardar: ' + ((e && e.message) || e)); });
+    } }] : [{ texto: 'Cerrar', ok: true }]);
+  }).catch(function (e) { aviso('No se pudo abrir: ' + ((e && e.message) || e)); });
+}
+
+// ══════════════════════════════════════════════
+// GOOGLE SHEETS (cuarta tanda) · 6) Avisos con condición
+// Reglas por hoja: "cuando la columna Estado cambie a Vencido", "cuando
+// Stock sea menor que 5", "cuando se agregue una fila" o "cualquier cambio
+// en la columna". Las revisa el teléfono de quien hace el cambio y avisa por
+// notificación y/o correo (agrupando lo que pase en medio minuto).
+// ══════════════════════════════════════════════
+var AVISO_CORREO_URL = 'https://matriz-contable-app.vercel.app/api/enviar-aviso';
+var TIPOS_REGLA_AVISO = { igual: 'cambie a', contiene: 'contenga', menor: 'sea menor que', mayor: 'sea mayor que', fila: 'tenga una fila nueva', cambio: 'cambie (cualquier valor)' };
+var fotosReglas = {}, avisosPendientes = {}, avisoReglasTimer = null;
+function reglasAvisoHoja(h) { return ((colWidths[h] || {}).reglasAviso) || []; }
+function valoresColumnaRegla(h, regla) {
+  var d = sheetData[h] || {}, maxR = 0, out = {};
+  Object.keys(d).forEach(function (id) { if (colDe(id) === regla.col) maxR = Math.max(maxR, filaDe(id)); });
+  var ant = hojaFormulaActual, antA = activeSheet;
+  try { activeSheet = h; hojaFormulaActual = h; for (var r = (regla.desde || 1); r <= Math.min(maxR, 5000); r++) out[r] = String(computeValue(cellId(r, regla.col))); }
+  finally { activeSheet = antA; hojaFormulaActual = ant; }
+  return out;
+}
+function cumpleCondicionAviso(regla, v) {
+  var t = String(v == null ? '' : v).trim(), x = String(regla.valor == null ? '' : regla.valor).trim();
+  if (regla.tipo === 'igual') return t.toLowerCase() === x.toLowerCase();
+  if (regla.tipo === 'contiene') return x !== '' && t.toLowerCase().indexOf(x.toLowerCase()) !== -1;
+  if (regla.tipo === 'menor' || regla.tipo === 'mayor') { var n = tiparValorConsulta(t), m = parseFloat(String(x).replace(',', '.')); if (typeof n !== 'number' || isNaN(m)) return false; return regla.tipo === 'menor' ? n < m : n > m; }
+  return t !== '';
+}
+function revisarReglasAviso() {
+  sheets.forEach(function (h) {
+    reglasAvisoHoja(h).forEach(function (regla) {
+      if (regla.pausada) return;
+      var actual = valoresColumnaRegla(h, regla), previa = fotosReglas[regla.id];
+      fotosReglas[regla.id] = actual;
+      if (!previa) return; // la primera vez solo se toma la foto
+      Object.keys(actual).forEach(function (r) {
+        var antes = previa[r] === undefined ? '' : previa[r], ahora = actual[r];
+        if (antes === ahora) return;
+        var dispara = regla.tipo === 'fila' ? (antes.trim() === '' && ahora.trim() !== '') : regla.tipo === 'cambio' ? true : (cumpleCondicionAviso(regla, ahora) && !cumpleCondicionAviso(regla, antes));
+        if (!dispara) return;
+        var ref = regla.colRef !== undefined && regla.colRef !== '' && regla.colRef !== null ? String(computeValueEnHoja(h, cellId(+r, regla.colRef))) : '';
+        (avisosPendientes[regla.id] = avisosPendientes[regla.id] || { regla: regla, hoja: h, filas: [] }).filas.push({ fila: +r + 1, valor: ahora, antes: antes, ref: ref });
+      });
+    });
+  });
+  if (Object.keys(avisosPendientes).length) { clearTimeout(avisoReglasTimer); avisoReglasTimer = setTimeout(enviarAvisosReglas, 30000); }
+}
+function textoAvisoRegla(p) {
+  var R = p.regla, n = p.filas.length;
+  var titulo = '🔔 ' + (R.nombre || (R.colNombre + ' ' + TIPOS_REGLA_AVISO[R.tipo] + (R.tipo === 'fila' || R.tipo === 'cambio' ? '' : ' ' + R.valor)));
+  var detalle = p.filas.slice(0, 5).map(function (f) { return 'Fila ' + f.fila + (f.ref ? ' (' + f.ref + ')' : '') + ': ' + (R.tipo === 'cambio' ? (f.antes || '(vacío)') + ' → ' : '') + (f.valor || '(vacío)'); }).join('\n');
+  return { titulo: titulo, cuerpo: (currentMatrizName ? currentMatrizName + ' · ' : '') + p.hoja + ' — ' + n + ' fila' + (n === 1 ? '' : 's') + '\n' + detalle + (n > 5 ? '\n…y ' + (n - 5) + ' más' : '') };
+}
+function enviarAvisosReglas() {
+  var lote = avisosPendientes; avisosPendientes = {};
+  Object.keys(lote).forEach(function (k) {
+    var p = lote[k], R = p.regla, txt = textoAvisoRegla(p), para = String(R.para || '').toLowerCase();
+    if (!para) return;
+    if (R.push !== false && firestoreDB) {
+      firestoreDB.collection('userDirectory').doc(para).get().then(function (d) {
+        var tokens = d.exists && Array.isArray(d.data().pushTokens) ? d.data().pushTokens : [];
+        if (!tokens.length) return;
+        return fetchViaXHR(NOTIFICAR_CAMBIO_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tokens: tokens, titulo: txt.titulo, cuerpo: txt.cuerpo.split('\n').slice(0, 2).join(' · '), datos: { matrizId: currentMatrizId || '' } }) });
+      }).catch(function () {});
+    }
+    if (R.correo && currentUser) {
+      currentUser.getIdToken().then(function (tk) {
+        return fetchViaXHR(AVISO_CORREO_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: tk, para: para, matrizId: currentMatrizId || '', asunto: txt.titulo.replace(/^🔔\s*/, '🔔 Aviso: '), texto: txt.cuerpo }) });
+      }).catch(function () {});
+    }
+  });
+}
+(function () {
+  var orig = autoSave;
+  autoSave = function () { var r = orig.apply(this, arguments); try { if (!applyingRemote && sheets.some(function (h) { return reglasAvisoHoja(h).length; })) revisarReglasAviso(); } catch (e) {} return r; };
+  // Foto inicial al abrir un libro (así no avisa de lo que ya estaba)
+  var cargarPrev = cargarEstadoDesdeObjeto;
+  cargarEstadoDesdeObjeto = function () { var r = cargarPrev.apply(this, arguments); try { fotosReglas = {}; sheets.forEach(function (h) { reglasAvisoHoja(h).forEach(function (R) { fotosReglas[R.id] = valoresColumnaRegla(h, R); }); }); } catch (e) {} return r; };
+})();
+function abrirReglasAviso() {
+  var reglas = reglasAvisoHoja(activeSheet), T = tablaParaCronograma();
+  var cols = T ? T.titulos : [{ c: 0, t: 'A' }], z = T ? T.z : { r1: 0 };
+  var miCorreo = currentUser ? currentUser.email : '';
+  var opCol = function (sel, conNinguna) { return (conNinguna ? '<option value="">— Ninguna —</option>' : '') + cols.map(function (x) { return '<option value="' + x.c + '"' + (String(sel) === String(x.c) ? ' selected' : '') + '>' + colLetter(x.c) + ' · ' + escHtml(x.t) + '</option>'; }).join(''); };
+  var html = (reglas.length ? '<div class="mcrNota">Reglas de "' + escHtml(activeSheet) + '":</div>' + reglas.map(function (R, i) {
+      return '<div class="fpItem"><div><b>' + escHtml(R.colNombre) + ' ' + TIPOS_REGLA_AVISO[R.tipo] + (R.tipo === 'fila' || R.tipo === 'cambio' ? '' : ' "' + escHtml(R.valor) + '"') + '</b><br><small>Avisa a ' + escHtml(R.para) + ' por ' + [R.push !== false ? '📱 notificación' : '', R.correo ? '✉ correo' : ''].filter(Boolean).join(' y ') + (R.pausada ? ' · ⏸ pausada' : '') + '</small></div><div class="fpBotones"><button type="button" data-a="pausa" data-i="' + i + '">' + (R.pausada ? '▶ Activar' : '⏸ Pausar') + '</button><button type="button" data-a="borrar" data-i="' + i + '">🗑</button></div></div>';
+    }).join('') : '<div class="mcrNota">Te avisa cuando pase algo en esta hoja, aunque lo cambie otra persona.</div>') +
+    '<div class="raNueva"><b>➕ Nueva regla</b>' +
+    '<label class="mcrF">Cuando la columna</label><select id="raCol" class="mcrI">' + opCol(cols[0] && cols[0].c) + '</select>' +
+    '<select id="raTipo" class="mcrI">' + Object.keys(TIPOS_REGLA_AVISO).map(function (k) { return '<option value="' + k + '">' + TIPOS_REGLA_AVISO[k] + '</option>'; }).join('') + '</select>' +
+    '<input id="raValor" class="mcrI" placeholder="Valor (ej. Vencido o 5)">' +
+    '<label class="mcrF">En el aviso, mostrar también (opcional)</label><select id="raRef" class="mcrI">' + opCol('', true) + '</select>' +
+    '<label class="mcrF">Avisar a</label><input id="raPara" class="mcrI" type="email" value="' + escHtml(miCorreo) + '">' +
+    '<label class="raCanal"><input type="checkbox" id="raPush" checked> 📱 Notificación en la app</label><label class="raCanal"><input type="checkbox" id="raCorreo"> ✉ Correo</label></div>';
+  abrirPanel('🔔 Avisos con condición', html, [{ texto: 'Cerrar' }, { texto: '➕ Agregar regla', ok: true, accion: function () {
+    if (!currentUser) { aviso('Iniciá sesión para recibir avisos'); return false; }
+    var col = parseInt(document.getElementById('raCol').value, 10), tipo = document.getElementById('raTipo').value, valor = document.getElementById('raValor').value.trim();
+    var para = document.getElementById('raPara').value.trim().toLowerCase();
+    if ((tipo === 'igual' || tipo === 'contiene' || tipo === 'menor' || tipo === 'mayor') && !valor) { aviso('Escribí el valor de la condición'); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(para)) { aviso('Escribí un correo válido'); return false; }
+    var refV = document.getElementById('raRef').value;
+    var R = { id: 'r' + Date.now().toString(36), col: col, colNombre: (cols.filter(function (x) { return x.c === col; })[0] || {}).t || colLetter(col), tipo: tipo, valor: valor, para: para, push: document.getElementById('raPush').checked, correo: document.getElementById('raCorreo').checked, desde: z.r1 + 1, colRef: refV === '' ? '' : parseInt(refV, 10), creador: currentUser.email };
+    if (!R.push && !R.correo) { aviso('Elegí notificación, correo o los dos'); return false; }
+    var cw = colWidths[activeSheet] = colWidths[activeSheet] || {}; (cw.reglasAviso = cw.reglasAviso || []).push(R);
+    fotosReglas[R.id] = valoresColumnaRegla(activeSheet, R);
+    autoSave(); aviso('🔔 Regla guardada'); setTimeout(abrirReglasAviso, 50);
+  } }]);
+  var tipoSel = document.getElementById('raTipo'), val = document.getElementById('raValor');
+  var ajustar = function () { val.style.display = tipoSel.value === 'fila' || tipoSel.value === 'cambio' ? 'none' : ''; };
+  tipoSel.onchange = ajustar; ajustar();
+  document.querySelectorAll('#mcrPanelBody .fpBotones button').forEach(function (b) {
+    b.onclick = function () {
+      var lista = reglasAvisoHoja(activeSheet), i = parseInt(b.dataset.i, 10);
+      if (b.dataset.a === 'borrar') lista.splice(i, 1); else lista[i].pausada = !lista[i].pausada;
+      autoSave(); abrirReglasAviso();
+    };
+  });
+}
+(function () {
+  var on = function (id, fn) { var b = document.getElementById(id); if (b) b.addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); fn(); }); };
+  on('btnTablaSibo', abrirCrearTablaSibo); on('btnPermisos', abrirPermisos); on('btnReglasAviso', abrirReglasAviso);
+  on('cmReIA', volverAPreguntarIA); on('cmValoresCasilla', abrirValoresCasilla);
 })();
 
 // ══════════════════════════════════════════════
