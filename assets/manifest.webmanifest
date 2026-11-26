@@ -1,0 +1,63 @@
+{
+  "id": "./hoja-matriz-contable.html",
+  "name": "Matriz Contable CR",
+  "short_name": "Matriz Contable",
+  "description": "Hoja de cálculo con contabilidad de Costa Rica: factura electrónica de Hacienda, planilla CCSS e ISR, IVA, D-101, estados financieros y el asistente Sibö.",
+  "lang": "es-CR",
+  "dir": "ltr",
+  "start_url": "./hoja-matriz-contable.html?origen=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f7f3",
+  "theme_color": "#1f7a44",
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "pwa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "pwa/pantalla-escritorio.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Libro diario con fórmulas y formato"
+    },
+    {
+      "src": "pwa/pantalla-escritorio-2.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Resumen con gráfico"
+    },
+    {
+      "src": "pwa/pantalla-celular.png",
+      "sizes": "1170x1992",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "En el celular"
+    }
+  ],
+  "prefer_related_applications": false
+}
