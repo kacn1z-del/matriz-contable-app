@@ -3,6 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!-- App instalable (Edge, Chrome, Microsoft Store): manifiesto, íconos y color -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#1f7a44" />
+<link rel="icon" type="image/png" sizes="48x48" href="pwa/favicon-48.png" />
+<link rel="apple-touch-icon" href="pwa/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Matriz Contable" />
+<meta name="application-name" content="Matriz Contable CR" />
+<script>
+  // Service worker: solo en la web publicada (https). En la app del teléfono y
+  // al abrir el archivo suelto no se usa.
+  (function () {
+    if (!('serviceWorker' in navigator) || (location.protocol !== 'https:' && location.hostname !== 'localhost') || window.ReactNativeWebView) return;
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function (e) { console.log('Service worker:', e && e.message); });
+    });
+  })();
+</script>
 <script>
   // Manejador de errores visible en pantalla, para poder diagnosticar
   // sin necesidad de conectar el teléfono a una computadora. Si algo
@@ -1799,6 +1816,23 @@ body.modoLectura #editBar, body.modoLectura .cresize, body.modoLectura .ftools {
 
 
 
+
+/* PLANES · prueba de 1 mes y Pro */
+#chipPlan { border: 0; border-radius: 999px; padding: 0 9px; line-height: 18px; font: 700 11.5px/18px -apple-system, system-ui, sans-serif; cursor: pointer; white-space: nowrap; flex: 0 0 auto; }
+#chipPlan.prueba { background: #ecfccb; color: #3f6212; }
+#chipPlan.pruebaFin { background: #fef3c7; color: #92400e; }
+#chipPlan.pro { background: linear-gradient(90deg, #fde68a, #facc15); color: #713f12; }
+#chipPlan.basico { background: #e0e7ff; color: #3730a3; }
+.plMotivo { background: #fef3c7; color: #78350f; border-radius: 10px; padding: 9px 11px; margin-bottom: 8px; font-size: 14px; }
+.plEstado { border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; font-size: 14px; line-height: 1.45; }
+.plEstado.prueba { background: #ecfccb; color: #365314; }
+.plEstado.pro { background: #fef9c3; color: #713f12; }
+.plEstado.basico { background: #eef2ff; color: #312e81; }
+.plTit { font-weight: 800; font-size: 16px; margin: 6px 0 4px; }
+.plLista { margin: 4px 0 8px; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.ap_pro { color: #a16207; font-weight: 700; }
+.ap_prueba { color: #4d7c0f; }
+.ap_basico { color: #6b7280; }
 /* GOOGLE SHEETS (5) · vistas de filtro, rangos protegidos por persona, preguntas a Sibö */
 #bandaVistaFiltro { position: fixed; top: calc(8px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 9300; background: #374151; color: #fff; border-radius: 999px; padding: 6px 8px 6px 14px; font: 600 13px -apple-system, system-ui, sans-serif; display: none; align-items: center; gap: 6px; box-shadow: 0 6px 18px rgba(0,0,0,.25); max-width: 92vw; }
 #bandaVistaFiltro.ver { display: flex; }
@@ -41785,6 +41819,190 @@ function revisarHojaPorPartes(hoja, alTerminar) {
     renderHistorialCelda = function () { flushHistorialLocal(); return histPrev.apply(this, arguments); };
   }
 })();
+
+Object.assign(I18N_EN, {"⭐ Planes de Matriz Contable CR":"⭐ Matriz Contable CR plans","💳 Pagar con tarjeta":"💳 Pay by card","🔄 Ya pagué":"🔄 I already paid","🎁 Crear cuenta gratis":"🎁 Create free account","👑 Clientes y planes":"👑 Customers and plans"});
+// ══════════════════════════════════════════════
+// PLANES · prueba de 1 mes y plan Pro
+// Cada cuenta nueva tiene 30 días de Pro gratis. Después, las funciones Pro
+// (Factura Electrónica, Sibö/IA, colaboración en la nube, publicar) piden el
+// plan; la hoja, las fórmulas, los gráficos y las plantillas siguen gratis.
+// El estado vive en Firestore: planes/{uid} = { email, inicioPrueba, pagadoHasta }.
+// Solo el administrador puede cambiar pagadoHasta (lo cuidan las rules).
+// ══════════════════════════════════════════════
+var PLAN_PRECIO = '$21 USD al mes';
+var PLAN_DIAS_PRUEBA = 30;
+var PLAN_URL_PAGO = 'https://kenychinchilla.com/matriz-contable/pagar/';
+var PLAN_ADMINS = ['kchinchilla.pos@gmail.com'];
+var PLAN_FUNCIONES = [
+  { nombre: '🧾 Factura Electrónica de Hacienda', ids: ['btnFactura', 'btnValidarHacienda', 'btnExportXML'] },
+  { nombre: '✦ Sibö y las funciones con IA (=IA, Crear tabla con Sibö, preguntas en Explorar)', ids: ['btnSibo', 'btnTablaSibo'] },
+  { nombre: '🤝 Trabajo en equipo: compartir, permisos, rangos protegidos, avisos y actividad', ids: ['btnPermisos', 'btnReglasAviso', 'btnRangosPersona', 'btnActividad'] },
+  { nombre: '🌐 Publicar en la web y formularios públicos', ids: ['btnPublicarWeb', 'btnFormularioPublico'] },
+  { nombre: '🏛 Datos de Hacienda vinculados (cédulas, padrón)', ids: ['btnTiposDatos', 'btnPadronHacienda'] }
+];
+var planActual = { estado: 'cargando', dias: 0, hasta: null };
+var planDoc = null, planEscucha = null;
+
+function enAppDeTienda() { return !!window.ReactNativeWebView; }
+function esAdminPlanes() { return !!(currentUser && PLAN_ADMINS.indexOf(String(currentUser.email || '').toLowerCase()) !== -1); }
+function fechaDeCampo(x) { if (!x) return null; if (x.toDate) return x.toDate(); var d = new Date(x); return isNaN(d) ? null : d; }
+
+function calcularPlan(doc) {
+  if (window.__PLAN_PRUEBAS__) return { estado: window.__PLAN_PRUEBAS__, dias: 30, hasta: new Date(Date.now() + 30 * 86400000) };
+  if (!currentUser) return { estado: 'sinCuenta', dias: 0, hasta: null };
+  if (esAdminPlanes()) return { estado: 'pro', dias: 0, hasta: null, admin: true };
+  if (!doc) return { estado: 'cargando', dias: 0, hasta: null };
+  var ahora = Date.now(), pagado = fechaDeCampo(doc.pagadoHasta), inicio = fechaDeCampo(doc.inicioPrueba) || new Date();
+  if (pagado && pagado.getTime() > ahora) return { estado: 'pro', dias: Math.ceil((pagado.getTime() - ahora) / 86400000), hasta: pagado };
+  var finPrueba = inicio.getTime() + PLAN_DIAS_PRUEBA * 86400000;
+  if (ahora < finPrueba) return { estado: 'prueba', dias: Math.ceil((finPrueba - ahora) / 86400000), hasta: new Date(finPrueba) };
+  return { estado: 'basico', dias: 0, hasta: pagado || new Date(finPrueba) };
+}
+function tienePro() { return planActual.estado === 'pro' || planActual.estado === 'prueba' || planActual.estado === 'cargando'; }
+
+function cargarPlan() {
+  if (planEscucha) { planEscucha(); planEscucha = null; }
+  planDoc = null;
+  if (!currentUser || !firestoreDB) { planActual = calcularPlan(null); pintarChipPlan(); return; }
+  var uid = currentUser.uid, ref = firestoreDB.collection('planes').doc(uid);
+  // Lo último que se supo, por si no hay internet
+  try { var c = JSON.parse(localStorage.getItem('mcr_plan_' + uid) || 'null'); if (c) { planDoc = c; planActual = calcularPlan(c); pintarChipPlan(); } } catch (e) {}
+  planEscucha = ref.onSnapshot(function (snap) {
+    if (!snap.exists) {
+      // Primera vez: arranca la prueba (la hora la pone el servidor, no el teléfono)
+      ref.set({ email: String(currentUser.email || '').toLowerCase(), inicioPrueba: firebase.firestore.FieldValue.serverTimestamp() })
+        .catch(function (e) { console.log('No se pudo iniciar la prueba:', e && e.message); });
+      return;
+    }
+    var d = snap.data() || {};
+    if (!d.inicioPrueba) return; // la hora del servidor todavía viene en camino
+    planDoc = { inicioPrueba: fechaDeCampo(d.inicioPrueba).toISOString(), pagadoHasta: d.pagadoHasta ? fechaDeCampo(d.pagadoHasta).toISOString() : null };
+    try { localStorage.setItem('mcr_plan_' + uid, JSON.stringify(planDoc)); } catch (e) {}
+    var antes = planActual.estado;
+    planActual = calcularPlan(planDoc);
+    pintarChipPlan();
+    if (antes === 'basico' && planActual.estado === 'pro') aviso('⭐ ¡Listo! Tu plan Pro está activo');
+  }, function (e) { console.log('Plan:', e && e.message); });
+}
+
+function pintarChipPlan() {
+  var chip = document.getElementById('chipPlan');
+  if (!chip) {
+    var barra = document.getElementById('statusBar'); if (!barra) return;
+    chip = document.createElement('button'); chip.id = 'chipPlan'; chip.type = 'button';
+    chip.addEventListener('click', function () { abrirPlanes(); });
+    barra.insertBefore(chip, barra.children[2] || null);
+  }
+  var p = planActual, txt = '', cls = '';
+  if (p.estado === 'cargando') { chip.style.display = 'none'; return; }
+  if (p.estado === 'sinCuenta') { txt = '🎁 1 mes Pro gratis'; cls = 'prueba'; }
+  else if (p.admin) { txt = '👑 Admin'; cls = 'pro'; }
+  else if (p.estado === 'pro') { txt = '⭐ Pro'; cls = 'pro'; }
+  else if (p.estado === 'prueba') { txt = '🎁 Prueba Pro · ' + p.dias + (p.dias === 1 ? ' día' : ' días'); cls = p.dias <= 5 ? 'pruebaFin' : 'prueba'; }
+  else { txt = 'Básico · ⭐ Pro'; cls = 'basico'; }
+  chip.textContent = txt; chip.className = cls; chip.style.display = '';
+}
+
+// Ventana de planes: qué incluye Pro, cuánto queda y cómo pagar
+function abrirPlanes(motivo) {
+  var p = planActual, enTienda = enAppDeTienda(), html = '';
+  if (motivo) html += '<div class="plMotivo">🔒 <b>' + escHtml(motivo) + '</b> es parte del plan Pro.</div>';
+  if (p.estado === 'sinCuenta') html += '<div class="plEstado prueba">Creá tu cuenta gratis y tenés <b>1 mes de Pro</b> sin pagar nada ni poner tarjeta.</div>';
+  else if (p.estado === 'prueba') html += '<div class="plEstado prueba">🎁 Estás en la prueba Pro: te quedan <b>' + p.dias + (p.dias === 1 ? ' día' : ' días') + '</b> (hasta el ' + p.hasta.toLocaleDateString('es-CR') + ').</div>';
+  else if (p.estado === 'pro') html += '<div class="plEstado pro">⭐ Tenés Pro' + (p.hasta ? ' hasta el ' + p.hasta.toLocaleDateString('es-CR') : '') + '. ¡Gracias!' + (enTienda || p.admin ? '' : '<br><small>Se renueva solo con PayPal cada mes. Para cancelar: PayPal → Configuración → Pagos → Pagos automáticos.</small>') + '</div>';
+  else html += '<div class="plEstado basico">Tu prueba terminó. La hoja, las fórmulas, los gráficos y tus datos siguen siendo tuyos y gratis; las funciones Pro quedan en pausa.</div>';
+  html += '<div class="plTit">⭐ Plan Pro' + (enTienda ? '' : ' · ' + PLAN_PRECIO) + '</div><ul class="plLista">' +
+    PLAN_FUNCIONES.map(function (f) { return '<li>' + escHtml(f.nombre) + '</li>'; }).join('') + '</ul>' +
+    '<div class="mcrNota">Siempre gratis: hoja de cálculo completa, más de 750 fórmulas, gráficos, plantillas contables, planilla, IVA, D-101 y guardar en la nube.</div>';
+  if (p.estado === 'basico' && enTienda) html += '<div class="mcrNota">Las funciones Pro no están activas en esta cuenta.</div>';
+  var botones = [{ texto: 'Cerrar' }];
+  if (p.estado === 'sinCuenta') botones.push({ texto: '🎁 Crear cuenta gratis', ok: true, accion: function () { cerrarPanel(); document.getElementById('btnAccount').click(); } });
+  else if (!enTienda && p.estado !== 'pro') botones.push({ texto: '💳 Suscribirme ($21/mes)', ok: true, accion: function () {
+    var url = PLAN_URL_PAGO + '?correo=' + encodeURIComponent(currentUser.email || '') + '&uid=' + encodeURIComponent(currentUser.uid);
+    window.open(url, '_blank');
+    return false;
+  } });
+  if (p.estado === 'basico' || p.estado === 'prueba') botones.splice(1, 0, { texto: '🔄 Ya pagué', accion: function () { cargarPlan(); aviso('Revisando tu plan…'); return false; } });
+  if (esAdminPlanes()) botones.splice(1, 0, { texto: '👑 Clientes', accion: function () { abrirAdminPlanes(); return false; } });
+  abrirPanel('⭐ Planes de Matriz Contable CR', html, botones);
+}
+
+// ¿Se puede usar esta función? Si no, muestra los planes y devuelve false
+function exigirPro(nombre) {
+  if (tienePro()) return true;
+  abrirPlanes(nombre);
+  return false;
+}
+(function () {
+  // Botones Pro: se frenan antes de que corra su acción
+  var mapa = {};
+  PLAN_FUNCIONES.forEach(function (f) { f.ids.forEach(function (id) { mapa[id] = f.nombre.replace(/\s*\(.*\)$/, ''); }); });
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest && e.target.closest('button[id]');
+    if (!b || !mapa[b.id] || tienePro()) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    abrirPlanes(mapa[b.id]);
+  }, true);
+  // Compartir una matriz
+  if (typeof abrirCompartir === 'function') {
+    var compPrev = abrirCompartir;
+    abrirCompartir = function () { if (!exigirPro('🤝 Compartir matrices')) return; return compPrev.apply(this, arguments); };
+  }
+  // =IA() en la hoja
+  if (typeof resultadoIA === 'function') {
+    var iaPrev = resultadoIA;
+    resultadoIA = function () { if (!tienePro()) return '#PRO! =IA es del plan Pro'; return iaPrev.apply(this, arguments); };
+  }
+  if (typeof preguntarSiboSobreTabla === 'function') {
+    var exPrev = preguntarSiboSobreTabla;
+    preguntarSiboSobreTabla = function () { if (!exigirPro('✦ Preguntas a Sibö')) return; return exPrev.apply(this, arguments); };
+  }
+  // El plan se carga al iniciar o cambiar de sesión
+  if (window.firebase && firebase.auth) {
+    try { firebase.auth().onAuthStateChanged(function () { setTimeout(cargarPlan, 0); }); } catch (e) {}
+  }
+  setTimeout(function () { if (planActual.estado === 'cargando' && !currentUser) { planActual = calcularPlan(null); pintarChipPlan(); } }, 2500);
+})();
+
+// ── Panel del administrador: activar Pro a mano (después de un pago) ──
+function abrirAdminPlanes(filtro) {
+  if (!esAdminPlanes() || !firestoreDB) return;
+  abrirPanel('👑 Clientes y planes', '<input id="apBuscar" class="mcrI" placeholder="Buscar por correo…" value="' + escHtml(filtro || '') + '"><div id="apLista"><div class="ctsCargando">Cargando…</div></div>', [{ texto: 'Cerrar' }]);
+  var pintar = function (docs) {
+    var q = String(document.getElementById('apBuscar').value || '').toLowerCase().trim();
+    var filas = docs.filter(function (d) { return !q || String(d.data().email || '').indexOf(q) !== -1; }).slice(0, 150);
+    document.getElementById('apLista').innerHTML = filas.length ? filas.map(function (d) {
+      var x = d.data(), est = calcularPlanAjeno(x);
+      return '<div class="fpItem"><div><b>' + escHtml(x.email || d.id) + '</b><br><small class="ap_' + est.estado + '">' + est.texto + '</small></div>' +
+        '<div class="fpBotones"><button type="button" data-uid="' + d.id + '" data-m="1">+1 mes</button><button type="button" data-uid="' + d.id + '" data-m="12">+1 año</button>' +
+        (est.estado === 'pro' ? '<button type="button" data-uid="' + d.id + '" data-m="0">Quitar</button>' : '') + '</div></div>';
+    }).join('') : '<div class="mcrNota">No hay clientes con ese correo.</div>';
+    document.querySelectorAll('#apLista .fpBotones button').forEach(function (b) {
+      b.onclick = function () {
+        var uid = b.dataset.uid, meses = parseInt(b.dataset.m, 10), doc = docs.filter(function (d) { return d.id === uid; })[0], x = doc ? doc.data() : {};
+        var base = fechaDeCampo(x.pagadoHasta), ahora = new Date();
+        if (!base || base < ahora) base = ahora;
+        var hasta = null;
+        if (meses) { hasta = new Date(base.getTime()); hasta.setMonth(hasta.getMonth() + meses); }
+        firestoreDB.collection('planes').doc(uid).update({ pagadoHasta: hasta ? firebase.firestore.Timestamp.fromDate(hasta) : null, actualizadoPor: currentUser.email, actualizado: firebase.firestore.FieldValue.serverTimestamp() })
+          .then(function () { aviso(meses ? '⭐ Pro hasta el ' + hasta.toLocaleDateString('es-CR') : 'Plan Pro quitado'); abrirAdminPlanes(document.getElementById('apBuscar').value); })
+          .catch(function (e) { aviso('No se pudo: ' + (e && e.message)); });
+      };
+    });
+  };
+  firestoreDB.collection('planes').orderBy('inicioPrueba', 'desc').limit(500).get().then(function (snap) {
+    var docs = snap.docs;
+    pintar(docs);
+    document.getElementById('apBuscar').oninput = function () { pintar(docs); };
+  }).catch(function (e) { document.getElementById('apLista').innerHTML = '<div class="fpError">No se pudo leer: ' + escHtml(e && e.message) + '</div>'; });
+}
+function calcularPlanAjeno(x) {
+  var ahora = Date.now(), pagado = fechaDeCampo(x.pagadoHasta), inicio = fechaDeCampo(x.inicioPrueba) || new Date();
+  if (pagado && pagado.getTime() > ahora) return { estado: 'pro', texto: '⭐ Pro hasta el ' + pagado.toLocaleDateString('es-CR') };
+  var fin = inicio.getTime() + PLAN_DIAS_PRUEBA * 86400000;
+  if (ahora < fin) return { estado: 'prueba', texto: '🎁 Prueba · quedan ' + Math.ceil((fin - ahora) / 86400000) + ' días' };
+  return { estado: 'basico', texto: 'Básico · prueba vencida el ' + new Date(fin).toLocaleDateString('es-CR') };
+}
 
 // ══════════════════════════════════════════════
 // NUMBERS (3) · 2) Bloquear objetos
