@@ -1818,7 +1818,7 @@ body.modoLectura #editBar, body.modoLectura .cresize, body.modoLectura .ftools {
 
 
 /* PLANES · prueba de 1 mes y Pro */
-#chipPlan { border: 0; border-radius: 999px; padding: 0 9px; line-height: 18px; font: 700 11.5px/18px -apple-system, system-ui, sans-serif; cursor: pointer; white-space: nowrap; flex: 0 0 auto; }
+#chipPlan { border: 0; border-radius: 999px; padding: 0 9px; line-height: 18px; height: 18px; overflow: hidden; font: 700 11.5px/18px -apple-system, system-ui, sans-serif; cursor: pointer; white-space: nowrap; flex: 0 0 auto; }
 #chipPlan.prueba { background: #ecfccb; color: #3f6212; }
 #chipPlan.pruebaFin { background: #fef3c7; color: #92400e; }
 #chipPlan.pro { background: linear-gradient(90deg, #fde68a, #facc15); color: #713f12; }
@@ -17870,6 +17870,10 @@ function atajosCeldaExcel(e, el) {
   if ((e.key === 'Delete' || e.key === 'Backspace') && !editado && !ctrl) {
     e.preventDefault(); snapshot();
     document.getElementById(hayRango ? 'raClear' : 'btnClear').click();
+    // La celda con el cursor no se redibuja sola: si quedara el texto viejo en
+    // pantalla, al salir de la celda se volvería a guardar (y "revivía" al recargar)
+    var quedo = (sheetData[activeSheet] || {})[id];
+    el.textContent = quedo === undefined || quedo === '' ? '' : String(computeValue(id));
     el.dataset.editado = '0';
     return true;
   }
@@ -41957,10 +41961,20 @@ function exigirPro(nombre) {
     var exPrev = preguntarSiboSobreTabla;
     preguntarSiboSobreTabla = function () { if (!exigirPro('✦ Preguntas a Sibö')) return; return exPrev.apply(this, arguments); };
   }
-  // El plan se carga al iniciar o cambiar de sesión
-  if (window.firebase && firebase.auth) {
-    try { firebase.auth().onAuthStateChanged(function () { setTimeout(cargarPlan, 0); }); } catch (e) {}
+  // El plan se carga al iniciar o cambiar de sesión. (Firebase llega tarde
+  // desde internet, así que se engancha al aviso de sesión de la propia hoja.)
+  var uidPlan = null;
+  var revisarSesionPlan = function () {
+    var u = currentUser ? currentUser.uid : '';
+    if (u === uidPlan) return;
+    uidPlan = u;
+    setTimeout(function () { try { cargarPlan(); } catch (e) { console.log('Plan:', e && e.message); } }, 0);
+  };
+  if (typeof setSyncStatus === 'function') {
+    var syncPrev = setSyncStatus;
+    setSyncStatus = function () { var r = syncPrev.apply(this, arguments); revisarSesionPlan(); return r; };
   }
+  setInterval(revisarSesionPlan, 3000);
   setTimeout(function () { if (planActual.estado === 'cargando' && !currentUser) { planActual = calcularPlan(null); pintarChipPlan(); } }, 2500);
 })();
 
