@@ -1833,6 +1833,16 @@ body.modoLectura #editBar, body.modoLectura .cresize, body.modoLectura .ftools {
 .ap_pro { color: #a16207; font-weight: 700; }
 .ap_prueba { color: #4d7c0f; }
 .ap_basico { color: #6b7280; }
+
+.ehPlan { display: flex; align-items: center; gap: 10px; border-radius: 16px; padding: 12px 12px 12px 14px; margin: 14px 0 4px; background: linear-gradient(120deg, rgba(163, 230, 53, .28), rgba(31, 122, 68, .35)); border: 1px solid rgba(163, 230, 53, .45); }
+.ehPlan.pro { background: linear-gradient(120deg, rgba(250, 204, 21, .26), rgba(161, 98, 7, .25)); border-color: rgba(250, 204, 21, .5); }
+.ehPlan.fin { background: linear-gradient(120deg, rgba(251, 191, 36, .3), rgba(180, 83, 9, .3)); border-color: rgba(251, 191, 36, .55); }
+.ehPlan.basico { background: linear-gradient(120deg, rgba(129, 140, 248, .26), rgba(55, 48, 163, .3)); border-color: rgba(129, 140, 248, .5); }
+.ehPlanInfo { flex: 1; min-width: 0; text-align: left; background: none; border: 0; color: inherit; padding: 0; font: inherit; cursor: pointer; }
+.ehPlanInfo b { display: block; font-size: 16px; }
+.ehPlanInfo span { display: block; font-size: 13px; opacity: .85; margin-top: 2px; line-height: 1.35; }
+.ehPlanBtn { flex: 0 0 auto; border: 0; border-radius: 999px; padding: 10px 14px; font-weight: 800; font-size: 14px; background: #fde047; color: #422006; box-shadow: 0 4px 14px -4px rgba(250, 204, 21, .6); cursor: pointer; }
+.ehPlan.prueba .ehPlanBtn, .ehPlan.fin .ehPlanBtn, .ehPlan.basico .ehPlanBtn { background: #fde047; }
 /* GOOGLE SHEETS (5) · vistas de filtro, rangos protegidos por persona, preguntas a Sibö */
 #bandaVistaFiltro { position: fixed; top: calc(8px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 9300; background: #374151; color: #fff; border-radius: 999px; padding: 6px 8px 6px 14px; font: 600 13px -apple-system, system-ui, sans-serif; display: none; align-items: center; gap: 6px; box-shadow: 0 6px 18px rgba(0,0,0,.25); max-width: 92vw; }
 #bandaVistaFiltro.ver { display: flex; }
@@ -41905,6 +41915,7 @@ function pintarChipPlan() {
   else if (p.estado === 'prueba') { txt = '🎁 Prueba Pro · ' + p.dias + (p.dias === 1 ? ' día' : ' días'); cls = p.dias <= 5 ? 'pruebaFin' : 'prueba'; }
   else { txt = 'Básico · ⭐ Pro'; cls = 'basico'; }
   chip.textContent = txt; chip.className = cls; chip.style.display = '';
+  try { pintarTarjetaPlanInicio(); } catch (e) {}
 }
 
 // Ventana de planes: qué incluye Pro, cuánto queda y cómo pagar
@@ -41921,16 +41932,43 @@ function abrirPlanes(motivo) {
   if (p.estado === 'basico' && enTienda) html += '<div class="mcrNota">Las funciones Pro no están activas en esta cuenta.</div>';
   var botones = [{ texto: 'Cerrar' }];
   if (p.estado === 'sinCuenta') botones.push({ texto: '🎁 Crear cuenta gratis', ok: true, accion: function () { cerrarPanel(); document.getElementById('btnAccount').click(); } });
-  else if (!enTienda && p.estado !== 'pro') botones.push({ texto: '💳 Suscribirme ($21/mes)', ok: true, accion: function () {
-    var url = PLAN_URL_PAGO + '?correo=' + encodeURIComponent(currentUser.email || '') + '&uid=' + encodeURIComponent(currentUser.uid);
-    window.open(url, '_blank');
-    return false;
-  } });
+  else if (!enTienda && p.estado !== 'pro') botones.push({ texto: '💳 Suscribirme ($21/mes)', ok: true, accion: function () { irAPagarPlan(); return false; } });
   if (p.estado === 'basico' || p.estado === 'prueba') botones.splice(1, 0, { texto: '🔄 Ya pagué', accion: function () { cargarPlan(); aviso('Revisando tu plan…'); return false; } });
   if (esAdminPlanes()) botones.splice(1, 0, { texto: '👑 Clientes', accion: function () { abrirAdminPlanes(); return false; } });
   abrirPanel('⭐ Planes de Matriz Contable CR', html, botones);
 }
 
+// Abre la página de pago (solo en la web; en la app de la tienda no se cobra)
+function irAPagarPlan() {
+  if (!currentUser) { document.getElementById('btnAccount').click(); return; }
+  var url = PLAN_URL_PAGO + '?correo=' + encodeURIComponent(currentUser.email || '') + '&uid=' + encodeURIComponent(currentUser.uid);
+  window.open(url, '_blank');
+}
+// Tarjeta del plan en la pantalla de Inicio
+function pintarTarjetaPlanInicio() {
+  var cuerpo = document.getElementById('excelHomeBody'); if (!cuerpo) return;
+  var viejo = document.getElementById('ehPlan'); if (viejo) viejo.remove();
+  var p = planActual, enTienda = enAppDeTienda(), tit = '', sub = '', boton = '', accion = '', cls = '';
+  if (p.estado === 'cargando') return;
+  if (p.estado === 'sinCuenta') { cls = 'prueba'; tit = '🎁 Probá Pro gratis por 1 mes'; sub = 'Factura Electrónica, Sibö, trabajo en equipo y más. Sin tarjeta.'; boton = 'Crear cuenta'; accion = 'cuenta'; }
+  else if (p.admin) { cls = 'pro'; tit = '👑 Administrador'; sub = 'Activá o revisá los planes de tus clientes.'; boton = 'Clientes'; accion = 'admin'; }
+  else if (p.estado === 'pro') { cls = 'pro'; tit = '⭐ Plan Pro activo'; sub = p.hasta ? 'Hasta el ' + p.hasta.toLocaleDateString('es-CR') + (enTienda ? '' : ' · se renueva solo') : ''; }
+  else if (p.estado === 'prueba') { cls = p.dias <= 5 ? 'fin' : 'prueba'; tit = '🎁 Prueba Pro · ' + p.dias + (p.dias === 1 ? ' día' : ' días'); sub = enTienda ? 'Disfrutá todas las funciones Pro.' : 'Seguí con Pro después de la prueba por ' + PLAN_PRECIO + '.'; if (!enTienda) { boton = '⭐ Suscribirme'; accion = 'pagar'; } }
+  else { cls = 'basico'; tit = 'Tu prueba Pro terminó'; sub = enTienda ? 'Las funciones Pro están en pausa en esta cuenta.' : 'Tus datos siguen intactos. Volvé a Pro por ' + PLAN_PRECIO + '.'; if (!enTienda) { boton = '⭐ Suscribirme'; accion = 'pagar'; } }
+  var div = document.createElement('div');
+  div.id = 'ehPlan'; div.className = 'ehPlan ' + cls;
+  div.innerHTML = '<button type="button" class="ehPlanInfo"><b>' + escHtml(tit) + '</b>' + (sub ? '<span>' + escHtml(sub) + '</span>' : '') + '</button>' +
+    (boton ? '<button type="button" class="ehPlanBtn">' + escHtml(boton) + '</button>' : '');
+  var acciones = cuerpo.querySelector('.ehAcciones');
+  if (acciones && acciones.nextSibling) cuerpo.insertBefore(div, acciones.nextSibling); else cuerpo.insertBefore(div, cuerpo.firstChild);
+  div.querySelector('.ehPlanInfo').onclick = function () { abrirPlanes(); };
+  var b = div.querySelector('.ehPlanBtn');
+  if (b) b.onclick = function () {
+    if (accion === 'pagar') irAPagarPlan();
+    else if (accion === 'admin') abrirAdminPlanes();
+    else if (accion === 'cuenta') { if (typeof ehCerrar === 'function') ehCerrar(); document.getElementById('btnAccount').click(); }
+  };
+}
 // ¿Se puede usar esta función? Si no, muestra los planes y devuelve false
 function exigirPro(nombre) {
   if (tienePro()) return true;
@@ -41975,6 +42013,10 @@ function exigirPro(nombre) {
     setSyncStatus = function () { var r = syncPrev.apply(this, arguments); revisarSesionPlan(); return r; };
   }
   setInterval(revisarSesionPlan, 3000);
+  if (typeof ehRender === 'function') {
+    var ehPrev = ehRender;
+    ehRender = function () { var r = ehPrev.apply(this, arguments); try { pintarTarjetaPlanInicio(); } catch (e) {} return r; };
+  }
   setTimeout(function () { if (planActual.estado === 'cargando' && !currentUser) { planActual = calcularPlan(null); pintarChipPlan(); } }, 2500);
 })();
 
