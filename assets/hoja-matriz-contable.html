@@ -1170,6 +1170,76 @@
     #toolbar .rbGrid button:hover { background: #e1e1e1 !important; border-color: #c8c8c8; }
     #toolbar .rbGrid button:active { background: #d2e0d6 !important; color: #0b5c2e !important; border-color: #107c41; }
   }
+  /* ── Cinta "Lima" también en teléfono y tableta (el menú ☰ flotante) ── */
+  @media (max-width: 999px) {
+    #ribbonHead { background: linear-gradient(100deg, #14532d 0%, #1f7a44 55%, #3f8f1c 100%) !important; }
+    #toolbar { background: linear-gradient(180deg, #b4e94e 0%, #cff38c 90px, #e6f8c9 200px, #f3f8ee 340px, #f4f7f3 100%); }
+    /* El buscador y las pestañas quedan fijos arriba al bajar: mismo verde del fondo */
+    #rbBuscarWrap { background: linear-gradient(180deg, #b4e94e 0%, #c9f182 100%); box-shadow: 0 6px 10px -8px rgba(20, 83, 45, .35); }
+    body.dark #rbBuscarWrap { background: linear-gradient(180deg, #2f5a12 0%, #25441a 100%); }
+    #rbBuscar { background: rgba(255, 255, 255, .78); border-color: rgba(20, 83, 45, .18); border-radius: 999px; }
+    #rbTabs { border-bottom: none; gap: 4px; padding-bottom: 6px; }
+    .rbTab { color: #1c3a12; border-bottom: none; border-radius: 999px; padding: 8px 14px; }
+    .rbTab .icoP { color: #2f6d13; }
+    .rbTab.on { background: rgba(255, 255, 255, .9); color: #14532d; border-bottom: none; box-shadow: 0 1px 2px rgba(20, 83, 45, .18), 0 4px 12px -4px rgba(20, 83, 45, .35); }
+    #toolbar:not(.rbBuscando) .rbSec, .rbSec { background: rgba(255, 255, 255, .72); border-radius: 16px; }
+    #toolbar:not(.rbBuscando) .rbSecHead { background: transparent; border-top-color: rgba(20, 83, 45, .1); color: #3f6212; }
+    #toolbar .rbGrid button .icoP { color: #2f6d13; }
+    body.dark #toolbar { background: linear-gradient(180deg, #2f5a12 0%, #233f15 120px, #1b2a1d 300px, #181c20 100%); }
+    body.dark .rbTab { color: #d9f99d; }
+    body.dark .rbTab.on { background: rgba(163, 230, 53, .18); color: #ecfccb; box-shadow: none; }
+    body.dark #toolbar:not(.rbBuscando) .rbSec, body.dark .rbSec { background: rgba(255, 255, 255, .05); }
+    body.dark #rbBuscar { background: rgba(0, 0, 0, .25); color: #e5e7eb; }
+  }
+  /* ── Cinta "Lima": degradado verde lima → blanco, pestaña activa tipo píldora y
+     botones con efecto vidrio. Solo en pantalla grande (computadora / Windows). ── */
+  @media (min-width: 1000px) {
+    #ribbonTrigger { background: linear-gradient(100deg, #14532d 0%, #1f7a44 55%, #3f8f1c 100%); }
+    #ribbonModal, #ribbonModal.rbMin {
+      background: linear-gradient(180deg, #a6e33a 0%, #c5f075 22%, #e2f7c3 52%, #f2f8ee 80%, #eef2f6 100%);
+      border-bottom: 1px solid rgba(20, 83, 45, .16);
+      box-shadow: 0 8px 20px -14px rgba(20, 83, 45, .55);
+    }
+    #toolbar, #toolbar:not(.rbBuscando), #ribbonModal.rbMin #toolbar, #rbTabs { background: transparent; }
+    #rbTabs { gap: 4px; padding-left: 6px; }
+    .rbTab {
+      color: #1c3a12; border-bottom: none; border-radius: 999px; margin-top: 3px;
+      padding: 5px 14px; transition: background .15s, box-shadow .15s, color .15s;
+    }
+    .rbTab:hover { background: rgba(255, 255, 255, .45); }
+    .rbTab.on {
+      background: rgba(255, 255, 255, .88); color: #14532d; border-bottom: none;
+      box-shadow: 0 1px 2px rgba(20, 83, 45, .18), 0 4px 12px -4px rgba(20, 83, 45, .35);
+    }
+    .rbTab .icoP { color: #2f6d13; }
+    #rbBuscar {
+      background: rgba(255, 255, 255, .72); border: 1px solid rgba(20, 83, 45, .18); border-radius: 999px;
+      padding-left: 14px; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    #rbBuscar:focus { background: #fff; border-color: #1f7a44; box-shadow: 0 0 0 3px rgba(132, 204, 22, .35); outline: none; }
+    #toolbar .rbSec, #toolbar:not(.rbBuscando) .rbSec { border-right: 1px solid rgba(20, 83, 45, .14); }
+    #toolbar .rbSecTit { color: #3f6212; font-weight: 600; letter-spacing: .2px; }
+    #toolbar .rbGrid button { color: #1f2d16; border-radius: 7px; transition: background .12s, box-shadow .12s; }
+    #toolbar .rbGrid button .icoP { color: #2f6d13; }
+    #toolbar .rbGrid button:hover {
+      background: rgba(255, 255, 255, .7) !important; border-color: rgba(255, 255, 255, .95);
+      box-shadow: 0 1px 3px rgba(20, 83, 45, .18);
+    }
+    #toolbar .rbGrid button:active { background: #fff !important; color: #14532d !important; border-color: #84cc16; }
+    /* Modo oscuro: el mismo efecto, en verde bosque */
+    body.dark #ribbonModal, body.dark #ribbonModal.rbMin {
+      background: linear-gradient(180deg, #2f5a12 0%, #233f15 30%, #1b2a1d 65%, #181c20 100%);
+      border-bottom-color: rgba(163, 230, 53, .15);
+    }
+    body.dark .rbTab { color: #d9f99d; }
+    body.dark .rbTab:hover { background: rgba(255, 255, 255, .08); }
+    body.dark .rbTab.on { background: rgba(163, 230, 53, .18); color: #ecfccb; box-shadow: none; }
+    body.dark #toolbar .rbGrid button { color: #e5e7eb; }
+    body.dark #toolbar .rbGrid button .icoP, body.dark .rbTab .icoP { color: #a3e635; }
+    body.dark #toolbar .rbGrid button:hover { background: rgba(255, 255, 255, .08) !important; border-color: rgba(255, 255, 255, .12); box-shadow: none; }
+    body.dark #toolbar .rbSecTit { color: #a3e635; }
+    body.dark #rbBuscar { background: rgba(0, 0, 0, .25); color: #e5e7eb; border-color: rgba(163, 230, 53, .2); }
+  }
   /* Galería e Inicio en pantalla grande (tablet, computadora, Windows): ocupan toda la ventana,
      con el contenido centrado y más tarjetas por fila */
   @media (min-width: 700px) {
@@ -4649,7 +4719,15 @@ function fmtNum(n) {
   if (n === null || n === undefined || isNaN(n)) return '#VALOR!';
   if (n === Infinity || n === -Infinity) return '#DIV/0!';
   if (modoNumeroCrudo) return String(Number(n));
-  return Number(n).toLocaleString('es-CR', { maximumFractionDigits: 10 });
+  // Como Excel: se muestran 15 cifras significativas (así 772647.28999999998 se ve 772 647,29)
+  var nn = Number(n); if (nn !== 0) nn = +nn.toPrecision(15); else nn = 0;
+  // Un solo formateador para todo (crear uno en cada llamada era lo más lento de recalcular)
+  return (FMT_NUM_CR || (FMT_NUM_CR = crearFmtNumCR())).format(nn);
+}
+var FMT_NUM_CR = null;
+function crearFmtNumCR() {
+  try { return new Intl.NumberFormat('es-CR', { maximumFractionDigits: 10 }); }
+  catch (e) { return { format: function (x) { return x.toLocaleString('es-CR', { maximumFractionDigits: 10 }); } }; }
 }
 // Parte una expresión por sus operadores + - * / & que están FUERA de
 // paréntesis y comillas. Devuelve null si no hay ninguno. Un + o - al inicio
@@ -5130,7 +5208,49 @@ function normalizarComaDecimal(expr) {
   }
   return out;
 }
+// ── Camino rápido para cuentas simples (=A2*B2, =C5-C4+100, =(A1+B1)/2) ──
+// Antes cada una pasaba por todo el motor (nombres, campos, ~500 funciones) y
+// costaba ~25 µs; ahora se compila una vez por texto y se reusa. Solo se usa si
+// todas las celdas tienen números (o están vacías); si no, va por el camino normal.
+var PLANTILLAS_RAPIDAS = {}, nPlantillasRapidas = 0, nombresConFormaDeCelda = { n: -1, hay: false };
+function calculoRapido(expr) {
+  if (typeof expr !== 'string' || expr.length > 160) return null;
+  var pl = PLANTILLAS_RAPIDAS[expr];
+  if (pl === undefined) {
+    pl = false;
+    if (/^[\s$A-Za-z0-9.+\-*\/()]+$/.test(expr) && /[+\-*\/]/.test(expr)) {
+      var refs = [], ok = true;
+      var tpl = expr.replace(/\$?([A-Za-z]{1,3})\$?(\d+)(?![A-Za-z0-9.(])/g, function (m, c, f, pos, todo) {
+        var antes = todo.charAt(pos - 1);
+        if (antes && /[A-Za-z0-9.]/.test(antes)) { ok = false; return m; }
+        refs.push(c.toUpperCase() + f); return 'v[' + (refs.length - 1) + ']';
+      });
+      if (ok && refs.length && !/[A-Za-z$]/.test(tpl.replace(/v\[\d+\]/g, ''))) {
+        try { pl = { fn: new Function('v', '"use strict";return (' + tpl + ');'), refs: refs }; } catch (e) { pl = false; }
+      }
+    }
+    if (nPlantillasRapidas > 5000) { PLANTILLAS_RAPIDAS = {}; nPlantillasRapidas = 0; }
+    PLANTILLAS_RAPIDAS[expr] = pl; nPlantillasRapidas++;
+  }
+  if (!pl) return null;
+  // Un nombre de rango con forma de celda (ej. "IVA13") cambia el significado: camino normal
+  var nN = Object.keys(rangosNombrados || {}).length;
+  if (nombresConFormaDeCelda.n !== nN) nombresConFormaDeCelda = { n: nN, hay: Object.keys(rangosNombrados || {}).some(function (k) { return /^[A-Za-z]{1,3}\d+$/.test(k); }) };
+  if (nombresConFormaDeCelda.hay) return null;
+  // Las celdas se leen igual que en el motor de cuentas (número crudo, sin formato)
+  var v = new Array(pl.refs.length), hojaR = hojaFormulaActual || activeSheet;
+  for (var i = 0; i < pl.refs.length; i++) {
+    var mv = valorDeCeldaMotor(hojaR, pl.refs[i]);
+    if (mv.k === 'z') { v[i] = 0; continue; }
+    if (mv.k !== 'n' || mv.f || !isFinite(mv.v)) return null;
+    v[i] = mv.v;
+  }
+  var res = pl.fn(v);
+  if (typeof res !== 'number' || !isFinite(res)) return null;
+  return salidaMotor(MN(res));
+}
 function computeExpr(expr) {
+  if (!calcInc.apagado) { var rapido = calculoRapido(expr); if (rapido !== null) return rapido; }
   expr = normalizarComaDecimal(expr);
   expr = expandirCamposVinculados(expr);
   expr = quitarDolaresDeRefs(expr);
@@ -5790,12 +5910,16 @@ if ((inner = matchFn('SUBTOTALES|SUBTOTAL')) !== null) {
       }
     }
 if ((inner = matchFn('CONTAR\.SI\.CONJUNTO|COUNTIFS')) !== null) {
-      args = splitArgs(inner); var count3 = 0;
-      var rng1 = args[0], crit1 = args[1] ? String(resolveArg(args[1])) : '';
-      if (isRange(rng1)) {
-        rangeVals(rng1).forEach(function(v, i6) {
-          if (matchCrit(v, crit1)) count3++;
-        });
+      // Cuenta las filas que cumplen TODOS los pares rango/criterio (como Excel)
+      args = splitArgs(inner); var count3 = 0, paresC = [];
+      for (var pc = 0; pc + 1 < args.length; pc += 2) paresC.push({ vals: isRange(args[pc]) ? rangeVals(args[pc]) : [], crit: String(resolveArg(args[pc + 1] || '')) });
+      if (!paresC.length) return '#VALOR!';
+      var largoC = paresC[0].vals.length;
+      if (paresC.some(function (pq) { return pq.vals.length !== largoC; })) return '#VALOR!';
+      for (var iC = 0; iC < largoC; iC++) {
+        var okC = true;
+        for (var qC = 0; qC < paresC.length && okC; qC++) if (!matchCrit(paresC[qC].vals[iC], paresC[qC].crit)) okC = false;
+        if (okC) count3++;
       }
       return String(count3);
     }
@@ -8515,6 +8639,99 @@ if((inner=matchFn('BUSCAR\.NESIMO'))!==null){
 // larga de fórmulas (cada fila depende de la anterior, como en una tabla de amortización de
 // 360 cuotas) se recalcula desde el principio para cada celda y tarda minutos.
 // Solo vale durante UNA pasada (se crea al empezar y se borra al terminar), y nunca guarda errores.
+// ══════════════════════════════════════════════
+// CÁLCULO INCREMENTAL (como el de Excel)
+// Antes, cada vez que se redibujaba la hoja se volvían a calcular TODAS las
+// fórmulas visibles y todo lo que ellas usan (un =SUMA(C2:C5001) recalculaba
+// las 5000 fórmulas de C en cada tecla). Ahora el resultado de cada fórmula
+// "pura" se guarda entre pasadas, junto con qué celdas leyó; al empezar cada
+// pasada se revisa qué celdas cambiaron y se borra solo lo que depende de
+// ellas (y lo que depende de eso, en cadena).
+//  · Pura = solo usa celdas, rangos, números, operadores y funciones de una
+//    lista revisada (SUMA, SI, BUSCARV…). HOY(), ALEATORIO(), INDIRECTO(),
+//    nombres, columnas completas, etc. se calculan siempre, como antes.
+//  · Si una pura usa (aunque sea de lejos) una que no lo es, tampoco se guarda.
+//  · Con cálculo iterativo o manual, o si cambia el libro o las hojas, se
+//    vuelve a calcular todo.
+// ══════════════════════════════════════════════
+var FUNCIONES_PURAS = {};
+('SUMA SUM SUMAR.SI SUMIF SUMAR.SI.CONJUNTO SUMIFS CONTAR COUNT CONTARA COUNTA CONTAR.SI COUNTIF CONTAR.SI.CONJUNTO COUNTIFS CONTAR.BLANCO COUNTBLANK ' +
+  'PROMEDIO AVERAGE PROMEDIO.SI AVERAGEIF PROMEDIO.SI.CONJUNTO AVERAGEIFS MAX MIN MAX.SI.CONJUNTO MAXIFS MIN.SI.CONJUNTO MINIFS MEDIANA MEDIAN ' +
+  'SI IF Y AND O OR NO NOT SI.ERROR IFERROR SI.ND IFNA SI.CONJUNTO IFS ELEGIR CHOOSE ' +
+  'REDONDEAR ROUND REDONDEAR.MAS ROUNDUP REDONDEAR.MENOS ROUNDDOWN ENTERO INT TRUNCAR TRUNC ABS POTENCIA POWER RAIZ SQRT RESIDUO MOD PRODUCTO PRODUCT SUMAPRODUCTO SUMPRODUCT ' +
+  'BUSCARV VLOOKUP BUSCARH HLOOKUP BUSCARX XLOOKUP INDICE INDEX COINCIDIR MATCH ' +
+  'CONCATENAR CONCATENATE CONCAT IZQUIERDA LEFT DERECHA RIGHT EXTRAE MID LARGO LEN MAYUSC UPPER MINUSC LOWER ESPACIOS TRIM VALOR VALUE TEXTO TEXT SUSTITUIR SUBSTITUTE HALLAR SEARCH ENCONTRAR FIND ' +
+  'FECHA DATE AÑO YEAR MES MONTH DIA DAY ESBLANCO ISBLANK ESNUMERO ISNUMBER ESTEXTO ISTEXT PAGO PMT').split(' ').forEach(function (n) { FUNCIONES_PURAS[n] = 1; });
+var calcInc = { activo: false, libro: null, hojas: '', valores: {}, valoresCrudos: {}, leidos: {}, dep: {}, manchadas: {}, limites: {}, nClaves: {}, pureza: {}, nPureza: 0, apagado: false };
+try { calcInc.apagado = /[?&]calc=completo/.test(location.search) || localStorage.getItem('kcn_calc_incremental') === '0'; } catch (e) {}
+function formulaEsPura(raw) {
+  var p = calcInc.pureza[raw];
+  if (p !== undefined) return p;
+  // Cuentas simples entre celdas (=C2*D2): puras, sin más análisis (son la mayoría en hojas grandes)
+  if (typeof raw === 'string' && raw.indexOf('&') === -1 && formulaSimpleSinDerrame(raw)) return true;
+  var t = String(raw).slice(1).replace(/"(?:[^"]|"")*"/g, '""');
+  var ok = !/[{}@#\[\]&]/.test(t) && !/!\s*\$?[A-Za-z]+\$?\d*\s*:\s*\$?[A-Za-z]+\$?\d*\s*!/.test(t);
+  if (ok) {
+    // Hojas citadas: 'Mi hoja'!A1
+    t = t.replace(/'(?:[^']|'')+'!/g, '');
+    var re = /([A-Za-zÁÉÍÓÚÑáéíóúñ_][A-Za-zÁÉÍÓÚÑáéíóúñ0-9_.]*)(\s*\()?/g, m;
+    while (ok && (m = re.exec(t))) {
+      var nombre = m[1].toUpperCase(), esFuncion = !!m[2];
+      if (esFuncion) { if (!FUNCIONES_PURAS[nombre]) ok = false; continue; }
+      // Referencia de hoja sin comillas: Hoja2!A1
+      if (t.charAt(re.lastIndex) === '!' && sheets.indexOf(m[1]) !== -1) { re.lastIndex++; continue; }
+      if (/^\$?[A-Z]{1,3}\$?\d+$/.test(nombre)) continue;           // A1
+      if (nombre === 'VERDADERO' || nombre === 'FALSO' || nombre === 'TRUE' || nombre === 'FALSE') continue;
+      ok = false;                                                    // nombre de rango, columna completa, campo…
+    }
+    // Columnas o filas completas (A:A, 3:3) y rangos sin número
+    if (ok && /(^|[^A-Za-z0-9$])\$?[A-Za-z]{1,3}\s*:\s*\$?[A-Za-z]{1,3}(?![A-Za-z0-9])/.test(t)) ok = false;
+    if (ok && /(^|[^A-Za-z0-9$])\$?\d+\s*:\s*\$?\d+/.test(t)) ok = false;
+  }
+  if (calcInc.nPureza > 200000) { calcInc.pureza = {}; calcInc.nPureza = 0; }
+  calcInc.pureza[raw] = ok; calcInc.nPureza++;
+  return ok;
+}
+function calcIncReiniciar() {
+  calcInc.valores = {}; calcInc.valoresCrudos = {}; calcInc.leidos = {}; calcInc.dep = {}; calcInc.limites = {}; calcInc.nClaves = {};
+  calcInc.libro = sheetData; calcInc.hojas = sheets.join('\u0001');
+}
+function invalidarCalculoTodo() { calcIncReiniciar(); }
+function limitesHojaInc(h) {
+  var d = sheetData[h] || {}, maxR = -1, maxC = -1;
+  for (var k in d) {
+    var m = /^([A-Z]+)(\d+)$/.exec(k); if (!m) continue;
+    var r = +m[2], c = colIndex(m[1]);
+    if (r > maxR) maxR = r; if (c > maxC) maxC = c;
+  }
+  return { r: maxR, c: maxC };
+}
+// Al empezar una pasada: ¿qué cambió desde la anterior?
+function calcIncIniciarPasada() {
+  calcInc.activo = false;
+  if (calcInc.apagado || (typeof calculoManual !== 'undefined' && calculoManual) || iterActiva()) { calcInc.libro = null; return; }
+  if (calcInc.libro !== sheetData || calcInc.hojas !== sheets.join('\u0001')) calcIncReiniciar();
+  calcInc.manchadas = {};
+  // (Las fórmulas puras usan rangos escritos, como C2:C500: leen cada celda del rango, aunque
+  // esté vacía, así que una celda nueva dentro del rango ya está vigilada. Las columnas completas
+  // (A:A), que se recortan al área usada, no son puras y se calculan siempre.)
+  // Celdas cuyo contenido cambió → se borra lo que depende de ellas, en cadena
+  var cola = [], L = calcInc.leidos;
+  for (var clave in L) {
+    var e = L[clave], d = sheetData[e[0]], cur = d && d[e[1]] !== undefined && d[e[1]] !== null ? d[e[1]] : '';
+    if (cur !== e[2]) { e[2] = cur; cola.push(clave); }
+  }
+  var visto = {};
+  while (cola.length) {
+    var k = cola.pop();
+    if (visto[k]) continue; visto[k] = 1;
+    delete calcInc.valores[k]; delete calcInc.valoresCrudos[k];
+    var deps = calcInc.dep[k];
+    if (deps) for (var p in deps) if (!visto[p]) cola.push(p);
+  }
+  calcInc.activo = true;
+}
+function calcIncTerminarPasada() { calcInc.activo = false; }
 var cacheCalculo = null;
 function iniciarCacheCalculo() { cacheCalculo = {}; }
 function terminarCacheCalculo() { cacheCalculo = null; }
@@ -8530,6 +8747,26 @@ function computeValue(id) {
 function computeValueMemo(id) {
   var hojaDeEstaCelda = hojaFormulaActual || activeSheet;
   var clave = hojaDeEstaCelda + '!' + id;
+  // ── cálculo incremental: quién lee a quién, y resultados guardados entre pasadas ──
+  var inc = calcInc.activo && calcInc.libro === sheetData && cacheCalculo !== null, rawInc = '', padreInc = null;
+  var guardadosInc = modoNumeroCrudo ? calcInc.valoresCrudos : calcInc.valores;
+  if (inc) {
+    var dInc = sheetData[hojaDeEstaCelda];
+    rawInc = dInc && dInc[id] !== undefined && dInc[id] !== null ? dInc[id] : '';
+    if (!calcInc.leidos[clave]) calcInc.leidos[clave] = [hojaDeEstaCelda, id, rawInc];
+    padreInc = pilaEvaluacionFormulas.length ? pilaEvaluacionFormulas[pilaEvaluacionFormulas.length - 1] : null;
+    if (padreInc) {
+      (calcInc.dep[clave] || (calcInc.dep[clave] = {}))[padreInc] = 1;
+      // Si lo que leo no es puro (o depende de algo que no lo es), quien me lee tampoco
+      if (calcInc.manchadas[clave] || (typeof rawInc === 'string' && rawInc.charAt(0) === '=' && !formulaEsPura(rawInc))) calcInc.manchadas[padreInc] = 1;
+    }
+    // Cada resultado guardado lleva el texto de la celda con que se calculó (una celda auxiliar que
+    // se reescribe en la misma pasada, como la del formato condicional, no devuelve un valor viejo)
+    var gInc = guardadosInc[clave];
+    if (gInc && gInc[0] === rawInc) return gInc[1];
+    // Igual que la memoria de cada pasada: una lectura "cruda" se conforma con el valor ya formateado
+    if (modoNumeroCrudo) { var gF = calcInc.valores[clave]; if (gF && gF[0] === rawInc) return gF[1]; }
+  }
   if (cacheCalculo !== null && Object.prototype.hasOwnProperty.call(cacheCalculo, clave)) return cacheCalculo[clave];
   if (pilaEvaluacionFormulas.indexOf(clave) !== -1) {
     if (iterActiva()) { cicloEnCalculo = true; var nIt = iterNum[clave]; return nIt !== undefined && isFinite(nIt) ? String(nIt) : (Object.prototype.hasOwnProperty.call(iterValores, clave) ? iterValores[clave] : '0'); }
@@ -8541,6 +8778,11 @@ function computeValueMemo(id) {
   var huboCiclo = cicloEnCalculo; cicloEnCalculo = cicloAntes || huboCiclo;
   if (huboCiclo && iterActiva()) { iterValores[clave] = valorCalculado; iterNum[clave] = numeroDeValorCalc(valorCalculado); return valorCalculado; }
   if (enPasada && cacheCalculo !== null && typeof valorCalculado === 'string' && valorCalculado.charAt(0) !== '#' && !claveCircularPendiente && !errorTablaPendiente) cacheCalculo[clave] = valorCalculado;
+  if (inc && typeof rawInc === 'string' && rawInc.charAt(0) === '=') {
+    if (huboCiclo || !formulaEsPura(rawInc) || formulaArrayInfo(rawInc)) calcInc.manchadas[clave] = 1;
+    if (calcInc.manchadas[clave]) { if (padreInc) calcInc.manchadas[padreInc] = 1; }
+    else if (typeof valorCalculado === 'string' && valorCalculado.charAt(0) !== '#' && !claveCircularPendiente && !errorTablaPendiente && calcInc.libro === sheetData) guardadosInc[clave] = [rawInc, valorCalculado];
+  }
   return valorCalculado;
 }
 function computeValueSinCache(id, hojaDeEstaCelda, clave) {
@@ -10109,7 +10351,9 @@ function pedirMatrizImportar(fuente) {
     return firestoreDB.collection('matrices').doc(id).get();
   }).then(function (doc) {
     if (!doc.exists) throw { mensaje: 'Esa matriz ya no existe' };
-    ent.datos = doc.data(); ent.estado = 'listo'; ent.ts = Date.now(); ent.recargando = false;
+    return completarDocMatriz(ent.id, doc.data());
+  }).then(function (datosM) {
+    ent.datos = datosM; ent.estado = 'listo'; ent.ts = Date.now(); ent.recargando = false;
     Object.keys(valoresImportados).forEach(function (k) { if (k.indexOf(ent.id + '|') === 0) delete valoresImportados[k]; });
     redibujarTrasImportar();
   }).catch(function (e) {
@@ -10180,6 +10424,7 @@ function importarRangoComoMatriz(args) {
 
 function formulaArrayInfo(crudo) {
   if (typeof crudo !== 'string' || crudo.charAt(0) !== '=') return null;
+  if (formulaSimpleSinDerrame(crudo)) return null;
   // =ARRAYFORMULA(…) de Google Sheets: lo de adentro se calcula como matriz y se derrama
   var mAF = /^=\s*(?:ARRAYFORMULA|FORMULAMATRIZ)\s*\(/i.exec(crudo);
   if (mAF) {
@@ -10501,7 +10746,48 @@ function calcularFormulaArray(hoja, nombre, argsTexto) {
 // llamada completa a una de esas funciones, devuelve su resultado como un
 // array PLANO de valores; si no, devuelve null para que quien llama siga
 // tratando el argumento como siempre (rango normal, número, etc.).
+// CONTAR.SI, SUMAR.SI, PROMEDIO.SI (y sus .CONJUNTO) con un RANGO como criterio
+// devuelven un resultado por cada valor del criterio, como en Excel:
+//   =SUMAPRODUCTO((CONTAR.SI(Catálogo!A2:A50;B2:B100)>0)*C2:C100)
+var FN_CRITERIO_LISTA = {
+  'CONTAR.SI': [1], 'COUNTIF': [1], 'SUMAR.SI': [1], 'SUMIF': [1], 'PROMEDIO.SI': [1], 'AVERAGEIF': [1],
+  'CONTAR.SI.CONJUNTO': 'impares', 'COUNTIFS': 'impares', 'SUMAR.SI.CONJUNTO': 'pares', 'SUMIFS': 'pares',
+  'PROMEDIO.SI.CONJUNTO': 'pares', 'AVERAGEIFS': 'pares'
+};
+function criterioEnListaArreglo(texto) {
+  var t = String(texto || '').trim().replace(/^=/, ''), m = /^([A-Za-z.]+)\s*\(([\s\S]*)\)$/.exec(t);
+  if (!m) return null;
+  var nombre = m[1].toUpperCase(), regla = FN_CRITERIO_LISTA[nombre];
+  if (!regla) return null;
+  // El paréntesis final tiene que cerrar el de la función (no "CONTAR.SI(…)+(…)")
+  var prof = 0, cad = false, cuerpo = m[2];
+  for (var i = 0; i < cuerpo.length; i++) { var ch = cuerpo.charAt(i); if (ch === '"') cad = !cad; if (cad) continue; if (ch === '(') prof++; else if (ch === ')') { prof--; if (prof < 0) return null; } }
+  var args = splitArgs(cuerpo), pos = [];
+  if (regla === 'impares') { for (var a = 1; a < args.length; a += 2) pos.push(a); }
+  else if (regla === 'pares') { for (var b = 2; b < args.length; b += 2) pos.push(b); }
+  else pos = regla;
+  var listas = {}, n = 0;
+  pos.forEach(function (k) {
+    var arg = (args[k] || '').trim();
+    if (!isRange(arg)) return;
+    var v = rangeVals(arg);
+    if (v.length > 1) { listas[k] = v; n = Math.max(n, v.length); }
+  });
+  if (!n || n > 5000) return null;
+  var out = [];
+  for (var j = 0; j < n; j++) {
+    var copia = args.slice();
+    Object.keys(listas).forEach(function (k) {
+      var l = listas[k], v = l.length === 1 ? l[0] : l[j];
+      copia[k] = '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"';
+    });
+    out.push(computeExpr(nombre + '(' + copia.join(';') + ')'));
+  }
+  return out;
+}
 function valoresDeFuncionArrayAnidada(texto) {
+  var porCriterio = criterioEnListaArreglo(texto);
+  if (porCriterio) return porCriterio;
   if (typeof texto !== 'string') return null;
   var t = texto.trim();
   var m = t.match(/^(FILTRAR|FILTER|ORDENARPOR|SORTBY|ORDENAR|SORT|UNICOS|UNIQUE|SECUENCIA|SEQUENCE|AJUSTARFILAS|WRAPROWS|AJUSTARCOLS|WRAPCOLS|AGRUPARPOR|GROUPBY|PIVOTARPOR|PIVOTBY|RECORTARINTERVALOS|TRIMRANGE|HISTORIALCOTIZACIONES|STOCKHISTORY|MINVERSA|MINVERSE|CONSULTA|QUERY|SORTN|IMPORTARRANGO|IMPORTRANGE|IMPORTHTML|IMPORTDATA|IMPORTARDATOS|IMPORTXML|IMPORTFEED|FLATTEN|ARRAY_CONSTRAIN)\s*\(/i);
@@ -12080,6 +12366,7 @@ function renderAllCells() {
   var nCiclos = Object.keys(iterValores).length;
   if (dueno && iterActiva() && !iterandoAhora && nCiclos) { iterandoAhora = true; try { iterarCiclos(); } finally { iterandoAhora = false; } }
   if (dueno) iniciarCacheCalculo();
+  if (dueno) calcIncIniciarPasada();
   try {
     var resR = renderAllCellsInterno();
     // Si en esta pasada aparecieron referencias circulares nuevas, se itera y se vuelve a pintar
@@ -12088,7 +12375,7 @@ function renderAllCells() {
       try { iterarCiclos(); iniciarCacheCalculo(); resR = renderAllCellsInterno(); } finally { iterandoAhora = false; }
     }
     return resR;
-  } finally { if (dueno) terminarCacheCalculo(); aplicarTraza(); if (typeof splitRefrescar === 'function') splitRefrescar(); if (modoDiseno && typeof actualizarDisenoPagina === 'function') actualizarDisenoPagina(); }
+  } finally { if (dueno) { terminarCacheCalculo(); calcIncTerminarPasada(); } aplicarTraza(); if (typeof splitRefrescar === 'function') splitRefrescar(); if (modoDiseno && typeof actualizarDisenoPagina === 'function') actualizarDisenoPagina(); }
 }
 function renderAllCellsInterno() {
   var data = sheetData[activeSheet] || {};
@@ -20641,6 +20928,7 @@ function revisarLibroParaCompartir() {
     hacer: function () { sheets.forEach(function (h) { sheetNotes[h] = {}; }); } });
   // 2. Historial y control de cambios (guardan quién cambió qué)
   var nCC = 0; sheets.forEach(function (h) { var c = ccDatos(h); if (c) nCC += contar(c.cambios) + (c.est || []).length; });
+  if (typeof flushHistorialLocal === 'function') flushHistorialLocal();
   var nHist = Array.isArray(historialCambios) ? historialCambios.length : 0;
   res.push({ id: 'historial', icono: '🕓', titulo: 'Historial y control de cambios', n: nHist + nCC,
     detalle: (nHist ? nHist + ' cambios en el historial' : '') + (nHist && nCC ? ' · ' : '') + (nCC ? nCC + ' en el control de cambios' : ''),
@@ -21255,7 +21543,7 @@ function formulaRelativa(raw, r, c) {
     return (hoja || '') + 'R' + (a2 ? '[' + rr + ']' : '[' + (rr - r) + ']') + 'C' + (a1 ? '[' + cc + ']' : '[' + (cc - c) + ']');
   });
 }
-function revisarHoja(hoja) {
+function revisarHoja(hoja, valoresPre) {
   var d = sheetData[hoja] || {}, out = [], ant = activeSheet, grid = {};
   var ids = Object.keys(d).filter(function (k) { return /^[A-Z]{1,3}\d+$/.test(k) && d[k] !== '' && d[k] != null; });
   ids.forEach(function (id) { var m = /^([A-Z]{1,3})(\d+)$/.exec(id); grid[(parseInt(m[2], 10) - 1) + ',' + colIndex(m[1])] = d[id]; });
@@ -21267,7 +21555,7 @@ function revisarHoja(hoja) {
     ids.forEach(function (id) {
       var raw = d[id], m = /^([A-Z]{1,3})(\d+)$/.exec(id), r = parseInt(m[2], 10) - 1, c = colIndex(m[1]);
       if (esF(raw)) {
-        var val = String(computeValue(id));
+        var val = valoresPre && Object.prototype.hasOwnProperty.call(valoresPre, id) ? valoresPre[id] : String(computeValue(id));
         if (/#REF!/.test(raw) || /^#REF/.test(val)) out.push({ id: id, tipo: 'ref', texto: 'Referencia rota (#REF!)' });
         else if (/^#/.test(val)) out.push({ id: id, tipo: 'error', texto: 'Error en el resultado: ' + val });
         norm[r + ',' + c] = formulaRelativa(raw, r, c);
@@ -21982,10 +22270,17 @@ function programarErroresFondo() {
   if (erroresFondo.hoja === activeSheet && erroresFondo.firma === firma) return;
   clearTimeout(erroresFondoTimer);
   erroresFondoTimer = setTimeout(function () {
-    var hoja = activeSheet, mapa = {}, omit = (colWidths[hoja] && colWidths[hoja].errOmit) || {};
-    try { revisarHoja(hoja).forEach(function (x) { if (omit[x.id] !== x.tipo && !mapa[x.id]) mapa[x.id] = x; }); } catch (e) {}
-    erroresFondo = { hoja: hoja, mapa: mapa, firma: firma };
-    if (hoja === activeSheet) { aplicarMarcasRevision(); if (typeof posicionarManijaRelleno === 'function') try { posicionarManijaRelleno(); } catch (e2) {} }
+    var hoja = activeSheet, omit = (colWidths[hoja] && colWidths[hoja].errOmit) || {};
+    var listo = function (lista) {
+      if (!lista) return; // la hoja cambió a medio camino: la próxima revisión la retoma
+      var mapa = {};
+      lista.forEach(function (x) { if (omit[x.id] !== x.tipo && !mapa[x.id]) mapa[x.id] = x; });
+      erroresFondo = { hoja: hoja, mapa: mapa, firma: firma };
+      if (hoja === activeSheet) { aplicarMarcasRevision(); if (typeof posicionarManijaRelleno === 'function') try { posicionarManijaRelleno(); } catch (e2) {} }
+    };
+    // Hojas grandes: se revisa en pedacitos para no trabar la pantalla
+    if (Object.keys(sheetData[hoja] || {}).length > 3000) { revisarHojaPorPartes(hoja, listo); return; }
+    try { listo(revisarHoja(hoja)); } catch (e) { listo([]); }
   }, 350);
 }
 function menuErrorCelda(id) {
@@ -32493,6 +32788,15 @@ function xlsxBase64ConImagenes(wb, hojas) {
       for (var qc = 0; qc < candC.length; qc++) { var ixc = xmlHoja.indexOf(candC[qc]); if (ixc !== -1) { corteC = ixc; break; } }
       if (corteC !== -1) { xmlHoja = xmlHoja.slice(0, corteC) + h.cond + xmlHoja.slice(corteC); escribir(rutaHoja, xmlHoja); }
     }
+    if (h.pane) {
+      xmlHoja = xmlHoja.replace(/<sheetView([^>]*?)\/>/, '<sheetView$1>' + h.pane + '</sheetView>');
+      escribir(rutaHoja, xmlHoja);
+    }
+    if (h.dv && xmlHoja.indexOf('<dataValidations') === -1) {
+      var candV = ['<hyperlinks', '<printOptions', '<pageMargins', '<pageSetup', '<headerFooter', '<rowBreaks', '<colBreaks', '<customProperties', '<cellWatches', '<ignoredErrors', '<smartTags', '<drawing', '<legacyDrawing', '<tableParts', '<extLst', '</worksheet>'], corteV = -1;
+      for (var qv = 0; qv < candV.length; qv++) { var ixv = xmlHoja.indexOf(candV[qv]); if (ixv !== -1) { corteV = ixv; break; } }
+      if (corteV !== -1) { xmlHoja = xmlHoja.slice(0, corteV) + h.dv + xmlHoja.slice(corteV); escribir(rutaHoja, xmlHoja); }
+    }
     if (!h.imagenes || !h.imagenes.length) return;
     h.imagenes.forEach(function (im, j) {
       var X = Math.round(im.x * 9525), Y = Math.round(im.y * 9525), CX = Math.round(im.w * 9525), CY = Math.round(im.h * 9525);
@@ -32528,6 +32832,15 @@ function xlsxBase64ConImagenes(wb, hojas) {
     escribir(rutaHoja, xmlHoja);
   });
   escribir('[Content_Types].xml', tipos.replace('</Types>', extra + '</Types>'));
+  if (dxfsExportar.length) { var est = leer('xl/styles.xml'); if (est) escribir('xl/styles.xml', agregarDxfsAEstilos(est, dxfsExportar)); }
+  // Que Excel recalcule todas las fórmulas al abrir (los resultados guardados son los de la app)
+  var wbX = leer('xl/workbook.xml');
+  if (wbX) {
+    if (/<calcPr\b/.test(wbX)) wbX = wbX.replace(/<calcPr\b([^>]*?)(\/?)>/, function (t, at, cierre) { return '<calcPr' + at.replace(/\sfullCalcOnLoad="[^"]*"/, '') + ' fullCalcOnLoad="1"' + cierre + '>'; });
+    else if (wbX.indexOf('</definedNames>') !== -1) wbX = wbX.replace('</definedNames>', '</definedNames><calcPr calcId="191029" fullCalcOnLoad="1"/>');
+    else wbX = wbX.replace('</sheets>', '</sheets><calcPr calcId="191029" fullCalcOnLoad="1"/>');
+    escribir('xl/workbook.xml', wbX);
+  }
   return XLSX.CFB.write(cfb, { type: 'base64', fileType: 'zip' });
 }
 document.getElementById('btnExcelExport').addEventListener('click', function () {
@@ -32580,17 +32893,33 @@ function exportarExcelInterno() {
         if (crudo.charAt(0) === '=' && crudo.length > 1) {
           var mostrado = computeValue(idCelda);
           var numCache = textoANumeroExcel(mostrado);
-          var celdaF = { f: formulaParaExcel(expandirFuncionesPropias(sustituirRangosNombrados(crudo.substring(1)))) };
+          // Los nombres que viajan como nombres definidos de Excel se dejan como nombre (=E3*TasaIVA)
+          var todosNombres = rangosNombrados, sinExportar = {};
+          Object.keys(todosNombres || {}).forEach(function (k) { if (!nombreExportableExcel(k)) sinExportar[k] = todosNombres[k]; });
+          var fxSinNombres;
+          rangosNombrados = sinExportar;
+          try { fxSinNombres = sustituirRangosNombrados(crudo.substring(1)); } finally { rangosNombrados = todosNombres; }
+          var celdaF = { f: formulaParaExcel(expandirFuncionesPropias(fxSinNombres)) };
+          var serialFx = numCache === null ? serialExcelDeTexto(String(mostrado)) : null;
           if (numCache !== null) { celdaF.t = 'n'; celdaF.v = numCache; }
+          else if (serialFx !== null) { celdaF.t = 'n'; celdaF.v = serialFx; celdaF.z = /:/.test(String(mostrado)) ? 'dd/mm/yyyy hh:mm' : 'dd/mm/yyyy'; }
           else { celdaF.t = 's'; celdaF.v = String(mostrado === undefined || mostrado === null ? '' : mostrado); }
           errorTablaPendiente = false;
           ws[refExcel] = celdaF;
         } else {
           var numCrudo = /^-?\d+(\.\d+)?$/.test(crudo.trim()) ? parseFloat(crudo) : null;
-          ws[refExcel] = numCrudo !== null ? { t: 'n', v: numCrudo } : { t: 's', v: crudo };
+          // Se queda como texto: lo que venía como texto de Excel, ceros adelante (00123) y números
+          // de más de 15 cifras (cédulas jurídicas, cuentas IBAN), que Excel redondearía
+          if (numCrudo !== null && ((fmtCelda && fmtCelda.esTexto) || /^-?0\d/.test(crudo.trim()) || crudo.replace(/\D/g, '').length > 15)) numCrudo = null;
+          var serialF = numCrudo === null ? serialExcelDeTexto(crudo) : null;
+          if (serialF !== null) ws[refExcel] = { t: 'n', v: serialF, z: /:/.test(crudo) ? 'dd/mm/yyyy hh:mm' : 'dd/mm/yyyy' };
+          else ws[refExcel] = numCrudo !== null ? { t: 'n', v: numCrudo } : { t: 's', v: crudo };
         }
         var zExcel = formatoNumeroExcel(fmtCelda);
         if (zExcel && ws[refExcel].t === 'n') ws[refExcel].z = zExcel;
+        if (ws[refExcel].t === 's' && fmtCelda && fmtCelda.esTexto) ws[refExcel].z = '@';
+        var hiloX = typeof hiloDeNotas === 'function' ? hiloDeNotas(sheetName, idCelda) : [];
+        if (hiloX.length) ws[refExcel].c = hiloX.map(function (k) { return { a: String(k.autor || 'Matriz Contable CR'), t: String(k.texto || '') }; });
         if (estiloCelda) ws[refExcel].s = estiloCelda;
       }
     }
@@ -32609,6 +32938,8 @@ function exportarExcelInterno() {
       if (hpxv > 0) { filasExcel[rhx] = { hpx: hpxv }; hayAltos = true; } else filasExcel[rhx] = {};
     }
     if (hayAltos) ws['!rows'] = filasExcel;
+    var afX = sheetAutoFiltro[sheetName];
+    if (afX && afX.colFin >= afX.colIni) ws['!autofilter'] = { ref: cellId(afX.fila, afX.colIni) + ':' + cellId(Math.max(afX.fila, maxRow), afX.colFin) };
     var combinadas = sheetMerges[sheetName] || [];
     if (combinadas.length) {
       ws['!merges'] = combinadas.map(function (m) {
@@ -32626,15 +32957,27 @@ function exportarExcelInterno() {
   activeSheet = originalSheet;
   if (!huboDatos) { alert('No hay datos para exportar en ninguna hoja.'); return; }
   if (ordenExport.some(function (n) { return hojaOculta(n); })) wb.Workbook = { Sheets: ordenExport.map(function (n) { return hojaOculta(n) ? { Hidden: 1 } : {}; }) };
+  // Rangos con nombre → nombres definidos de Excel
+  var nombresX = [];
+  Object.keys(rangosNombrados || {}).forEach(function (k) {
+    var rn = rangosNombrados[k]; if (!nombreExportableExcel(k) || !nombresExport[rn.hoja]) return;
+    var abs = function (c) { var m = /^([A-Z]+)(\d+)$/.exec(c); return '$' + m[1] + '$' + m[2]; };
+    nombresX.push({ Name: k, Ref: "'" + nombresExport[rn.hoja].replace(/'/g, "''") + "'!" + abs(rn.from) + (rn.to && rn.to !== rn.from ? ':' + abs(rn.to) : '') });
+  });
+  if (nombresX.length) { wb.Workbook = wb.Workbook || {}; wb.Workbook.Names = nombresX; }
   var wbout = null, conImagenes = 0, nNativos = 0, nCond = 0;
+  dxfsExportar = [];
   try {
     var porHoja = {};
     recolectarImagenesExcel(nombresExport).forEach(function (h) { porHoja[h.hoja] = { imagenes: h.imagenes }; });
     ordenExport.forEach(function (nombreH) {
-      var cx = reglasCondicionalesExcel(nombreH);
+      var cx = reglasCondicionalesExcel(nombreH) + reglasCondBasicasExcel(nombreH);
       if (cx) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].cond = cx; nCond += (cx.match(/<conditionalFormatting/g) || []).length; }
+      var pX = paneExcel(nombreH), dvX = validacionesListaExcel(nombreH);
+      if (pX || dvX) { porHoja[nombreH] = porHoja[nombreH] || { imagenes: [] }; porHoja[nombreH].pane = pX; porHoja[nombreH].dv = dvX; }
     });
-    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '' }; }).filter(function (h) { return h.indice > 0; });
+    ordenExport.forEach(function (nombreH) { if (!porHoja[nombreH]) porHoja[nombreH] = { imagenes: [] }; });
+    var imgHojas = Object.keys(porHoja).map(function (nh) { return { indice: ordenExport.indexOf(nh) + 1, imagenes: porHoja[nh].imagenes, cond: porHoja[nh].cond || '', pane: porHoja[nh].pane || '', dv: porHoja[nh].dv || '' }; }).filter(function (h) { return h.indice > 0; });
     if (imgHojas.length && XLSX.CFB) {
       wbout = xlsxBase64ConImagenes(wb, imgHojas);
       imgHojas.forEach(function (h) { h.imagenes.forEach(function (im) { if (im.chartXml) nNativos++; else conImagenes++; }); });
@@ -32683,6 +33026,395 @@ function formulaDesdeExcel(f) {
   return out;
 }
 // Formato de número de Excel (z) → formato de la hoja. null si es "General".
+
+// ══════════════════════════════════════════════
+// EXCEL · fidelidad (1): lo que la librería no lee ni escribe
+// Al importar: paneles inmovilizados, autofiltro y listas desplegables.
+// Al exportar: fechas como fechas de verdad, paneles, autofiltro y listas.
+// ══════════════════════════════════════════════
+// Excel 97-2003 (.xls): la librería no trae estilos, así que se leen directo del
+// archivo (registros FONT, XF y PALETTE del formato BIFF8): negrita, cursiva,
+// subrayado, color de letra, relleno y alineación.
+var PALETA_XLS = ['000000','FFFFFF','FF0000','00FF00','0000FF','FFFF00','FF00FF','00FFFF','800000','008000','000080','808000','800080','008080','C0C0C0','808080','9999FF','993366','FFFFCC','CCFFFF','660066','FF8080','0066CC','CCCCFF','000080','FF00FF','FFFF00','00FFFF','800080','800000','008080','0000FF','00CCFF','CCFFFF','CCFFCC','FFFF99','99CCFF','FF99CC','CC99FF','FFCC99','3366FF','33CCCC','99CC00','FFCC00','FF9900','FF6600','666699','969696','003366','339966','003300','333300','993300','993366','333399','333333'];
+function leerEstilosXls(binario) {
+  if (!window.XLSX || !XLSX.CFB) return {};
+  var cfb;
+  try { cfb = XLSX.CFB.read(binario, { type: 'binary' }); } catch (e) { return {}; }
+  var flujo = XLSX.CFB.find(cfb, 'Workbook') || XLSX.CFB.find(cfb, 'Book');
+  if (!flujo || !flujo.content) return {};
+  var b = flujo.content instanceof Uint8Array ? flujo.content : new Uint8Array(flujo.content);
+  var u16 = function (o) { return b[o] | (b[o + 1] << 8); };
+  var u32 = function (o) { return (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16)) + b[o + 3] * 16777216; };
+  var fuentes = [], xfs = [], paleta = PALETA_XLS.slice(), hojas = [], hojaActual = -1, enGlobales = true, out = {};
+  var colorDe = function (icv) { return icv >= 8 && icv - 8 < paleta.length ? '#' + paleta[icv - 8].toLowerCase() : (icv < 8 ? '#' + PALETA_XLS[icv].toLowerCase() : null); };
+  var estiloXf = function (i) {
+    var x = xfs[i]; if (!x) return null;
+    if (x.cache !== undefined) return x.cache;
+    var f = fuentes[x.fnt >= 4 ? x.fnt - 1 : x.fnt] || {}, st = {};
+    if (f.bold) st.bold = true;
+    if (f.italic) st.italic = true;
+    if (f.underline) st.underline = true;
+    if (f.color && f.color !== 0x7FFF && f.color !== 8 && f.color !== 64) { var cf = colorDe(f.color); if (cf && cf !== '#000000') st.fontColor = cf; }
+    if (x.patron === 1 && x.fondo !== 64 && x.fondo !== 65) { var cb = colorDe(x.fondo); if (cb && cb !== '#ffffff') st.bgColor = cb; }
+    if (x.horiz === 1) st.align = 'left'; else if (x.horiz === 2) st.align = 'center'; else if (x.horiz === 3) st.align = 'right';
+    if (x.wrap) st.wrap = true;
+    x.cache = Object.keys(st).length ? st : null;
+    return x.cache;
+  };
+  var marcar = function (fila, col, ixf) {
+    if (hojaActual < 0 || !hojas[hojaActual]) return;
+    var st = estiloXf(ixf); if (!st) return;
+    var m = out[hojas[hojaActual].nombre] || (out[hojas[hojaActual].nombre] = {});
+    m[XLSX.utils.encode_cell({ r: fila, c: col })] = JSON.parse(JSON.stringify(st));
+  };
+  var pos = 0, nCeldas = 0, prof = 0;
+  while (pos + 4 <= b.length && nCeldas < 200000) {
+    var tipo = u16(pos), largo = u16(pos + 2), d = pos + 4;
+    if (d + largo > b.length) break;
+    if (tipo === 0x0809) { // BOF (los gráficos dentro de una hoja traen su propio BOF/EOF)
+      prof++;
+      if (!enGlobales && prof === 1) hojaActual++;
+    } else if (tipo === 0x000A) { // EOF
+      prof = Math.max(0, prof - 1);
+      if (prof === 0) enGlobales = false;
+    } else if (prof !== 1) {
+      // dentro de un gráfico incrustado: nada que leer
+    } else if (enGlobales) {
+      if (tipo === 0x0031) fuentes.push({ italic: !!(u16(d + 2) & 2), color: u16(d + 4), bold: u16(d + 6) >= 700, underline: b[d + 10] > 0 });
+      else if (tipo === 0x00E0) { var al = b[d + 6]; xfs.push({ fnt: u16(d), horiz: al & 7, wrap: !!(al & 8), patron: (u32(d + 14) >>> 26) & 63, fondo: u16(d + 18) & 127 }); }
+      else if (tipo === 0x0092) { var n = u16(d); for (var k = 0; k < n && k < 56; k++) { var o = d + 2 + k * 4; paleta[k] = [b[o], b[o + 1], b[o + 2]].map(function (v) { return (v < 16 ? '0' : '') + v.toString(16); }).join('').toUpperCase(); } }
+      else if (tipo === 0x0085) { var cch = b[d + 6], uni = b[d + 7] & 1, nombre = ''; for (var q = 0; q < cch; q++) nombre += String.fromCharCode(uni ? u16(d + 8 + q * 2) : b[d + 8 + q]); hojas.push({ nombre: nombre, pos: u32(d), tipo: b[d + 5] }); hojas.sort(function (x, y) { return x.pos - y.pos; }); }
+    } else if (tipo === 0x00FD || tipo === 0x0203 || tipo === 0x027E || tipo === 0x0204 || tipo === 0x0205 || tipo === 0x0006 || tipo === 0x0201) {
+      marcar(u16(d), u16(d + 2), u16(d + 4)); nCeldas++;
+    } else if (tipo === 0x00BD) { // MULRK
+      var f1 = u16(d), c1 = u16(d + 2), nk = (largo - 6) / 6;
+      for (var j = 0; j < nk; j++) marcar(f1, c1 + j, u16(d + 4 + j * 6));
+      nCeldas += nk;
+    } else if (tipo === 0x00BE) { // MULBLANK
+      var f2 = u16(d), c2 = u16(d + 2), nb = (largo - 6) / 2;
+      for (var j2 = 0; j2 < nb; j2++) marcar(f2, c2 + j2, u16(d + 4 + j2 * 2));
+      nCeldas += nb;
+    }
+    pos = d + largo;
+  }
+  return out;
+}
+// Hoja para un Excel importado: si ya hay una hoja con ese nombre y está vacía
+// (como la Hoja1 de un libro nuevo) se usa esa; si tiene datos, queda "Hoja1 (2)".
+function crearHojaParaImportar(nombre) {
+  nombre = String(nombre || 'Hoja').replace(/[\\\/?*\[\]:]/g, ' ').trim().slice(0, 31) || 'Hoja';
+  var i = sheets.indexOf(nombre);
+  if (i !== -1) {
+    var vacia = !Object.keys(sheetData[nombre] || {}).length && !Object.keys(sheetFormats[nombre] || {}).length && !(sheetGraficos[nombre] || []).length;
+    if (vacia) { sheetMerges[nombre] = []; colWidths[nombre] = colWidths[nombre] || {}; return nombre; }
+    var k = 2, base = nombre.slice(0, 26);
+    while (sheets.indexOf(base + ' (' + k + ')') !== -1) k++;
+    nombre = base + ' (' + k + ')';
+  }
+  return crearHojaDestino(nombre);
+}
+
+// ══════════════════════════════════════════════
+// EXCEL · fidelidad (2): nombres, comentarios, vínculos y formato condicional
+// ══════════════════════════════════════════════
+var OPERADORES_CF_EXCEL = { greaterThan: 'gt', greaterThanOrEqual: 'gte', lessThan: 'lt', lessThanOrEqual: 'lte', equal: 'eq', notEqual: 'neq' };
+var OPERADORES_CF_APP = { gt: 'greaterThan', gte: 'greaterThanOrEqual', lt: 'lessThan', lte: 'lessThanOrEqual', eq: 'equal', neq: 'notEqual' };
+// Estilos diferenciales (dxf) de styles.xml: el color de fondo y de letra de cada regla
+function leerDxfsXlsx(archivo) {
+  var xml = archivo('xl/styles.xml'), out = [];
+  var bloque = (xml.match(/<dxfs[^>]*>([\s\S]*?)<\/dxfs>/) || [])[1] || '';
+  (bloque.match(/<dxf>[\s\S]*?<\/dxf>/g) || []).forEach(function (d) {
+    var fuente = (d.match(/<font>[\s\S]*?<\/font>/) || [''])[0], relleno = (d.match(/<fill>[\s\S]*?<\/fill>/) || [''])[0];
+    var colorDe = function (x, etiqueta) { var m = x.match(new RegExp('<' + etiqueta + '[^>]*rgb="([0-9A-Fa-f]{6,8})"')); return m ? '#' + m[1].slice(-6).toLowerCase() : ''; };
+    out.push({ texto: colorDe(fuente, 'color'), fondo: colorDe(relleno, 'bgColor') || colorDe(relleno, 'fgColor'), negrita: /<b\/>|<b val="1"/.test(fuente) });
+  });
+  return out;
+}
+function condicionalesDeHojaXlsx(xml, dxfs) {
+  var basicas = [], avanzadas = [];
+  var attr = function (tag, n) { var m = tag.match(new RegExp('(?:^|\\s)' + n + '="([^"]*)"')); return m ? m[1] : null; };
+  var desesc = function (t) { return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&'); };
+  (xml.match(/<conditionalFormatting\s[^>]*>[\s\S]*?<\/conditionalFormatting>/g) || []).forEach(function (cf) {
+    var sq = (attr(cf.match(/<conditionalFormatting\s[^>]*>/)[0], 'sqref') || '').replace(/\$/g, '').split(/\s+/)[0];
+    if (!sq) return;
+    var rango = /:/.test(sq) ? sq : sq + ':' + sq, primera = sq.split(':')[0];
+    (cf.match(/<cfRule\s[^>]*?(?:\/>|>[\s\S]*?<\/cfRule>)/g) || []).forEach(function (regla) {
+      var cab = regla.match(/<cfRule\s[^>]*>/)[0], tipo = attr(cab, 'type'), dxf = dxfs[parseInt(attr(cab, 'dxfId') || '-1', 10)] || {};
+      var formulas = (regla.match(/<formula>([\s\S]*?)<\/formula>/g) || []).map(function (f) { return desesc(f.replace(/<\/?formula>/g, '')); });
+      var colores = { bgColor: dxf.fondo || '#ffffff', textColor: dxf.texto || '#000000' };
+      var valorDe = function (f) { f = String(f || '').trim(); return /^".*"$/.test(f) ? f.slice(1, -1).replace(/""/g, '"') : f; };
+      if (tipo === 'cellIs') {
+        var op = attr(cab, 'operator');
+        if (OPERADORES_CF_EXCEL[op] && formulas[0] !== undefined) {
+          var v = valorDe(formulas[0]);
+          if (/^-?\d+(\.\d+)?$/.test(v) || /^".*"$/.test(String(formulas[0]).trim())) basicas.push(Object.assign({ range: rango, type: OPERADORES_CF_EXCEL[op], value: v }, colores));
+          else basicas.push(Object.assign({ range: rango, type: 'formula', value: '=' + primera + { gt: '>', gte: '>=', lt: '<', lte: '<=', eq: '=', neq: '<>' }[OPERADORES_CF_EXCEL[op]] + formulaDesdeExcel(formulas[0]) }, colores));
+        } else if ((op === 'between' || op === 'notBetween') && formulas.length === 2) {
+          var expr = 'Y(' + primera + '>=' + formulaDesdeExcel(formulas[0]) + ';' + primera + '<=' + formulaDesdeExcel(formulas[1]) + ')';
+          basicas.push(Object.assign({ range: rango, type: 'formula', value: '=' + (op === 'notBetween' ? 'NO(' + expr + ')' : expr) }, colores));
+        }
+      } else if (tipo === 'containsText') {
+        basicas.push(Object.assign({ range: rango, type: 'contains', value: desesc(attr(cab, 'text') || '') }, colores));
+      } else if (tipo === 'containsBlanks' || tipo === 'notContainsBlanks') {
+        basicas.push(Object.assign({ range: rango, type: tipo === 'containsBlanks' ? 'empty' : 'notempty', value: '' }, colores));
+      } else if (tipo === 'expression' && formulas[0]) {
+        basicas.push(Object.assign({ range: rango, type: 'formula', value: '=' + formulaDesdeExcel(formulas[0]) }, colores));
+      } else if (tipo === 'colorScale') {
+        var cols = (regla.match(/<color [^>]*rgb="([0-9A-Fa-f]{6,8})"/g) || []).map(function (c) { return '#' + c.match(/rgb="([0-9A-Fa-f]{6,8})"/)[1].slice(-6).toLowerCase(); });
+        if (cols.length >= 2) {
+          var esc = { range: rango, type: 'colorscale', colorMin: cols[0], colorMax: cols[cols.length - 1] };
+          if (cols.length === 3) esc.colorMedio = cols[1];
+          avanzadas.push(esc);
+        }
+      } else if (tipo === 'dataBar') {
+        var cb = (regla.match(/<color [^>]*rgb="([0-9A-Fa-f]{6,8})"/) || [])[1];
+        avanzadas.push({ range: rango, type: 'databar', color: cb ? '#' + cb.slice(-6).toLowerCase() : '#5a9bd5' });
+      } else if (tipo === 'iconSet') {
+        avanzadas.push({ range: rango, type: 'iconset', iconStyle: /Arrows/.test(regla) ? 'flechas' : 'semaforo' });
+      }
+    });
+  });
+  return { basicas: basicas, avanzadas: avanzadas };
+}
+// Rangos con nombre del libro de Excel → rangosNombrados
+function importarNombresExcel(wb, renombradas) {
+  var n = 0;
+  ((wb.Workbook && wb.Workbook.Names) || []).forEach(function (nm) {
+    var nombre = String(nm.Name || ''), ref = String(nm.Ref || '').trim();
+    if (!nombre || /^_xlnm\.|^_/.test(nombre) || nm.Hidden) return;
+    var m = /^(?:'((?:[^']|'')+)'|([^!]+))!\$?([A-Z]+)\$?(\d+)(?::\$?([A-Z]+)\$?(\d+))?$/.exec(ref);
+    if (!m) return;
+    var hoja = (m[1] ? m[1].replace(/''/g, "'") : m[2]);
+    hoja = renombradas[hoja] || hoja;
+    if (sheets.indexOf(hoja) === -1) return;
+    var desde = m[3] + m[4], hasta = m[5] ? m[5] + m[6] : desde;
+    rangosNombrados[nombre.toUpperCase()] = { hoja: hoja, from: desde, to: hasta, esTabla: false };
+    n++;
+  });
+  return n;
+}
+// Comentarios y vínculos de cada celda
+function importarComentariosYVinculos(hoja, wsX) {
+  var nNotas = 0, nVinc = 0;
+  Object.keys(wsX).forEach(function (ref) {
+    if (ref.charAt(0) === '!') return;
+    var cel = wsX[ref], pos = XLSX.utils.decode_cell(ref), id = cellId(pos.r, pos.c);
+    if (cel.c && cel.c.length) {
+      sheetNotes[hoja] = sheetNotes[hoja] || {};
+      sheetNotes[hoja][id] = cel.c.map(function (k) { return { texto: String(k.t || '').trim(), autor: String(k.a || 'Excel'), fecha: null }; }).filter(function (k) { return k.texto; });
+      if (!sheetNotes[hoja][id].length) delete sheetNotes[hoja][id]; else nNotas++;
+    }
+    if (cel.l && cel.l.Target && !cel.f) {
+      var texto = sheetData[hoja][id] !== undefined ? String(sheetData[hoja][id]) : String(cel.l.Target);
+      if (texto.charAt(0) !== '=') { sheetData[hoja][id] = construirVinculo(String(cel.l.Target), texto); nVinc++; }
+    }
+  });
+  return { notas: nNotas, vinculos: nVinc };
+}
+// ── Exportar: formato condicional "básico" (mayor que, contiene, fórmula…) ──
+// Necesita estilos diferenciales (dxf) en styles.xml: se juntan aquí y se agregan al final.
+var dxfsExportar = [];
+// ¿Este rango con nombre se puede guardar como nombre definido de Excel?
+function nombreExportableExcel(k) {
+  var rn = rangosNombrados[k];
+  return !!(rn && /^[A-Z_][A-Z0-9_.]*$/i.test(k) && !/^[A-Z]{1,3}\d+$/i.test(k) && /^[A-Z]+\d+$/.test(String(rn.from || '')) && Object.keys(sheetData[rn.hoja] || {}).length);
+}
+function reglasCondBasicasExcel(nombre) {
+  var reglas = sheetCondFormats[nombre] || [], xml = '', prio = 100;
+  var hex = function (c) { return 'FF' + String(c || '#000000').replace('#', '').toUpperCase(); };
+  reglas.forEach(function (rg) {
+    var rango = String(rg.range || '').replace(/\$/g, '').toUpperCase();
+    if (!/^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(rango)) return;
+    var sq = rango.replace(/^([A-Z]+\d+):\1$/, '$1'), primera = rango.split(':')[0];
+    var dxf = '<dxf>' + (rg.textColor && rg.textColor.toLowerCase() !== '#000000' ? '<font><color rgb="' + hex(rg.textColor) + '"/></font>' : '') +
+      (rg.bgColor && rg.bgColor.toLowerCase() !== '#ffffff' ? '<fill><patternFill><bgColor rgb="' + hex(rg.bgColor) + '"/></patternFill></fill>' : '') + '</dxf>';
+    var k = dxfsExportar.length, cuerpo = '', v = String(rg.value === undefined ? '' : rg.value);
+    var literal = /^-?\d+([.,]\d+)?$/.test(v.trim()) ? v.trim().replace(',', '.') : '"' + v.replace(/"/g, '""') + '"';
+    if (OPERADORES_CF_APP[rg.type]) cuerpo = '<cfRule type="cellIs" dxfId="' + k + '" priority="' + (prio++) + '" operator="' + OPERADORES_CF_APP[rg.type] + '"><formula>' + escXml(literal) + '</formula></cfRule>';
+    else if (rg.type === 'contains') cuerpo = '<cfRule type="containsText" dxfId="' + k + '" priority="' + (prio++) + '" operator="containsText" text="' + escXml(v) + '"><formula>' + escXml('NOT(ISERROR(SEARCH(' + literal + ',' + primera + ')))') + '</formula></cfRule>';
+    else if (rg.type === 'empty') cuerpo = '<cfRule type="containsBlanks" dxfId="' + k + '" priority="' + (prio++) + '"><formula>' + escXml('LEN(TRIM(' + primera + '))=0') + '</formula></cfRule>';
+    else if (rg.type === 'notempty') cuerpo = '<cfRule type="notContainsBlanks" dxfId="' + k + '" priority="' + (prio++) + '"><formula>' + escXml('LEN(TRIM(' + primera + '))>0') + '</formula></cfRule>';
+    else if (rg.type === 'formula' && v.trim()) cuerpo = '<cfRule type="expression" dxfId="' + k + '" priority="' + (prio++) + '"><formula>' + escXml(formulaParaExcel(v.trim().replace(/^=/, ''))) + '</formula></cfRule>';
+    if (!cuerpo) return;
+    dxfsExportar.push(dxf);
+    xml += '<conditionalFormatting sqref="' + sq + '">' + cuerpo + '</conditionalFormatting>';
+  });
+  return xml;
+}
+function agregarDxfsAEstilos(xmlEstilos, dxfs) {
+  if (!dxfs.length) return xmlEstilos;
+  var bloque = dxfs.join('');
+  if (/<dxfs[^>]*\/>/.test(xmlEstilos)) return xmlEstilos.replace(/<dxfs[^>]*\/>/, '<dxfs count="' + dxfs.length + '">' + bloque + '</dxfs>');
+  if (/<dxfs[^>]*>/.test(xmlEstilos)) {
+    var previos = (xmlEstilos.match(/<dxf>/g) || []).length;
+    // Las reglas cuentan desde 0: si ya había dxf, se corren (no debería pasar con esta librería)
+    if (previos) return xmlEstilos;
+    return xmlEstilos.replace(/<dxfs[^>]*>([\s\S]*?)<\/dxfs>/, '<dxfs count="' + dxfs.length + '">' + bloque + '</dxfs>');
+  }
+  var cand = ['<tableStyles', '<colors', '<extLst', '</styleSheet>'];
+  for (var i = 0; i < cand.length; i++) { var ix = xmlEstilos.indexOf(cand[i]); if (ix !== -1) return xmlEstilos.slice(0, ix) + '<dxfs count="' + dxfs.length + '">' + bloque + '</dxfs>' + xmlEstilos.slice(ix); }
+  return xmlEstilos;
+}
+function leerExtrasXlsx(binario) {
+  if (!window.XLSX || !XLSX.CFB) return {};
+  var cfb;
+  try { cfb = XLSX.CFB.read(binario, { type: 'binary' }); } catch (e) { return {}; }
+  function archivo(ruta) {
+    for (var i = 0; i < cfb.FullPaths.length; i++) {
+      var fp = cfb.FullPaths[i];
+      if (fp.slice(-ruta.length) === ruta && (fp.length === ruta.length || /[\/]$/.test(fp.slice(0, fp.length - ruta.length)))) {
+        var c = cfb.FileIndex[i].content;
+        if (!c) return '';
+        return new TextDecoder('utf-8').decode(c instanceof Uint8Array ? c : new Uint8Array(c));
+      }
+    }
+    return '';
+  }
+  function desescapar(t) { return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&'); }
+  function attr(tag, nombre) { var m = tag.match(new RegExp('(?:^|\\s)' + nombre + '="([^"]*)"')); return m ? m[1] : null; }
+  var wbXml = archivo('xl/workbook.xml'), rels = archivo('xl/_rels/workbook.xml.rels');
+  if (!wbXml) return {};
+  var dxfs = []; try { dxfs = leerDxfsXlsx(archivo); } catch (eDx) {}
+  var destinos = {};
+  (rels.match(/<Relationship\s[^>]*\/?>/g) || []).forEach(function (r) { destinos[attr(r, 'Id')] = attr(r, 'Target'); });
+  var out = {};
+  (wbXml.match(/<sheet\s[^>]*\/?>/g) || []).forEach(function (t) {
+    var nombre = desescapar(attr(t, 'name') || ''), dest = destinos[attr(t, 'r:id')];
+    if (!nombre || !dest) return;
+    var xml = archivo('xl/' + dest.replace(/^\/?(xl\/)?/, ''));
+    if (!xml) return;
+    var ex = {};
+    // <pane xSplit="1" ySplit="1" state="frozen"/>
+    var pane = (xml.match(/<pane\s[^>]*\/?>/) || [])[0];
+    if (pane && /state="frozen(Split)?"/.test(pane)) ex.freeze = { row: parseInt(attr(pane, 'ySplit') || '0', 10) || 0, col: parseInt(attr(pane, 'xSplit') || '0', 10) || 0 };
+    // <dataValidation type="list" sqref="E2:E50"><formula1>"Sí,No"</formula1>
+    var listas = [];
+    (xml.match(/<dataValidation\s[^>]*>[\s\S]*?<\/dataValidation>/g) || []).forEach(function (dv) {
+      var cab = dv.match(/<dataValidation\s[^>]*>/)[0];
+      if (attr(cab, 'type') !== 'list') return;
+      var f1 = (dv.match(/<formula1>([\s\S]*?)<\/formula1>/) || [])[1];
+      var sq = attr(cab, 'sqref');
+      if (!f1 || !sq) return;
+      f1 = desescapar(f1).trim();
+      var ops = /^".*"$/.test(f1) ? f1.slice(1, -1).split(',').map(function (x) { return x.trim(); }).filter(Boolean) : ['=' + f1.replace(/\$/g, '')];
+      if (!ops.length) return;
+      sq.split(/\s+/).forEach(function (rg) { if (rg) listas.push({ rango: rg.replace(/\$/g, '').toUpperCase(), ops: ops }); });
+    });
+    if (listas.length) ex.listas = listas;
+    try { ex.condicionales = condicionalesDeHojaXlsx(xml, dxfs); } catch (eCf) {}
+    // Gráficos: hoja → dibujo → gráfico
+    try {
+      var rutaHoja = 'xl/' + dest.replace(/^\/?(xl\/)?/, ''), relsHoja = archivo(rutaHoja.replace(/([^\/]+)$/, '_rels/$1.rels'));
+      var idDib = attr((xml.match(/<drawing\s[^>]*\/?>/) || [''])[0], 'r:id');
+      var mapaRels = function (txt) { var o = {}; (txt.match(/<Relationship\s[^>]*\/?>/g) || []).forEach(function (r) { o[attr(r, 'Id')] = attr(r, 'Target'); }); return o; };
+      var resolver = function (base, rel) { if (rel.charAt(0) === '/') return rel.slice(1); var partes = base.split('/'); partes.pop(); rel.split('/').forEach(function (x) { if (x === '..') partes.pop(); else if (x !== '.') partes.push(x); }); return partes.join('/'); };
+      if (idDib && relsHoja) {
+        var rutaDib = resolver(rutaHoja, mapaRels(relsHoja)[idDib] || ''), xmlDib = archivo(rutaDib), relsDib = mapaRels(archivo(rutaDib.replace(/([^\/]+)$/, '_rels/$1.rels')));
+        var graficos = [];
+        (xmlDib.match(/<xdr:(?:twoCellAnchor|oneCellAnchor)[\s\S]*?<\/xdr:(?:twoCellAnchor|oneCellAnchor)>/g) || []).forEach(function (anc) {
+          var idCh = attr((anc.match(/<c:chart\s[^>]*\/?>/) || [''])[0], 'r:id'); if (!idCh || !relsDib[idCh]) return;
+          var num = function (tag, campo) { var m2 = new RegExp('<xdr:' + tag + '>[\\s\\S]*?<xdr:' + campo + '>(\\d+)</xdr:' + campo + '>').exec(anc); return m2 ? parseInt(m2[1], 10) : null; };
+          var xc = archivo(resolver(rutaDib, relsDib[idCh])); if (!xc) return;
+          var g = { desde: { c: num('from', 'col') || 0, r: num('from', 'row') || 0 }, hasta: { c: num('to', 'col'), r: num('to', 'row') } };
+          var tipoX = (xc.match(/<c:(bar|bar3D|line|line3D|area|area3D|pie|pie3D|doughnut|scatter)Chart>/) || [])[1] || '';
+          tipoX = tipoX.replace('3D', '');
+          var dirX = attr((xc.match(/<c:barDir\s[^>]*\/?>/) || [''])[0], 'val'), agrX = attr((xc.match(/<c:grouping\s[^>]*\/?>/) || [''])[0], 'val');
+          var sufijo = agrX === 'stacked' ? '_stacked' : (agrX === 'percentStacked' ? '_stacked100' : '');
+          g.tipo = tipoX === 'bar' ? (dirX === 'bar' ? 'bar_h' + sufijo : 'bar' + sufijo) : tipoX === 'line' ? (sufijo === '_stacked' ? 'line_stacked' : 'line') : tipoX === 'area' ? 'area' + sufijo : tipoX === 'doughnut' ? 'donut' : tipoX === 'pie' ? 'pie' : tipoX === 'scatter' ? 'scatter' : 'bar';
+          var tit = (xc.match(/<c:title>[\s\S]*?<\/c:title>/) || [''])[0];
+          g.titulo = desescapar((tit.match(/<a:t>([^<]*)<\/a:t>/g) || []).map(function (x) { return x.replace(/<\/?a:t>/g, ''); }).join(''));
+          g.series = (xc.match(/<c:ser>[\s\S]*?<\/c:ser>/g) || []).map(function (ser) {
+            var f = function (bloque) { var b2 = (ser.match(new RegExp('<c:' + bloque + '>[\\s\\S]*?</c:' + bloque + '>')) || [''])[0]; var mf = b2.match(/<c:f>([^<]*)<\/c:f>/); return mf ? desescapar(mf[1]).replace(/\$/g, '') : ''; };
+            return { val: f(tipoX === 'scatter' ? 'yVal' : 'val'), cat: f(tipoX === 'scatter' ? 'xVal' : 'cat'), nombre: f('tx') };
+          }).filter(function (x) { return x.val; });
+          if (g.series.length) graficos.push(g);
+        });
+        if (graficos.length) ex.graficos = graficos;
+      }
+    } catch (eG) {}
+    out[nombre] = ex;
+  });
+  return out;
+}
+// Pone en la hoja los gráficos leídos del Excel, enlazados a sus rangos
+function crearGraficosImportados(hoja, graficos, renombradas) {
+  if (!graficos || !graficos.length) return 0;
+  var lista = sheetGraficos[hoja] || (sheetGraficos[hoja] = []), n = 0;
+  var cw = colWidths[hoja] || {}, anchoCol = function (c) { return cw[c] || 78; }, altoFila = function (r) { return cw['r' + r] || 27; };
+  var aRango = function (ref) {
+    if (!ref) return '';
+    var m = /^(?:'?(.+?)'?!)?([A-Z]+\d+(?::[A-Z]+\d+)?)$/.exec(String(ref).replace(/\$/g, ''));
+    if (!m) return '';
+    var h = m[1] ? (renombradas[m[1]] || m[1]) : hoja;
+    return h === hoja ? m[2] : (/^[A-Za-z0-9_]+$/.test(h) ? h : "'" + h + "'") + '!' + m[2];
+  };
+  graficos.forEach(function (g) {
+    var s0 = g.series[0], rango = aRango(s0.val);
+    if (!rango) return;
+    // Varias series en columnas seguidas (B4:B7 y C4:C7) → un solo rango B4:C7
+    if (g.series.length > 1) {
+      var partes = g.series.map(function (s) { return /^(?:.+!)?([A-Z]+)(\d+):([A-Z]+)(\d+)$/.exec(String(s.val).replace(/\$/g, '')); });
+      var juntas = partes.every(function (p, i) { return p && p[1] === p[3] && p[2] === partes[0][2] && p[4] === partes[0][4] && colIndex(p[1]) === colIndex(partes[0][1]) + i; });
+      if (juntas) rango = aRango(String(s0.val).replace(/:([A-Z]+)(\d+)$/, ':' + partes[partes.length - 1][1] + '$2'));
+    }
+    var x = 0, y = 0, w = 0, h = 0, c, r;
+    for (c = 0; c < g.desde.c; c++) x += anchoCol(c);
+    for (r = 0; r < g.desde.r; r++) y += altoFila(r);
+    if (g.hasta.c !== null && g.hasta.r !== null) { for (c = g.desde.c; c < g.hasta.c; c++) w += anchoCol(c); for (r = g.desde.r; r < g.hasta.r; r++) h += altoFila(r); }
+    lista.push({ id: nuevoIdGrafico() + lista.length, tipo: g.tipo, titulo: g.titulo || '', x: Math.round(x) + 40, y: Math.round(y) + 30, w: Math.max(260, Math.round(w) || 360), h: Math.max(190, Math.round(h) || 240), fuente: { rango: rango, rango2: '', rangoEtiquetas: aRango(s0.cat) } });
+    n++;
+  });
+  return n;
+}
+function aplicarExtrasXlsx(hoja, wsX, ex) {
+  if (ex.freeze && (ex.freeze.row || ex.freeze.col)) sheetFreeze[hoja] = { row: Math.min(ex.freeze.row, 50), col: Math.min(ex.freeze.col, 20) };
+  var af = wsX && wsX['!autofilter'];
+  if (af && af.ref) {
+    try {
+      var rg = XLSX.utils.decode_range(String(af.ref).replace(/\$/g, ''));
+      sheetAutoFiltro[hoja] = { fila: rg.s.r, colIni: rg.s.c, colFin: rg.e.c, filtros: {} };
+    } catch (e) {}
+  }
+  if (ex.condicionales) {
+    if (ex.condicionales.basicas.length) sheetCondFormats[hoja] = (sheetCondFormats[hoja] || []).concat(ex.condicionales.basicas);
+    if (ex.condicionales.avanzadas.length) sheetCondFormatsAvanzado[hoja] = (sheetCondFormatsAvanzado[hoja] || []).concat(ex.condicionales.avanzadas);
+  }
+  (ex.listas || []).forEach(function (L) {
+    sheetValidations[hoja] = sheetValidations[hoja] || {};
+    var rango = /:/.test(L.rango) ? L.rango : L.rango + ':' + L.rango;
+    sheetValidations[hoja][rango] = L.ops;
+  });
+}
+// Fecha escrita en la hoja (dd/mm/aaaa) → número de serie de Excel, o null
+function serialExcelDeTexto(t) {
+  if (typeof t !== 'string' || !/^\d{1,2}\/\d{1,2}\/\d{4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?$/.test(t.trim())) return null;
+  var s = serialDeFechaTexto(t.trim());
+  return isFinite(s) && s > 0 ? s : null;
+}
+// Lista desplegable → <dataValidation> de Excel
+function validacionesListaExcel(hoja) {
+  var vals = sheetValidations[hoja] || {}, xml = '', n = 0;
+  Object.keys(vals).forEach(function (rango) {
+    var l = vals[rango]; if (!Array.isArray(l) || !l.length) return;
+    var sq = String(rango).replace(/^([A-Z]+\d+):\1$/, '$1'), f1;
+    if (l.length === 1 && /^=/.test(String(l[0]).trim())) f1 = String(l[0]).trim().slice(1);
+    else {
+      var txt = l.map(function (x) { return String(x).replace(/,/g, ' '); }).join(',');
+      if (txt.length > 250) return; // Excel no acepta listas escritas tan largas
+      f1 = '"' + txt + '"';
+    }
+    n++;
+    xml += '<dataValidation type="list" allowBlank="1" showInputMessage="1" showErrorMessage="1" sqref="' + escXml(sq) + '"><formula1>' + escXml(f1) + '</formula1></dataValidation>';
+  });
+  return n ? '<dataValidations count="' + n + '">' + xml + '</dataValidations>' : '';
+}
+// Paneles inmovilizados → <pane> dentro de <sheetView>
+function paneExcel(hoja) {
+  var fz = sheetFreeze[hoja] || {}, r = fz.row || 0, c = fz.col || 0;
+  if (!r && !c) return '';
+  var activo = r && c ? 'bottomRight' : (r ? 'bottomLeft' : 'topRight');
+  return '<pane' + (c ? ' xSplit="' + c + '"' : '') + (r ? ' ySplit="' + r + '"' : '') + ' topLeftCell="' + cellId(r, c) + '" activePane="' + activo + '" state="frozen"/>';
+}
 function formatoDesdeExcelZ(z) {
   if (!z || z === 'General') return null;
   var primera = String(z).split(';')[0];
@@ -32690,9 +33422,11 @@ function formatoDesdeExcelZ(z) {
   var dec = m ? m[1].length : 0;
   if (primera.indexOf('%') !== -1) return { type: 'percent', decimals: dec, thousands: false };
   var miles = primera.indexOf('#,##0') !== -1;
-  if (/₡|CRC/.test(primera)) return { type: 'currency', decimals: dec, thousands: miles };
-  if (/\$/.test(primera) && !/\[\$-/.test(primera)) return { type: 'currency_usd', decimals: dec, thousands: miles };
-  if (/€/.test(primera)) return { type: 'currency_eur', decimals: dec, thousands: miles };
+  // Excel marca la moneda como [$€-C0A], [$USD-409] o [$₡-140A]; [$-409] solo es el idioma
+  var simbolo = (primera.match(/\[\$([^\]-]+)(?:-[0-9A-Fa-f]+)?\]/) || [])[1] || '';
+  if (/₡|CRC/.test(primera) || /₡|CRC/.test(simbolo)) return { type: 'currency', decimals: dec, thousands: miles };
+  if (/€|EUR/.test(simbolo) || (!simbolo && /€/.test(primera))) return { type: 'currency_eur', decimals: dec, thousands: miles };
+  if (/\$|USD/.test(simbolo) || (/\$/.test(primera.replace(/\[\$[^\]]*\]/g, '')))) return { type: 'currency_usd', decimals: dec, thousands: miles };
   if (miles || /^0\.0+$/.test(primera)) return { type: 'number', decimals: dec, thousands: miles };
   return null;
 }
@@ -32861,12 +33595,18 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
       var MAX_FILAS = MAX_FILAS_HOJA, MAX_COLS = MAX_COLUMNAS;
       var estilosXlsx = {};
       try { estilosXlsx = leerEstilosXlsx(ev.target.result); } catch (eEst) { estilosXlsx = {}; }
+      if (!Object.keys(estilosXlsx || {}).length) { try { estilosXlsx = leerEstilosXls(ev.target.result); } catch (eXls) { estilosXlsx = {}; } }
+      var extrasXlsx = {};
+      try { extrasXlsx = leerExtrasXlsx(ev.target.result); } catch (eExt) { extrasXlsx = {}; }
+      // Libro sin nada (recién abierto): las hojas vacías se quitan al traer el Excel
+      var hojasVaciasPrevias = sheets.filter(function (h) { return !Object.keys(sheetData[h] || {}).length && !Object.keys(sheetFormats[h] || {}).length && !(sheetGraficos[h] || []).length; });
+      var libroVacio = hojasVaciasPrevias.length === sheets.length;
       snapshot();
       var renombradas = {}, creadas = [], recortadas = 0, hojasVacias = 0, ocultasImport = [];
       wb.SheetNames.forEach(function (wsName) {
         var wsX = wb.Sheets[wsName];
         if (!wsX || !wsX['!ref']) { hojasVacias++; return; }
-        var nombreFinal = crearHojaDestino(wsName.substring(0, 31));
+        var nombreFinal = crearHojaParaImportar(wsName.substring(0, 31));
         if (nombreFinal !== wsName) renombradas[wsName] = nombreFinal;
         creadas.push({ nombre: nombreFinal, ws: wsX, orig: wsName });
         try { var idxWb = wb.SheetNames.indexOf(wsName), infoWb = wb.Workbook && wb.Workbook.Sheets && wb.Workbook.Sheets[idxWb]; if (infoWb && infoWb.Hidden) ocultasImport.push(nombreFinal); } catch (eOc) {}
@@ -32889,7 +33629,9 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
             });
             valor = '=' + fx;
           } else if (cel.t === 'n') {
-            valor = (cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z) && cel.w) ? String(cel.w) : String(typeof cel.v === 'number' && isFinite(cel.v) ? Number(cel.v.toPrecision(15)) : cel.v);
+            var esFechaZ = cel.z && XLSX.SSF && XLSX.SSF.is_date && XLSX.SSF.is_date(cel.z);
+            if (esFechaZ && typeof cel.v === 'number' && isFinite(cel.v) && cel.v >= 1 && /[dy]/i.test(String(cel.z).replace(/"[^"]*"|\[[^\]]*\]/g, ''))) valor = textoDeSerialFecha(cel.v);
+            else valor = (esFechaZ && cel.w) ? String(cel.w) : String(typeof cel.v === 'number' && isFinite(cel.v) ? Number(cel.v.toPrecision(15)) : cel.v);
           } else if (cel.t === 'b') {
             valor = cel.v ? 'VERDADERO' : 'FALSO';
           } else if (cel.t === 'e') {
@@ -32900,6 +33642,7 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
           if (valor === null || valor === '') return;
           var id = cellId(pos.r, pos.c);
           d[id] = valor;
+          if (cel.t === 's' && /^\s*-?\d+([.,]\d+)?\s*$/.test(valor)) { fm[id] = fm[id] || {}; fm[id].esTexto = true; }
           if (pos.r > maxFilaUsada) maxFilaUsada = pos.r;
           if (pos.c > maxColUsada) maxColUsada = pos.c;
           if (cel.t === 'n' && cel.z) {
@@ -32916,6 +33659,7 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
           var nuevo = estH[ref], previo = fm[id2] || {};
           var comb = {}; Object.keys(nuevo).forEach(function (k) { comb[k] = nuevo[k]; });
           if (previo.numFormat) comb.numFormat = previo.numFormat;
+          if (previo.esTexto) comb.esTexto = true;
           fm[id2] = comb;
           if (pos2.r > maxFilaUsada) maxFilaUsada = pos2.r;
           if (pos2.c > maxColUsada) maxColUsada = pos2.c;
@@ -32933,15 +33677,28 @@ document.getElementById('excelFileInput').addEventListener('change', function (e
           var px = col.wpx || (col.wch ? col.wch * 7 : 0);
           if (px > 0) colWidths[it.nombre][ci] = Math.round(px);
         });
+        aplicarExtrasXlsx(it.nombre, wsX, extrasXlsx[it.orig] || {});
+        try { importarComentariosYVinculos(it.nombre, wsX); } catch (eCm) {}
       });
+      try { importarNombresExcel(wb, renombradas); } catch (eNm) {}
       if (!creadas.length) { alert('El archivo no tiene datos para importar.'); document.getElementById('excelFileInput').value = ''; return; }
+      var nGraficosImp = 0;
+      creadas.forEach(function (it) { nGraficosImp += crearGraficosImportados(it.nombre, (extrasXlsx[it.orig] || {}).graficos || [], renombradas); });
+      if (libroVacio) {
+        var usadas = creadas.map(function (it) { return it.nombre; });
+        hojasVaciasPrevias.forEach(function (h) {
+          if (usadas.indexOf(h) !== -1 || sheets.length <= 1) return;
+          sheets.splice(sheets.indexOf(h), 1);
+          [sheetData, sheetFormats, sheetNotes, sheetAttachments, colWidths, sheetMerges, sheetFreeze, sheetCondFormats, sheetValidations, sheetAutoFiltro, sheetGraficos].forEach(function (o) { try { delete o[h]; } catch (e) {} });
+        });
+      }
       if (maxFilaUsada + 1 > ROWS) ROWS = maxFilaUsada + 1;
       if (maxColUsada + 1 > COLS) COLS = maxColUsada + 1;
       activeSheet = creadas[0].nombre;
       ocultasImport.forEach(function (n) { colWidths[n] = colWidths[n] || {}; colWidths[n].oculta = true; });
       if (ocultasImport.length && sheets.length > ocultasImport.length) { if (hojaOculta(activeSheet)) activeSheet = hojasVisibles()[0] || activeSheet; } else { ocultasImport.forEach(function (n) { delete colWidths[n].oculta; }); }
       buildTable(); renderTabs(); autoSave();
-      var resumen = 'Excel importado: ' + creadas.length + (creadas.length === 1 ? ' hoja' : ' hojas');
+      var resumen = 'Excel importado: ' + creadas.length + (creadas.length === 1 ? ' hoja' : ' hojas') + (nGraficosImp ? ', ' + nGraficosImp + ' gráfico' + (nGraficosImp === 1 ? '' : 's') : '');
       document.getElementById('saveStatus').textContent = resumen;
       if (recortadas) alert('Se importaron ' + creadas.length + ' hojas. ' + recortadas + ' celdas quedaron fuera porque pasan de ' + MAX_FILAS + ' filas o ' + MAX_COLS + ' columnas (A–Z).');
     } catch (err) {
@@ -33537,12 +34294,15 @@ document.getElementById('crearMatrizBtn').addEventListener('click', function () 
   limpiarPresenciaPropia();
   celdasPendientesSync = {};
   var sepNueva = separarAdjuntos(estadoActualComoObjeto());
-  var payload = sepNueva.liviano;
+  var payload = sepNueva.liviano, datosNueva = payload.sheetData, formatosNueva = payload.sheetFormats;
+  principalNube(payload);
   payload.name = nombre; payload.ownerId = currentUser.uid; payload.ownerEmail = currentUser.email;
   payload.sharedWith = []; payload.updatedAt = Date.now();
   ultimoUpdatedAtEnviado = payload.updatedAt;
   firestoreDB.collection('matrices').add(payload).then(function (doc) {
     subirAdjuntos(doc.id, sepNueva.adjuntos).catch(function () {});
+    nubeEmpezar(doc.id, true); nube.cargado = true;
+    escribirHojasNube(doc.id, datosNueva, formatosNueva, true).then(function () { escucharHojasNube(doc.id); }).catch(function (e) { setSyncStatus('error', mensajeErrorNube(e)); });
     currentMatrizId = doc.id; currentMatrizName = nombre;
     document.getElementById('nuevaMatrizNombre').value = '';
     document.getElementById('matricesOverlay').classList.remove('show');
@@ -33590,7 +34350,12 @@ function abrirMatriz(id, name) {
 function eliminarMatriz(id) {
   confirmarPro('¿Eliminar esta matriz de la nube? Esta acción no se puede deshacer.').then((__ok) => {
     if (!__ok) return;
-  firestoreDB.collection('matrices').doc(id).delete().then(cargarListaMatrices);
+  var refM = firestoreDB.collection('matrices').doc(id);
+  var subs = ['hojas', 'backupPartes', 'backups', 'adjuntos', 'historial', 'actividad', 'cursores'];
+  Promise.all(subs.map(function (c) {
+    return refM.collection(c).get().then(function (snap) { return Promise.all((snap.docs || []).map(function (d) { return d.ref.delete(); })); }).catch(function () {});
+  })).then(function () { return refM.delete(); }).then(cargarListaMatrices);
+  if (id === nube.id) nubeEmpezar(null, false);
 
   }); return;
 }
@@ -33874,7 +34639,398 @@ function pesoParaNube() {
   var tot = 0; Object.keys(sep.adjuntos).forEach(function (id) { tot += (cacheAdjuntos[id] || '').length; });
   return { principal: JSON.stringify(sep.liviano).length, adjuntos: Object.keys(sep.adjuntos).length, pesoAdjuntos: tot };
 }
+// ══════════════════════════════════════════════
+// NUBE POR HOJAS (formatoNube: 2)
+// Antes, todo el libro vivía en UN documento de Firestore (máximo 1 MB) y el
+// que guardaba último pisaba todo. Ahora el documento principal guarda solo lo
+// liviano (nombres de hojas, gráficos, notas, opciones…) y los datos y
+// formatos de cada hoja van en la subcolección "hojas", partidos en pedazos de
+// ~650 KB si la hoja es grande:
+//   matrices/{id}                  → principal (formatoNube: 2, sin sheetData/sheetFormats)
+//   matrices/{id}/hojas/{parte}    → { hoja, parte, datos: {A1: …}, formatos: {A1: …}, marca }
+// Una celda editada se manda solo a su pedazo; un guardado completo solo
+// reescribe las hojas que cambiaron. Así el libro crece casi sin límite y dos
+// personas editando hojas distintas no se pisan.
+// ══════════════════════════════════════════════
+var NUBE_MAX_PARTE = 650000; // bytes aproximados por pedazo (Firestore acepta 1 048 576)
+var nube = {
+  id: null,          // matriz a la que corresponde este estado
+  v2: false,         // ¿la matriz ya está separada por hojas?
+  partes: {},        // docId -> { hoja, parte, claves: {A1: 1} }
+  cache: {},         // docId -> datos del pedazo tal como está en la nube
+  hashHoja: {},      // hoja -> huella de lo último que se guardó / recibió
+  miMarca: {},       // docId -> marca de la última escritura propia (para no reaplicar el eco)
+  hashPrincipal: '', // huella del documento principal guardado
+  listener: null,
+  migrando: false,
+  pendiente: false,
+  ultimoPrincipal: 0,
+  cargado: false
+};
+var encoderNube = typeof TextEncoder !== 'undefined' ? new TextEncoder() : null;
+function bytesNube(t) { return encoderNube ? encoderNube.encode(t).length : t.length * 2; }
+function idDocHoja(hoja, parte) {
+  var limpio = String(hoja).normalize('NFD').replace(/[^A-Za-z0-9]/g, '').slice(0, 30);
+  return 'h' + hashTexto(String(hoja)).toString(36) + '_' + (limpio || 'hoja') + '_' + parte;
+}
+function huellaHoja(d, f) {
+  var jd = JSON.stringify(d || {}), jf = JSON.stringify(f || {});
+  return hashTexto(jd) + '.' + jd.length + '.' + hashTexto(jf) + '.' + jf.length;
+}
+// Parte los datos y formatos de una hoja en pedazos que entren en un documento
+function partirHojaNube(hoja, datos, formatos) {
+  var partes = [], actual = null, tam = 0;
+  var nueva = function () { actual = { hoja: hoja, parte: partes.length, datos: {}, formatos: {} }; partes.push(actual); tam = 200 + bytesNube(hoja); };
+  var meter = function (campo, k, v) {
+    var t = bytesNube(k) + bytesNube(JSON.stringify(v)) + 8;
+    if (!actual || (tam + t > NUBE_MAX_PARTE && (Object.keys(actual.datos).length || Object.keys(actual.formatos).length))) nueva();
+    actual[campo][k] = v; tam += t;
+  };
+  Object.keys(datos || {}).forEach(function (k) { if (datos[k] !== undefined && datos[k] !== null && datos[k] !== '') meter('datos', k, datos[k]); });
+  Object.keys(formatos || {}).forEach(function (k) { if (formatos[k]) meter('formatos', k, formatos[k]); });
+  partes.forEach(function (p) { p.total = partes.length; });
+  return partes;
+}
+function refHojasNube(matrizId) { return firestoreDB.collection('matrices').doc(matrizId).collection('hojas'); }
+function indexarParteNube(docId, p) {
+  nube.cache[docId] = p;
+  nube.partes[docId] = { hoja: p.hoja, parte: p.parte || 0, claves: {} };
+  Object.keys(p.datos || {}).forEach(function (k) { nube.partes[docId].claves[k] = 1; });
+}
+// Une los pedazos de una hoja (en orden) desde la caché
+function armarHojaDesdeCache(hoja) {
+  var ids = Object.keys(nube.cache).filter(function (id) { return nube.cache[id].hoja === hoja; })
+    .sort(function (a, b) { return (nube.cache[a].parte || 0) - (nube.cache[b].parte || 0); });
+  var d = {}, f = {};
+  ids.forEach(function (id) { Object.assign(d, nube.cache[id].datos || {}); Object.assign(f, nube.cache[id].formatos || {}); });
+  return { datos: d, formatos: f };
+}
+function completarConCache(data) {
+  data.sheetData = {}; data.sheetFormats = {};
+  var hojas = (data.sheets || []).slice();
+  Object.keys(nube.cache).forEach(function (id) { var h = nube.cache[id].hoja; if (hojas.indexOf(h) === -1) hojas.push(h); });
+  hojas.forEach(function (h) {
+    var r = armarHojaDesdeCache(h);
+    data.sheetData[h] = r.datos; data.sheetFormats[h] = r.formatos;
+    nube.hashHoja[h] = huellaHoja(r.datos, r.formatos);
+  });
+  return data;
+}
+// Empieza a trabajar con una matriz (limpia lo de la anterior)
+function nubeEmpezar(matrizId, v2) {
+  if (nube.id === matrizId) { nube.v2 = nube.v2 || !!v2; return; }
+  if (nube.listener) { try { nube.listener(); } catch (e) {} }
+  nube.id = matrizId; nube.v2 = !!v2; nube.partes = {}; nube.cache = {}; nube.hashHoja = {}; nube.miMarca = {};
+  nube.hashPrincipal = ''; nube.listener = null; nube.migrando = false; nube.pendiente = false; nube.cargado = false;
+}
+// Trae todos los pedazos de una matriz separada por hojas
+function leerHojasNube(matrizId) {
+  return refHojasNube(matrizId).get().then(function (snap) {
+    var out = {};
+    (snap.docs || []).forEach(function (d) { out[d.id] = d.data() || {}; });
+    return out;
+  });
+}
+// Escucha los cambios de las hojas hechos por otras personas
+function escucharHojasNube(matrizId) {
+  if (nube.listener || !refHojasNube(matrizId).onSnapshot) return;
+  nube.listener = refHojasNube(matrizId).onSnapshot(function (snap) {
+    if (nube.id !== matrizId) return;
+    var tocadas = {};
+    (snap.docChanges ? snap.docChanges() : []).forEach(function (ch) {
+      var doc = ch.doc, id = doc.id;
+      if (doc.metadata && doc.metadata.hasPendingWrites) return;
+      if (ch.type === 'removed') {
+        var hq = nube.cache[id] && nube.cache[id].hoja;
+        delete nube.cache[id]; delete nube.partes[id];
+        if (hq) tocadas[hq] = 1;
+        return;
+      }
+      var p = doc.data() || {};
+      // Eco de algo que yo mismo escribí, o algo que ya tenía (primera lectura del oyente)
+      var eco = p.marca && (nube.miMarca[id] === p.marca || (nube.cache[id] && nube.cache[id].marca === p.marca));
+      indexarParteNube(id, p);
+      if (!eco) tocadas[p.hoja] = 1;
+    });
+    Object.keys(tocadas).forEach(aplicarHojaRemota);
+  }, function () {});
+}
+// Pone en pantalla una hoja que cambió otra persona, sin perder lo que yo todavía no guardé
+function aplicarHojaRemota(hoja) {
+  if (sheets.indexOf(hoja) === -1) return;
+  var r = armarHojaDesdeCache(hoja);
+  Object.keys(celdasPendientesSync).forEach(function (clave) {
+    var i = clave.lastIndexOf('|'), h = clave.slice(0, i), c = clave.slice(i + 1);
+    if (h !== hoja) return;
+    var v = (sheetData[h] || {})[c];
+    if (v === undefined || v === null || v === '') delete r.datos[c]; else r.datos[c] = v;
+  });
+  applyingRemote = true;
+  try { sheetData[hoja] = r.datos; sheetFormats[hoja] = r.formatos; }
+  finally { applyingRemote = false; }
+  nube.hashHoja[hoja] = huellaHoja(r.datos, r.formatos);
+  if (typeof invalidarCalculoTodo === 'function') invalidarCalculoTodo();
+  try { if (hoja === activeSheet) renderAllCells(); } catch (e) {}
+  try { setSyncStatus('online', '🔄 ' + currentUser.email + ' · ' + currentMatrizName + ' (' + hoja + ' actualizada por otra persona)'); } catch (e) {}
+}
+// Guarda las hojas que cambiaron. forzar = reescribe todas.
+function escribirHojasNube(matrizId, datos, formatos, forzar) {
+  var marca = Date.now(), autor = (currentUser && currentUser.email) || '', trabajos = [], nuevas = {};
+  var hojas = sheets.slice();
+  Object.keys(datos || {}).concat(Object.keys(formatos || {})).forEach(function (h) { if (hojas.indexOf(h) === -1 && sheets.indexOf(h) !== -1) hojas.push(h); });
+  var ref = refHojasNube(matrizId);
+  hojas.forEach(function (h) {
+    var d = (datos || {})[h] || {}, f = (formatos || {})[h] || {}, huella = huellaHoja(d, f);
+    if (!forzar && nube.hashHoja[h] === huella) {
+      Object.keys(nube.partes).forEach(function (id) { if (nube.partes[id].hoja === h) nuevas[id] = nube.partes[id]; });
+      return;
+    }
+    partirHojaNube(h, d, f).forEach(function (p) {
+      var id = idDocHoja(h, p.parte);
+      p.marca = marca; p.autor = autor;
+      nube.miMarca[id] = marca;
+      indexarParteNube(id, p);
+      nuevas[id] = nube.partes[id];
+      trabajos.push(ref.doc(id).set(p));
+    });
+    nube.hashHoja[h] = huella;
+  });
+  // Pedazos que ya no existen (hoja borrada o renombrada, o que ahora ocupa menos)
+  Object.keys(nube.partes).forEach(function (id) {
+    if (nuevas[id]) return;
+    delete nube.cache[id];
+    trabajos.push(ref.doc(id).delete());
+  });
+  nube.partes = nuevas;
+  Object.keys(nube.hashHoja).forEach(function (h) { if (hojas.indexOf(h) === -1) delete nube.hashHoja[h]; });
+  return Promise.all(trabajos);
+}
+// En qué pedazo vive una celda (o el último pedazo de la hoja, si todavía tiene campo)
+function parteDeCeldaNube(hoja, celda) {
+  var ultimo = null, max = -1;
+  var ids = Object.keys(nube.partes);
+  for (var i = 0; i < ids.length; i++) {
+    var p = nube.partes[ids[i]];
+    if (p.hoja !== hoja) continue;
+    if (p.claves[celda]) return ids[i];
+    if (p.parte > max) { max = p.parte; ultimo = ids[i]; }
+  }
+  if (!ultimo) return null;
+  var tam = bytesNube(JSON.stringify(nube.cache[ultimo] || {}));
+  return tam < NUBE_MAX_PARTE - 60000 ? ultimo : null;
+}
+// Documento principal (sin los datos de las hojas)
+function principalNube(liviano) {
+  delete liviano.sheetData; delete liviano.sheetFormats;
+  liviano.formatoNube = 2;
+  return liviano;
+}
+function mensajeErrorNube(err) {
+  if (err && err.code === 'permission-denied') return 'Sin permiso para editar esta matriz';
+  if (err && /exceed|too large|larger than|maximum|1048576|INVALID_ARGUMENT/i.test(String(err.message || err.code || ''))) return '⚠ Una parte de la matriz pasa de 1 MB: se guardó solo en este dispositivo';
+  if (!navigator.onLine) return 'Sin conexión — se guardó solo en este dispositivo';
+  return 'Error al guardar';
+}
+function guardarMatrizEnNubeV2() {
+  if (!currentUser || !currentMatrizId || applyingRemote) return;
+  if (!navigator.onLine) { setSyncStatus('error', 'Sin conexión — se guardó solo en este dispositivo'); return; }
+  if (nube.migrando) { nube.pendiente = true; return; }
+  setSyncStatus('syncing', 'Guardando...');
+  var idGuardar = currentMatrizId, sucias = Object.keys(celdasPendientesSync);
+  // 1) Pocas celdas: cada una va directo a su pedazo
+  if (sucias.length && sucias.length <= 200) {
+    var porDoc = {}, sePuede = true, marca = Date.now();
+    sucias.forEach(function (clave) {
+      if (!sePuede) return;
+      var i = clave.lastIndexOf('|'), h = clave.slice(0, i), c = clave.slice(i + 1);
+      var docId = parteDeCeldaNube(h, c);
+      if (!docId) { sePuede = false; return; }
+      var v = (sheetData[h] || {})[c], vacio = v === undefined || v === null || v === '';
+      var u = porDoc[docId] || (porDoc[docId] = { marca: marca, autor: currentUser.email || '' });
+      u['datos.' + c] = vacio ? firebase.firestore.FieldValue.delete() : v;
+      var cc = nube.cache[docId]; if (cc) { cc.datos = cc.datos || {}; if (vacio) delete cc.datos[c]; else cc.datos[c] = v; cc.marca = marca; }
+      if (vacio) delete nube.partes[docId].claves[c]; else nube.partes[docId].claves[c] = 1;
+    });
+    if (sePuede) {
+      celdasPendientesSync = {};
+      var trabajos = Object.keys(porDoc).map(function (id) { nube.miMarca[id] = marca; return refHojasNube(idGuardar).doc(id).update(porDoc[id]); });
+      // La fecha de "Mis matrices" se actualiza de vez en cuando, no en cada celda
+      if (Date.now() - nube.ultimoPrincipal > 180000) {
+        nube.ultimoPrincipal = Date.now(); ultimoUpdatedAtEnviado = marca;
+        trabajos.push(firestoreDB.collection('matrices').doc(idGuardar).update({ updatedAt: marca }));
+      }
+      var hojasTocadas = {};
+      sucias.forEach(function (clave) { hojasTocadas[clave.slice(0, clave.lastIndexOf('|'))] = 1; });
+      Object.keys(hojasTocadas).forEach(function (h) { nube.hashHoja[h] = huellaHoja(sheetData[h], sheetFormats[h]); });
+      Promise.all(trabajos).then(function () { setSyncStatus('online', currentUser.email + ' · ' + currentMatrizName); })
+        .catch(function (err) { setSyncStatus('error', mensajeErrorNube(err)); });
+      return;
+    }
+  }
+  // 2) Guardado completo: principal (si cambió) + las hojas que cambiaron
+  celdasPendientesSync = {};
+  var estado = estadoActualComoObjeto(), marca2 = Date.now();
+  prepararParaNube(estado, idGuardar).catch(function () {
+    // Si las reglas no dejan escribir en "adjuntos", van dentro del documento como antes
+    return { liviano: JSON.parse(JSON.stringify(estado)) };
+  }).then(function (r) {
+    var liv = r.liviano, datos = liv.sheetData, formatos = liv.sheetFormats;
+    principalNube(liv);
+    var huellaP = hashTexto(JSON.stringify(liv)) + '.' + JSON.stringify(liv).length;
+    var ps = [escribirHojasNube(idGuardar, datos, formatos, false)];
+    if (huellaP !== nube.hashPrincipal) {
+      nube.hashPrincipal = huellaP; nube.ultimoPrincipal = Date.now();
+      liv.updatedAt = marca2; ultimoUpdatedAtEnviado = marca2;
+      ps.push(firestoreDB.collection('matrices').doc(idGuardar).update(liv));
+    }
+    return Promise.all(ps);
+  }).then(function () {
+    setSyncStatus('online', currentUser.email + ' · ' + currentMatrizName);
+  }).catch(function (err) {
+    nube.hashPrincipal = ''; nube.hashHoja = {};
+    setSyncStatus('error', mensajeErrorNube(err));
+  });
+}
+function puedoEditarMatrizNube() {
+  return typeof rolActual === 'undefined' || (rolActual !== 'lector' && rolActual !== 'comentarista');
+}
+// Pasa una matriz vieja (todo en un documento) al formato por hojas.
+// Antes hace un respaldo local y otro en la nube.
+function migrarMatrizAHojas(matrizId) {
+  if (nube.migrando || nube.v2 || !currentUser || matrizId !== currentMatrizId || !puedoEditarMatrizNube()) return Promise.resolve(false);
+  nube.migrando = true;
+  var estado = estadoActualComoObjeto(), marca = Date.now(), yaEstaba = false;
+  // Primero se confirma en la nube: si otra persona ya la pasó, no se migra de nuevo
+  return firestoreDB.collection('matrices').doc(matrizId).get().then(function (doc) {
+    var d = doc && doc.exists ? doc.data() || {} : {};
+    if (d.formatoNube === 2) {
+      yaEstaba = true;
+      return leerHojasNube(matrizId).then(function (docs) { Object.keys(docs).forEach(function (id) { indexarParteNube(id, docs[id]); }); nube.cargado = true; throw { yaEstaba: true }; });
+    }
+    setSyncStatus('syncing', '☁️ Mejorando el guardado de la matriz…');
+    return typeof guardarVersionLocal === 'function' ? guardarVersionLocal('Antes de separar por hojas', true).catch(function () {}) : null;
+  }).then(function () {
+    return prepararParaNube(estado, matrizId);
+  }).then(function (r) {
+    var copia = JSON.parse(JSON.stringify(r.liviano));
+    copia.fecha = new Date().toISOString(); copia.creadoPor = currentUser.email || ''; copia.nota = 'Antes de separar por hojas';
+    var respaldo = JSON.stringify(copia).length < 950000
+      ? firestoreDB.collection('matrices').doc(matrizId).collection('backups').add(copia).catch(function () {})
+      : Promise.resolve();
+    return respaldo.then(function () { return r; });
+  }).then(function (r) {
+    var liv = r.liviano, datos = liv.sheetData, formatos = liv.sheetFormats;
+    return escribirHojasNube(matrizId, datos, formatos, true).then(function () {
+      principalNube(liv);
+      liv.sheetData = firebase.firestore.FieldValue.delete();
+      liv.sheetFormats = firebase.firestore.FieldValue.delete();
+      liv.updatedAt = marca; ultimoUpdatedAtEnviado = marca;
+      return firestoreDB.collection('matrices').doc(matrizId).update(liv);
+    });
+  }).then(function () {
+    nube.v2 = true; nube.migrando = false; nube.ultimoPrincipal = Date.now();
+    escucharHojasNube(matrizId);
+    setSyncStatus('online', '☁️ ' + currentUser.email + ' · ' + currentMatrizName + ' (guardado por hojas)');
+    if (nube.pendiente) { nube.pendiente = false; guardarMatrizEnNubeV2(); }
+    return true;
+  }).catch(function (err) {
+    nube.migrando = false;
+    if (err && err.yaEstaba) {
+      nube.v2 = true; completarConCache({ sheets: sheets.slice() }); escucharHojasNube(matrizId); nube.pendiente = false;
+      guardarMatrizEnNubeV2();
+      return true;
+    }
+    nube.pendiente = false;
+    setSyncStatus('error', mensajeErrorNube(err));
+    return false;
+  });
+}
+// Guardar: según el formato de la matriz
 function guardarMatrizEnNube() {
+  if (!currentUser || !currentMatrizId || applyingRemote) return;
+  if (nube.id !== currentMatrizId) nubeEmpezar(currentMatrizId, false);
+  if (nube.v2) return guardarMatrizEnNubeV2();
+  if (nube.migrando) { nube.pendiente = true; return; }
+  if (puedoEditarMatrizNube() && navigator.onLine) { celdasPendientesSync = {}; migrarMatrizAHojas(currentMatrizId); return; }
+  return guardarMatrizEnNubeV1();
+}
+// Completa un documento de matriz con sus hojas (para abrir, IMPORTARRANGO, etc.)
+function completarDocMatriz(matrizId, data) {
+  if (!data || data.formatoNube !== 2) return Promise.resolve(data);
+  return leerHojasNube(matrizId).then(function (docs) {
+    data.sheetData = {}; data.sheetFormats = {};
+    var orden = Object.keys(docs).sort(function (a, b) { return (docs[a].parte || 0) - (docs[b].parte || 0); });
+    orden.forEach(function (id) {
+      var p = docs[id], h = p.hoja;
+      data.sheetData[h] = Object.assign(data.sheetData[h] || {}, p.datos || {});
+      data.sheetFormats[h] = Object.assign(data.sheetFormats[h] || {}, p.formatos || {});
+    });
+    return data;
+  });
+}
+// ── Respaldos grandes: si no entran en un documento, sus hojas van a "backupPartes" ──
+function refPartesRespaldo(matrizId) { return firestoreDB.collection('matrices').doc(matrizId).collection('backupPartes'); }
+function guardarRespaldoNube(matrizId, payload) {
+  var col = firestoreDB.collection('matrices').doc(matrizId).collection('backups');
+  if (JSON.stringify(payload).length < 900000) return col.add(payload);
+  var ref = col.doc(), datos = payload.sheetData || {}, formatos = payload.sheetFormats || {}, trabajos = [], n = 0;
+  Object.keys(datos).concat(Object.keys(formatos)).filter(function (h, i, a) { return a.indexOf(h) === i; }).forEach(function (h) {
+    partirHojaNube(h, datos[h], formatos[h]).forEach(function (p) {
+      p.backupId = ref.id;
+      trabajos.push(refPartesRespaldo(matrizId).doc(ref.id + '_' + (n++)).set(p));
+    });
+  });
+  delete payload.sheetData; delete payload.sheetFormats;
+  payload.backupId = ref.id; payload.partesBackup = n;
+  return Promise.all(trabajos).then(function () { return ref.set(payload); }).then(function () { return ref; });
+}
+function completarRespaldo(matrizId, data) {
+  if (!data || !data.partesBackup || !data.backupId) return Promise.resolve(data);
+  var lecturas = [];
+  for (var i = 0; i < data.partesBackup; i++) lecturas.push(refPartesRespaldo(matrizId).doc(data.backupId + '_' + i).get());
+  return Promise.all(lecturas).then(function (docs) {
+    data.sheetData = data.sheetData || {}; data.sheetFormats = data.sheetFormats || {};
+    docs.forEach(function (d) {
+      if (!d || !d.exists) return;
+      var p = d.data() || {};
+      data.sheetData[p.hoja] = Object.assign(data.sheetData[p.hoja] || {}, p.datos || {});
+      data.sheetFormats[p.hoja] = Object.assign(data.sheetFormats[p.hoja] || {}, p.formatos || {});
+    });
+    data.partesBackup = 0;
+    return data;
+  });
+}
+function borrarPartesRespaldo(matrizId, data) {
+  if (!data || !data.partesBackup || !data.backupId) return;
+  for (var i = 0; i < data.partesBackup; i++) refPartesRespaldo(matrizId).doc(data.backupId + '_' + i).delete().catch(function () {});
+}
+// Al abrir o recibir cambios: si la matriz está por hojas, se completan antes de cargarla
+(function () {
+  var resolverPrev = resolverAdjuntos;
+  resolverAdjuntos = function (data, matrizId) {
+    var self = this, args = arguments;
+    if (data && data.partesBackup) return completarRespaldo(matrizId, data).then(function (d) { return resolverPrev.call(self, d, matrizId); });
+    if (!data || !matrizId || data.backupId !== undefined || data.fecha !== undefined && data.creadoPor !== undefined) return resolverPrev.apply(self, args);
+    if (data.formatoNube !== 2) {
+      // Matriz vieja: se pasa al formato por hojas apenas esté abierta (si tengo permiso de editar)
+      nubeEmpezar(matrizId, false);
+      setTimeout(function () { if (currentMatrizId === matrizId && !nube.v2) migrarMatrizAHojas(matrizId); }, 1500);
+      return resolverPrev.apply(self, args);
+    }
+    nubeEmpezar(matrizId, true);
+    var lista = nube.cargado ? Promise.resolve(null) : leerHojasNube(matrizId);
+    return lista.then(function (docs) {
+      if (docs) { Object.keys(docs).forEach(function (id) { indexarParteNube(id, docs[id]); }); nube.cargado = true; }
+      escucharHojasNube(matrizId);
+      completarConCache(data);
+      return resolverPrev.call(self, data, matrizId);
+    });
+  };
+})();
+
+// Guardado del formato viejo (todo el libro en un documento). Queda para quien
+// solo puede comentar o leer, y como respaldo si la migración no se puede hacer.
+function guardarMatrizEnNubeV1() {
   if (!currentUser || !currentMatrizId || applyingRemote) return;
   if (!navigator.onLine) { setSyncStatus('error', 'Sin conexión — se guardó solo en este dispositivo'); return; }
   setSyncStatus('syncing', 'Guardando...');
@@ -33929,7 +35085,7 @@ function guardarMatrizEnNube() {
 // ══════════════════════════════════════════════
 function autoSave() {
   try { if (typeof propagarCambiosGrupo === 'function') propagarCambiosGrupo(); } catch (eGr) {}
-  try { registrarHistorialLocal(); } catch (eHist) {}
+  try { programarHistorialLocal(); } catch (eHist) {}
   try { localStorage.setItem('mcr_ultima_edicion', String(Date.now())); } catch (eUlt) {}
   // Si se estaba grabando una macro y hubo un snapshot() pendiente de cerrar,
   // este es el momento en que la acción del usuario ya terminó: se compara
@@ -35193,13 +36349,13 @@ function crearBackup(silencioso, nota) {
   payload.fecha = new Date().toISOString();
   payload.creadoPor = currentUser.email || 'Desconocido';
   payload.nota = nota || '';
-  return firestoreDB.collection('matrices').doc(idBackup).collection('backups').add(payload);
+  return guardarRespaldoNube(idBackup, payload);
   }).then(function () {
     firestoreDB.collection('matrices').doc(currentMatrizId).collection('backups').orderBy('fecha', 'desc').get().then(function (snap) {
       // Se quedan los 30 más nuevos; los que tienen nombre no se borran nunca
       var sinNombre = snap.docs.filter(function (d) { return !(d.data() || {}).nombre; });
       if (sinNombre.length > 30) {
-        sinNombre.slice(30).forEach(function (d) { d.ref.delete(); });
+        sinNombre.slice(30).forEach(function (d) { borrarPartesRespaldo(currentMatrizId, d.data()); d.ref.delete(); });
       }
     });
     if (!silencioso) { renderBackupList(); document.getElementById('saveStatus').textContent = '✓ Backup creado'; }
@@ -35227,10 +36383,12 @@ function renderBackupList() {
     docs.forEach(function (doc, i) {
       var d = doc.data();
       var referencia = (i === 0) ? estadoActual : docs[i - 1].data();
-      var diff = diffEstados(d, referencia);
+      var grande = !!(d.partesBackup || (referencia && referencia.partesBackup));
+      var diff = grande ? { cambios: [], hojasNuevas: [], hojasEliminadas: [] } : diffEstados(d, referencia);
       var n = diff.cambios.length;
       var fechaFmt = d.fecha ? new Date(d.fecha).toLocaleString('es-CR') : '';
-      var resumen = n ? ('✏️ ' + n + ' celda' + (n === 1 ? '' : 's') + ' cambiada' + (n === 1 ? '' : 's') + ' después de este backup')
+      var resumen = grande ? '📦 Respaldo grande (guardado en partes): tocá 👁 Cambios para compararlo'
+        : n ? ('✏️ ' + n + ' celda' + (n === 1 ? '' : 's') + ' cambiada' + (n === 1 ? '' : 's') + ' después de este backup')
         : '— Sin cambios después de este backup';
       html += '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:12.5px;">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;">' +
@@ -35256,8 +36414,18 @@ function renderBackupList() {
         var idx = parseInt(btn.dataset.idx, 10);
         var box = wrap.querySelector('.backupDiffBox[data-idx="' + idx + '"]');
         if (box.style.display !== 'none') { box.style.display = 'none'; return; }
-        var d = docs[idx].data();
-        var referencia = (idx === 0) ? estadoActual : docs[idx - 1].data();
+        var dBase = docs[idx].data(), refBase = (idx === 0) ? estadoActual : docs[idx - 1].data();
+        if ((dBase.partesBackup || (refBase && refBase.partesBackup)) && !box.dataset.completo) {
+          box.style.display = 'block'; box.innerHTML = '<i>Cargando el respaldo…</i>';
+          Promise.all([completarRespaldo(currentMatrizId, dBase), idx === 0 ? Promise.resolve(refBase) : completarRespaldo(currentMatrizId, refBase)]).then(function (par) {
+            var dfx = diffEstados(par[0], par[1]);
+            box.dataset.completo = '1';
+            box.innerHTML = dfx.cambios.length ? dfx.cambios.slice(0, 80).map(function (c) { return '<div style="padding:3px 0;border-bottom:1px solid #e6efd8;"><b>' + escHtml(c.celda) + '</b> (' + escHtml(c.hoja) + '): "' + (c.anterior ? escHtml(c.anterior) : '<i>vacío</i>') + '" → "' + (c.nuevo ? escHtml(c.nuevo) : '<i>vacío</i>') + '"</div>'; }).join('') + (dfx.cambios.length > 80 ? '<div style="padding:4px 0;color:#888;">...y ' + (dfx.cambios.length - 80) + ' cambios más.</div>' : '') : '<i>Sin cambios registrados después de este backup.</i>';
+          }).catch(function () { box.innerHTML = '<i>No se pudo cargar el respaldo.</i>'; });
+          return;
+        }
+        var d = dBase;
+        var referencia = refBase;
         var diff = diffEstados(d, referencia);
         if (!diff.cambios.length && !diff.hojasNuevas.length && !diff.hojasEliminadas.length) {
           box.innerHTML = '<i>Sin cambios registrados después de este backup.</i>';
@@ -38138,7 +39306,7 @@ function svgSparklineFormula(vals, op) {
 }
 function pintarSparklinesFormula() {
   var d = sheetData[activeSheet] || {};
-  Object.keys(d).forEach(function (id) {
+  idsParaPintar(d).forEach(function (id) {
     var raw = d[id];
     if (typeof raw !== 'string' || !/^=\s*(SPARKLINE|MINIGRAFICO)\s*\(/i.test(raw)) return;
     var el = document.getElementById('cell_' + id);
@@ -38313,7 +39481,7 @@ function colorDePersona(nombre) {
 }
 function pintarChipsPersona() {
   var d = sheetData[activeSheet] || {}, hay = false;
-  Object.keys(d).forEach(function (id) {
+  idsParaPintar(d).forEach(function (id) {
     var raw = d[id];
     if (typeof raw !== 'string' || raw.charAt(0) !== '@' || !RE_CHIP_PERSONA.test(raw.trim())) return;
     var el = document.getElementById('cell_' + id);
@@ -38752,7 +39920,7 @@ function pedirTituloEnlace(u) {
 }
 function pintarChipsEnlace() {
   var d = sheetData[activeSheet] || {};
-  Object.keys(d).forEach(function (id) {
+  idsParaPintar(d).forEach(function (id) {
     var raw = d[id];
     if (typeof raw !== 'string' || !RE_ENLACE_SOLO.test(raw.trim())) return;
     var el = document.getElementById('cell_' + id);
@@ -39412,7 +40580,7 @@ function abrirLinkACeldaPendiente() {
 var RE_CHIP_LUGAR = /^📍\s*(.+)$/;
 function pintarChipsLugar() {
   var d = sheetData[activeSheet] || {};
-  Object.keys(d).forEach(function (id) {
+  idsParaPintar(d).forEach(function (id) {
     var raw = d[id]; if (typeof raw !== 'string') return;
     var m = RE_CHIP_LUGAR.exec(raw.trim()); if (!m) return;
     var el = document.getElementById('cell_' + id);
@@ -40542,6 +41710,80 @@ function nombrarBackupNube(docId, actual) {
 (function () {
   var on = function (id, fn) { var b = document.getElementById(id); if (b) b.addEventListener('click', function () { if (typeof ocultarMenuContextual === 'function') ocultarMenuContextual(); fn(); }); };
   on('btnVistasFiltro', abrirPanelVistasFiltro); on('btnRangosPersona', function () { abrirRangosPersona(); });
+})();
+
+
+// ══════════════════════════════════════════════
+// RENDIMIENTO CON HOJAS GRANDES
+// ══════════════════════════════════════════════
+// Fórmula sin funciones, rangos ni nombres (=C2*D2, =E5*0,13): no puede derramar
+function formulaSimpleSinDerrame(crudo) {
+  if (crudo.length > 160 || /[(:{!\[#]/.test(crudo)) return false;
+  var cuerpo = crudo.slice(1).replace(/"[^"]*"/g, '').replace(/\$/g, '');
+  var pal = cuerpo.match(/[A-Za-z_][A-Za-z0-9_.]*/g) || [];
+  for (var i = 0; i < pal.length; i++) if (!/^[A-Za-z]{1,3}\d+$/.test(pal[i])) return false;
+  return true;
+}
+// Celdas con datos que están dibujadas ahora (en hojas grandes solo se dibuja lo visible)
+var idsPintarCache = { d: null, ids: null };
+function idsParaPintar(d) {
+  if (!(typeof ventana !== 'undefined' && ventana.activa)) return Object.keys(d);
+  if (idsPintarCache.d === d && idsPintarCache.ids) return idsPintarCache.ids;
+  var ids = [], els = document.querySelectorAll('#sheetTable .cell');
+  for (var i = 0; i < els.length; i++) { var id = els[i].dataset.id; if (id && d[id] !== undefined) ids.push(id); }
+  idsPintarCache = { d: d, ids: ids };
+  Promise.resolve().then(function () { idsPintarCache = { d: null, ids: null }; });
+  return ids;
+}
+// Historial de cambios por celda: se anota un momento después, no en cada tecla
+var historialTimer = null;
+function programarHistorialLocal() {
+  // Con "Control de cambios" activo se anota al instante (el aviso de la celda depende de eso)
+  var alInstante = (typeof applyingRemote !== 'undefined' && applyingRemote) || (typeof ccSaltarProximo !== 'undefined' && ccSaltarProximo);
+  try { if (!alInstante && typeof ccActivo === 'function' && ccActivo()) alInstante = true; } catch (e) {}
+  if (alInstante) { flushHistorialLocal(); registrarHistorialLocal(); return; }
+  if (historialTimer) return;
+  historialTimer = setTimeout(function () { historialTimer = null; try { registrarHistorialLocal(); } catch (e) {} }, 600);
+}
+function flushHistorialLocal() {
+  if (!historialTimer) return;
+  clearTimeout(historialTimer); historialTimer = null;
+  try { registrarHistorialLocal(); } catch (e) {}
+}
+// Comprobación de errores de fondo en pedacitos de ~12 ms
+var revisionVersion = 0, revisionPartesToken = null;
+function revisarHojaPorPartes(hoja, alTerminar) {
+  var d = sheetData[hoja] || {}, ids = Object.keys(d).filter(function (k) { var v = d[k]; return typeof v === 'string' && v.charAt(0) === '='; });
+  var valores = {}, cache = {}, i = 0, version = revisionVersion, token = {};
+  revisionPartesToken = token;
+  var paso = function () {
+    if (revisionPartesToken !== token) return;
+    if (revisionVersion !== version || sheetData[hoja] !== d) { alTerminar(null); return; }
+    var t0 = performance.now(), guardado = cacheCalculo, ant = activeSheet, antF = hojaFormulaActual;
+    try {
+      activeSheet = hoja; hojaFormulaActual = null; cacheCalculo = cache;
+      while (i < ids.length && performance.now() - t0 < 12) { try { valores[ids[i]] = String(computeValue(ids[i])); } catch (e) { valores[ids[i]] = '#ERROR!'; } i++; }
+    } finally { activeSheet = ant; hojaFormulaActual = antF; cacheCalculo = guardado; }
+    if (i < ids.length) { setTimeout(paso, 20); return; }
+    var lista = [];
+    try { lista = revisarHoja(hoja, valores); } catch (e) {}
+    alTerminar(lista);
+  };
+  setTimeout(paso, 0);
+}
+(function () {
+  var autoPrev = autoSave;
+  autoSave = function () { revisionVersion++; return autoPrev.apply(this, arguments); };
+  var cargarPrev = cargarEstadoDesdeObjeto;
+  cargarEstadoDesdeObjeto = function () { flushHistorialLocal(); revisionVersion++; return cargarPrev.apply(this, arguments); };
+  if (typeof aplicarHojaRemota === 'function') {
+    var remPrev = aplicarHojaRemota;
+    aplicarHojaRemota = function () { flushHistorialLocal(); revisionVersion++; return remPrev.apply(this, arguments); };
+  }
+  if (typeof renderHistorialCelda === 'function') {
+    var histPrev = renderHistorialCelda;
+    renderHistorialCelda = function () { flushHistorialLocal(); return histPrev.apply(this, arguments); };
+  }
 })();
 
 // ══════════════════════════════════════════════
