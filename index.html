@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plan Pro · Matriz Contable CR</title>
+  <meta name="description" content="Activá el plan Pro de Matriz Contable CR con PayPal o tarjeta.">
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      --fondo: #050608;
+      --tarjeta: #111317;
+      --borde: #262a31;
+      --texto: #f3f4f6;
+      --suave: #9ca3af;
+      --verde: #84cc16;
+      --verde-osc: #1f7a44;
+      --azul: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(1200px 500px at 50% -10%, rgba(132, 204, 22, .18), transparent 60%), var(--fondo);
+      color: var(--texto);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 16px 60px;
+    }
+
+    .tarjeta {
+      width: 100%;
+      max-width: 460px;
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 24px;
+      padding: 26px 22px;
+      box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .7);
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .marca img {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+    }
+
+    .marca b {
+      display: block;
+      font-size: 18px;
+    }
+
+    .marca span {
+      color: var(--suave);
+      font-size: 13px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 26px;
+    }
+
+    .precio {
+      font-size: 40px;
+      font-weight: 800;
+      margin: 6px 0 2px;
+    }
+
+    .precio small {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--suave);
+    }
+
+    .nota {
+      color: var(--suave);
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 16px;
+    }
+
+    ul {
+      margin: 0 0 18px;
+      padding-left: 20px;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .cuenta {
+      background: #0b0d10;
+      border: 1px solid var(--borde);
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+
+    .cuenta span {
+      color: var(--suave);
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    #botones {
+      min-height: 120px;
+    }
+
+    .estado {
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .estado.ver {
+      display: block;
+    }
+
+    .estado.ok {
+      background: rgba(132, 204, 22, .14);
+      border: 1px solid rgba(132, 204, 22, .45);
+    }
+
+    .estado.error {
+      background: rgba(239, 68, 68, .12);
+      border: 1px solid rgba(239, 68, 68, .45);
+    }
+
+    .estado.info {
+      background: rgba(59, 130, 246, .12);
+      border: 1px solid rgba(59, 130, 246, .4);
+    }
+
+    .pie {
+      color: var(--suave);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 18px;
+      border-top: 1px solid var(--borde);
+      padding-top: 14px;
+    }
+
+    .pie a {
+      color: #93c5fd;
+    }
+
+    .pie a.sinpe {
+      display: inline-block;
+      background: #fff;
+      color: #1e3a8a;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 6px 12px;
+      text-decoration: none;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main class="tarjeta">
+    <div class="marca">
+      <img src="https://kacn1z-del.github.io/matriz-contable-app/assets/pwa/icon-192.png" alt="">
+      <div>
+        <b>Matriz Contable CR</b>
+        <span>por KCN · kenychinchilla.com</span>
+      </div>
+    </div>
+
+    <h1>⭐ Plan Pro</h1>
+    <div class="precio">$21 <small>USD al mes</small></div>
+    <p class="nota">Se cobra solo cada mes con PayPal o tarjeta. Cancelás cuando querás y el Pro sigue hasta el final del mes pagado.</p>
+
+    <ul>
+      <li>🧾 Factura Electrónica de Hacienda</li>
+      <li>✦ Sibö y las funciones con IA</li>
+      <li>🤝 Compartir, permisos, avisos y trabajo en equipo</li>
+      <li>🌐 Publicar en la web y formularios</li>
+      <li>🏛 Datos de Hacienda vinculados</li>
+    </ul>
+
+    <div class="cuenta" id="cuenta"><span>Se activa en la cuenta</span><b id="correo">—</b></div>
+
+    <div id="botones"></div>
+    <div class="estado" id="estado"></div>
+
+    <div class="pie">
+      ¿Preferís SINPE Móvil? Escribime y lo activo a mano:<br>
+      <a class="sinpe" href="https://wa.me/50687359034?text=Hola%2C%20quiero%20pagar%20el%20plan%20Pro%20de%20Matriz%20Contable%20por%20SINPE">sinpe 8735-9034</a><br><br>
+      Para cancelar: PayPal → Configuración → Pagos → Pagos automáticos.<br>
+      <a href="https://kacn1z-del.github.io/matriz-contable-app/privacidad.html">Política de privacidad</a>
+    </div>
+  </main>
+
+  <script>
+    var API = 'https://matriz-contable-app.vercel.app/api';
+    var parametros = new URLSearchParams(location.search);
+    var uid = parametros.get('uid') || '';
+    var correo = parametros.get('correo') || '';
+
+    function mostrar(tipo, html) {
+      var e = document.getElementById('estado');
+      e.className = 'estado ver ' + tipo;
+      e.innerHTML = html;
+    }
+
+    function escapar(t) {
+      return String(t).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    document.getElementById('correo').textContent = correo || 'Sin cuenta';
+
+    if (!/^[A-Za-z0-9]{10,64}$/.test(uid)) {
+      document.getElementById('botones').style.display = 'none';
+      mostrar('info', 'Abrí esta página desde <b>Matriz Contable</b> (tocá ⭐ en la barra de abajo → <b>Suscribirme</b>) para que el pago quede en tu cuenta.');
+    } else {
+      fetch(API + '/paypal-config')
+        .then(function (r) { return r.json(); })
+        .then(function (cfg) {
+          if (!cfg.clientId || !cfg.planId) throw new Error('El pago todavía no está configurado.');
+          var s = document.createElement('script');
+          s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(cfg.clientId) + '&vault=true&intent=subscription&currency=USD&locale=es_ES';
+          s.setAttribute('data-sdk-integration-source', 'button-factory');
+          s.onload = function () { dibujarBotones(cfg.planId); };
+          s.onerror = function () { mostrar('error', 'No se pudo cargar PayPal. Revisá la conexión y recargá la página.'); };
+          document.head.appendChild(s);
+        })
+        .catch(function (e) { mostrar('error', escapar(e.message || e)); });
+    }
+
+    function dibujarBotones(planId) {
+      paypal.Buttons({
+        style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+        createSubscription: function (data, actions) {
+          var pedido = { plan_id: planId, custom_id: uid, application_context: { shipping_preference: 'NO_SHIPPING', brand_name: 'Matriz Contable CR' } };
+          if (correo) pedido.subscriber = { email_address: correo };
+          return actions.subscription.create(pedido);
+        },
+        onApprove: function (data) {
+          document.getElementById('botones').style.display = 'none';
+          mostrar('info', '⏳ Activando tu plan Pro…');
+          return fetch(API + '/paypal-suscripcion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subscriptionID: data.subscriptionID })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.activo) {
+                mostrar('ok', '⭐ <b>¡Listo! Tu plan Pro ya está activo</b> hasta el ' + new Date(d.hasta).toLocaleDateString('es-CR') + '.<br>Volvé a Matriz Contable: se actualiza sola en unos segundos.');
+              } else {
+                mostrar('info', 'PayPal recibió tu suscripción y la está procesando. El Pro se activa solo en unos minutos; si no, escribime al 8735-9034 con este código: <b>' + escapar(data.subscriptionID) + '</b>');
+              }
+            })
+            .catch(function () {
+              mostrar('info', 'El pago se hizo, pero no pude confirmar la activación. Se activa sola en unos minutos; si no, escribime al 8735-9034 con este código: <b>' + escapar(data.subscriptionID) + '</b>');
+            });
+        },
+        onCancel: function () { mostrar('info', 'Cancelaste el pago. No se cobró nada.'); },
+        onError: function () { mostrar('error', 'PayPal tuvo un problema. No se cobró nada; probá de nuevo en un momento.'); }
+      }).render('#botones');
+    }
+  </script>
+</body>
+</html>
